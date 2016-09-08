@@ -1,0 +1,7 @@
+<resources>
+
+    <dimen name="activity_login_horizontal_margin">16dp</dimen>
+    <dimen name="activity_login_vertical_margin">16dp</dimen>
+
+    <dimen name="entrance_btn_padding">16dp</dimen>
+</resources>

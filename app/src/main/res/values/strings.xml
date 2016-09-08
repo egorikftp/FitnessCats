@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Cats Running</string>
+    <string name="entrance_fragment_hint_email">E-mail</string>
+    <string name="entrance_fragment_hint_password">Пароль</string>
+    <string name="entrance_fragment_hint_double_password">Повторите пароль</string>
+    <string name="empty_email">Введите e-mail</string>
+    <string name="empty_password">Введите пароль</string>
+    <string name="empty_double_password">Повторите пароль</string>
+    <string name="error_email">Возможно некорректный email</string>
+    <string name="password_dont_match">Пароли не совпадают</string>
+</resources>

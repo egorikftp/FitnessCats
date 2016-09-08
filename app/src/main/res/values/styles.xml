@@ -1,0 +1,44 @@
+<resources>
+
+    <!-- Стандартная тема приложения -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+    <!-- Тема полей ввода текста -->
+    <style name="EditTextEntrance">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+
+    <!-- Тема TextInputLayout -->
+    <style name="TextInputLayoutStyleEntrance">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="errorEnabled">true</item>
+        <item name="errorTextAppearance">@style/ErrorText</item>
+    </style>
+
+
+    <!-- Тема для показа ошибки в TextInputLayout -->
+    <style name="ErrorText" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textStyle">bold|italic</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+
+    <!-- Тема для кнопок регистрации и логина -->
+    <style name="EntranceButtonStyle" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/entrance_btn_padding</item>
+        <item name="android:layout_marginRight">@dimen/entrance_btn_padding</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+</resources>
