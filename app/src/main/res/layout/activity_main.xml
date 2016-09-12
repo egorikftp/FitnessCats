@@ -1,69 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_login_vertical_margin"
-    android:paddingLeft="@dimen/activity_login_horizontal_margin"
-    android:paddingRight="@dimen/activity_login_horizontal_margin"
-    android:paddingTop="@dimen/activity_login_vertical_margin"
-    tools:context=".RegisterActivity">
+    android:orientation="vertical">
 
-    <LinearLayout
+    <include layout="@layout/toolbar" />
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:orientation="vertical">
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/text_input_layout_email"
-            style="@style/TextInputLayoutStyleEntrance">
-
-            <EditText
-                android:id="@+id/entrance_reg_email"
-                style="@style/EditTextEntrance"
-                android:hint="@string/entrance_fragment_hint_email"
-                android:inputType="textEmailAddress" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/text_input_layout_password"
-            style="@style/TextInputLayoutStyleEntrance">
-
-            <EditText
-                android:id="@+id/entrance_reg_password"
-                style="@style/EditTextEntrance"
-                android:hint="@string/entrance_fragment_hint_password"
-                android:inputType="textPassword" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/text_input_layout_double_password"
-            style="@style/TextInputLayoutStyleEntrance">
-
-            <EditText
-                android:id="@+id/entrance_reg_double_password"
-                style="@style/EditTextEntrance"
-                android:hint="@string/entrance_fragment_hint_double_password"
-                android:inputType="textPassword" />
-        </android.support.design.widget.TextInputLayout>
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btn_register"
-        style="@style/EntranceButtonStyle"
-        android:layout_above="@id/already_have_account_text_view"
-        android:layout_centerHorizontal="true"
-        android:text="Зарегистрироваться" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <TextView
-        android:id="@+id/already_have_account_text_view"
+        android:id="@+id/text_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="?android:attr/selectableItemBackground"
-        android:text="Уже есть аккаунт? Войти"
-        android:textColor="@color/color_text_already_have_account" />
+        android:layout_gravity="center"
+        android:textSize="30sp" />
 
-</RelativeLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:id="@+id/btn_close_connection"
+        android:text="Разлогиниться ёпт"
+        android:textAllCaps="false"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content" />
+</LinearLayout>

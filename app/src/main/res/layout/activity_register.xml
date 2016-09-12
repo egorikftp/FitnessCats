@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linear_layout_register"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/activity_login_vertical_margin"
+            android:paddingLeft="@dimen/activity_login_horizontal_margin"
+            android:paddingRight="@dimen/activity_login_horizontal_margin"
+            android:paddingTop="@dimen/activity_login_vertical_margin">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/text_input_layout_email"
+                style="@style/TextInputLayoutStyleEntrance">
+
+                <EditText
+                    android:id="@+id/entrance_reg_email"
+                    style="@style/EditTextEntrance"
+                    android:hint="@string/entrance_fragment_hint_email"
+                    android:inputType="textEmailAddress" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/text_input_layout_password"
+                style="@style/TextInputLayoutStyleEntrance"
+                android:layout_below="@id/text_input_layout_email">
+
+                <EditText
+                    android:id="@+id/entrance_reg_password"
+                    style="@style/EditTextEntrance"
+                    android:hint="@string/entrance_fragment_hint_password"
+                    android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/text_input_layout_double_password"
+                style="@style/TextInputLayoutStyleEntrance"
+                android:layout_below="@id/text_input_layout_password">
+
+                <EditText
+                    android:id="@+id/entrance_reg_double_password"
+                    style="@style/EditTextEntrance"
+                    android:hint="@string/entrance_fragment_hint_double_password"
+                    android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/btn_register"
+                style="@style/EntranceButtonStyle"
+                android:layout_below="@id/text_input_layout_double_password" />
+
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_below="@id/btn_register"
+                style="@style/BtnLoginStyle" />
+        </RelativeLayout>
+    </ScrollView>
+</LinearLayout>

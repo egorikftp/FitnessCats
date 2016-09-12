@@ -1,11 +1,34 @@
 <resources>
     <string name="app_name">Cats Running</string>
+
+    <!-- Экран входа. Подсказки для ввода -->
     <string name="entrance_fragment_hint_email">E-mail</string>
     <string name="entrance_fragment_hint_password">Пароль</string>
     <string name="entrance_fragment_hint_double_password">Повторите пароль</string>
+
+    <!-- Обработка ошибок после ввода данных для логина или регистации -->
     <string name="empty_email">Введите e-mail</string>
     <string name="empty_password">Введите пароль</string>
     <string name="empty_double_password">Повторите пароль</string>
     <string name="error_email">Возможно некорректный email</string>
     <string name="password_dont_match">Пароли не совпадают</string>
+
+    <!-- Данные ProgressDialog -->
+    <string name="progress_dialog_register_title">Выполняется запрос</string>
+    <string name="progress_dialog_register_message">Это займет буквально несколько секунд</string>
+
+    <!-- Данные Toolbar при регистрации/входе-->
+    <string name="register_activity_toolbar_register_text">Регистрация</string>
+    <string name="register_activity_toolbar_login_text">Войти</string>
+
+    <!-- Текст кнопок для логина/регистрации -->
+    <string name="btn_text_registration">Зарегистрироваться</string>
+    <string name="btn_text_login">Войти</string>
+
+    <!-- Текст для NavigationDrawer -->
+    <string name="navigation_drawer_main_activity">Список треков</string>
+    <string name="navigation_drawer_reminders">Напоминания</string>
+    <string name="navigation_drawer_liked">Избранное</string>
+    <string name="navigation_drawer_exit">Выход</string>
+    <string name="no_ethernet_connection">Проверьте подключение к интернету</string>
 </resources>
