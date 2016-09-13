@@ -30,7 +30,7 @@ import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.MainActivity;
 /*import com.egoriku.pandafitness.activities.ScamperActivity;
-import com.egoriku.pandafitness.adapters.MainFragmentAdapter;
+import com.egoriku.pandafitness.adapters.TracksListFragmentAdapter;
 import com.egoriku.pandafitness.adapters.interfaces.IRecyclerViewListener;
 import com.egoriku.pandafitness.models.MainFragmentTracksModel;
 import com.egoriku.pandafitness.models.Point;
@@ -55,7 +55,7 @@ public class TracksListFragment extends Fragment {
 
    /* private ArrayList<MainFragmentTracksModel> tracksModels = new ArrayList<>();
 
-    private MainFragmentAdapter mainFragmentAdapter;
+    private TracksListFragmentAdapter mainFragmentAdapter;
     private FloatingActionButton floatingActionButton;
 
     private ArrayList<Point> points;
@@ -129,7 +129,7 @@ public class TracksListFragment extends Fragment {
 
         getTracksFromDb();
         textViewNoTracks.setText(null);
-        mainFragmentAdapter = new MainFragmentAdapter(tracksModels);
+        mainFragmentAdapter = new TracksListFragmentAdapter(tracksModels);
 
         if (tracksModels.size() == 0) {
             textViewNoTracks.setText(String.format("%s%s", getString(R.string.no_tracks_list), getEmojiByUnicode(UNICODE)));

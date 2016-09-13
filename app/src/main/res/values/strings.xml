@@ -2,9 +2,11 @@
     <string name="app_name">Cats Running</string>
 
     <!-- Экран входа. Подсказки для ввода -->
-    <string name="entrance_fragment_hint_email">E-mail</string>
-    <string name="entrance_fragment_hint_password">Пароль</string>
-    <string name="entrance_fragment_hint_double_password">Повторите пароль</string>
+    <string name="entrance_activity_hint_email">E-mail</string>
+    <string name="entrance_activity_hint_password">Пароль</string>
+    <string name="entrance_activity_hint_double_password">Повторите пароль</string>
+    <string name="entrance_activity_hint_name">Имя</string>
+    <string name="entrance_activity_hint_surname">Фамилия</string>
 
     <!-- Обработка ошибок после ввода данных для логина или регистации -->
     <string name="empty_email">Введите e-mail</string>
@@ -12,14 +14,18 @@
     <string name="empty_double_password">Повторите пароль</string>
     <string name="error_email">Возможно некорректный email</string>
     <string name="password_dont_match">Пароли не совпадают</string>
+    <string name="no_ethernet_connection">Проверьте подключение к интернету</string>
+    <string name="empty_name">Введите имя</string>
+    <string name="empty_surname">Введите фамилию</string>
 
     <!-- Данные ProgressDialog -->
     <string name="progress_dialog_register_title">Выполняется запрос</string>
     <string name="progress_dialog_register_message">Это займет буквально несколько секунд</string>
 
-    <!-- Данные Toolbar при регистрации/входе-->
+    <!-- Данные Toolbar -->
     <string name="register_activity_toolbar_register_text">Регистрация</string>
     <string name="register_activity_toolbar_login_text">Войти</string>
+    <string name="scamper_activity_toolbar_statistic">Статистика пробежки</string>
 
     <!-- Текст кнопок для логина/регистрации -->
     <string name="btn_text_registration">Зарегистрироваться</string>
@@ -30,5 +36,51 @@
     <string name="navigation_drawer_reminders">Напоминания</string>
     <string name="navigation_drawer_liked">Избранное</string>
     <string name="navigation_drawer_exit">Выход</string>
-    <string name="no_ethernet_connection">Проверьте подключение к интернету</string>
+
+    <!-- Текст нотификации будильника -->
+    <string name="alarm_notification_title">Cats Running</string>
+
+    <!-- Текст нотификации сервиса -->
+    <string name="scamper_notification_title">Ваша пробежка началась</string>
+    <string name="notification_time_distance_format">%1$s, дистанция %2$s м</string>
+
+    <!-- Текст AlertDialog при отсутствии GPS -->
+    <string name="scamper_activity_alert_message_no_gps">Ваш GPS выключен, хотите его включить?</string>
+    <string name="scamper_activity_alert_positive_btn">Да</string>
+    <string name="scamper_activity_alert_negative_btn">Нет</string>
+
+    <!-- Scamper Activity - Errors text -->
+    <string name="scamper_activity_snackbar_btn_finish_not_pressed">Сначала надо нажать на \"Финиш\"</string>
+    <string name="scamper_activity_snackbar_no_points">Увы, в треке нет точек</string>
+
+    <!-- Scamper Activity -->
+    <string name="scamper_activity_distance_meter">%s м</string>
+    <string name="scamper_activity_start">СТАРТ</string>
+    <string name="scamper_activity_finish">ФИНИШ</string>
+    <string name="scamper_activity_you_are_running">Вы пробежали</string>
+
+    <!-- Adapter Liked Fragment  -->
+    <string name="liked_fragment_adapter_distance_meter">%s м</string>
+    <string name="liked_fragment_adapter_time_running">Время пробежки:</string>
+    <string name="liked_fragment_adapter_distance">Дистанция:</string>
+
+    <!-- Tracks List Fragment -->
+    <string name="tracks_list_fragment_distance_meter">%s м</string>
+
+    <!-- Track Fragment -->
+    <string name="track_fragment_distance">Дистанция:</string>
+    <string name="track_fragment_time_running">Время пробежки:</string>
+
+
+    <!-- Dialogs -->
+    <string name="dialog_reminder_add_hint_edit_text">Введите текст напоминания</string>
+
+    <!-- Adapter Fragment Tracks List -->
+    <string name="adapter_fragment_main_time_running">Время пробежки:</string>
+    <string name="adapter_fragment_main_distance">Дистанция:</string>
+
+
+    <!-- Теги -->
+    <string name="reminders_tag_comment">comment</string>
+    <string name="reminders_tag_date">date</string>
 </resources>

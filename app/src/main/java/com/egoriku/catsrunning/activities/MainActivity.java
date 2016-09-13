@@ -1,10 +1,17 @@
 package com.egoriku.catsrunning.activities;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,6 +19,7 @@ import android.widget.TextView;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
+import com.egoriku.catsrunning.fragments.TrackFragment;
 import com.egoriku.catsrunning.fragments.TracksListFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,11 +37,12 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 public class MainActivity extends AppCompatActivity {
-
     private static final String TAG_EXIT_APP = "TAG_EXIT_APP";
     private TextView textName;
     private Toolbar toolbar;
     private Button btnCancelConnection;
+
+    private Drawer result;
 
     private String emailText;
     private String nameText;
@@ -46,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
         btnCancelConnection = (Button) findViewById(R.id.btn_close_connection);
 
+        setSupportActionBar(toolbar);
+
         btnCancelConnection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,6 +65,10 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        if (savedInstanceState == null) {
+            showFragment(TracksListFragment.newInstance(), TracksListFragment.TAG_MAIN_FRAGMENT, null, true);
+        }
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -109,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .build();
 
-        Drawer result = new DrawerBuilder()
+        result = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withAccountHeader(headerResult)
@@ -117,16 +132,105 @@ public class MainActivity extends AppCompatActivity {
                         itemLocation,
                         itemReminder,
                         itemLiked,
+                        new DividerDrawerItem(),
                         itemExit
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         // do something with the clicked item :D
-                        Log.e("Click", String.valueOf(position));
+                        String tag = String.valueOf(drawerItem.getTag());
+
+                        if (tag.equals(TracksListFragment.TAG_MAIN_FRAGMENT)) {
+                            showFragment(TracksListFragment.newInstance(), TracksListFragment.TAG_MAIN_FRAGMENT, null, true);
+                        }
+
+                        if (tag.equals(RemindersFragment.TAG_REMINDERS_FRAGMENT)) {
+                            showFragment(RemindersFragment.newInstance(), RemindersFragment.TAG_REMINDERS_FRAGMENT, TracksListFragment.TAG_MAIN_FRAGMENT, false);
+                        }
+
+                        if (tag.equals(LikedFragment.TAG_LIKED_FRAGMENT)) {
+                            showFragment(LikedFragment.newInstance(), LikedFragment.TAG_LIKED_FRAGMENT, TracksListFragment.TAG_MAIN_FRAGMENT, false);
+                        }
                         return true;
                     }
                 })
                 .build();
+
+    }
+
+
+    private void showFragment(Fragment fragment, String tag, String clearToTag, boolean clearInclusive) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        if (clearToTag != null || clearInclusive) {
+            fragmentManager.popBackStack(
+                    clearToTag,
+                    clearInclusive ? FragmentManager.POP_BACK_STACK_INCLUSIVE : 0
+            );
+        }
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment, tag);
+        transaction.addToBackStack(tag);
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        transaction.commit();
+    }
+
+
+    public void onFragmentStart(int titleResId, String tag) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(titleResId);
+        }
+
+        for (int i = 0; i < result.getDrawerItems().size(); i++) {
+            if (result.getDrawerItems().get(i).getTag().equals(tag)) {
+                result.setSelection(i, true);
+            }
+        }
+
+        if (tag.equals(TrackFragment.TAG_TRACK_FRAGMENT)) {
+            for (int i = 0; i < result.getDrawerItems().size(); i++) {
+                result.setSelection(i, false);
+            }
+        }
+    }
+
+
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        result.getActionBarDrawerToggle().syncState();
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        result.getActionBarDrawerToggle().onConfigurationChanged(newConfig);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return  result.getActionBarDrawerToggle().onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+        if(result.getDrawerLayout().isDrawerVisible(GravityCompat.START)){
+            result.getDrawerLayout().closeDrawer(GravityCompat.START);
+            return;
+        }
+
+        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            finish();
+            return;
+        }
+        result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
+        super.onBackPressed();
     }
 }

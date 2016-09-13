@@ -1,22 +1,46 @@
 package com.egoriku.catsrunning;
 
 import android.app.Application;
-import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.egoriku.catsrunning.helpers.DbOpenHelper;
+import com.egoriku.catsrunning.models.State;
 import com.google.firebase.database.FirebaseDatabase;
 
 
 public class App extends Application {
     public static App self;
-    public static App getInstance() {
-        return self;
-    }
+    private State state;
+    private DbOpenHelper dbOpenHelper;
+    private SQLiteDatabase db;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
+        self = this;
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        dbOpenHelper = new DbOpenHelper(this);
+        db = dbOpenHelper.getWritableDatabase();
+        db.execSQL("VACUUM");
     }
+
+
+    public void createState() {
+        state = new State();
+    }
+
+
+    public State getState() {
+        return state;
+    }
+
+    public SQLiteDatabase getDb() {
+        return db;
+    }
+
+    public static App getInstance() {
+        return self;
+    }
+
 }

@@ -7,4 +7,11 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="adapter_fragment_liked_padding_word">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fragment_track_padding_word">6dp</dimen>
+    <dimen name="margin_reminder_dialog">16dp</dimen>
+    <dimen name="activity_entrance_horizontal_margin">16dp</dimen>
+    <dimen name="adapter_fragment_main_padding_word">6dp</dimen>
+    <dimen name="reminders_margin">10dp</dimen>
 </resources>

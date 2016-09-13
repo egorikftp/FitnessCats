@@ -23,13 +23,37 @@
             android:paddingTop="@dimen/activity_login_vertical_margin">
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/text_input_layout_name"
+                style="@style/TextInputLayoutStyleEntrance">
+
+                <EditText
+                    android:id="@+id/entrance_reg_name"
+                    style="@style/EditTextEntrance"
+                    android:hint="@string/entrance_activity_hint_name"
+                    android:inputType="text" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/text_input_layout_surname"
+                android:layout_below="@id/text_input_layout_name"
+                style="@style/TextInputLayoutStyleEntrance">
+
+                <EditText
+                    android:id="@+id/entrance_reg_surname"
+                    style="@style/EditTextEntrance"
+                    android:hint="@string/entrance_activity_hint_surname"
+                    android:inputType="text" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
                 android:id="@+id/text_input_layout_email"
+                android:layout_below="@id/text_input_layout_surname"
                 style="@style/TextInputLayoutStyleEntrance">
 
                 <EditText
                     android:id="@+id/entrance_reg_email"
                     style="@style/EditTextEntrance"
-                    android:hint="@string/entrance_fragment_hint_email"
+                    android:hint="@string/entrance_activity_hint_email"
                     android:inputType="textEmailAddress" />
             </android.support.design.widget.TextInputLayout>
 
@@ -41,7 +65,7 @@
                 <EditText
                     android:id="@+id/entrance_reg_password"
                     style="@style/EditTextEntrance"
-                    android:hint="@string/entrance_fragment_hint_password"
+                    android:hint="@string/entrance_activity_hint_password"
                     android:inputType="textPassword" />
             </android.support.design.widget.TextInputLayout>
 
@@ -53,7 +77,7 @@
                 <EditText
                     android:id="@+id/entrance_reg_double_password"
                     style="@style/EditTextEntrance"
-                    android:hint="@string/entrance_fragment_hint_double_password"
+                    android:hint="@string/entrance_activity_hint_double_password"
                     android:inputType="textPassword" />
             </android.support.design.widget.TextInputLayout>
 
