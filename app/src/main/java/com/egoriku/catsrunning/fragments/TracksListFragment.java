@@ -1,21 +1,15 @@
 package com.egoriku.catsrunning.fragments;
 
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,28 +18,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.MainActivity;
-/*import com.egoriku.pandafitness.activities.ScamperActivity;
-import com.egoriku.pandafitness.adapters.TracksListFragmentAdapter;
-import com.egoriku.pandafitness.adapters.interfaces.IRecyclerViewListener;
-import com.egoriku.pandafitness.models.MainFragmentTracksModel;
-import com.egoriku.pandafitness.models.Point;
-import com.egoriku.pandafitness.models.Save.SaveRequestModel;
-import com.egoriku.pandafitness.providers.PointsProvider;
-import com.egoriku.pandafitness.providers.SaveProvider;
-import com.egoriku.pandafitness.providers.TracksProvider;*/
+import com.egoriku.catsrunning.activities.ScamperActivity;
+import com.egoriku.catsrunning.adapters.TracksListFragmentAdapter;
+import com.egoriku.catsrunning.adapters.interfaces.IRecyclerViewListener;
+import com.egoriku.catsrunning.models.MainFragmentTracksModel;
+import com.egoriku.catsrunning.models.Point;
+import com.egoriku.catsrunning.models.Save.SaveRequestModel;
 
 import java.util.ArrayList;
 
 public class TracksListFragment extends Fragment {
     private static final int idTrackOnServerDefault = 0;
     public static final String TAG_MAIN_FRAGMENT = "TAG_MAIN_FRAGMENT";
-    public static final String MARKER_FINISH_SAVE = "MARKER_FINISH_SAVE";
-    public static final String MARKER_FINISH_SYNC = "MARKER_FINISH_SYNC";
     private static final int UNICODE = 0x1F60E;
 
     private RecyclerView recyclerView;
@@ -53,14 +41,14 @@ public class TracksListFragment extends Fragment {
     private ProgressDialog progressDialog;
     private TextView textViewNoTracks;
 
-   /* private ArrayList<MainFragmentTracksModel> tracksModels = new ArrayList<>();
+    private ArrayList<MainFragmentTracksModel> tracksModels = new ArrayList<>();
 
     private TracksListFragmentAdapter mainFragmentAdapter;
     private FloatingActionButton floatingActionButton;
 
     private ArrayList<Point> points;
     private SaveRequestModel saveTracksRequestModel;
-    private ArrayList<SaveRequestModel> saveRequestModelArrayList;*/
+    private ArrayList<SaveRequestModel> saveRequestModelArrayList;
 
     public TracksListFragment() {
     }
@@ -69,7 +57,7 @@ public class TracksListFragment extends Fragment {
         return new TracksListFragment();
     }
 
-   /* @Override
+    @Override
     public void onStart() {
         super.onStart();
         ((MainActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_main_activity, TAG_MAIN_FRAGMENT);
@@ -84,22 +72,21 @@ public class TracksListFragment extends Fragment {
             App.getInstance().createState();
         }
 
-        if (App.getInstance().getState().isFirstStart()) {
-            saveTracksOnServer();
-        } else {
-            saveTracksOnServer();
-        }
+       /*if (App.getInstance().getState().isFirstStart()) {
+            saveTracksOnServer();*/
+          //  saveTracksOnServer();
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.e("onCreateView", "+");
         View view = inflater.inflate(R.layout.fragment_tracks_list, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.main_fragment_recycler_view);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_layout);
         floatingActionButton = (FloatingActionButton) view.findViewById(R.id.floating_button);
         textViewNoTracks = (TextView) view.findViewById(R.id.list_fragment_no_more_tracks);
 
+        Log.e("onCreateView", "+");
         recyclerView.setLayoutManager(new LinearLayoutManager(App.getInstance()));
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -117,13 +104,13 @@ public class TracksListFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (App.getInstance().getState().isStartSyncTracks() || !App.getInstance().getState().isStartSync()) {
+               /* if (App.getInstance().getState().isStartSyncTracks() || !App.getInstance().getState().isStartSync()) {
                     saveTracksOnServer();
                     swipeRefreshLayout.setRefreshing(false);
                 } else {
                     Toast.makeText(App.getInstance(), getString(R.string.now_is_sync), Toast.LENGTH_SHORT).show();
                     swipeRefreshLayout.setRefreshing(false);
-                }
+                }*/
             }
         });
 
@@ -132,7 +119,7 @@ public class TracksListFragment extends Fragment {
         mainFragmentAdapter = new TracksListFragmentAdapter(tracksModels);
 
         if (tracksModels.size() == 0) {
-            textViewNoTracks.setText(String.format("%s%s", getString(R.string.no_tracks_list), getEmojiByUnicode(UNICODE)));
+            textViewNoTracks.setText(String.format("%s%s", getString(R.string.tracks_list_no_more_tracks), getEmojiByUnicode(UNICODE)));
         } else {
             recyclerView.setAdapter(mainFragmentAdapter);
             recyclerView.hasFixedSize();
@@ -206,7 +193,7 @@ public class TracksListFragment extends Fragment {
         getTracksFromDb();
         mainFragmentAdapter.setAdapterData(tracksModels);
 
-        if (App.getInstance().getState().isFirstStart()) {
+       /* if (App.getInstance().getState().isFirstStart()) {
             Log.e("isFS", "+");
             showProgressDialog();
         }
@@ -214,16 +201,16 @@ public class TracksListFragment extends Fragment {
         if (App.getInstance().getState().isFirstStart() && (App.getInstance().getState().isStartSync() || App.getInstance().getState().isStartSyncTracks())) {
             Log.e("isFS + isSTask", "+");
             showProgressDialog();
-        }
+        }*/
 
-        LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastSaveError, new IntentFilter(SaveProvider.BROADCAST_SAVE_ERROR));
+        /*LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastSaveError, new IntentFilter(SaveProvider.BROADCAST_SAVE_ERROR));
         LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastSaveSuccess, new IntentFilter(SaveProvider.BROADCAST_SAVE_FINISH));
         LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastTracksSuccess, new IntentFilter(TracksProvider.BROADCAST_TRACKS_SUCCESS));
         LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastTracksError, new IntentFilter(TracksProvider.BROADCAST_TRACKS_ERROR));
         LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastPointsSuccess, new IntentFilter(PointsProvider.BROADCAST_POINTS_SUCCESS));
         LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastPointsFinish, new IntentFilter(PointsProvider.BROADCAST_POINTS_FINISH));
         LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastPointsError, new IntentFilter(PointsProvider.BROADCAST_POINTS_ERROR));
-        LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastNoNewTracks, new IntentFilter(TracksProvider.BROADCAST_NO_NEW_TRACKS));
+        LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastNoNewTracks, new IntentFilter(TracksProvider.BROADCAST_NO_NEW_TRACKS));*/
     }
 
     @Override
@@ -235,14 +222,14 @@ public class TracksListFragment extends Fragment {
             swipeRefreshLayout.setRefreshing(false);
         }
 
-        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastSaveError);
+    /*    LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastSaveError);
         LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastSaveSuccess);
         LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastTracksSuccess);
         LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastTracksError);
         LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastPointsSuccess);
         LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastPointsFinish);
         LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastPointsError);
-        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastNoNewTracks);
+        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastNoNewTracks);*/
     }
 
 
@@ -290,7 +277,7 @@ public class TracksListFragment extends Fragment {
         }
         points = null;
 
-        if (saveRequestModelArrayList.size() == 0) {
+        /*if (saveRequestModelArrayList.size() == 0) {
             TracksProvider.tracksRequest(App.getInstance().getState().getToken());
         } else {
             for (int i = 0; i < saveRequestModelArrayList.size(); i++) {
@@ -317,11 +304,11 @@ public class TracksListFragment extends Fragment {
                 }
             }
         }
-        saveRequestModelArrayList.clear();
+        saveRequestModelArrayList.clear();*/
     }
 
 
-    private BroadcastReceiver broadcastSaveError = new BroadcastReceiver() {
+  /*  private BroadcastReceiver broadcastSaveError = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.e("broadcastSaveError", "+");
@@ -465,11 +452,11 @@ public class TracksListFragment extends Fragment {
                 }
             }
         }
-    };
+    };*/
 
 
     private void saveIdFromServerToDb() {
-        for (int i = 0; i < App.getInstance().getState().getSaveModelArrayList().size(); i++) {
+       /* for (int i = 0; i < App.getInstance().getState().getSaveModelArrayList().size(); i++) {
             SQLiteStatement statement = App.getInstance().getDb().compileStatement("UPDATE Tracks SET idTrackOnServer = ? WHERE Tracks._id = ?");
 
             statement.bindLong(1, App.getInstance().getState().getSaveModelArrayList().get(i).getId());
@@ -480,8 +467,7 @@ public class TracksListFragment extends Fragment {
             } finally {
                 statement.close();
             }
-        }
-        App.getInstance().getState().getSaveModelArrayList().clear();
+        }*/
     }
 
 
@@ -511,8 +497,8 @@ public class TracksListFragment extends Fragment {
 
         progressDialog = ProgressDialog.show(
                 getActivity(),
-                getString(R.string.progressdialog_main_fragment_title),
-                getString(R.string.progressdialog_main_fragment_message),
+                getString(R.string.tracks_list_fragment_progress_dialog_title),
+                getString(R.string.tracks_list_fragment_progress_dialog_message),
                 true,
                 false
         );
@@ -538,5 +524,5 @@ public class TracksListFragment extends Fragment {
         transaction.addToBackStack(TrackFragment.TAG_TRACK_FRAGMENT);
         transaction.commit();
         mainFragmentAdapter.clear();
-    }*/
+    }
 }

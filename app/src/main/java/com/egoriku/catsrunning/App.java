@@ -1,7 +1,9 @@
 package com.egoriku.catsrunning;
 
 import android.app.Application;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.multidex.MultiDex;
 
 import com.egoriku.catsrunning.helpers.DbOpenHelper;
 import com.egoriku.catsrunning.models.State;
@@ -19,7 +21,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         self = this;
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         dbOpenHelper = new DbOpenHelper(this);
         db = dbOpenHelper.getWritableDatabase();
         db.execSQL("VACUUM");
@@ -43,4 +44,10 @@ public class App extends Application {
         return self;
     }
 
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 }

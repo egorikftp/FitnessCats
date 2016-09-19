@@ -11,31 +11,44 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private static final String EMAIL_KEY = "EMAIL_KEY";
     private static final String PASSWORD_KEY = "PASSWORD_KEY";
     private static final String DOUBLE_PASSWORD_KEY = "DOUBLE_PASSWORD_KEY";
     private static final String NAME_KEY = "NAME_KEY";
     private static final String SURNAME_KEY = "SURNAME_KEY";
+    private static final String SIGN_GOOGLE_BTN_KEY = "SIGN_GOOGLE_BTN_KEY";
     private static final String HAVE_ACCOUNT_TEXT = "HAVE_ACCOUNT_TEXT";
     private static final String BTN_REGISTER_TEXT = "BTN_REGISTER_TEXT";
     private static final String TOOLBAR_TEXT = "TOOLBAR_TEXT";
+    private static final int RC_SIGN_IN = 4706;
+
+    private GoogleApiClient googleApiClient;
 
     private TextInputLayout inputLayoutEmail;
     private TextInputLayout inputLayoutPassword;
@@ -47,8 +60,9 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText editTextDoublePassword;
     private EditText editTextName;
     private EditText editTextSurname;
-    private Button loginBtn;
+    private TextView loginBtn;
     private Button registerBtn;
+    private SignInButton signInGoogleBtn;
     private LinearLayout linearLayoutRegister;
 
     private String emptyEmail;
@@ -65,7 +79,6 @@ public class RegisterActivity extends AppCompatActivity {
     private String textLogin;
 
     private FirebaseAuth firebaseAuth;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +97,9 @@ public class RegisterActivity extends AppCompatActivity {
         editTextName = (EditText) findViewById(R.id.entrance_reg_name);
         editTextSurname = (EditText) findViewById(R.id.entrance_reg_surname);
 
-        loginBtn = (Button) findViewById(R.id.btn_login);
+        loginBtn = (TextView) findViewById(R.id.text_view_login);
         registerBtn = (Button) findViewById(R.id.btn_register);
+        signInGoogleBtn = (SignInButton) findViewById(R.id.sign_in_google_btn);
         linearLayoutRegister = (LinearLayout) findViewById(R.id.linear_layout_register);
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
         loginBtn.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
@@ -101,15 +115,26 @@ public class RegisterActivity extends AppCompatActivity {
         textRegistration = getString(R.string.btn_text_registration);
         textLogin = getString(R.string.btn_text_login);
 
-        registerBtn.setText(textRegistration);
-        loginBtn.setText(textLogin);
+        registerBtn.setText(textLogin);
+        loginBtn.setText(textRegistration);
         setSupportActionBar(toolbar);
+        inputLayoutDoublePassword.setVisibility(View.GONE);
+        inputLayoutName.setVisibility(View.GONE);
+        inputLayoutSurname.setVisibility(View.GONE);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(textRegistration);
+            getSupportActionBar().setTitle(textLogin);
         }
 
         firebaseAuth = FirebaseAuth.getInstance();
+        initializeGoogle();
+
+        signInGoogleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signIn();
+            }
+        });
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +145,7 @@ public class RegisterActivity extends AppCompatActivity {
                     inputLayoutSurname.setVisibility(View.GONE);
                     loginBtn.setText(textRegistration);
                     registerBtn.setText(textLogin);
+                    signInGoogleBtn.setVisibility(View.VISIBLE);
 
                     if (getSupportActionBar() != null) {
                         getSupportActionBar().setTitle(textLogin);
@@ -133,6 +159,7 @@ public class RegisterActivity extends AppCompatActivity {
                     inputLayoutSurname.setVisibility(View.VISIBLE);
                     loginBtn.setText(textLogin);
                     registerBtn.setText(textRegistration);
+                    signInGoogleBtn.setVisibility(View.GONE);
 
                     if (getSupportActionBar() != null) {
                         getSupportActionBar().setTitle(textRegistration);
@@ -309,10 +336,60 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
+    private void initializeGoogle() {
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .requestProfile()
+                .build();
+
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+    }
+
+
+    private void signIn() {
+        Intent signIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        startActivityForResult(signIntent, RC_SIGN_IN);
+    }
+
+
     @Override
-    protected void onPause() {
-        super.onPause();
-        dismissProgressDialog();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess()) {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = result.getSignInAccount();
+                firebaseAuthWithGoogle(account);
+            } else {
+                Snackbar.make(linearLayoutRegister, R.string.register_activity_snackbar_error_auth_google, Snackbar.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+        firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                            finish();
+                        } else {
+                            Snackbar.make(linearLayoutRegister, task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+
+                });
     }
 
 
@@ -331,12 +408,21 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        dismissProgressDialog();
+    }
+
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(EMAIL_KEY, inputLayoutEmail.getVisibility());
         outState.putInt(PASSWORD_KEY, inputLayoutPassword.getVisibility());
         outState.putInt(DOUBLE_PASSWORD_KEY, inputLayoutDoublePassword.getVisibility());
         outState.putInt(NAME_KEY, inputLayoutName.getVisibility());
         outState.putInt(SURNAME_KEY, inputLayoutSurname.getVisibility());
+        outState.putInt(SIGN_GOOGLE_BTN_KEY, signInGoogleBtn.getVisibility());
+
         outState.putString(BTN_REGISTER_TEXT, registerBtn.getText().toString());
         outState.putString(HAVE_ACCOUNT_TEXT, loginBtn.getText().toString());
         outState.putString(TOOLBAR_TEXT, toolbar.getTitle().toString());
@@ -352,9 +438,16 @@ public class RegisterActivity extends AppCompatActivity {
         inputLayoutDoublePassword.setVisibility(savedInstanceState.getInt(DOUBLE_PASSWORD_KEY));
         inputLayoutName.setVisibility(savedInstanceState.getInt(NAME_KEY));
         inputLayoutSurname.setVisibility(savedInstanceState.getInt(SURNAME_KEY));
+        signInGoogleBtn.setVisibility(savedInstanceState.getInt(SIGN_GOOGLE_BTN_KEY));
+
         registerBtn.setText(savedInstanceState.getString(BTN_REGISTER_TEXT));
         loginBtn.setText(savedInstanceState.getString(HAVE_ACCOUNT_TEXT));
         toolbar.setTitle(savedInstanceState.getString(TOOLBAR_TEXT));
         super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }

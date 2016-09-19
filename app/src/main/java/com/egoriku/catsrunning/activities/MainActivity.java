@@ -1,20 +1,16 @@
 package com.egoriku.catsrunning.activities;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.view.inputmethod.InputMethodManager;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.fragments.LikedFragment;
@@ -23,8 +19,6 @@ import com.egoriku.catsrunning.fragments.TrackFragment;
 import com.egoriku.catsrunning.fragments.TracksListFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -38,10 +32,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG_EXIT_APP = "TAG_EXIT_APP";
-    private TextView textName;
     private Toolbar toolbar;
-    private Button btnCancelConnection;
-
     private Drawer result;
 
     private String emailText;
@@ -51,20 +42,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textName = (TextView) findViewById(R.id.text_name);
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
-        btnCancelConnection = (Button) findViewById(R.id.btn_close_connection);
 
         setSupportActionBar(toolbar);
-
-        btnCancelConnection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(MainActivity.this, RegisterActivity.class));
-                finish();
-            }
-        });
 
         if (savedInstanceState == null) {
             showFragment(TracksListFragment.newInstance(), TracksListFragment.TAG_MAIN_FRAGMENT, null, true);
@@ -79,42 +59,15 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        DatabaseReference scoresRef = FirebaseDatabase.getInstance().getReference("egoriku");
-        scoresRef.keepSynced(true);
+        //  DatabaseReference scoresRef = FirebaseDatabase.getInstance().getReference("egoriku");
+        //scoresRef.keepSynced(true);
 
         //инициализация Drawer Builder
-        new DrawerBuilder().withActivity(this).build();
-
-        PrimaryDrawerItem itemLocation = new PrimaryDrawerItem().
-                withIdentifier(1)
-                .withName(getString(R.string.navigation_drawer_main_activity))
-                .withIcon(getResources().getDrawable(R.drawable.ic_location))
-                .withTag(TracksListFragment.TAG_MAIN_FRAGMENT);
-
-        PrimaryDrawerItem itemReminder = new PrimaryDrawerItem().
-                withIdentifier(2)
-                .withName(getString(R.string.navigation_drawer_reminders))
-                .withIcon(getResources().getDrawable(R.drawable.ic_notifications))
-                .withTag(RemindersFragment.TAG_REMINDERS_FRAGMENT);
-
-        PrimaryDrawerItem itemLiked = new PrimaryDrawerItem().
-                withIdentifier(3)
-                .withName(getString(R.string.navigation_drawer_liked))
-                .withIcon(getResources().getDrawable(R.drawable.ic_star_black))
-                .withTag(LikedFragment.TAG_LIKED_FRAGMENT);
-
-        SecondaryDrawerItem itemExit = new SecondaryDrawerItem().
-                withIdentifier(4)
-                .withName(getString(R.string.navigation_drawer_exit))
-                .withIcon(getResources().getDrawable(R.drawable.ic_exit_to_app))
-                .withTag(TAG_EXIT_APP);
 
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(R.drawable.side_nav_bar)
-                .addProfiles(
-                        new ProfileDrawerItem().withName(nameText).withEmail(emailText).withIcon(getResources().getDrawable(R.drawable.panda_navigation_drawer))
-                )
+                .withHeaderBackground(R.color.colorPrimaryDark)
+                .addProfiles(new ProfileDrawerItem().withName(nameText).withEmail(emailText).withIcon(getResources().getDrawable(R.drawable.splash_screen_cats_running)))
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
@@ -124,22 +77,39 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .build();
 
+        Log.e("AccountHeader", "+");
         result = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withAccountHeader(headerResult)
                 .addDrawerItems(
-                        itemLocation,
-                        itemReminder,
-                        itemLiked,
+                        new PrimaryDrawerItem().
+                                withIdentifier(1)
+                                .withName(getString(R.string.navigation_drawer_main_activity))
+                                .withIcon(getResources().getDrawable(R.drawable.ic_edit_location_black))
+                                .withTag(TracksListFragment.TAG_MAIN_FRAGMENT),
+                        new PrimaryDrawerItem().
+                                withIdentifier(2)
+                                .withName(getString(R.string.navigation_drawer_reminders))
+                                .withIcon(getResources().getDrawable(R.drawable.ic_notifications_black))
+                                .withTag(RemindersFragment.TAG_REMINDERS_FRAGMENT),
+                        new PrimaryDrawerItem().
+                                withIdentifier(3)
+                                .withName(getString(R.string.navigation_drawer_liked))
+                                .withIcon(getResources().getDrawable(R.drawable.ic_star_black))
+                                .withTag(LikedFragment.TAG_LIKED_FRAGMENT),
                         new DividerDrawerItem(),
-                        itemExit
+                        new SecondaryDrawerItem().
+                                withIdentifier(4)
+                                .withName(getString(R.string.navigation_drawer_exit))
+                                .withIcon(getResources().getDrawable(R.drawable.ic_exit_to_app_black))
+                                .withTag(TAG_EXIT_APP)
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        // do something with the clicked item :D
                         String tag = String.valueOf(drawerItem.getTag());
+                        Log.e("tag", tag);
 
                         if (tag.equals(TracksListFragment.TAG_MAIN_FRAGMENT)) {
                             showFragment(TracksListFragment.newInstance(), TracksListFragment.TAG_MAIN_FRAGMENT, null, true);
@@ -152,15 +122,38 @@ public class MainActivity extends AppCompatActivity {
                         if (tag.equals(LikedFragment.TAG_LIKED_FRAGMENT)) {
                             showFragment(LikedFragment.newInstance(), LikedFragment.TAG_LIKED_FRAGMENT, TracksListFragment.TAG_MAIN_FRAGMENT, false);
                         }
-                        return true;
+
+                        if (tag.equals(TAG_EXIT_APP)) {
+                            FirebaseAuth.getInstance().signOut();
+                            startActivity(new Intent(MainActivity.this, RegisterActivity.class));
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
+                            finish();
+                        }
+                        return false;
+                    }
+                }).withOnDrawerListener(new Drawer.OnDrawerListener() {
+                    @Override
+                    public void onDrawerOpened(View drawerView) {
+                        //Скрываем клавиатуру при открытии Navigation Drawer
+                        InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus().getWindowToken(), 0);
+                    }
+
+                    @Override
+                    public void onDrawerClosed(View drawerView) {
+                    }
+
+                    @Override
+                    public void onDrawerSlide(View drawerView, float slideOffset) {
                     }
                 })
                 .build();
-
+        Log.e("Build Drawer", "+++");
     }
 
 
     private void showFragment(Fragment fragment, String tag, String clearToTag, boolean clearInclusive) {
+        Log.e("showFragment", "+");
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         if (clearToTag != null || clearInclusive) {
@@ -179,14 +172,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onFragmentStart(int titleResId, String tag) {
+        Log.e("onFragmentStart", "+");
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(titleResId);
-        }
-
-        for (int i = 0; i < result.getDrawerItems().size(); i++) {
-            if (result.getDrawerItems().get(i).getTag().equals(tag)) {
-                result.setSelection(i, true);
-            }
         }
 
         if (tag.equals(TrackFragment.TAG_TRACK_FRAGMENT)) {
@@ -197,40 +185,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        result.getActionBarDrawerToggle().syncState();
-    }
-
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        result.getActionBarDrawerToggle().onConfigurationChanged(newConfig);
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return  result.getActionBarDrawerToggle().onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
-    }
-
-
     @Override
     public void onBackPressed() {
-
-        if(result.getDrawerLayout().isDrawerVisible(GravityCompat.START)){
-            result.getDrawerLayout().closeDrawer(GravityCompat.START);
-            return;
+        if (result != null && result.isDrawerOpen()) {
+            result.closeDrawer();
+        } else {
+            super.onBackPressed();
         }
-
-        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
-            finish();
-            return;
-        }
-        result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
-        super.onBackPressed();
     }
 }

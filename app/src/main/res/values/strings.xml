@@ -2,11 +2,12 @@
     <string name="app_name">Cats Running</string>
 
     <!-- Экран входа. Подсказки для ввода -->
-    <string name="entrance_activity_hint_email">E-mail</string>
-    <string name="entrance_activity_hint_password">Пароль</string>
-    <string name="entrance_activity_hint_double_password">Повторите пароль</string>
-    <string name="entrance_activity_hint_name">Имя</string>
-    <string name="entrance_activity_hint_surname">Фамилия</string>
+    <string name="register_activity_hint_email">E-mail</string>
+    <string name="register_activity_hint_password">Пароль</string>
+    <string name="register_activity_hint_double_password">Повторите пароль</string>
+    <string name="register_activity_hint_name">Имя</string>
+    <string name="register_activity_hint_surname">Фамилия</string>
+    <string name="register_activity_snackbar_error_auth_google">Google Sign In failed</string>
 
     <!-- Обработка ошибок после ввода данных для логина или регистации -->
     <string name="empty_email">Введите e-mail</string>
@@ -23,9 +24,10 @@
     <string name="progress_dialog_register_message">Это займет буквально несколько секунд</string>
 
     <!-- Данные Toolbar -->
-    <string name="register_activity_toolbar_register_text">Регистрация</string>
-    <string name="register_activity_toolbar_login_text">Войти</string>
-    <string name="scamper_activity_toolbar_statistic">Статистика пробежки</string>
+    <string name="register_activity_register_toolbar_title">Регистрация</string>
+    <string name="register_activity_login_toolbar_title">Войти</string>
+    <string name="scamper_activity_toolbar_title">Статистика пробежки</string>
+    <string name="fragment_track_toolbar_title">Подробнее о треке</string>
 
     <!-- Текст кнопок для логина/регистрации -->
     <string name="btn_text_registration">Зарегистрироваться</string>
@@ -59,28 +61,68 @@
     <string name="scamper_activity_finish">ФИНИШ</string>
     <string name="scamper_activity_you_are_running">Вы пробежали</string>
 
+
+    <!-- Адаптеры  -->
     <!-- Adapter Liked Fragment  -->
     <string name="liked_fragment_adapter_distance_meter">%s м</string>
     <string name="liked_fragment_adapter_time_running">Время пробежки:</string>
     <string name="liked_fragment_adapter_distance">Дистанция:</string>
-
-    <!-- Tracks List Fragment -->
-    <string name="tracks_list_fragment_distance_meter">%s м</string>
-
-    <!-- Track Fragment -->
-    <string name="track_fragment_distance">Дистанция:</string>
-    <string name="track_fragment_time_running">Время пробежки:</string>
-
-
-    <!-- Dialogs -->
-    <string name="dialog_reminder_add_hint_edit_text">Введите текст напоминания</string>
 
     <!-- Adapter Fragment Tracks List -->
     <string name="adapter_fragment_main_time_running">Время пробежки:</string>
     <string name="adapter_fragment_main_distance">Дистанция:</string>
 
 
+    <!-- Фрагменты  -->
+    <!-- Tracks List Fragment -->
+    <string name="tracks_list_fragment_distance_meter">%s м</string>
+    <string name="tracks_list_no_more_tracks">Почему панда бегает, а ты нет?</string>
+    <string name="tracks_list_fragment_progress_dialog_title">Выполняется сихронизация</string>
+    <string name="tracks_list_fragment_progress_dialog_message">Это займет немного времени</string>
+
+    <!-- Track Fragment -->
+    <string name="track_fragment_distance">Дистанция:</string>
+    <string name="track_fragment_time_running">Время пробежки:</string>
+    <string name="track_fragment_start_running_hint">Старт</string>
+    <string name="track_fragment_end_running_hint">Финиш</string>
+    <string name="track_fragment_distance_meter">%s м</string>
+    <string name="track_fragment_toast_text_no_points">Точки отстутсвуют</string>
+
+    <!-- Liked Fragment -->
+    <string name="liked_fragment_no_more_liked_tracks">У панды нет любимых треков</string>
+    <string name="liked_fragment_snackbar_liked_empty">Хм, теперь тут пусто</string>
+
+    <!-- Reminders Fragment -->
+    <string name="reminders_fragment_no_more_reminders">У панды нет ближайших пробежек</string>
+    <string name="reminders_fragment_snackbar_reminders_empty">Похоже бегать пока не будем?</string>
+
+
+    <!-- Dialogs -->
+    <string name="dialog_reminder_add_hint_edit_text">Введите текст напоминания</string>
+
+
     <!-- Теги -->
     <string name="reminders_tag_comment">comment</string>
     <string name="reminders_tag_date">date</string>
+
+
+    <!-- Dialogs Add Reminder -->
+    <string name="add_reminder_dialog_title">Начнем</string>
+    <string name="comment_dialog_message">Новое сообщение появится вместе с будильником</string>
+    <string name="add_reminder_dialog_title_date">Теперь установим дату</string>
+    <string name="add_reminder_dialog_title_time">И время напоминания</string>
+    <string name="add_reminder_dialog_message">Установим текст напоминания</string>
+
+    <string name="comment_dialog_title">Установить новое напоминание</string>
+
+    <string name="add_reminder_dialog_negative_btn_text">Отмена</string>
+    <string name="add_reminder_dialog_positive_btn_text">Далее</string>
+    <string name="comment_dialog_positive_btn_text">Обновить</string>
+    <string name="add_reminder_dialog_positive_btn_final">Готово</string>
+
+    <string name="date_dialog_title">Установить новую дату и время</string>
+    <string name="date_dialog_negative_btn_text">Отмена</string>
+    <string name="date_dialog_positive_btn_text">Обновить</string>
+    <string name="date_dialog_message">Будильник зазвонит по указанному времени</string>
+
 </resources>

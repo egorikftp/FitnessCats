@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#E69F70</color>
+    <color name="colorPrimaryDark">#AEBFB2</color>
+    <color name="colorAccent">#B85967</color>
+
     <color name="color_text_already_have_account">#000</color>
 
 
@@ -10,4 +11,7 @@
 
     <color name="entrance_btn_text_color">#494343</color>
     <color name="scamper_activity_text_color">#000</color>
+    <color name="color_activity_splash_background">#AEBFB2</color>
+    <color name="splash_screen_text_color">#6F4052</color>
+
 </resources>

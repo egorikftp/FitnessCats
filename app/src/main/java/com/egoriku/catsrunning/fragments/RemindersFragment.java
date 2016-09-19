@@ -24,14 +24,14 @@ import android.widget.TextView;
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.MainActivity;
-/*import com.egoriku.pandafitness.adapters.RemindersAdapter;
-import com.egoriku.pandafitness.adapters.interfaces.IRecyclerViewRemindersListener;
-import com.egoriku.pandafitness.fragments.dialogs.AddReminderCommentDialogFragment;
-import com.egoriku.pandafitness.fragments.dialogs.AddReminderTimeDialogFragment;
-import com.egoriku.pandafitness.fragments.dialogs.UpdateCommentDialogFragment;
-import com.egoriku.pandafitness.fragments.dialogs.UpdateDateDialogFragment;
-import com.egoriku.pandafitness.models.ReminderModel;
-import com.egoriku.pandafitness.receivers.ReminderReceiver;*/
+import com.egoriku.catsrunning.adapters.RemindersAdapter;
+import com.egoriku.catsrunning.adapters.interfaces.IRecyclerViewRemindersListener;
+import com.egoriku.catsrunning.fragments.dialogs.AddReminderCommentDialogFragment;
+import com.egoriku.catsrunning.fragments.dialogs.AddReminderTimeDialogFragment;
+import com.egoriku.catsrunning.fragments.dialogs.UpdateCommentDialogFragment;
+import com.egoriku.catsrunning.fragments.dialogs.UpdateDateDialogFragment;
+import com.egoriku.catsrunning.models.ReminderModel;
+import com.egoriku.catsrunning.receivers.ReminderReceiver;
 
 import java.util.ArrayList;
 
@@ -47,8 +47,8 @@ public class RemindersFragment extends Fragment {
     private FloatingActionButton floatingActionButton;
     private TextView noReminders;
 
-    //private ArrayList<ReminderModel> reminderModels;
-   // private RemindersAdapter remindersAdapter;
+    private ArrayList<ReminderModel> reminderModels;
+    private RemindersAdapter remindersAdapter;
 
 
     public RemindersFragment() {
@@ -59,7 +59,7 @@ public class RemindersFragment extends Fragment {
         return new RemindersFragment();
     }
 
-/*
+
     @Override
     public void onStart() {
         super.onStart();
@@ -118,7 +118,7 @@ public class RemindersFragment extends Fragment {
             noReminders.setText(
                     String.format(
                             "%s%s",
-                            getResources().getText(R.string.no_more_reminders),
+                            getResources().getText(R.string.reminders_fragment_no_more_reminders),
                             getEmojiByUnicode(UNICODE_EMOJI))
             );
         } else {
@@ -142,7 +142,7 @@ public class RemindersFragment extends Fragment {
                     remindersAdapter.notifyItemRangeChanged(position, reminderModels.size());
 
                     if (reminderModels.size() == 0) {
-                        Snackbar.make(recyclerViewReminders, R.string.snackbar_reminders_empty, Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(recyclerViewReminders, R.string.reminders_fragment_snackbar_reminders_empty, Snackbar.LENGTH_LONG).show();
                     }
                 }
 
@@ -262,5 +262,5 @@ public class RemindersFragment extends Fragment {
             reminderModels.clear();
             showReminders();
         }
-    };*/
+    };
 }

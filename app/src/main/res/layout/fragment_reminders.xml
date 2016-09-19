@@ -15,9 +15,9 @@
             android:id="@+id/main.collapsing"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/side_nav_bar"
+            android:background="@color/colorPrimaryDark"
             android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
+            app:contentScrim="@color/colorPrimaryDark"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
@@ -47,7 +47,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_alarm_add_black"
-        app:layout_behavior="com.egoriku.pandafitness.utils.FabFloatOnScrollBehavior" />
+        app:layout_behavior="com.egoriku.catsrunning.utils.FabFloatOnScrollBehavior" />
 
     <TextView
         android:id="@+id/reminders_fragment_no_more_reminders"

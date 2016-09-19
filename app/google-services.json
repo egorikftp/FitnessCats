@@ -1,27 +1,35 @@
 {
   "project_info": {
-    "project_number": "206235495557",
-    "firebase_url": "https://cats-running.firebaseio.com",
-    "project_id": "cats-running",
-    "storage_bucket": "cats-running.appspot.com"
+    "project_number": "1010245987617",
+    "firebase_url": "https://fitnesscats-bc6a1.firebaseio.com",
+    "project_id": "fitnesscats-bc6a1",
+    "storage_bucket": "fitnesscats-bc6a1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:206235495557:android:9a350441c867df9b",
+        "mobilesdk_app_id": "1:1010245987617:android:9a350441c867df9b",
         "android_client_info": {
           "package_name": "com.egoriku.catsrunning"
         }
       },
       "oauth_client": [
         {
-          "client_id": "206235495557-k6nr8k710ho8ooq60lnjp1qd8kdcmqnl.apps.googleusercontent.com",
+          "client_id": "1010245987617-0pt6ad63v7ig0st8boq0cmgvk03r1g2e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.egoriku.catsrunning",
+            "certificate_hash": "F67F79CC31457C39B764E132DE471BA846805B05"
+          }
+        },
+        {
+          "client_id": "1010245987617-ikjobso3kplbc1e5hs6v50scfh8qkkf7.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCZYudVVPbDS3_VuJUZXNofx75JmZsdNto"
+          "current_key": "AIzaSyCvvzI-qhtyaS_vW11vS8ZYdrRVjRo-YqA"
         }
       ],
       "services": {
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1010245987617-ikjobso3kplbc1e5hs6v50scfh8qkkf7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

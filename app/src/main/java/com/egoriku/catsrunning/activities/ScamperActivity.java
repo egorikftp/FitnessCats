@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.models.Point;
 import com.egoriku.catsrunning.services.RunService;
 import com.egoriku.catsrunning.utils.CustomChronometer;
+import com.egoriku.catsrunning.utils.FlipAnimation;
 
 import java.util.ArrayList;
 
@@ -53,7 +55,6 @@ public class ScamperActivity extends AppCompatActivity {
     private static final String TOOLBAR_TEXT = "TOOLBAR_TEXT";
     private static final String EXTRA_ID_TRACK = "EXTRA_ID_TRACK";
     public static final String BROADCAST_FINISH_SERVICE = "BROADCAST_FINISH_SERVICE";
-    private static final String MARKER_FINISH_SAVE = "MARKER_FINISH_SAVE";
 
     private static final float ALPHA_ANIMATE = 1.0f;
     private static final float SCALE_X_ANIMATE = -1.0f;
@@ -74,6 +75,7 @@ public class ScamperActivity extends AppCompatActivity {
     private TextView textDistance;
     private TextView textYouFinishRunning;
     private ImageView pandaFinishScamper;
+    private LinearLayout linearLayoutRoot;
 
     private CustomChronometer chronometer;
     private LocationManager manager;
@@ -85,6 +87,10 @@ public class ScamperActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scamper);
 
+        if(App.getInstance().getState()==null){
+            App.getInstance().createState();
+        }
+
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
         btnStart = (Button) findViewById(R.id.scamper_activity_btn_start);
         btnFinish = (Button) findViewById(R.id.scamper_activity_btn_finish);
@@ -92,12 +98,13 @@ public class ScamperActivity extends AppCompatActivity {
         textDistance = (TextView) findViewById(R.id.scamper_activity_text_distance);
         textYouFinishRunning = (TextView) findViewById(R.id.scamper_activity_text_you_are_running);
         pandaFinishScamper = (ImageView) findViewById(R.id.image_panda_finish_scamper);
+        linearLayoutRoot = (LinearLayout) findViewById(R.id.activity_scamper_root_layout);
         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         alertMessage = getString(R.string.scamper_activity_alert_message_no_gps);
         alertPositiveBtn = getString(R.string.scamper_activity_alert_positive_btn);
         alertNegativeBtn = getString(R.string.scamper_activity_alert_negative_btn);
-        titleStatistic = getString(R.string.scamper_activity_toolbar_statistic);
+        titleStatistic = getString(R.string.scamper_activity_toolbar_title);
 
         btnFinish.setVisibility(View.GONE);
         textTimer.setVisibility(View.GONE);
@@ -109,6 +116,9 @@ public class ScamperActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        final FlipAnimation flipAnimation = new FlipAnimation(btnStart, btnFinish, textTimer, textDistance, textYouFinishRunning, pandaFinishScamper);
+
 
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,7 +138,6 @@ public class ScamperActivity extends AppCompatActivity {
                     return;
                 }
 
-
                 if (chronometer == null) {
                     chronometer = new CustomChronometer(ScamperActivity.this);
                     chronometerThread = new Thread(chronometer);
@@ -141,7 +150,8 @@ public class ScamperActivity extends AppCompatActivity {
                 intent.setAction(RunService.ACTION_START);
                 startService(intent);
 
-                btnStart.animate()
+                linearLayoutRoot.startAnimation(flipAnimation);
+                /*btnStart.animate()
                         .alpha(ALPHA_ANIMATE)
                         .scaleX(SCALE_X_ANIMATE)
                         .setDuration(DURATION_ANIMATE)
@@ -154,7 +164,7 @@ public class ScamperActivity extends AppCompatActivity {
                                 btnFinish.setVisibility(View.VISIBLE);
 
                             }
-                        });
+                        });*/
             }
         });
 

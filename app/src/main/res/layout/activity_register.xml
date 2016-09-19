@@ -14,9 +14,9 @@
         android:fillViewport="true">
 
         <RelativeLayout
-            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:paddingBottom="@dimen/activity_login_vertical_margin"
             android:paddingLeft="@dimen/activity_login_horizontal_margin"
             android:paddingRight="@dimen/activity_login_horizontal_margin"
@@ -29,31 +29,31 @@
                 <EditText
                     android:id="@+id/entrance_reg_name"
                     style="@style/EditTextEntrance"
-                    android:hint="@string/entrance_activity_hint_name"
+                    android:hint="@string/register_activity_hint_name"
                     android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/text_input_layout_surname"
-                android:layout_below="@id/text_input_layout_name"
-                style="@style/TextInputLayoutStyleEntrance">
+                style="@style/TextInputLayoutStyleEntrance"
+                android:layout_below="@id/text_input_layout_name">
 
                 <EditText
                     android:id="@+id/entrance_reg_surname"
                     style="@style/EditTextEntrance"
-                    android:hint="@string/entrance_activity_hint_surname"
+                    android:hint="@string/register_activity_hint_surname"
                     android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/text_input_layout_email"
-                android:layout_below="@id/text_input_layout_surname"
-                style="@style/TextInputLayoutStyleEntrance">
+                style="@style/TextInputLayoutStyleEntrance"
+                android:layout_below="@id/text_input_layout_surname">
 
                 <EditText
                     android:id="@+id/entrance_reg_email"
                     style="@style/EditTextEntrance"
-                    android:hint="@string/entrance_activity_hint_email"
+                    android:hint="@string/register_activity_hint_email"
                     android:inputType="textEmailAddress" />
             </android.support.design.widget.TextInputLayout>
 
@@ -65,7 +65,7 @@
                 <EditText
                     android:id="@+id/entrance_reg_password"
                     style="@style/EditTextEntrance"
-                    android:hint="@string/entrance_activity_hint_password"
+                    android:hint="@string/register_activity_hint_password"
                     android:inputType="textPassword" />
             </android.support.design.widget.TextInputLayout>
 
@@ -77,7 +77,7 @@
                 <EditText
                     android:id="@+id/entrance_reg_double_password"
                     style="@style/EditTextEntrance"
-                    android:hint="@string/entrance_activity_hint_double_password"
+                    android:hint="@string/register_activity_hint_double_password"
                     android:inputType="textPassword" />
             </android.support.design.widget.TextInputLayout>
 
@@ -86,10 +86,19 @@
                 style="@style/EntranceButtonStyle"
                 android:layout_below="@id/text_input_layout_double_password" />
 
-            <Button
-                android:id="@+id/btn_login"
+            <TextView
+                android:id="@+id/text_view_login"
+                style="@style/BtnLoginStyle"
                 android:layout_below="@id/btn_register"
-                style="@style/BtnLoginStyle" />
+                android:layout_marginTop="@dimen/activity_horizontal_margin" />
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/sign_in_google_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_view_login"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/activity_horizontal_margin" />
         </RelativeLayout>
     </ScrollView>
 </LinearLayout>

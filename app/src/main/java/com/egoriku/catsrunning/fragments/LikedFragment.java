@@ -18,9 +18,9 @@ import android.widget.TextView;
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.MainActivity;
-//import com.egoriku.catsrunning.adapters.LikedFragmentAdapter;
-//import com.egoriku.catsrunning.adapters.interfaces.IRecyclerViewListener;
-//import com.egoriku.catsrunning.models.LikedTracksModel;
+import com.egoriku.catsrunning.adapters.LikedFragmentAdapter;
+import com.egoriku.catsrunning.adapters.interfaces.IRecyclerViewListener;
+import com.egoriku.catsrunning.models.LikedTracksModel;
 
 import java.util.ArrayList;
 
@@ -32,8 +32,8 @@ public class LikedFragment extends Fragment {
     private RecyclerView recyclerViewLikedFragment;
     private TextView noMoreTracksView;
 
-    //private ArrayList<LikedTracksModel> likedTracksModels = new ArrayList<>();
- //   private LikedFragmentAdapter likedFragmentAdapter;
+    private ArrayList<LikedTracksModel> likedTracksModels = new ArrayList<>();
+    private LikedFragmentAdapter likedFragmentAdapter;
 
     public LikedFragment() {
     }
@@ -45,10 +45,10 @@ public class LikedFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        //((MainActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_liked, TAG_LIKED_FRAGMENT);
+        ((MainActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_liked, TAG_LIKED_FRAGMENT);
     }
 
-    /*@Nullable
+    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_liked, container, false);
@@ -82,7 +82,7 @@ public class LikedFragment extends Fragment {
         }
 
         if (likedTracksModels.size() == 0) {
-            noMoreTracksView.setText(String.format("%s%s", getString(R.string.no_more_liked_tracks), getEmojiByUnicode(UNICODE_PANDA)));
+            noMoreTracksView.setText(String.format("%s%s", getString(R.string.liked_fragment_no_more_liked_tracks), getEmojiByUnicode(UNICODE_PANDA)));
         } else {
             likedFragmentAdapter = new LikedFragmentAdapter(likedTracksModels);
             recyclerViewLikedFragment.setLayoutManager(new LinearLayoutManager(App.getInstance()));
@@ -108,7 +108,7 @@ public class LikedFragment extends Fragment {
                     likedFragmentAdapter.notifyItemRangeChanged(position, likedTracksModels.size());
 
                     if (likedTracksModels.size() == 0) {
-                        Snackbar.make(recyclerViewLikedFragment, R.string.snackbar_liked_empty, Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(recyclerViewLikedFragment, R.string.liked_fragment_snackbar_liked_empty, Snackbar.LENGTH_LONG).show();
                     }
                 }
             });
@@ -148,5 +148,5 @@ public class LikedFragment extends Fragment {
         } finally {
             statement.close();
         }
-    }*/
+    }
 }

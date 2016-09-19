@@ -14,27 +14,24 @@ import android.widget.Toast;
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.MainActivity;
-/*import com.egoriku.pandafitness.models.TrackFragmentModel;
-import com.egoriku.pandafitness.utils.ConverterTime;
+import com.egoriku.catsrunning.models.TrackFragmentModel;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.egoriku.catsrunning.utils.ConverterTime;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;*/
+import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 
-public class TrackFragment extends Fragment/* implements OnMapReadyCallback*/ {
+public class TrackFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String KEY_ID = "KEY_ID";
     public static final String TAG_TRACK_FRAGMENT = "TAG_TRACK_FRAGMENT";
@@ -42,11 +39,11 @@ public class TrackFragment extends Fragment/* implements OnMapReadyCallback*/ {
     private static final String KEY_TIME_RUNNING = "KEY_TIME_RUNNING";
     private static final int paddingMap = 150;
 
-   /* private ArrayList<TrackFragmentModel> arrayTrackModels = new ArrayList<>();
+    private ArrayList<TrackFragmentModel> arrayTrackModels = new ArrayList<>();
     private ArrayList<Marker> markers = new ArrayList<>();
     private ArrayList<LatLng> coordList = new ArrayList<LatLng>();
 
-    private SupportMapFragment mapFragment;*/
+    private SupportMapFragment mapFragment;
     private TextView distanceText;
     private TextView timeRunningText;
 
@@ -68,10 +65,10 @@ public class TrackFragment extends Fragment/* implements OnMapReadyCallback*/ {
     }
 
 
-   /* @Override
+    @Override
     public void onStart() {
         super.onStart();
-        ((MainActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_track_fragment_title, TAG_TRACK_FRAGMENT);
+        ((MainActivity) getActivity()).onFragmentStart(R.string.fragment_track_toolbar_title, TAG_TRACK_FRAGMENT);
     }
 
 
@@ -100,8 +97,8 @@ public class TrackFragment extends Fragment/* implements OnMapReadyCallback*/ {
             cursor.close();
         }
 
-        startRunningHint = getString(R.string.fragment_track_start_running_hint);
-        endRunningHint = getString(R.string.fragment_track_end_running_hint);
+        startRunningHint = getString(R.string.track_fragment_start_running_hint);
+        endRunningHint = getString(R.string.track_fragment_end_running_hint);
     }
 
 
@@ -120,7 +117,7 @@ public class TrackFragment extends Fragment/* implements OnMapReadyCallback*/ {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        distanceText.setText(String.format(getString(R.string.distance_meter), getArguments().getInt(KEY_DISTANCE)));
+        distanceText.setText(String.format(getString(R.string.track_fragment_distance_meter), getArguments().getInt(KEY_DISTANCE)));
         timeRunningText.setText(ConverterTime.ConvertTimeToStringWithMill(getArguments().getLong(KEY_TIME_RUNNING)));
     }
 
@@ -166,5 +163,5 @@ public class TrackFragment extends Fragment/* implements OnMapReadyCallback*/ {
                 .icon(BitmapDescriptorFactory.fromResource(idIco))
         );
         markers.add(marker);
-    }*/
+    }
 }

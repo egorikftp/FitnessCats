@@ -14,4 +14,6 @@
     <dimen name="activity_entrance_horizontal_margin">16dp</dimen>
     <dimen name="adapter_fragment_main_padding_word">6dp</dimen>
     <dimen name="reminders_margin">10dp</dimen>
+    <dimen name="register_activity_facebook_margin">16dp</dimen>
+    <dimen name="splash_activity_text_size">30sp</dimen>
 </resources>
