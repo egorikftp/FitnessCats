@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.color.colorPrimaryDark)
-                .addProfiles(new ProfileDrawerItem().withName(nameText).withEmail(emailText).withIcon(getResources().getDrawable(R.drawable.splash_screen_cats_running)))
+                .addProfiles(new ProfileDrawerItem().withName(nameText).withEmail(emailText).withIcon(getResources().getDrawable(R.mipmap.ic_launcher)))
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         String tag = String.valueOf(drawerItem.getTag());
-                        Log.e("tag", tag);
 
                         if (tag.equals(TracksListFragment.TAG_MAIN_FRAGMENT)) {
                             showFragment(TracksListFragment.newInstance(), TracksListFragment.TAG_MAIN_FRAGMENT, null, true);
@@ -172,15 +171,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onFragmentStart(int titleResId, String tag) {
-        Log.e("onFragmentStart", "+");
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(titleResId);
         }
 
         if (tag.equals(TrackFragment.TAG_TRACK_FRAGMENT)) {
-            for (int i = 0; i < result.getDrawerItems().size(); i++) {
-                result.setSelection(i, false);
-            }
+            result.setSelection(-1);
         }
     }
 
@@ -189,8 +185,13 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (result != null && result.isDrawerOpen()) {
             result.closeDrawer();
-        } else {
-            super.onBackPressed();
+            return;
         }
+
+        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            finish();
+            return;
+        }
+        super.onBackPressed();
     }
 }

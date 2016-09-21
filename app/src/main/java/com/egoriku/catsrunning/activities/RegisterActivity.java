@@ -132,6 +132,8 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
         signInGoogleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showProgressDialog();
+                App.getInstance().getState().setStartTaskAuthentification(true);
                 signIn();
             }
         });
@@ -369,6 +371,8 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
             } else {
+                dismissProgressDialog();
+                App.getInstance().getState().setStartTaskAuthentification(false);
                 Snackbar.make(linearLayoutRegister, R.string.register_activity_snackbar_error_auth_google, Snackbar.LENGTH_SHORT).show();
             }
         }
@@ -381,10 +385,14 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            dismissProgressDialog();
+                            App.getInstance().getState().setStartTaskAuthentification(false);
                             startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                             finish();
                         } else {
+                            dismissProgressDialog();
+                            App.getInstance().getState().setStartTaskAuthentification(false);
                             Snackbar.make(linearLayoutRegister, task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
                         }
                     }

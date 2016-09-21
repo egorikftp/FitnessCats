@@ -1,22 +1,19 @@
 package com.egoriku.catsrunning.activities;
 
-import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.egoriku.catsrunning.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+
 public class SplashActivity extends AppCompatActivity {
     private ImageView splashImage;
-    private static final String PROPERTY_NAME = "rotation";
-    private long delayStartActivity = 3000L;
-    private static final float startRotation = 0f;
-    private static final float stopRotation = 720f;
     private FirebaseUser user;
 
     @Override
@@ -27,21 +24,32 @@ public class SplashActivity extends AppCompatActivity {
         splashImage = (ImageView) findViewById(R.id.splash_screen_cats_running);
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-        ObjectAnimator rotationAnim = ObjectAnimator.ofFloat(splashImage, PROPERTY_NAME, startRotation, stopRotation);
-        rotationAnim.setDuration(5000);
-        rotationAnim.start();
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.splash_screen_animation);
+        splashImage.startAnimation(animation);
 
-        new Handler().postDelayed(new Runnable() {
+        animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void run() {
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
                 if (user != null) {
                     startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     finish();
                 } else {
                     startActivity(new Intent(SplashActivity.this, RegisterActivity.class));
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
                     finish();
                 }
             }
-        }, delayStartActivity);
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
     }
 }
