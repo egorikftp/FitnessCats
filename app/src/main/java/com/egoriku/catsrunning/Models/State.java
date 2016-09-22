@@ -25,8 +25,8 @@ public class State {
         this.sinceTime = sinceTime;
     }
 
-    public int getNowDistance() {
-        return nowDistance;
+    public String getNowDistance() {
+        return String.valueOf(nowDistance);
     }
 
     public void setNowDistance(int nowDistance) {

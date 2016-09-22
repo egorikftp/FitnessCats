@@ -125,7 +125,8 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap map) {
         map.clear();
-        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        //MapStyleOptions styleOptions;
+        //map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         for (int i = 0; i < arrayTrackModels.size(); i++) {
             coordList.add(new LatLng(arrayTrackModels.get(i).getLatitude(), arrayTrackModels.get(i).getLongitude()));

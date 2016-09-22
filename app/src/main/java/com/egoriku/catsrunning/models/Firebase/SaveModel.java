@@ -1,35 +1,37 @@
-package com.egoriku.catsrunning.models.Save;
+package com.egoriku.catsrunning.models.Firebase;
 
 import com.egoriku.catsrunning.models.Point;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class SaveRequestModel {
-    private int id;
-    private String token;
+public class SaveModel {
     private long beginsAt;
     private long time;
     private int distance;
     private ArrayList<Point> points;
 
-    public SaveRequestModel() {
+    public SaveModel() {
     }
 
-    public int getId() {
-        return id;
+    public SaveModel(long beginsAt, long time, int distance, ArrayList<Point> points) {
+        this.beginsAt = beginsAt;
+        this.time = time;
+        this.distance = distance;
+        this.points = points;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
-    public String getToken() {
-        return token;
-    }
+   /* public Map<String, Object> toMap(){
+        HashMap<String, Object> resultMap = new HashMap<>();
+        resultMap.put("beginsAt", beginsAt);
+        resultMap.put("time", time);
+        resultMap.put("distance", distance);
+        resultMap.put("points", points);
 
-    public void setToken(String token) {
-        this.token = token;
-    }
+        return resultMap;
+    }*/
 
     public long getBeginsAt() {
         return beginsAt;

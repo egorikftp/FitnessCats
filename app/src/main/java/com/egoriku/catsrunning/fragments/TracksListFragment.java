@@ -17,6 +17,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.egoriku.catsrunning.App;
@@ -25,14 +28,13 @@ import com.egoriku.catsrunning.activities.MainActivity;
 import com.egoriku.catsrunning.activities.ScamperActivity;
 import com.egoriku.catsrunning.adapters.TracksListFragmentAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.IRecyclerViewListener;
+import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.models.MainFragmentTracksModel;
 import com.egoriku.catsrunning.models.Point;
-import com.egoriku.catsrunning.models.Save.SaveRequestModel;
 
 import java.util.ArrayList;
 
 public class TracksListFragment extends Fragment {
-    private static final int idTrackOnServerDefault = 0;
     public static final String TAG_MAIN_FRAGMENT = "TAG_MAIN_FRAGMENT";
     private static final int UNICODE = 0x1F60E;
 
@@ -47,8 +49,22 @@ public class TracksListFragment extends Fragment {
     private FloatingActionButton floatingActionButton;
 
     private ArrayList<Point> points;
-    private SaveRequestModel saveTracksRequestModel;
-    private ArrayList<SaveRequestModel> saveRequestModelArrayList;
+    private SaveModel saveTracksRequestModel;
+    private ArrayList<SaveModel> saveModelArrayList;
+
+    private FloatingActionButton fabWalk;
+    private FloatingActionButton fabCycling;
+    private FloatingActionButton fabRun;
+
+    private Animation fabWalkShow;
+    private Animation fabCyclingShow;
+    private Animation fabRunShow;
+
+    private Animation fabWalkHide;
+    private Animation fabCyclingHide;
+    private Animation fabRunHide;
+
+    private boolean fabStatus;
 
     public TracksListFragment() {
     }
@@ -74,7 +90,7 @@ public class TracksListFragment extends Fragment {
 
        /*if (App.getInstance().getState().isFirstStart()) {
             saveTracksOnServer();*/
-          //  saveTracksOnServer();
+        //  saveTracksOnServer();
     }
 
 
@@ -83,18 +99,56 @@ public class TracksListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_tracks_list, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.main_fragment_recycler_view);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_layout);
-        floatingActionButton = (FloatingActionButton) view.findViewById(R.id.floating_button);
         textViewNoTracks = (TextView) view.findViewById(R.id.list_fragment_no_more_tracks);
+        floatingActionButton = (FloatingActionButton) view.findViewById(R.id.floating_button);
+        fabWalk = (FloatingActionButton) view.findViewById(R.id.fab_walk);
+        fabCycling = (FloatingActionButton) view.findViewById(R.id.fab_cycling);
+        fabRun = (FloatingActionButton) view.findViewById(R.id.fab_run);
 
-        Log.e("onCreateView", "+");
         recyclerView.setLayoutManager(new LinearLayoutManager(App.getInstance()));
 
+        fabRunHide = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_run_hide);
+        fabRunShow = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_run_show);
+        fabWalkShow = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_walk_show);
+        fabWalkHide = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_walk_hide);
+        fabCyclingShow = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_cycling_show);
+        fabCyclingHide = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_cycling_hide);
+        fabStatus = false;
+
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(fabStatus){
+                    showFabs(fabStatus);
+                    fabStatus=false;
+                }else {
+                    showFabs(fabStatus);
+                    fabStatus=true;
+                }
+            }
+        });
+
+        fabWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), ScamperActivity.class));
             }
         });
+
+        fabCycling.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), ScamperActivity.class));
+            }
+        });
+
+        fabRun.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), ScamperActivity.class));
+            }
+        });
+
 
         swipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_blue_bright,
@@ -160,6 +214,54 @@ public class TracksListFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    private void showFabs(boolean status) {
+        FrameLayout.LayoutParams layoutParamsFabRun = (FrameLayout.LayoutParams) fabRun.getLayoutParams();
+        FrameLayout.LayoutParams layoutParamsFabWalk = (FrameLayout.LayoutParams) fabWalk.getLayoutParams();
+        FrameLayout.LayoutParams layoutParamsFabCycling = (FrameLayout.LayoutParams) fabCycling.getLayoutParams();
+
+        if(status) {
+            layoutParamsFabRun.rightMargin -= (int) (fabRun.getWidth() * 1.7);
+            layoutParamsFabRun.bottomMargin -= (int) (fabRun.getHeight() * 0.25);
+            fabRun.setLayoutParams(layoutParamsFabRun);
+
+            layoutParamsFabWalk.rightMargin -= (int) (fabWalk.getWidth() * 1.5);
+            layoutParamsFabWalk.bottomMargin -= (int) (fabWalk.getHeight() * 1.5);
+            fabWalk.setLayoutParams(layoutParamsFabWalk);
+
+            layoutParamsFabCycling.rightMargin -= (int) (fabCycling.getWidth() * 0.25);
+            layoutParamsFabCycling.bottomMargin -= (int) (fabCycling.getHeight() * 1.7);
+            fabCycling.setLayoutParams(layoutParamsFabCycling);
+
+            fabRun.setClickable(false);
+            fabWalk.setClickable(false);
+            fabCycling.setClickable(false);
+
+            fabRun.startAnimation(fabRunHide);
+            fabWalk.startAnimation(fabWalkHide);
+            fabCycling.startAnimation(fabCyclingHide);
+        }else {
+            layoutParamsFabRun.rightMargin += (int) (fabRun.getWidth() * 1.7);
+            layoutParamsFabRun.bottomMargin += (int) (fabRun.getHeight() * 0.25);
+            fabRun.setLayoutParams(layoutParamsFabRun);
+
+            layoutParamsFabWalk.rightMargin += (int) (fabWalk.getWidth() * 1.5);
+            layoutParamsFabWalk.bottomMargin += (int) (fabWalk.getHeight() * 1.5);
+            fabWalk.setLayoutParams(layoutParamsFabWalk);
+
+            layoutParamsFabCycling.rightMargin += (int) (fabCycling.getWidth() * 0.25);
+            layoutParamsFabCycling.bottomMargin += (int) (fabCycling.getHeight() * 1.7);
+            fabCycling.setLayoutParams(layoutParamsFabCycling);
+
+            fabRun.setClickable(true);
+            fabWalk.setClickable(true);
+            fabCycling.setClickable(true);
+
+            fabRun.startAnimation(fabRunShow);
+            fabWalk.startAnimation(fabWalkShow);
+            fabCycling.startAnimation(fabCyclingShow);
+        }
     }
 
 
@@ -230,81 +332,6 @@ public class TracksListFragment extends Fragment {
         LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastPointsFinish);
         LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastPointsError);
         LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastNoNewTracks);*/
-    }
-
-
-    private void saveTracksOnServer() {
-        saveRequestModelArrayList = new ArrayList<>();
-        points = new ArrayList<>();
-
-        Cursor cursor = App.getInstance().getDb().rawQuery("SELECT Tracks._id AS id, Tracks.beginsAt AS date, Tracks.time AS time, Tracks.distance FROM Tracks WHERE Tracks.idTrackOnServer = ?",
-                new String[]{String.valueOf(idTrackOnServerDefault)}
-        );
-
-        if (cursor != null) {
-            if (cursor.moveToNext()) {
-                do {
-                    saveTracksRequestModel = new SaveRequestModel();
-                    saveTracksRequestModel.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-                    saveTracksRequestModel.setBeginsAt(cursor.getInt(cursor.getColumnIndexOrThrow("date")));
-                    saveTracksRequestModel.setDistance(cursor.getInt(cursor.getColumnIndexOrThrow("distance")));
-                    saveTracksRequestModel.setTime(cursor.getInt(cursor.getColumnIndexOrThrow("time")));
-                    saveRequestModelArrayList.add(saveTracksRequestModel);
-                } while (cursor.moveToNext());
-            }
-            cursor.close();
-        }
-
-        saveTracksRequestModel = null;
-
-        for (int i = 0; i < saveRequestModelArrayList.size(); i++) {
-            Cursor cursorPoints = App.getInstance().getDb().rawQuery("SELECT Point._id AS id, Point.longitude AS lng, Point.latitude AS lat FROM Point WHERE Point.trackId = ?",
-                    new String[]{String.valueOf(saveRequestModelArrayList.get(i).getId())}
-            );
-
-            if (cursorPoints != null) {
-                if (cursorPoints.moveToNext()) {
-                    do {
-                        Point point = new Point();
-                        point.setLat(cursorPoints.getDouble(cursorPoints.getColumnIndexOrThrow("lat")));
-                        point.setLng(cursorPoints.getDouble(cursorPoints.getColumnIndexOrThrow("lng")));
-                        points.add(point);
-                    } while (cursorPoints.moveToNext());
-                }
-                cursorPoints.close();
-            }
-            saveRequestModelArrayList.get(i).setPoints(points);
-        }
-        points = null;
-
-        /*if (saveRequestModelArrayList.size() == 0) {
-            TracksProvider.tracksRequest(App.getInstance().getState().getToken());
-        } else {
-            for (int i = 0; i < saveRequestModelArrayList.size(); i++) {
-                if (i == saveRequestModelArrayList.size() - 1) {
-                    SaveProvider.saveRequest(
-                            App.getInstance().getState().getToken(),
-                            saveRequestModelArrayList.get(i).getId(),
-                            saveRequestModelArrayList.get(i).getBeginsAt(),
-                            saveRequestModelArrayList.get(i).getTime(),
-                            saveRequestModelArrayList.get(i).getDistance(),
-                            saveRequestModelArrayList.get(i).getPoints(),
-                            MARKER_FINISH_SAVE
-                    );
-                } else {
-                    SaveProvider.saveRequest(
-                            App.getInstance().getState().getToken(),
-                            saveRequestModelArrayList.get(i).getId(),
-                            saveRequestModelArrayList.get(i).getBeginsAt(),
-                            saveRequestModelArrayList.get(i).getTime(),
-                            saveRequestModelArrayList.get(i).getDistance(),
-                            saveRequestModelArrayList.get(i).getPoints(),
-                            null
-                    );
-                }
-            }
-        }
-        saveRequestModelArrayList.clear();*/
     }
 
 

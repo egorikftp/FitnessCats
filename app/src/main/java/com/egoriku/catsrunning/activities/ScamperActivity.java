@@ -1,8 +1,6 @@
 package com.egoriku.catsrunning.activities;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,11 +11,13 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -33,10 +33,18 @@ import android.widget.Toast;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
+import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.models.Point;
 import com.egoriku.catsrunning.services.RunService;
 import com.egoriku.catsrunning.utils.CustomChronometer;
 import com.egoriku.catsrunning.utils.FlipAnimation;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -55,10 +63,6 @@ public class ScamperActivity extends AppCompatActivity {
     private static final String TOOLBAR_TEXT = "TOOLBAR_TEXT";
     private static final String EXTRA_ID_TRACK = "EXTRA_ID_TRACK";
     public static final String BROADCAST_FINISH_SERVICE = "BROADCAST_FINISH_SERVICE";
-
-    private static final float ALPHA_ANIMATE = 1.0f;
-    private static final float SCALE_X_ANIMATE = -1.0f;
-    private static final long DURATION_ANIMATE = 500L;
 
     private ArrayList<Point> points;
 
@@ -81,15 +85,15 @@ public class ScamperActivity extends AppCompatActivity {
     private LocationManager manager;
     private Thread chronometerThread;
 
+    private DatabaseReference database;
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scamper);
 
-        if(App.getInstance().getState()==null){
-            App.getInstance().createState();
-        }
+        database = FirebaseDatabase.getInstance().getReference();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
         btnStart = (Button) findViewById(R.id.scamper_activity_btn_start);
@@ -151,20 +155,6 @@ public class ScamperActivity extends AppCompatActivity {
                 startService(intent);
 
                 linearLayoutRoot.startAnimation(flipAnimation);
-                /*btnStart.animate()
-                        .alpha(ALPHA_ANIMATE)
-                        .scaleX(SCALE_X_ANIMATE)
-                        .setDuration(DURATION_ANIMATE)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                btnStart.setVisibility(View.GONE);
-                                textTimer.setVisibility(View.VISIBLE);
-                                btnFinish.setVisibility(View.VISIBLE);
-
-                            }
-                        });*/
             }
         });
 
@@ -172,6 +162,8 @@ public class ScamperActivity extends AppCompatActivity {
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                flipAnimation.setReverse();
+                linearLayoutRoot.startAnimation(flipAnimation);
 
                 if (chronometer != null) {
                     chronometer.stopChronometer();
@@ -180,27 +172,14 @@ public class ScamperActivity extends AppCompatActivity {
                     chronometer = null;
                 }
 
-                btnFinish.animate()
-                        .alpha(ALPHA_ANIMATE)
-                        .scaleX(SCALE_X_ANIMATE)
-                        .setDuration(DURATION_ANIMATE)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                btnFinish.setVisibility(View.GONE);
-                                textDistance.setVisibility(View.VISIBLE);
-                                textYouFinishRunning.setVisibility(View.VISIBLE);
-                                pandaFinishScamper.setVisibility(View.VISIBLE);
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(titleStatistic);
+                }
 
-                                if (getSupportActionBar() != null) {
-                                    getSupportActionBar().setTitle(titleStatistic);
-                                }
-                                stopService(new Intent(ScamperActivity.this, RunService.class));
-                            }
-                        });
+                stopService(new Intent(ScamperActivity.this, RunService.class));
             }
         });
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
 
@@ -394,14 +373,25 @@ public class ScamperActivity extends AppCompatActivity {
             }
 
             if (points.size() > 0) {
-                //SaveProvider.saveRequest(App.getInstance().getState().getToken(), idTrack, beginsAt, time, distance, points, MARKER_FINISH_SAVE);
+                DatabaseReference tracks = database.child("tracks");
+                SaveModel saveModel = new SaveModel(beginsAt, time, distance, points);
+
+                tracks.push().setValue(saveModel, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError != null) {
+                            Snackbar.make(linearLayoutRoot, "Data could not be saved " + databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
+                        } else {
+                            Snackbar.make(linearLayoutRoot, "Data saved ", Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+                });
             } else {
                 Toast.makeText(getApplicationContext(), R.string.scamper_activity_snackbar_no_points, Toast.LENGTH_SHORT).show();
                 deleteTrackData();
             }
         }
     };
-
 
     private void deleteTrackData() {
         SQLiteStatement statementDeleteTrack = App.getInstance().getDb().compileStatement("DELETE FROM Tracks WHERE _id = ?");

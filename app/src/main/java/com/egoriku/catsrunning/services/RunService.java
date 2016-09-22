@@ -219,7 +219,7 @@ public class RunService extends Service implements LocationListener {
 
     private void showNotification(String time, String distance) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_directions_run_black)
+                .setSmallIcon(R.drawable.ic_directions_run_black_service)
                 .setContentIntent(PendingIntent.getActivity(
                         this,
                         0,
