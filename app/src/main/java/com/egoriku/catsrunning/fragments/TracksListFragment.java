@@ -26,11 +26,14 @@ import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.MainActivity;
 import com.egoriku.catsrunning.activities.ScamperActivity;
+import com.egoriku.catsrunning.adapters.TracksListAdapter;
 import com.egoriku.catsrunning.adapters.TracksListFragmentAdapter;
-import com.egoriku.catsrunning.adapters.interfaces.IRecyclerViewListener;
 import com.egoriku.catsrunning.models.Firebase.SaveModel;
-import com.egoriku.catsrunning.models.MainFragmentTracksModel;
 import com.egoriku.catsrunning.models.Point;
+import com.mikepenz.fastadapter.FastAdapter;
+import com.mikepenz.fastadapter.IAdapter;
+import com.mikepenz.fastadapter.adapters.FastItemAdapter;
+import com.mikepenz.fastadapter.helpers.ClickListenerHelper;
 
 import java.util.ArrayList;
 
@@ -43,7 +46,7 @@ public class TracksListFragment extends Fragment {
     private ProgressDialog progressDialog;
     private TextView textViewNoTracks;
 
-    private ArrayList<MainFragmentTracksModel> tracksModels = new ArrayList<>();
+    private ArrayList<TracksListAdapter> tracksModels = new ArrayList<>();
 
     private TracksListFragmentAdapter mainFragmentAdapter;
     private FloatingActionButton floatingActionButton;
@@ -65,6 +68,8 @@ public class TracksListFragment extends Fragment {
     private Animation fabRunHide;
 
     private boolean fabStatus;
+    private ClickListenerHelper<TracksListAdapter> clickListenerHelper;
+    private FastItemAdapter<TracksListAdapter> fastItemAdapter;
 
     public TracksListFragment() {
     }
@@ -95,7 +100,7 @@ public class TracksListFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tracks_list, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.main_fragment_recycler_view);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_layout);
@@ -114,16 +119,36 @@ public class TracksListFragment extends Fragment {
         fabCyclingShow = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_cycling_show);
         fabCyclingHide = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_cycling_hide);
         fabStatus = false;
+        Log.e("00", String.valueOf(fabStatus));
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(fabStatus){
+                /*for (int i = 0; i < 500; i++) {
+                    SQLiteStatement statement = App.getInstance().getDb().compileStatement(
+                            "INSERT INTO Tracks (beginsAt, time, distance) VALUES (?, ?, ?)"
+                    );
+
+                    statement.bindLong(1, i * 10000000L);
+                    statement.bindLong(2, i * 500L);
+                    statement.bindLong(3, i * 40);
+
+                    try {
+                        statement.execute();
+                    } finally {
+                        statement.close();
+                    }
+                    Log.e("i ", String.valueOf(i));
+                }*/
+
+                if (fabStatus) {
+                    Log.e("+", String.valueOf(fabStatus));
                     showFabs(fabStatus);
-                    fabStatus=false;
-                }else {
+                    fabStatus = false;
+                } else {
+                    Log.e("-", String.valueOf(fabStatus));
                     showFabs(fabStatus);
-                    fabStatus=true;
+                    fabStatus = true;
                 }
             }
         });
@@ -131,6 +156,7 @@ public class TracksListFragment extends Fragment {
         fabWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showFabs(true);
                 startActivity(new Intent(getActivity(), ScamperActivity.class));
             }
         });
@@ -138,6 +164,7 @@ public class TracksListFragment extends Fragment {
         fabCycling.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showFabs(true);
                 startActivity(new Intent(getActivity(), ScamperActivity.class));
             }
         });
@@ -145,6 +172,7 @@ public class TracksListFragment extends Fragment {
         fabRun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showFabs(true);
                 startActivity(new Intent(getActivity(), ScamperActivity.class));
             }
         });
@@ -168,60 +196,35 @@ public class TracksListFragment extends Fragment {
             }
         });
 
-        getTracksFromDb();
-        textViewNoTracks.setText(null);
-        mainFragmentAdapter = new TracksListFragmentAdapter(tracksModels);
-
-        if (tracksModels.size() == 0) {
-            textViewNoTracks.setText(String.format("%s%s", getString(R.string.tracks_list_no_more_tracks), getEmojiByUnicode(UNICODE)));
-        } else {
-            recyclerView.setAdapter(mainFragmentAdapter);
-            recyclerView.hasFixedSize();
-        }
-
-        mainFragmentAdapter.setOnItemClickListener(new IRecyclerViewListener() {
-            @Override
-            public void onItemClick(int position) {
-                changeFragment(tracksModels.get(position).getId(), tracksModels.get(position).getDistance(), tracksModels.get(position).getTimeRunning());
-            }
-
-            @Override
-            public void onLikedClick(int position) {
-                int likedDigit = 0;
-                Cursor cursor = App.getInstance().getDb().rawQuery("SELECT Tracks.liked AS liked FROM Tracks WHERE Tracks._id = ?",
-                        new String[]{String.valueOf(tracksModels.get(position).getId())});
-
-                if (cursor != null) {
-                    if (cursor.moveToNext()) {
-                        likedDigit = cursor.getInt(cursor.getColumnIndexOrThrow("liked"));
-                    }
-                    cursor.close();
-                }
-
-                switch (likedDigit) {
-                    case 0:
-                        likedDigit = 1;
-                        updateLikedDigit(likedDigit, tracksModels.get(position).getId());
-                        mainFragmentAdapter.notifyDataSetChanged();
-                        break;
-
-                    case 1:
-                        likedDigit = 0;
-                        updateLikedDigit(likedDigit, tracksModels.get(position).getId());
-                        mainFragmentAdapter.notifyDataSetChanged();
-                        break;
-                }
-            }
-        });
+        fastItemAdapter = new FastItemAdapter<>();
+        fastItemAdapter.withSelectable(true);
+        clickListenerHelper = new ClickListenerHelper<>(fastItemAdapter);
         return view;
     }
+
+
+    private int getLikedState(int id) {
+        int likedState = 0;
+
+        Cursor cursor = App.getInstance().getDb().rawQuery("SELECT Tracks.liked AS liked FROM Tracks WHERE Tracks._id = ?",
+                new String[]{String.valueOf(id)});
+
+        if (cursor != null) {
+            if (cursor.moveToNext()) {
+                likedState = cursor.getInt(cursor.getColumnIndexOrThrow("liked"));
+            }
+            cursor.close();
+        }
+        return likedState;
+    }
+
 
     private void showFabs(boolean status) {
         FrameLayout.LayoutParams layoutParamsFabRun = (FrameLayout.LayoutParams) fabRun.getLayoutParams();
         FrameLayout.LayoutParams layoutParamsFabWalk = (FrameLayout.LayoutParams) fabWalk.getLayoutParams();
         FrameLayout.LayoutParams layoutParamsFabCycling = (FrameLayout.LayoutParams) fabCycling.getLayoutParams();
 
-        if(status) {
+        if (status) {
             layoutParamsFabRun.rightMargin -= (int) (fabRun.getWidth() * 1.7);
             layoutParamsFabRun.bottomMargin -= (int) (fabRun.getHeight() * 0.25);
             fabRun.setLayoutParams(layoutParamsFabRun);
@@ -241,7 +244,7 @@ public class TracksListFragment extends Fragment {
             fabRun.startAnimation(fabRunHide);
             fabWalk.startAnimation(fabWalkHide);
             fabCycling.startAnimation(fabCyclingHide);
-        }else {
+        } else {
             layoutParamsFabRun.rightMargin += (int) (fabRun.getWidth() * 1.7);
             layoutParamsFabRun.bottomMargin += (int) (fabRun.getHeight() * 0.25);
             fabRun.setLayoutParams(layoutParamsFabRun);
@@ -272,14 +275,14 @@ public class TracksListFragment extends Fragment {
         if (cursor != null) {
             if (cursor.moveToNext()) {
                 do {
-                    MainFragmentTracksModel mainModel = new MainFragmentTracksModel();
-                    mainModel.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-                    mainModel.setDate(cursor.getInt(cursor.getColumnIndexOrThrow("date")));
-                    mainModel.setTimeRunning(cursor.getInt(cursor.getColumnIndexOrThrow("timeRunning")));
-                    mainModel.setDistance(cursor.getInt(cursor.getColumnIndexOrThrow("distance")));
-                    mainModel.setLiked(cursor.getInt(cursor.getColumnIndexOrThrow("liked")));
+                    TracksListAdapter listAdapter = new TracksListAdapter();
+                    listAdapter.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                    listAdapter.setDate(cursor.getInt(cursor.getColumnIndexOrThrow("date")));
+                    listAdapter.setTimeRunning(cursor.getInt(cursor.getColumnIndexOrThrow("timeRunning")));
+                    listAdapter.setDistance(cursor.getInt(cursor.getColumnIndexOrThrow("distance")));
+                    listAdapter.setLiked(cursor.getInt(cursor.getColumnIndexOrThrow("liked")));
 
-                    tracksModels.add(mainModel);
+                    tracksModels.add(listAdapter);
                 } while (cursor.moveToNext());
             }
             cursor.close();
@@ -291,28 +294,59 @@ public class TracksListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.e("onResume", "+");
+        fabStatus=false;
 
         getTracksFromDb();
-        mainFragmentAdapter.setAdapterData(tracksModels);
+        textViewNoTracks.setText(null);
 
-       /* if (App.getInstance().getState().isFirstStart()) {
-            Log.e("isFS", "+");
-            showProgressDialog();
+        if (tracksModels.size() == 0) {
+            textViewNoTracks.setText(String.format("%s%s", getString(R.string.tracks_list_no_more_tracks), getEmojiByUnicode(UNICODE)));
+        } else {
+            fastItemAdapter.set(tracksModels);
+            recyclerView.setAdapter(fastItemAdapter);
         }
 
-        if (App.getInstance().getState().isFirstStart() && (App.getInstance().getState().isStartSync() || App.getInstance().getState().isStartSyncTracks())) {
-            Log.e("isFS + isSTask", "+");
-            showProgressDialog();
-        }*/
+        fastItemAdapter.withOnClickListener(new FastAdapter.OnClickListener<TracksListAdapter>() {
+            @Override
+            public boolean onClick(View v, IAdapter<TracksListAdapter> adapter, TracksListAdapter item, int position) {
+                changeFragment(item.getId(), item.getDistance(), item.getTimeRunning());
+                return false;
+            }
+        });
 
-        /*LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastSaveError, new IntentFilter(SaveProvider.BROADCAST_SAVE_ERROR));
-        LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastSaveSuccess, new IntentFilter(SaveProvider.BROADCAST_SAVE_FINISH));
-        LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastTracksSuccess, new IntentFilter(TracksProvider.BROADCAST_TRACKS_SUCCESS));
-        LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastTracksError, new IntentFilter(TracksProvider.BROADCAST_TRACKS_ERROR));
-        LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastPointsSuccess, new IntentFilter(PointsProvider.BROADCAST_POINTS_SUCCESS));
-        LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastPointsFinish, new IntentFilter(PointsProvider.BROADCAST_POINTS_FINISH));
-        LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastPointsError, new IntentFilter(PointsProvider.BROADCAST_POINTS_ERROR));
-        LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastNoNewTracks, new IntentFilter(TracksProvider.BROADCAST_NO_NEW_TRACKS));*/
+        fastItemAdapter.withOnCreateViewHolderListener(new FastAdapter.OnCreateViewHolderListener() {
+            @Override
+            public RecyclerView.ViewHolder onPreCreateViewHolder(ViewGroup parent, int viewType) {
+                return fastItemAdapter.getTypeInstance(viewType).getViewHolder(parent);
+            }
+
+            @Override
+            public RecyclerView.ViewHolder onPostCreateViewHolder(final RecyclerView.ViewHolder viewHolder) {
+                if (viewHolder instanceof TracksListAdapter.ViewHolder) {
+                    clickListenerHelper.listen(viewHolder, ((TracksListAdapter.ViewHolder) viewHolder).imageViewLiked, new ClickListenerHelper.OnClickListener<TracksListAdapter>() {
+                        @Override
+                        public void onClick(View v, int position, TracksListAdapter item) {
+                            int likedState = getLikedState(item.getId());
+
+                            switch (likedState) {
+                                case 0:
+                                    likedState = 1;
+                                    updateLikedDigit(likedState, item.getId());
+                                    fastItemAdapter.notifyAdapterDataSetChanged();
+                                    break;
+
+                                case 1:
+                                    likedState = 0;
+                                    updateLikedDigit(likedState, item.getId());
+                                    fastItemAdapter.notifyAdapterDataSetChanged();
+                                    break;
+                            }
+                        }
+                    });
+                }
+                return viewHolder;
+            }
+        });
     }
 
     @Override
@@ -323,15 +357,6 @@ public class TracksListFragment extends Fragment {
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
         }
-
-    /*    LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastSaveError);
-        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastSaveSuccess);
-        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastTracksSuccess);
-        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastTracksError);
-        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastPointsSuccess);
-        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastPointsFinish);
-        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastPointsError);
-        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastNoNewTracks);*/
     }
 
 
@@ -550,6 +575,5 @@ public class TracksListFragment extends Fragment {
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         transaction.addToBackStack(TrackFragment.TAG_TRACK_FRAGMENT);
         transaction.commit();
-        mainFragmentAdapter.clear();
     }
 }

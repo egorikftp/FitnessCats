@@ -76,7 +76,7 @@
     <!-- Фрагменты  -->
     <!-- Tracks List Fragment -->
     <string name="tracks_list_fragment_distance_meter">%s м</string>
-    <string name="tracks_list_no_more_tracks">Почему панда бегает, а ты нет?</string>
+    <string name="tracks_list_no_more_tracks">Почему котики бегают, а ты нет?</string>
     <string name="tracks_list_fragment_progress_dialog_title">Выполняется сихронизация</string>
     <string name="tracks_list_fragment_progress_dialog_message">Это займет немного времени</string>
 
@@ -124,5 +124,7 @@
     <string name="date_dialog_negative_btn_text">Отмена</string>
     <string name="date_dialog_positive_btn_text">Обновить</string>
     <string name="date_dialog_message">Будильник зазвонит по указанному времени</string>
+    <string name="navigation_drawer_setting">Настройки</string>
+    <string name="navigation_drawer_statistic">Статистика</string>
 
 </resources>

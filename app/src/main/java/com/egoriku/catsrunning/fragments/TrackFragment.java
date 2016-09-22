@@ -15,16 +15,17 @@ import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.MainActivity;
 import com.egoriku.catsrunning.models.TrackFragmentModel;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.egoriku.catsrunning.utils.ConverterTime;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -125,8 +126,8 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap map) {
         map.clear();
-        //MapStyleOptions styleOptions;
-        //map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        MapStyleOptions styleOptions = MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.maps_style);
+        map.setMapStyle(styleOptions);
 
         for (int i = 0; i < arrayTrackModels.size(); i++) {
             coordList.add(new LatLng(arrayTrackModels.get(i).getLatitude(), arrayTrackModels.get(i).getLongitude()));

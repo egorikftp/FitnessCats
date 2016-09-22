@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
+import com.egoriku.catsrunning.fragments.StatisticFragment;
 import com.egoriku.catsrunning.fragments.TrackFragment;
 import com.egoriku.catsrunning.fragments.TracksListFragment;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,6 +33,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG_EXIT_APP = "TAG_EXIT_APP";
+    private static final String TAG_SETTING = "TAG_SETTING";
     private Toolbar toolbar;
     private Drawer result;
 
@@ -59,11 +61,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        //  DatabaseReference scoresRef = FirebaseDatabase.getInstance().getReference("egoriku");
-        //scoresRef.keepSynced(true);
-
         //инициализация Drawer Builder
-
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.color.colorPrimaryDark)
@@ -77,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .build();
 
-        Log.e("AccountHeader", "+");
         result = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
@@ -86,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                         new PrimaryDrawerItem().
                                 withIdentifier(1)
                                 .withName(getString(R.string.navigation_drawer_main_activity))
-                                .withIcon(getResources().getDrawable(R.drawable.ic_edit_location_black))
+                                .withIcon(getResources().getDrawable(R.drawable.ic_near_me_black))
                                 .withTag(TracksListFragment.TAG_MAIN_FRAGMENT),
                         new PrimaryDrawerItem().
                                 withIdentifier(2)
@@ -98,9 +95,14 @@ public class MainActivity extends AppCompatActivity {
                                 .withName(getString(R.string.navigation_drawer_liked))
                                 .withIcon(getResources().getDrawable(R.drawable.ic_star_black))
                                 .withTag(LikedFragment.TAG_LIKED_FRAGMENT),
+                        new PrimaryDrawerItem().
+                                withIdentifier(4)
+                                .withName(getString(R.string.navigation_drawer_statistic))
+                                .withIcon(getResources().getDrawable(R.drawable.ic_equalizer_black))
+                                .withTag(StatisticFragment.TAG_STATISTIC_FRAGMENT),
                         new DividerDrawerItem(),
                         new SecondaryDrawerItem().
-                                withIdentifier(4)
+                                withIdentifier(5)
                                 .withName(getString(R.string.navigation_drawer_exit))
                                 .withIcon(getResources().getDrawable(R.drawable.ic_exit_to_app_black))
                                 .withTag(TAG_EXIT_APP)
@@ -128,6 +130,10 @@ public class MainActivity extends AppCompatActivity {
                             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
                             finish();
                         }
+
+                        if(tag.equals(TAG_SETTING)){
+                            //show Settings
+                        }
                         return false;
                     }
                 }).withOnDrawerListener(new Drawer.OnDrawerListener() {
@@ -145,14 +151,19 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDrawerSlide(View drawerView, float slideOffset) {
                     }
-                })
+                }).addStickyDrawerItems(
+                        new SecondaryDrawerItem()
+                                .withName(getString(R.string.navigation_drawer_setting))
+                                .withIcon(getResources().getDrawable(R.drawable.ic_settings_black))
+                                .withIdentifier(6)
+                                .withTag(TAG_SETTING)
+                )
+                .withSavedInstance(savedInstanceState)
                 .build();
-        Log.e("Build Drawer", "+++");
     }
 
 
     private void showFragment(Fragment fragment, String tag, String clearToTag, boolean clearInclusive) {
-        Log.e("showFragment", "+");
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         if (clearToTag != null || clearInclusive) {
