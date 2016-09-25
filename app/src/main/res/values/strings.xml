@@ -76,7 +76,7 @@
     <!-- Фрагменты  -->
     <!-- Tracks List Fragment -->
     <string name="tracks_list_fragment_distance_meter">%s м</string>
-    <string name="tracks_list_no_more_tracks">Почему котики бегают, а ты нет?</string>
+    <string name="tracks_list_no_more_tracks">Почему котики бегают, а ты нет? %s</string>
     <string name="tracks_list_fragment_progress_dialog_title">Выполняется сихронизация</string>
     <string name="tracks_list_fragment_progress_dialog_message">Это займет немного времени</string>
 
@@ -103,7 +103,7 @@
 
     <!-- Теги -->
     <string name="reminders_tag_comment">comment</string>
-    <string name="reminders_tag_date">date</string>
+    <string name="reminders_tag_date">beginsAt</string>
 
 
     <!-- Dialogs Add Reminder -->

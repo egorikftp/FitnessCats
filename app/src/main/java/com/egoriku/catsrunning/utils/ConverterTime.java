@@ -2,7 +2,6 @@ package com.egoriku.catsrunning.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 public class ConverterTime {
     public static final long MILLIS_TO_MINUTES = 60000;
@@ -26,10 +25,10 @@ public class ConverterTime {
     }
 
 
-    public static String convertUnixDate(int someDate) {
+    public static String convertUnixDate(long someDate) {
         Date date = new Date(someDate * 1000L);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+03:00"));
+        //simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+03:00"));
         return simpleDateFormat.format(date);
     }
 }

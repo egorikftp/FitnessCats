@@ -1,7 +1,9 @@
 package com.egoriku.catsrunning.fragments;
 
-import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
@@ -10,7 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,9 +29,6 @@ import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.MainActivity;
 import com.egoriku.catsrunning.activities.ScamperActivity;
 import com.egoriku.catsrunning.adapters.TracksListAdapter;
-import com.egoriku.catsrunning.adapters.TracksListFragmentAdapter;
-import com.egoriku.catsrunning.models.Firebase.SaveModel;
-import com.egoriku.catsrunning.models.Point;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
@@ -39,22 +38,12 @@ import java.util.ArrayList;
 
 public class TracksListFragment extends Fragment {
     public static final String TAG_MAIN_FRAGMENT = "TAG_MAIN_FRAGMENT";
-    private static final int UNICODE = 0x1F60E;
+    private static final int UNICODE = 0x1F63A;
 
     private RecyclerView recyclerView;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private ProgressDialog progressDialog;
     private TextView textViewNoTracks;
 
-    private ArrayList<TracksListAdapter> tracksModels = new ArrayList<>();
-
-    private TracksListFragmentAdapter mainFragmentAdapter;
-    private FloatingActionButton floatingActionButton;
-
-    private ArrayList<Point> points;
-    private SaveModel saveTracksRequestModel;
-    private ArrayList<SaveModel> saveModelArrayList;
-
+    private FloatingActionButton fabMain;
     private FloatingActionButton fabWalk;
     private FloatingActionButton fabCycling;
     private FloatingActionButton fabRun;
@@ -71,12 +60,17 @@ public class TracksListFragment extends Fragment {
     private ClickListenerHelper<TracksListAdapter> clickListenerHelper;
     private FastItemAdapter<TracksListAdapter> fastItemAdapter;
 
+    private ArrayList<TracksListAdapter> tracksModels;
+
+
     public TracksListFragment() {
     }
+
 
     public static TracksListFragment newInstance() {
         return new TracksListFragment();
     }
+
 
     @Override
     public void onStart() {
@@ -84,18 +78,14 @@ public class TracksListFragment extends Fragment {
         ((MainActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_main_activity, TAG_MAIN_FRAGMENT);
     }
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("onCreate", "+");
-
         if (App.getInstance().getState() == null) {
             App.getInstance().createState();
         }
-
-       /*if (App.getInstance().getState().isFirstStart()) {
-            saveTracksOnServer();*/
-        //  saveTracksOnServer();
+        tracksModels = new ArrayList<>();
     }
 
 
@@ -103,9 +93,8 @@ public class TracksListFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tracks_list, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.main_fragment_recycler_view);
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_layout);
         textViewNoTracks = (TextView) view.findViewById(R.id.list_fragment_no_more_tracks);
-        floatingActionButton = (FloatingActionButton) view.findViewById(R.id.floating_button);
+        fabMain = (FloatingActionButton) view.findViewById(R.id.floating_button);
         fabWalk = (FloatingActionButton) view.findViewById(R.id.fab_walk);
         fabCycling = (FloatingActionButton) view.findViewById(R.id.fab_cycling);
         fabRun = (FloatingActionButton) view.findViewById(R.id.fab_run);
@@ -119,35 +108,15 @@ public class TracksListFragment extends Fragment {
         fabCyclingShow = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_cycling_show);
         fabCyclingHide = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_cycling_hide);
         fabStatus = false;
-        Log.e("00", String.valueOf(fabStatus));
 
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        fabMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*for (int i = 0; i < 500; i++) {
-                    SQLiteStatement statement = App.getInstance().getDb().compileStatement(
-                            "INSERT INTO Tracks (beginsAt, time, distance) VALUES (?, ?, ?)"
-                    );
-
-                    statement.bindLong(1, i * 10000000L);
-                    statement.bindLong(2, i * 500L);
-                    statement.bindLong(3, i * 40);
-
-                    try {
-                        statement.execute();
-                    } finally {
-                        statement.close();
-                    }
-                    Log.e("i ", String.valueOf(i));
-                }*/
-
                 if (fabStatus) {
-                    Log.e("+", String.valueOf(fabStatus));
-                    showFabs(fabStatus);
+                    changeFabState(fabStatus);
                     fabStatus = false;
                 } else {
-                    Log.e("-", String.valueOf(fabStatus));
-                    showFabs(fabStatus);
+                    changeFabState(fabStatus);
                     fabStatus = true;
                 }
             }
@@ -156,7 +125,7 @@ public class TracksListFragment extends Fragment {
         fabWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showFabs(true);
+                changeFabState(true);
                 startActivity(new Intent(getActivity(), ScamperActivity.class));
             }
         });
@@ -164,7 +133,7 @@ public class TracksListFragment extends Fragment {
         fabCycling.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showFabs(true);
+                changeFabState(true);
                 startActivity(new Intent(getActivity(), ScamperActivity.class));
             }
         });
@@ -172,27 +141,8 @@ public class TracksListFragment extends Fragment {
         fabRun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showFabs(true);
+                changeFabState(true);
                 startActivity(new Intent(getActivity(), ScamperActivity.class));
-            }
-        });
-
-
-        swipeRefreshLayout.setColorSchemeResources(
-                android.R.color.holo_blue_bright,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-               /* if (App.getInstance().getState().isStartSyncTracks() || !App.getInstance().getState().isStartSync()) {
-                    saveTracksOnServer();
-                    swipeRefreshLayout.setRefreshing(false);
-                } else {
-                    Toast.makeText(App.getInstance(), getString(R.string.now_is_sync), Toast.LENGTH_SHORT).show();
-                    swipeRefreshLayout.setRefreshing(false);
-                }*/
             }
         });
 
@@ -200,6 +150,87 @@ public class TracksListFragment extends Fragment {
         fastItemAdapter.withSelectable(true);
         clickListenerHelper = new ClickListenerHelper<>(fastItemAdapter);
         return view;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fabStatus = false;
+        LocalBroadcastManager.getInstance(App.getInstance()).
+                registerReceiver(broadcastNewTracksSave, new IntentFilter(MainActivity.BROADCAST_SAVE_NEW_TRACKS));
+
+        setUpAdapter();
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastNewTracksSave);
+    }
+
+
+    private BroadcastReceiver broadcastNewTracksSave = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            setUpAdapter();
+        }
+    };
+
+
+    private void setUpAdapter() {
+        getTracksFromDb();
+        textViewNoTracks.setText(null);
+
+        if (tracksModels.size() == 0) {
+            textViewNoTracks.setText(String.format(getString(R.string.tracks_list_no_more_tracks), getEmojiByUnicode(UNICODE)));
+        } else {
+            fastItemAdapter.set(tracksModels);
+            recyclerView.setAdapter(fastItemAdapter);
+        }
+
+        fastItemAdapter.withOnClickListener(new FastAdapter.OnClickListener<TracksListAdapter>() {
+            @Override
+            public boolean onClick(View v, IAdapter<TracksListAdapter> adapter, TracksListAdapter item, int position) {
+                changeFragment(item.getId(), item.getDistance(), item.getTime());
+                return false;
+            }
+        });
+
+        fastItemAdapter.withOnCreateViewHolderListener(new FastAdapter.OnCreateViewHolderListener() {
+            @Override
+            public RecyclerView.ViewHolder onPreCreateViewHolder(ViewGroup parent, int viewType) {
+                return fastItemAdapter.getTypeInstance(viewType).getViewHolder(parent);
+            }
+
+            @Override
+            public RecyclerView.ViewHolder onPostCreateViewHolder(final RecyclerView.ViewHolder viewHolder) {
+                if (viewHolder instanceof TracksListAdapter.ViewHolder) {
+                    clickListenerHelper.listen(viewHolder, ((TracksListAdapter.ViewHolder) viewHolder).imageViewLiked, new ClickListenerHelper.OnClickListener<TracksListAdapter>() {
+                        @Override
+                        public void onClick(View v, int position, TracksListAdapter item) {
+                            int likedState = getLikedState(item.getId());
+
+                            switch (likedState) {
+                                case 0:
+                                    likedState = 1;
+                                    updateLikedDigit(likedState, item.getId());
+                                    fastItemAdapter.notifyAdapterDataSetChanged();
+                                    break;
+
+                                case 1:
+                                    likedState = 0;
+                                    updateLikedDigit(likedState, item.getId());
+                                    fastItemAdapter.notifyAdapterDataSetChanged();
+                                    break;
+                            }
+                        }
+                    });
+                }
+                return viewHolder;
+            }
+        });
     }
 
 
@@ -219,7 +250,7 @@ public class TracksListFragment extends Fragment {
     }
 
 
-    private void showFabs(boolean status) {
+    private void changeFabState(boolean status) {
         FrameLayout.LayoutParams layoutParamsFabRun = (FrameLayout.LayoutParams) fabRun.getLayoutParams();
         FrameLayout.LayoutParams layoutParamsFabWalk = (FrameLayout.LayoutParams) fabWalk.getLayoutParams();
         FrameLayout.LayoutParams layoutParamsFabCycling = (FrameLayout.LayoutParams) fabCycling.getLayoutParams();
@@ -277,8 +308,8 @@ public class TracksListFragment extends Fragment {
                 do {
                     TracksListAdapter listAdapter = new TracksListAdapter();
                     listAdapter.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-                    listAdapter.setDate(cursor.getInt(cursor.getColumnIndexOrThrow("date")));
-                    listAdapter.setTimeRunning(cursor.getInt(cursor.getColumnIndexOrThrow("timeRunning")));
+                    listAdapter.setBeginsAt(cursor.getInt(cursor.getColumnIndexOrThrow("date")));
+                    listAdapter.setTime(cursor.getInt(cursor.getColumnIndexOrThrow("timeRunning")));
                     listAdapter.setDistance(cursor.getInt(cursor.getColumnIndexOrThrow("distance")));
                     listAdapter.setLiked(cursor.getInt(cursor.getColumnIndexOrThrow("liked")));
 
@@ -287,239 +318,6 @@ public class TracksListFragment extends Fragment {
             }
             cursor.close();
         }
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.e("onResume", "+");
-        fabStatus=false;
-
-        getTracksFromDb();
-        textViewNoTracks.setText(null);
-
-        if (tracksModels.size() == 0) {
-            textViewNoTracks.setText(String.format("%s%s", getString(R.string.tracks_list_no_more_tracks), getEmojiByUnicode(UNICODE)));
-        } else {
-            fastItemAdapter.set(tracksModels);
-            recyclerView.setAdapter(fastItemAdapter);
-        }
-
-        fastItemAdapter.withOnClickListener(new FastAdapter.OnClickListener<TracksListAdapter>() {
-            @Override
-            public boolean onClick(View v, IAdapter<TracksListAdapter> adapter, TracksListAdapter item, int position) {
-                changeFragment(item.getId(), item.getDistance(), item.getTimeRunning());
-                return false;
-            }
-        });
-
-        fastItemAdapter.withOnCreateViewHolderListener(new FastAdapter.OnCreateViewHolderListener() {
-            @Override
-            public RecyclerView.ViewHolder onPreCreateViewHolder(ViewGroup parent, int viewType) {
-                return fastItemAdapter.getTypeInstance(viewType).getViewHolder(parent);
-            }
-
-            @Override
-            public RecyclerView.ViewHolder onPostCreateViewHolder(final RecyclerView.ViewHolder viewHolder) {
-                if (viewHolder instanceof TracksListAdapter.ViewHolder) {
-                    clickListenerHelper.listen(viewHolder, ((TracksListAdapter.ViewHolder) viewHolder).imageViewLiked, new ClickListenerHelper.OnClickListener<TracksListAdapter>() {
-                        @Override
-                        public void onClick(View v, int position, TracksListAdapter item) {
-                            int likedState = getLikedState(item.getId());
-
-                            switch (likedState) {
-                                case 0:
-                                    likedState = 1;
-                                    updateLikedDigit(likedState, item.getId());
-                                    fastItemAdapter.notifyAdapterDataSetChanged();
-                                    break;
-
-                                case 1:
-                                    likedState = 0;
-                                    updateLikedDigit(likedState, item.getId());
-                                    fastItemAdapter.notifyAdapterDataSetChanged();
-                                    break;
-                            }
-                        }
-                    });
-                }
-                return viewHolder;
-            }
-        });
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.e("onPause", "+");
-        dismissProgressDialog();
-        if (swipeRefreshLayout.isRefreshing()) {
-            swipeRefreshLayout.setRefreshing(false);
-        }
-    }
-
-
-  /*  private BroadcastReceiver broadcastSaveError = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.e("broadcastSaveError", "+");
-            dismissProgressDialog();
-            swipeRefreshLayout.setRefreshing(false);
-            App.getInstance().getState().setFirstStartFalse();
-
-            if (App.getInstance().getState().getSaveAfterRequestModel() == null) {
-                Toast.makeText(App.getInstance(), getString(R.string.error_connection), Toast.LENGTH_SHORT).show();
-            } else {
-                switch (App.getInstance().getState().getSaveAfterRequestModel().getCode()) {
-                    case "INVALID_TOKEN": //неверный авторизационный токен
-                        Toast.makeText(App.getInstance(), getString(R.string.error_token), Toast.LENGTH_SHORT).show();
-                        break;
-
-                    case "INVALID_FIELDS": //поля beginsAt, time или distance пустые, либо в них неверные значения (например, не числовые)
-                        Toast.makeText(App.getInstance(), getString(R.string.fields_error), Toast.LENGTH_SHORT).show();
-                        break;
-
-                    case "NO_POINTS": //нет поля points, либо в нём не массив, либо массив пуст;
-                        Toast.makeText(App.getInstance(), getString(R.string.no_points), Toast.LENGTH_SHORT).show();
-                        break;
-
-
-                    case "INVALID_POINTS": //какая-то одна (из всех) точек неправильная - либо нет полей lng или lat, либо они не числовые;
-                        Toast.makeText(App.getInstance(), getString(R.string.error_points), Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        }
-    };
-
-
-    private BroadcastReceiver broadcastSaveSuccess = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.e("broadcastSaveSuccess", "+");
-            saveIdFromServerToDb();
-            TracksProvider.tracksRequest(App.getInstance().getState().getToken());
-        }
-    };
-
-
-    private BroadcastReceiver broadcastTracksSuccess = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.e("broadcastTracksSuccess", "+");
-            Toast.makeText(App.getInstance(), getString(R.string.no_new_tracks), Toast.LENGTH_SHORT).show();
-            dismissProgressDialog();
-            swipeRefreshLayout.setRefreshing(false);
-            App.getInstance().getState().setStartSync(false);
-            App.getInstance().getState().setStartSyncTracks(false);
-            App.getInstance().getState().setFirstStartFalse();
-        }
-    };
-
-
-    private BroadcastReceiver broadcastTracksError = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.e("broadcastTracksError", "+");
-            dismissProgressDialog();
-            swipeRefreshLayout.setRefreshing(false);
-            App.getInstance().getState().setFirstStartFalse();
-
-            if (App.getInstance().getState().getTracksAfterRequestModel() == null) {
-                Toast.makeText(App.getInstance(), getString(R.string.error_connection), Toast.LENGTH_SHORT).show();
-            } else {
-                switch (App.getInstance().getState().getTracksAfterRequestModel().getCode()) {
-                    case "INVALID_TOKEN":
-                        Toast.makeText(App.getInstance(), getString(R.string.error_token), Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        }
-    };
-
-
-    private BroadcastReceiver broadcastNoNewTracks = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.e("broadcastNoNewTracks", "+");
-            if (!App.getInstance().getState().isNoNewTracks()) {
-                dismissProgressDialog();
-
-                if (swipeRefreshLayout.isRefreshing()) {
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-
-                App.getInstance().getState().setFirstStartFalse();
-                App.getInstance().getState().setStartSyncTracks(false);
-                App.getInstance().getState().setStartSync(false);
-            }
-        }
-    };
-
-
-    private BroadcastReceiver broadcastPointsSuccess = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.e("broadcastPointsSuccess", "+");
-            App.getInstance().getState().setFirstStartFalse();
-        }
-    };
-
-
-    private BroadcastReceiver broadcastPointsFinish = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.e("broadcastPointsFinish", "+");
-            dismissProgressDialog();
-            swipeRefreshLayout.setRefreshing(false);
-            getTracksFromDb();
-            mainFragmentAdapter.setAdapterData(tracksModels);
-
-            textViewNoTracks.setText(null);
-            if (tracksModels.size() == 0) {
-                textViewNoTracks.setText(String.format("%s%s", getString(R.string.no_tracks_list), getEmojiByUnicode(UNICODE)));
-            } else {
-                recyclerView.setAdapter(mainFragmentAdapter);
-                recyclerView.hasFixedSize();
-            }
-        }
-    };
-
-
-    private BroadcastReceiver broadcastPointsError = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (App.getInstance().getState().getPointsAfterRequestModel() == null) {
-                Toast.makeText(getActivity(), getString(R.string.error_connection), Toast.LENGTH_SHORT).show();
-            } else {
-                switch (App.getInstance().getState().getPointsAfterRequestModel().getCode()) {
-                    case "INVALID_TOKEN": //неверный авторизационный токен;
-                        Toast.makeText(App.getInstance(), getString(R.string.error_token), Toast.LENGTH_SHORT).show();
-                        break;
-
-                    case "INVALID_ID": //неправильный ID трека
-                        Toast.makeText(App.getInstance(), getString(R.string.error_id_track), Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        }
-    };*/
-
-
-    private void saveIdFromServerToDb() {
-       /* for (int i = 0; i < App.getInstance().getState().getSaveModelArrayList().size(); i++) {
-            SQLiteStatement statement = App.getInstance().getDb().compileStatement("UPDATE Tracks SET idTrackOnServer = ? WHERE Tracks._id = ?");
-
-            statement.bindLong(1, App.getInstance().getState().getSaveModelArrayList().get(i).getId());
-            statement.bindLong(2, App.getInstance().getState().getSaveModelArrayList().get(i).getIdApp());
-
-            try {
-                statement.execute();
-            } finally {
-                statement.close();
-            }
-        }*/
     }
 
 
@@ -542,30 +340,7 @@ public class TracksListFragment extends Fragment {
     }
 
 
-    private void showProgressDialog() {
-        if (progressDialog != null) {
-            return;
-        }
-
-        progressDialog = ProgressDialog.show(
-                getActivity(),
-                getString(R.string.tracks_list_fragment_progress_dialog_title),
-                getString(R.string.tracks_list_fragment_progress_dialog_message),
-                true,
-                false
-        );
-    }
-
-
-    private void dismissProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-            progressDialog = null;
-        }
-    }
-
-
-    private void changeFragment(int position, int distance, int timeRunning) {
+    private void changeFragment(int position, long distance, long timeRunning) {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(

@@ -36,6 +36,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import static com.google.firebase.analytics.FirebaseAnalytics.Event.LOGIN;
+
 public class RegisterActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private static final String EMAIL_KEY = "EMAIL_KEY";
     private static final String PASSWORD_KEY = "PASSWORD_KEY";
@@ -47,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
     private static final String BTN_REGISTER_TEXT = "BTN_REGISTER_TEXT";
     private static final String TOOLBAR_TEXT = "TOOLBAR_TEXT";
     private static final int RC_SIGN_IN = 4706;
+    public static final String KEY_LOGIN_EXTRA = "KEY_LOGIN_EXTRA";
 
     private GoogleApiClient googleApiClient;
 
@@ -224,7 +227,7 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
                                     if (task.isSuccessful()) {
                                         dismissProgressDialog();
                                         App.getInstance().getState().setStartTaskAuthentification(false);
-                                        startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                                        startActivity(new Intent(RegisterActivity.this, MainActivity.class).putExtra(KEY_LOGIN_EXTRA, LOGIN));
                                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                                         finish();
                                     } else {

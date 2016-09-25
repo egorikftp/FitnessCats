@@ -8,9 +8,11 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
+import com.egoriku.catsrunning.models.Point;
 import com.egoriku.catsrunning.utils.ConverterTime;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TracksListAdapter extends AbstractItem<TracksListAdapter, TracksListAdapter.ViewHolder> {
@@ -18,33 +20,34 @@ public class TracksListAdapter extends AbstractItem<TracksListAdapter, TracksLis
     public TracksListAdapter() {
     }
 
-    private int date;
-    private int timeRunning;
-    private int distance;
+    private long beginsAt;
+    private long time;
+    private long distance;
     private int id;
     private int liked;
+    private ArrayList<Point> points;
 
-    public int getDate() {
-        return date;
+    public long getBeginsAt() {
+        return beginsAt;
     }
 
-    public void setDate(int date) {
-        this.date = date;
+    public void setBeginsAt(long beginsAt) {
+        this.beginsAt = beginsAt;
     }
 
-    public int getTimeRunning() {
-        return timeRunning;
+    public long getTime() {
+        return time;
     }
 
-    public void setTimeRunning(int timeRunning) {
-        this.timeRunning = timeRunning;
+    public void setTime(long time) {
+        this.time = time;
     }
 
-    public int getDistance() {
+    public long getDistance() {
         return distance;
     }
 
-    public void setDistance(int distance) {
+    public void setDistance(long distance) {
         this.distance = distance;
     }
 
@@ -64,6 +67,13 @@ public class TracksListAdapter extends AbstractItem<TracksListAdapter, TracksLis
         this.liked = liked;
     }
 
+    public ArrayList<Point> getPoints() {
+        return points;
+    }
+
+    public void setPoints(ArrayList<Point> points) {
+        this.points = points;
+    }
 
     @Override
     public int getType() {
@@ -79,8 +89,8 @@ public class TracksListAdapter extends AbstractItem<TracksListAdapter, TracksLis
     public void bindView(ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
         int likedDigit = 0;
-        holder.date.setText(ConverterTime.convertUnixDate(date));
-        holder.timeRunning.setText(ConverterTime.ConvertTimeToStringWithMill(timeRunning));
+        holder.date.setText(ConverterTime.convertUnixDate(beginsAt));
+        holder.timeRunning.setText(ConverterTime.ConvertTimeToStringWithMill(time));
         holder.distance.setText(String.format(holder.format, distance));
 
         Cursor cursor = App.getInstance().getDb().rawQuery(

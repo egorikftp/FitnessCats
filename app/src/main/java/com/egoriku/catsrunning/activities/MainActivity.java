@@ -2,17 +2,22 @@ package com.egoriku.catsrunning.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
+import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
+import com.egoriku.catsrunning.adapters.TracksListAdapter;
 import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
@@ -20,6 +25,11 @@ import com.egoriku.catsrunning.fragments.TrackFragment;
 import com.egoriku.catsrunning.fragments.TracksListFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -31,14 +41,23 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.google.firebase.analytics.FirebaseAnalytics.Event.LOGIN;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG_EXIT_APP = "TAG_EXIT_APP";
     private static final String TAG_SETTING = "TAG_SETTING";
+    public static final String BROADCAST_SAVE_NEW_TRACKS = "BROADCAST_SAVE_NEW_TRACKS";
     private Toolbar toolbar;
     private Drawer result;
 
     private String emailText;
     private String nameText;
+
+    private DatabaseReference mDatabase;
+    private List<TracksListAdapter> tracksList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
 
         setSupportActionBar(toolbar);
+        tracksList = new ArrayList<>();
 
         if (savedInstanceState == null) {
             showFragment(TracksListFragment.newInstance(), TracksListFragment.TAG_MAIN_FRAGMENT, null, true);
@@ -61,24 +81,117 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        //инициализация Drawer Builder
-        AccountHeader headerResult = new AccountHeaderBuilder()
-                .withActivity(this)
-                .withHeaderBackground(R.color.colorPrimaryDark)
-                .addProfiles(new ProfileDrawerItem().withName(nameText).withEmail(emailText).withIcon(getResources().getDrawable(R.mipmap.ic_launcher)))
-                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
-                    @Override
-                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
-                        Log.e("Click Account", "+");
-                        return false;
-                    }
-                })
-                .build();
+        if (getIntent().getExtras() != null && getIntent().getExtras().getString(RegisterActivity.KEY_LOGIN_EXTRA).equals(LOGIN)) {
+            mDatabase = FirebaseDatabase.getInstance().getReference().child("tracks").child(user.getUid());
 
+            mDatabase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        tracksList.add(postSnapshot.getValue(TracksListAdapter.class));
+                    }
+                    saveSyncTracks();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e("error:", databaseError.getMessage());
+                }
+            });
+        }
+        createNavigationDrawer(savedInstanceState);
+    }
+
+
+    private void saveSyncTracks() {
+        for (int i = 0; i < tracksList.size(); i++) {
+            long idTrack = 0;
+            SQLiteStatement statementTrack = App.getInstance().getDb().compileStatement(
+                    "INSERT INTO Tracks (beginsAt, time, distance) VALUES (?, ?, ?)"
+            );
+
+            statementTrack.bindLong(1, tracksList.get(i).getBeginsAt());
+            statementTrack.bindLong(2, tracksList.get(i).getTime());
+            statementTrack.bindLong(3, tracksList.get(i).getDistance());
+
+            try {
+                idTrack = statementTrack.executeInsert();
+                Log.e("id", String.valueOf(idTrack));
+            } finally {
+                statementTrack.close();
+            }
+
+            for (int j = 0; j < tracksList.get(i).getPoints().size(); j++) {
+                SQLiteStatement statementPoints = App.getInstance().getDb().compileStatement(
+                        "INSERT INTO Point (latitude, longitude, trackId) VALUES (?, ?, ?)"
+                );
+
+                statementPoints.bindDouble(1, tracksList.get(i).getPoints().get(j).getLat());
+                statementPoints.bindDouble(2, tracksList.get(i).getPoints().get(j).getLng());
+                statementPoints.bindLong(3, idTrack);
+
+                try {
+                    statementPoints.execute();
+                    Log.e("execute", "points");
+                } finally {
+                    statementPoints.close();
+                }
+            }
+        }
+
+        LocalBroadcastManager.getInstance(App.getInstance()).sendBroadcastSync(new Intent(BROADCAST_SAVE_NEW_TRACKS));
+    }
+
+
+    private void showFragment(Fragment fragment, String tag, String clearToTag, boolean clearInclusive) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        if (clearToTag != null || clearInclusive) {
+            fragmentManager.popBackStack(
+                    clearToTag,
+                    clearInclusive ? FragmentManager.POP_BACK_STACK_INCLUSIVE : 0
+            );
+        }
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment, tag);
+        transaction.addToBackStack(tag);
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        transaction.commit();
+    }
+
+
+    public void onFragmentStart(int titleResId, String tag) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(titleResId);
+        }
+
+        if (tag.equals(TrackFragment.TAG_TRACK_FRAGMENT)) {
+            result.setSelection(-1);
+        }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (result != null && result.isDrawerOpen()) {
+            result.closeDrawer();
+            return;
+        }
+
+        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            finish();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+
+    private void createNavigationDrawer(Bundle savedInstanceState) {
         result = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
-                .withAccountHeader(headerResult)
+                .withAccountHeader(createAccountHeader())
                 .addDrawerItems(
                         new PrimaryDrawerItem().
                                 withIdentifier(1)
@@ -125,14 +238,15 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         if (tag.equals(TAG_EXIT_APP)) {
+                            clearUserData();
                             FirebaseAuth.getInstance().signOut();
                             startActivity(new Intent(MainActivity.this, RegisterActivity.class));
                             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
                             finish();
                         }
 
-                        if(tag.equals(TAG_SETTING)){
-                            //show Settings
+                        if (tag.equals(TAG_SETTING)) {
+                            Toast.makeText(MainActivity.this, "Setting click", Toast.LENGTH_LONG).show();
                         }
                         return false;
                     }
@@ -163,46 +277,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void showFragment(Fragment fragment, String tag, String clearToTag, boolean clearInclusive) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        if (clearToTag != null || clearInclusive) {
-            fragmentManager.popBackStack(
-                    clearToTag,
-                    clearInclusive ? FragmentManager.POP_BACK_STACK_INCLUSIVE : 0
-            );
-        }
-
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment, tag);
-        transaction.addToBackStack(tag);
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        transaction.commit();
+    private AccountHeader createAccountHeader() {
+        return new AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.color.colorPrimaryDark)
+                .addProfiles(
+                        new ProfileDrawerItem().withName(nameText).withEmail(emailText).withIcon(getResources().getDrawable(R.mipmap.ic_launcher)))
+                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+                    @Override
+                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
+                        Log.e("Click Account", "+");
+                        return false;
+                    }
+                })
+                .build();
     }
 
 
-    public void onFragmentStart(int titleResId, String tag) {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(titleResId);
-        }
-
-        if (tag.equals(TrackFragment.TAG_TRACK_FRAGMENT)) {
-            result.setSelection(-1);
-        }
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        if (result != null && result.isDrawerOpen()) {
-            result.closeDrawer();
-            return;
-        }
-
-        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
-            finish();
-            return;
-        }
-        super.onBackPressed();
+    private void clearUserData() {
+        App.getInstance().getDb().execSQL("DELETE FROM User");
+        App.getInstance().getDb().execSQL("DELETE FROM Tracks");
+        App.getInstance().getDb().execSQL("DELETE FROM Reminder");
+        App.getInstance().getDb().execSQL("DELETE FROM Point");
     }
 }

@@ -55,11 +55,11 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-    public static TrackFragment newInstance(int id, int distance, long timeRunning) {
+    public static TrackFragment newInstance(int id, long distance, long timeRunning) {
         TrackFragment trackFragment = new TrackFragment();
         Bundle args = new Bundle();
         args.putInt(KEY_ID, id);
-        args.putInt(KEY_DISTANCE, distance);
+        args.putLong(KEY_DISTANCE, distance);
         args.putLong(KEY_TIME_RUNNING, timeRunning);
         trackFragment.setArguments(args);
         return trackFragment;
@@ -118,7 +118,7 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        distanceText.setText(String.format(getString(R.string.track_fragment_distance_meter), getArguments().getInt(KEY_DISTANCE)));
+        distanceText.setText(String.format(getString(R.string.track_fragment_distance_meter), getArguments().getLong(KEY_DISTANCE)));
         timeRunningText.setText(ConverterTime.ConvertTimeToStringWithMill(getArguments().getLong(KEY_TIME_RUNNING)));
     }
 
