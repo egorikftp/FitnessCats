@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Cats Running</string>
+    <string name="app_name">Fitness Cat\'s</string>
 
     <!-- Экран входа. Подсказки для ввода -->
     <string name="register_activity_hint_email">E-mail</string>
@@ -97,28 +97,23 @@
     <string name="reminders_fragment_snackbar_reminders_empty">Похоже бегать пока не будем?</string>
 
 
-    <!-- Dialogs -->
-    <string name="dialog_reminder_add_hint_edit_text">Введите текст напоминания</string>
-
-
     <!-- Теги -->
     <string name="reminders_tag_comment">comment</string>
     <string name="reminders_tag_date">beginsAt</string>
 
 
     <!-- Dialogs Add Reminder -->
-    <string name="add_reminder_dialog_title">Начнем</string>
-    <string name="comment_dialog_message">Новое сообщение появится вместе с будильником</string>
-    <string name="add_reminder_dialog_title_date">Теперь установим дату</string>
-    <string name="add_reminder_dialog_title_time">И время напоминания</string>
-    <string name="add_reminder_dialog_message">Установим текст напоминания</string>
+    <string name="add_reminder_part_one_dialog_title">Добавим напоминание о занятии?</string>
+    <string name="add_reminder_part_one_dialog_negative_btn">Отмена</string>
+    <string name="add_reminder_part_one_dialog_positive_btn">Далее</string>
+    <string name="add_reminder_part_one_dialog_back_btn">Назад</string>
+    <string name="add_reminder_part_one_dialog_final_btn">Готово</string>
+    <string name="add_reminder_part_one_dialog_text_type">Выбери тип будущего занятия</string>
 
     <string name="comment_dialog_title">Установить новое напоминание</string>
 
-    <string name="add_reminder_dialog_negative_btn_text">Отмена</string>
-    <string name="add_reminder_dialog_positive_btn_text">Далее</string>
     <string name="comment_dialog_positive_btn_text">Обновить</string>
-    <string name="add_reminder_dialog_positive_btn_final">Готово</string>
+
 
     <string name="date_dialog_title">Установить новую дату и время</string>
     <string name="date_dialog_negative_btn_text">Отмена</string>

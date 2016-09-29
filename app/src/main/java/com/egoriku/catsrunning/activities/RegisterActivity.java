@@ -390,7 +390,7 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
                         if (task.isSuccessful()) {
                             dismissProgressDialog();
                             App.getInstance().getState().setStartTaskAuthentification(false);
-                            startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                            startActivity(new Intent(RegisterActivity.this, MainActivity.class).putExtra(KEY_LOGIN_EXTRA, LOGIN));
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                             finish();
                         } else {

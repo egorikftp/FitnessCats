@@ -69,10 +69,18 @@
         </LinearLayout>
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/main_fragment_distance_image_view_liked"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:src="@drawable/ic_star_border_black" />
+    <RelativeLayout
+        android:layout_width="40dp"
+        android:id="@+id/adapter_all_fitness_data_relative_layout"
+        android:layout_height="40dp"
+        android:layout_gravity="end">
+
+        <ImageView
+            android:id="@+id/item_image_loved_yes"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_star_border_black" />
+    </RelativeLayout>
 </android.support.v7.widget.CardView>

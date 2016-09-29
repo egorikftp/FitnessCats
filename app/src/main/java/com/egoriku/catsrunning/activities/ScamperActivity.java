@@ -33,7 +33,7 @@ import android.widget.Toast;
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.models.Firebase.SaveModel;
-import com.egoriku.catsrunning.models.Point;
+import com.egoriku.catsrunning.models.Firebase.Point;
 import com.egoriku.catsrunning.services.RunService;
 import com.egoriku.catsrunning.utils.CustomChronometer;
 import com.egoriku.catsrunning.utils.FlipAnimation;

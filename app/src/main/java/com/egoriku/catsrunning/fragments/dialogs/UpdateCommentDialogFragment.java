@@ -39,7 +39,7 @@ public class UpdateCommentDialogFragment extends DialogFragment {
 
         Bundle args = new Bundle();
         args.putInt(RemindersFragment.KEY_ID, id);
-        args.putString(RemindersFragment.KEY_TEXT_REMINDER, textReminder);
+        args.putString(RemindersFragment.KEY_TYPE_REMINDER, textReminder);
         args.putLong(RemindersFragment.KEY_UPDATE_REMINDER, timeInMillis);
         updateCommentDialogFragment.setArguments(args);
 
@@ -51,9 +51,9 @@ public class UpdateCommentDialogFragment extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dialogTitle = getResources().getString(R.string.comment_dialog_title);
-        dialogNegativeBtnText = getResources().getString(R.string.add_reminder_dialog_negative_btn_text);
+        dialogNegativeBtnText = getResources().getString(R.string.add_reminder_part_one_dialog_negative_btn);
         dialogPositiveBtnText = getResources().getString(R.string.comment_dialog_positive_btn_text);
-        dialogMessage = getResources().getString(R.string.comment_dialog_message);
+        dialogMessage = getResources().getString(R.string.comment_dialog_positive_btn_text);
     }
 
 
@@ -64,7 +64,7 @@ public class UpdateCommentDialogFragment extends DialogFragment {
         final EditText editTextComment = (EditText) dialogView.findViewById(R.id.edit_comment_dialog);
 
         if (getArguments() != null) {
-            editTextComment.setText(getArguments().getString(RemindersFragment.KEY_TEXT_REMINDER));
+            editTextComment.setText(getArguments().getString(RemindersFragment.KEY_TYPE_REMINDER));
             editTextComment.setSelection(editTextComment.getText().length());
         }
 

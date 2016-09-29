@@ -1,10 +1,6 @@
 package com.egoriku.catsrunning.models.Firebase;
 
-import com.egoriku.catsrunning.models.Point;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SaveModel {
     private long beginsAt;

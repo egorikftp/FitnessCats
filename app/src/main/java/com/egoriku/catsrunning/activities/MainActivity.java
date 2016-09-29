@@ -17,14 +17,15 @@ import android.widget.Toast;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.adapters.TracksListAdapter;
+import com.egoriku.catsrunning.adapters.AllFitnessDataAdapter;
 import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
 import com.egoriku.catsrunning.fragments.TrackFragment;
-import com.egoriku.catsrunning.fragments.TracksListFragment;
+import com.egoriku.catsrunning.fragments.AllFitnessDataFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_EXIT_APP = "TAG_EXIT_APP";
     private static final String TAG_SETTING = "TAG_SETTING";
     public static final String BROADCAST_SAVE_NEW_TRACKS = "BROADCAST_SAVE_NEW_TRACKS";
+    private static final String TRACKS = "tracks";
     private Toolbar toolbar;
     private Drawer result;
 
@@ -57,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private String nameText;
 
     private DatabaseReference mDatabase;
-    private List<TracksListAdapter> tracksList;
+    private DatabaseReference updateDatabase;
+    private List<AllFitnessDataAdapter> tracksList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         tracksList = new ArrayList<>();
 
         if (savedInstanceState == null) {
-            showFragment(TracksListFragment.newInstance(), TracksListFragment.TAG_MAIN_FRAGMENT, null, true);
+            showFragment(AllFitnessDataFragment.newInstance(), AllFitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
         }
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -82,13 +85,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (getIntent().getExtras() != null && getIntent().getExtras().getString(RegisterActivity.KEY_LOGIN_EXTRA).equals(LOGIN)) {
-            mDatabase = FirebaseDatabase.getInstance().getReference().child("tracks").child(user.getUid());
+            mDatabase = FirebaseDatabase.getInstance().getReference().child(TRACKS).child(user.getUid());
 
             mDatabase.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        tracksList.add(postSnapshot.getValue(TracksListAdapter.class));
+                        tracksList.add(postSnapshot.getValue(AllFitnessDataAdapter.class));
                     }
                     saveSyncTracks();
                 }
@@ -99,6 +102,37 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+
+        updateDatabase = FirebaseDatabase.getInstance().getReference().child(TRACKS).child(user.getUid());
+
+        updateDatabase.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.e("child", "add");
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.e("child", "removed");
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("error:", databaseError.getMessage());
+            }
+        });
+
         createNavigationDrawer(savedInstanceState);
     }
 
@@ -138,7 +172,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-
         LocalBroadcastManager.getInstance(App.getInstance()).sendBroadcastSync(new Intent(BROADCAST_SAVE_NEW_TRACKS));
     }
 
@@ -197,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                                 withIdentifier(1)
                                 .withName(getString(R.string.navigation_drawer_main_activity))
                                 .withIcon(getResources().getDrawable(R.drawable.ic_near_me_black))
-                                .withTag(TracksListFragment.TAG_MAIN_FRAGMENT),
+                                .withTag(AllFitnessDataFragment.TAG_MAIN_FRAGMENT),
                         new PrimaryDrawerItem().
                                 withIdentifier(2)
                                 .withName(getString(R.string.navigation_drawer_reminders))
@@ -225,16 +258,16 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         String tag = String.valueOf(drawerItem.getTag());
 
-                        if (tag.equals(TracksListFragment.TAG_MAIN_FRAGMENT)) {
-                            showFragment(TracksListFragment.newInstance(), TracksListFragment.TAG_MAIN_FRAGMENT, null, true);
+                        if (tag.equals(AllFitnessDataFragment.TAG_MAIN_FRAGMENT)) {
+                            showFragment(AllFitnessDataFragment.newInstance(), AllFitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
                         }
 
                         if (tag.equals(RemindersFragment.TAG_REMINDERS_FRAGMENT)) {
-                            showFragment(RemindersFragment.newInstance(), RemindersFragment.TAG_REMINDERS_FRAGMENT, TracksListFragment.TAG_MAIN_FRAGMENT, false);
+                            showFragment(RemindersFragment.newInstance(), RemindersFragment.TAG_REMINDERS_FRAGMENT, AllFitnessDataFragment.TAG_MAIN_FRAGMENT, false);
                         }
 
                         if (tag.equals(LikedFragment.TAG_LIKED_FRAGMENT)) {
-                            showFragment(LikedFragment.newInstance(), LikedFragment.TAG_LIKED_FRAGMENT, TracksListFragment.TAG_MAIN_FRAGMENT, false);
+                            showFragment(LikedFragment.newInstance(), LikedFragment.TAG_LIKED_FRAGMENT, AllFitnessDataFragment.TAG_MAIN_FRAGMENT, false);
                         }
 
                         if (tag.equals(TAG_EXIT_APP)) {

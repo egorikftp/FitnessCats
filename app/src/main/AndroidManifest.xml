@@ -37,6 +37,12 @@
                 android:value="com.egoriku.catsrunning.activities.MainActivity" />
         </activity>
 
+        <activity android:name=".activities.AddReminderActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.egoriku.catsrunning.activities.MainActivity" />
+        </activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBL35AFk0D_M6cgFnzjvlXtyOw4_WV0viM" />

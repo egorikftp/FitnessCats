@@ -23,11 +23,10 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
+import com.egoriku.catsrunning.activities.AddReminderActivity;
 import com.egoriku.catsrunning.activities.MainActivity;
 import com.egoriku.catsrunning.adapters.RemindersAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.IRecyclerViewRemindersListener;
-import com.egoriku.catsrunning.fragments.dialogs.AddReminderCommentDialogFragment;
-import com.egoriku.catsrunning.fragments.dialogs.AddReminderTimeDialogFragment;
 import com.egoriku.catsrunning.fragments.dialogs.UpdateCommentDialogFragment;
 import com.egoriku.catsrunning.fragments.dialogs.UpdateDateDialogFragment;
 import com.egoriku.catsrunning.models.ReminderModel;
@@ -40,7 +39,7 @@ public class RemindersFragment extends Fragment {
     private static final int UNICODE_EMOJI = 0x1F61E;
     public static final String TAG_REMINDERS_FRAGMENT = "TAG_REMINDERS_FRAGMENT";
     public static final String KEY_ID = "KEY_ID";
-    public static final String KEY_TEXT_REMINDER = "KEY_TEXT_REMINDER";
+    public static final String KEY_TYPE_REMINDER = "KEY_TYPE_REMINDER";
     public static final String KEY_UPDATE_REMINDER = "KEY_UPDATE_REMINDER";
 
     private RecyclerView recyclerViewReminders;
@@ -87,11 +86,11 @@ public class RemindersFragment extends Fragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddReminderCommentDialogFragment.newInstance()
-                        .show(getFragmentManager(), null);
+                startActivity(new Intent(getActivity(), AddReminderActivity.class));
+                //AddReminderPartOneDialogFragment.newInstance(1, "", false, 0)
+                  //      .show(getFragmentManager(), null);
             }
         });
-
         return view;
     }
 
@@ -207,7 +206,7 @@ public class RemindersFragment extends Fragment {
         LocalBroadcastManager.getInstance(App.getInstance())
                 .registerReceiver(
                         broadcastAddReminder,
-                        new IntentFilter(AddReminderTimeDialogFragment.BROADCAST_ADD_NEW_REMINDER)
+                        new IntentFilter(AddReminderPartOneDialogFragment.BROADCAST_ADD_NEW_REMINDER)
                 );
 
         LocalBroadcastManager.getInstance(App.getInstance())

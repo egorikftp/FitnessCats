@@ -1,4 +1,4 @@
-package com.egoriku.catsrunning.models;
+package com.egoriku.catsrunning.models.Firebase;
 
 public class Point {
     private double lng;

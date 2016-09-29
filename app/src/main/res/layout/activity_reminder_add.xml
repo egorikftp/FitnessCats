@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/activity_reminder_type_text"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:layout_height="wrap_content" />
+
+        <hotchemi.stringpicker.StringPicker
+            android:id="@+id/add_reminder_part_one_string_picker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" />
+
+        <DatePicker
+            android:id="@+id/add_reminder_part_one_date_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TimePicker
+            android:id="@+id/add_reminder_part_two_time_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <Button
+            android:id="@+id/add_reminder_btn_back"
+            style="@style/Base.Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_reminder_part_one_dialog_back_btn"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/add_reminder_btn_next"
+            style="@style/Base.Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_reminder_part_one_dialog_positive_btn"
+            android:textAllCaps="false" />
+    </LinearLayout>
+</LinearLayout>

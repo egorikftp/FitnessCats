@@ -44,7 +44,7 @@ public class UpdateDateDialogFragment extends DialogFragment {
 
         Bundle bundle = new Bundle();
         bundle.putInt(RemindersFragment.KEY_ID, id);
-        bundle.putString(RemindersFragment.KEY_TEXT_REMINDER, textReminder);
+        bundle.putString(RemindersFragment.KEY_TYPE_REMINDER, textReminder);
         bundle.putInt(RemindersFragment.KEY_UPDATE_REMINDER, timeInMillis);
         updateDateDialogFragment.setArguments(bundle);
 
@@ -107,7 +107,7 @@ public class UpdateDateDialogFragment extends DialogFragment {
 
                         setAlarm(
                                 getArguments().getInt(RemindersFragment.KEY_ID),
-                                getArguments().getString(RemindersFragment.KEY_TEXT_REMINDER),
+                                getArguments().getString(RemindersFragment.KEY_TYPE_REMINDER),
                                 reminderTime.getTimeInMillis()
                         );
 

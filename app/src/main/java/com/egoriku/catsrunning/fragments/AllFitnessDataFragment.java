@@ -28,7 +28,7 @@ import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.MainActivity;
 import com.egoriku.catsrunning.activities.ScamperActivity;
-import com.egoriku.catsrunning.adapters.TracksListAdapter;
+import com.egoriku.catsrunning.adapters.AllFitnessDataAdapter;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
@@ -36,7 +36,7 @@ import com.mikepenz.fastadapter.helpers.ClickListenerHelper;
 
 import java.util.ArrayList;
 
-public class TracksListFragment extends Fragment {
+public class AllFitnessDataFragment extends Fragment {
     public static final String TAG_MAIN_FRAGMENT = "TAG_MAIN_FRAGMENT";
     private static final int UNICODE = 0x1F63A;
 
@@ -57,18 +57,18 @@ public class TracksListFragment extends Fragment {
     private Animation fabRunHide;
 
     private boolean fabStatus;
-    private ClickListenerHelper<TracksListAdapter> clickListenerHelper;
-    private FastItemAdapter<TracksListAdapter> fastItemAdapter;
+    private ClickListenerHelper<AllFitnessDataAdapter> clickListenerHelper;
+    private FastItemAdapter<AllFitnessDataAdapter> fastItemAdapter;
 
-    private ArrayList<TracksListAdapter> tracksModels;
+    private ArrayList<AllFitnessDataAdapter> tracksModels;
 
 
-    public TracksListFragment() {
+    public AllFitnessDataFragment() {
     }
 
 
-    public static TracksListFragment newInstance() {
-        return new TracksListFragment();
+    public static AllFitnessDataFragment newInstance() {
+        return new AllFitnessDataFragment();
     }
 
 
@@ -190,9 +190,9 @@ public class TracksListFragment extends Fragment {
             recyclerView.setAdapter(fastItemAdapter);
         }
 
-        fastItemAdapter.withOnClickListener(new FastAdapter.OnClickListener<TracksListAdapter>() {
+        fastItemAdapter.withOnClickListener(new FastAdapter.OnClickListener<AllFitnessDataAdapter>() {
             @Override
-            public boolean onClick(View v, IAdapter<TracksListAdapter> adapter, TracksListAdapter item, int position) {
+            public boolean onClick(View v, IAdapter<AllFitnessDataAdapter> adapter, AllFitnessDataAdapter item, int position) {
                 changeFragment(item.getId(), item.getDistance(), item.getTime());
                 return false;
             }
@@ -206,11 +206,11 @@ public class TracksListFragment extends Fragment {
 
             @Override
             public RecyclerView.ViewHolder onPostCreateViewHolder(final RecyclerView.ViewHolder viewHolder) {
-                if (viewHolder instanceof TracksListAdapter.ViewHolder) {
-                    clickListenerHelper.listen(viewHolder, ((TracksListAdapter.ViewHolder) viewHolder).imageViewLiked, new ClickListenerHelper.OnClickListener<TracksListAdapter>() {
+                if (viewHolder instanceof AllFitnessDataAdapter.ViewHolder) {
+                    clickListenerHelper.listen(viewHolder, ((AllFitnessDataAdapter.ViewHolder) viewHolder).relativeLayout, new ClickListenerHelper.OnClickListener<AllFitnessDataAdapter>() {
                         @Override
-                        public void onClick(View v, int position, TracksListAdapter item) {
-                            int likedState = getLikedState(item.getId());
+                        public void onClick(View v, int position, AllFitnessDataAdapter item) {
+                            int likedState = item.getLiked();
 
                             switch (likedState) {
                                 case 0:
@@ -231,22 +231,6 @@ public class TracksListFragment extends Fragment {
                 return viewHolder;
             }
         });
-    }
-
-
-    private int getLikedState(int id) {
-        int likedState = 0;
-
-        Cursor cursor = App.getInstance().getDb().rawQuery("SELECT Tracks.liked AS liked FROM Tracks WHERE Tracks._id = ?",
-                new String[]{String.valueOf(id)});
-
-        if (cursor != null) {
-            if (cursor.moveToNext()) {
-                likedState = cursor.getInt(cursor.getColumnIndexOrThrow("liked"));
-            }
-            cursor.close();
-        }
-        return likedState;
     }
 
 
@@ -306,7 +290,7 @@ public class TracksListFragment extends Fragment {
         if (cursor != null) {
             if (cursor.moveToNext()) {
                 do {
-                    TracksListAdapter listAdapter = new TracksListAdapter();
+                    AllFitnessDataAdapter listAdapter = new AllFitnessDataAdapter();
                     listAdapter.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
                     listAdapter.setBeginsAt(cursor.getInt(cursor.getColumnIndexOrThrow("date")));
                     listAdapter.setTime(cursor.getInt(cursor.getColumnIndexOrThrow("timeRunning")));
