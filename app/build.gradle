@@ -6,11 +6,11 @@ android {
 
     defaultConfig {
         applicationId "com.egoriku.catsrunning"
+        vectorDrawables.useSupportLibrary = true
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 3
         versionName "1.2"
-        vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
     }
     buildTypes {

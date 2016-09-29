@@ -18,11 +18,10 @@ import android.widget.Toast;
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.adapters.AllFitnessDataAdapter;
+import com.egoriku.catsrunning.fragments.AllFitnessDataFragment;
 import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
-import com.egoriku.catsrunning.fragments.TrackFragment;
-import com.egoriku.catsrunning.fragments.AllFitnessDataFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -75,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             showFragment(AllFitnessDataFragment.newInstance(), AllFitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
         }
 
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             emailText = user.getEmail();
@@ -83,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, RegisterActivity.class));
             finish();
         }
+
+        createNavigationDrawer(savedInstanceState);
 
         if (getIntent().getExtras() != null && getIntent().getExtras().getString(RegisterActivity.KEY_LOGIN_EXTRA).equals(LOGIN)) {
             mDatabase = FirebaseDatabase.getInstance().getReference().child(TRACKS).child(user.getUid());
@@ -102,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-
 
         updateDatabase = FirebaseDatabase.getInstance().getReference().child(TRACKS).child(user.getUid());
 
@@ -132,8 +133,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("error:", databaseError.getMessage());
             }
         });
-
-        createNavigationDrawer(savedInstanceState);
     }
 
 
@@ -197,10 +196,6 @@ public class MainActivity extends AppCompatActivity {
     public void onFragmentStart(int titleResId, String tag) {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(titleResId);
-        }
-
-        if (tag.equals(TrackFragment.TAG_TRACK_FRAGMENT)) {
-            result.setSelection(-1);
         }
     }
 

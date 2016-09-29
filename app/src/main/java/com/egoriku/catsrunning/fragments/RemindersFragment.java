@@ -87,8 +87,6 @@ public class RemindersFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), AddReminderActivity.class));
-                //AddReminderPartOneDialogFragment.newInstance(1, "", false, 0)
-                  //      .show(getFragmentManager(), null);
             }
         });
         return view;
@@ -206,7 +204,7 @@ public class RemindersFragment extends Fragment {
         LocalBroadcastManager.getInstance(App.getInstance())
                 .registerReceiver(
                         broadcastAddReminder,
-                        new IntentFilter(AddReminderPartOneDialogFragment.BROADCAST_ADD_NEW_REMINDER)
+                        new IntentFilter(AddReminderActivity.BROADCAST_ADD_NEW_REMINDER)
                 );
 
         LocalBroadcastManager.getInstance(App.getInstance())
