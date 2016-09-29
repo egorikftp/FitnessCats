@@ -240,16 +240,16 @@ public class AllFitnessDataFragment extends Fragment {
         FrameLayout.LayoutParams layoutParamsFabCycling = (FrameLayout.LayoutParams) fabCycling.getLayoutParams();
 
         if (status) {
-            layoutParamsFabRun.rightMargin -= (int) (fabRun.getWidth() * 1.7);
-            layoutParamsFabRun.bottomMargin -= (int) (fabRun.getHeight() * 0.25);
+            layoutParamsFabRun.rightMargin -= (int) (fabRun.getWidth() * 1.1);
+            layoutParamsFabRun.bottomMargin -= (int) (fabRun.getHeight() * 0.0);
             fabRun.setLayoutParams(layoutParamsFabRun);
 
-            layoutParamsFabWalk.rightMargin -= (int) (fabWalk.getWidth() * 1.5);
-            layoutParamsFabWalk.bottomMargin -= (int) (fabWalk.getHeight() * 1.5);
+            layoutParamsFabWalk.rightMargin -= (int) (fabWalk.getWidth() * 0.8);
+            layoutParamsFabWalk.bottomMargin -= (int) (fabWalk.getHeight() * 0.8);
             fabWalk.setLayoutParams(layoutParamsFabWalk);
 
-            layoutParamsFabCycling.rightMargin -= (int) (fabCycling.getWidth() * 0.25);
-            layoutParamsFabCycling.bottomMargin -= (int) (fabCycling.getHeight() * 1.7);
+            layoutParamsFabCycling.rightMargin -= (int) (fabCycling.getWidth() * 0.0);
+            layoutParamsFabCycling.bottomMargin -= (int) (fabCycling.getHeight() * 1.1);
             fabCycling.setLayoutParams(layoutParamsFabCycling);
 
             fabRun.setClickable(false);
@@ -260,16 +260,16 @@ public class AllFitnessDataFragment extends Fragment {
             fabWalk.startAnimation(fabWalkHide);
             fabCycling.startAnimation(fabCyclingHide);
         } else {
-            layoutParamsFabRun.rightMargin += (int) (fabRun.getWidth() * 1.7);
-            layoutParamsFabRun.bottomMargin += (int) (fabRun.getHeight() * 0.25);
+            layoutParamsFabRun.rightMargin += (int) (fabRun.getWidth() * 1.1);
+            layoutParamsFabRun.bottomMargin += (int) (fabRun.getHeight() * 0.0);
             fabRun.setLayoutParams(layoutParamsFabRun);
 
-            layoutParamsFabWalk.rightMargin += (int) (fabWalk.getWidth() * 1.5);
-            layoutParamsFabWalk.bottomMargin += (int) (fabWalk.getHeight() * 1.5);
+            layoutParamsFabWalk.rightMargin += (int) (fabWalk.getWidth() * 0.8);
+            layoutParamsFabWalk.bottomMargin += (int) (fabWalk.getHeight() * 0.8);
             fabWalk.setLayoutParams(layoutParamsFabWalk);
 
-            layoutParamsFabCycling.rightMargin += (int) (fabCycling.getWidth() * 0.25);
-            layoutParamsFabCycling.bottomMargin += (int) (fabCycling.getHeight() * 1.7);
+            layoutParamsFabCycling.rightMargin += (int) (fabCycling.getWidth() * 0.0);
+            layoutParamsFabCycling.bottomMargin += (int) (fabCycling.getHeight() * 1.1);
             fabCycling.setLayoutParams(layoutParamsFabCycling);
 
             fabRun.setClickable(true);
