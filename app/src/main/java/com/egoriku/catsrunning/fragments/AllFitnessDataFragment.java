@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +26,7 @@ import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.MainActivity;
 import com.egoriku.catsrunning.activities.ScamperActivity;
+import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.adapters.AllFitnessDataAdapter;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
@@ -193,7 +192,11 @@ public class AllFitnessDataFragment extends Fragment {
         fastItemAdapter.withOnClickListener(new FastAdapter.OnClickListener<AllFitnessDataAdapter>() {
             @Override
             public boolean onClick(View v, IAdapter<AllFitnessDataAdapter> adapter, AllFitnessDataAdapter item, int position) {
-                changeFragment(item.getId(), item.getDistance(), item.getTime());
+                Intent intentTrackOnMaps = new Intent(getActivity(), TrackOnMapsActivity.class);
+                intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_ID, item.getId());
+                intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_DISTANCE, item.getDistance());
+                intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TIME_RUNNING, item.getTime());
+                startActivity(intentTrackOnMaps);
                 return false;
             }
         });
@@ -321,18 +324,5 @@ public class AllFitnessDataFragment extends Fragment {
         } finally {
             statement.close();
         }
-    }
-
-
-    private void changeFragment(int position, long distance, long timeRunning) {
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(
-                R.id.fragment_container,
-                TrackFragment.newInstance(position, distance, timeRunning),
-                TrackFragment.TAG_TRACK_FRAGMENT);
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        transaction.addToBackStack(TrackFragment.TAG_TRACK_FRAGMENT);
-        transaction.commit();
     }
 }

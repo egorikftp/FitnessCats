@@ -32,13 +32,11 @@ import android.widget.Toast;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.models.Firebase.Point;
+import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.services.RunService;
 import com.egoriku.catsrunning.utils.CustomChronometer;
 import com.egoriku.catsrunning.utils.FlipAnimation;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
@@ -85,7 +83,6 @@ public class ScamperActivity extends AppCompatActivity {
     private Thread chronometerThread;
 
     private DatabaseReference database;
-    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,7 +175,6 @@ public class ScamperActivity extends AppCompatActivity {
                 stopService(new Intent(ScamperActivity.this, RunService.class));
             }
         });
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
 

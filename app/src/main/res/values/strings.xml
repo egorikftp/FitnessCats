@@ -121,5 +121,7 @@
     <string name="date_dialog_message">Будильник зазвонит по указанному времени</string>
     <string name="navigation_drawer_setting">Настройки</string>
     <string name="navigation_drawer_statistic">Статистика</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps2">Map</string>
 
 </resources>

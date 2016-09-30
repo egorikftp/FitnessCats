@@ -1,13 +1,12 @@
 package com.egoriku.catsrunning.fragments;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.MainActivity;
+import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.adapters.LikedFragmentAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.IRecyclerViewListener;
 import com.egoriku.catsrunning.models.LikedTracksModel;
@@ -92,11 +92,11 @@ public class LikedFragment extends Fragment {
             likedFragmentAdapter.setOnItemClickListener(new IRecyclerViewListener() {
                 @Override
                 public void onItemClick(int position) {
-                    changeFragment(
-                            likedTracksModels.get(position).getId(),
-                            likedTracksModels.get(position).getDistance(),
-                            likedTracksModels.get(position).getTimeRunning()
-                    );
+                    Intent intentTrackOnMaps = new Intent(getActivity(), TrackOnMapsActivity.class);
+                    intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_ID, likedTracksModels.get(position).getId());
+                    intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_DISTANCE, likedTracksModels.get(position).getDistance());
+                    intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TIME_RUNNING, likedTracksModels.get(position).getTimeRunning());
+                    startActivity(intentTrackOnMaps);
                 }
 
                 @Override
@@ -118,20 +118,6 @@ public class LikedFragment extends Fragment {
 
     public String getEmojiByUnicode(int unicode) {
         return new String(Character.toChars(unicode));
-    }
-
-
-    private void changeFragment(int position, int distance, int timeRunning) {
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(
-                R.id.fragment_container,
-                TrackFragment.newInstance(position, distance, timeRunning),
-                TrackFragment.TAG_TRACK_FRAGMENT);
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        transaction.addToBackStack(TrackFragment.TAG_TRACK_FRAGMENT);
-        transaction.commit();
-        likedFragmentAdapter.clear();
     }
 
 
