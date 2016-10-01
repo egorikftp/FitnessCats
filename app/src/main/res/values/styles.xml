@@ -6,13 +6,13 @@
         <item name="colorPrimaryDark">#75927C</item>
         <item name="colorAccent">#B85967</item>
 
-    <!--<item name="colorPrimary">@color/colorPrimary</item>
+        <!--<item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>-->
-</style>
+    </style>
 
 
-<!-- Тема полей ввода текста -->
+    <!-- Тема полей ввода текста -->
     <style name="EditTextEntrance">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
@@ -54,6 +54,10 @@
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
 </resources>

@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class LikedFragment extends Fragment {
     public static final String TAG_LIKED_FRAGMENT = "TAG_LIKED_FRAGMENT";
-    private static final int UNICODE_PANDA = 0x1F43C;
+    private static final int UNICODE_SAD_CAT = 0x1F640;
     private static final int LIKED_ID = 1;
 
     private RecyclerView recyclerViewLikedFragment;
@@ -82,7 +82,7 @@ public class LikedFragment extends Fragment {
         }
 
         if (likedTracksModels.size() == 0) {
-            noMoreTracksView.setText(String.format("%s%s", getString(R.string.liked_fragment_no_more_liked_tracks), getEmojiByUnicode(UNICODE_PANDA)));
+            noMoreTracksView.setText(getString(R.string.liked_fragment_no_more_liked_tracks) + "" + getEmojiByUnicode(UNICODE_SAD_CAT));
         } else {
             likedFragmentAdapter = new LikedFragmentAdapter(likedTracksModels);
             recyclerViewLikedFragment.setLayoutManager(new LinearLayoutManager(App.getInstance()));

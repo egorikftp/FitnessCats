@@ -43,6 +43,8 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/panda_appbar_liked"
                 app:layout_collapseMode="parallax" />
+
         </android.support.design.widget.CollapsingToolbarLayout>
+
     </android.support.design.widget.AppBarLayout>
 </android.support.design.widget.CoordinatorLayout>

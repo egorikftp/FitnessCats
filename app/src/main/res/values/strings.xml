@@ -89,7 +89,7 @@
     <string name="track_fragment_toast_text_no_points">Точки отстутсвуют</string>
 
     <!-- Liked Fragment -->
-    <string name="liked_fragment_no_more_liked_tracks">У панды нет любимых треков</string>
+    <string name="liked_fragment_no_more_liked_tracks">У котиков нет любимых треков</string>
     <string name="liked_fragment_snackbar_liked_empty">Хм, теперь тут пусто</string>
 
     <!-- Reminders Fragment -->
@@ -121,7 +121,11 @@
     <string name="date_dialog_message">Будильник зазвонит по указанному времени</string>
     <string name="navigation_drawer_setting">Настройки</string>
     <string name="navigation_drawer_statistic">Статистика</string>
-    <string name="title_activity_maps">Map</string>
-    <string name="title_activity_maps2">Map</string>
+
+
+    <!-- Tabs -->
+    <string name="tab_text_cycling">Велопрогулки</string>
+    <string name="tab_text_walking">Прогулки</string>
+    <string name="tab_text_running">Пробежки</string>
 
 </resources>

@@ -19,6 +19,7 @@ import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.adapters.AllFitnessDataAdapter;
 import com.egoriku.catsrunning.fragments.AllFitnessDataFragment;
+import com.egoriku.catsrunning.fragments.FitnessDataFragment;
 import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         tracksList = new ArrayList<>();
 
         if (savedInstanceState == null) {
-            showFragment(AllFitnessDataFragment.newInstance(), AllFitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
+            showFragment(AllFitnessDataFragment.newInstance(), FitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
         }
 
 
@@ -225,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
                                 withIdentifier(1)
                                 .withName(getString(R.string.navigation_drawer_main_activity))
                                 .withIcon(getResources().getDrawable(R.drawable.ic_near_me_black))
-                                .withTag(AllFitnessDataFragment.TAG_MAIN_FRAGMENT),
+                                .withTag(FitnessDataFragment.TAG_MAIN_FRAGMENT),
                         new PrimaryDrawerItem().
                                 withIdentifier(2)
                                 .withName(getString(R.string.navigation_drawer_reminders))
@@ -253,16 +254,16 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         String tag = String.valueOf(drawerItem.getTag());
 
-                        if (tag.equals(AllFitnessDataFragment.TAG_MAIN_FRAGMENT)) {
-                            showFragment(AllFitnessDataFragment.newInstance(), AllFitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
+                        if (tag.equals(FitnessDataFragment.TAG_MAIN_FRAGMENT)) {
+                            showFragment(AllFitnessDataFragment.newInstance(), FitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
                         }
 
                         if (tag.equals(RemindersFragment.TAG_REMINDERS_FRAGMENT)) {
-                            showFragment(RemindersFragment.newInstance(), RemindersFragment.TAG_REMINDERS_FRAGMENT, AllFitnessDataFragment.TAG_MAIN_FRAGMENT, false);
+                            showFragment(RemindersFragment.newInstance(), RemindersFragment.TAG_REMINDERS_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
                         }
 
                         if (tag.equals(LikedFragment.TAG_LIKED_FRAGMENT)) {
-                            showFragment(LikedFragment.newInstance(), LikedFragment.TAG_LIKED_FRAGMENT, AllFitnessDataFragment.TAG_MAIN_FRAGMENT, false);
+                            showFragment(LikedFragment.newInstance(), LikedFragment.TAG_LIKED_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
                         }
 
                         if (tag.equals(TAG_EXIT_APP)) {
