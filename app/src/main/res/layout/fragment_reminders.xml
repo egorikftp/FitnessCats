@@ -47,7 +47,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_alarm_add_black"
-        app:layout_behavior="com.egoriku.catsrunning.utils.FabFloatOnScrollBehavior" />
+        app:layout_behavior="com.egoriku.catsrunning.utils.FabFloatingOnScrollBehavior" />
 
     <TextView
         android:id="@+id/reminders_fragment_no_more_reminders"

@@ -53,6 +53,7 @@ public class AllFitnessDataFragment extends Fragment {
         return view;
     }
 
+
     private void initSparseTabs() {
         sparseTabs.put(0, getString(R.string.tab_text_walking));
         sparseTabs.put(1, getString(R.string.tab_text_running));

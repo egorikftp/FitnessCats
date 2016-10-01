@@ -63,7 +63,6 @@ public class FitnessDataFragment extends Fragment {
     private ArrayList<AllFitnessDataAdapter> tracksModels;
 
 
-
     public FitnessDataFragment() {
     }
 
@@ -117,6 +116,21 @@ public class FitnessDataFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (fabStatus) {
+                    /*for (int i = 0; i < 20; i++) {
+                        SQLiteStatement statement = App.getInstance().getDb().compileStatement(
+                                "INSERT INTO Tracks (beginsAt, time, distance) VALUES (?, ?, ?)"
+                        );
+
+                        statement.bindDouble(1, 1474814677);
+                        statement.bindDouble(2, 68506);
+                        statement.bindLong(3, 6969);
+
+                        try {
+                            statement.execute();
+                        } finally {
+                            statement.close();
+                        }
+                    }*/
                     changeFabState(fabStatus);
                     fabStatus = false;
                 } else {
@@ -129,7 +143,6 @@ public class FitnessDataFragment extends Fragment {
         fabWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeFabState(true);
                 startActivity(new Intent(getActivity(), ScamperActivity.class));
             }
         });
@@ -137,7 +150,6 @@ public class FitnessDataFragment extends Fragment {
         fabCycling.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeFabState(true);
                 startActivity(new Intent(getActivity(), ScamperActivity.class));
             }
         });
@@ -145,7 +157,6 @@ public class FitnessDataFragment extends Fragment {
         fabRun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeFabState(true);
                 startActivity(new Intent(getActivity(), ScamperActivity.class));
             }
         });
@@ -172,7 +183,7 @@ public class FitnessDataFragment extends Fragment {
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastNewTracksSave);
-        if(fabStatus) {
+        if (fabStatus) {
             changeFabState(true);
         }
     }
