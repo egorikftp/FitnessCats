@@ -8,7 +8,7 @@ import android.util.Log;
 public class DbOpenHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "catsDB.db";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 1;
 
     public DbOpenHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -38,7 +38,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             case 1: {
                 Log.e("migrate", "1");
                 db.execSQL("CREATE TABLE User (firstName TEXT NOT NULL, lastName TEXT NOT NULL);");
-                db.execSQL("CREATE TABLE Tracks (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, idTrackOnServer INTEGER NOT NULL DEFAULT 0, beginsAt INTEGER NOT NULL, time INTEGER NOT NULL DEFAULT 0, distance INTEGER NOT NULL DEFAULT 0);");
+                db.execSQL("CREATE TABLE Tracks (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, idTrackOnServer INTEGER NOT NULL DEFAULT 0, beginsAt INTEGER NOT NULL, time INTEGER NOT NULL DEFAULT 0, distance INTEGER NOT NULL DEFAULT 0, liked INTEGER NOT NULL DEFAULT 0);");
                 db.execSQL("CREATE TABLE Reminder (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, dateReminder INTEGER NOT NULL, textReminder TEXT NOT NULL);");
                 db.execSQL("CREATE TABLE Point (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, latitude REAL NOT NULL, longitude REAL NOT NULL, trackId INTEGER NOT NULL);");
 
@@ -49,20 +49,13 @@ public class DbOpenHelper extends SQLiteOpenHelper {
                 db.execSQL("CREATE INDEX tracks_beginsAt ON Tracks (beginsAt)");
                 db.execSQL("CREATE INDEX tracks_time ON Tracks (time)");
                 db.execSQL("CREATE INDEX tracks_distance ON Tracks (distance)");
+                db.execSQL("CREATE INDEX tracks_liked ON Tracks (liked)");
 
                 db.execSQL("CREATE INDEX reminder_dateReminder ON Reminder (dateReminder)");
                 db.execSQL("CREATE INDEX reminder_textReminder ON Reminder (textReminder)");
 
                 db.execSQL("CREATE INDEX points_latitude ON Point (latitude)");
                 db.execSQL("CREATE INDEX points_longitude ON Point (longitude)");
-                break;
-            }
-
-            case 2: {
-                Log.e("migrate", "2");
-                db.execSQL("ALTER TABLE Tracks ADD COLUMN liked INTEGER NOT NULL DEFAULT 0");
-                db.execSQL("UPDATE Tracks SET liked = 0");
-                db.execSQL("CREATE INDEX tracks_liked ON Tracks (liked)");
                 break;
             }
         }
