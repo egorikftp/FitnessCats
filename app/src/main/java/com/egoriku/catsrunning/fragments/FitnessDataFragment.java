@@ -172,6 +172,9 @@ public class FitnessDataFragment extends Fragment {
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastNewTracksSave);
+        if(fabStatus) {
+            changeFabState(true);
+        }
     }
 
 
