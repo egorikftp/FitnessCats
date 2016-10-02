@@ -3,7 +3,7 @@
     android:interpolator="@android:anim/linear_interpolator">
 
     <rotate
-        android:duration="800"
+        android:duration="700"
         android:fromDegrees="0"
         android:pivotX="50%"
         android:pivotY="50%"
@@ -11,26 +11,26 @@
         android:toDegrees="35" />
 
     <rotate
-        android:duration="800"
+        android:duration="700"
         android:fromDegrees="35"
         android:pivotX="50%"
         android:pivotY="50%"
-        android:startOffset="1600"
+        android:startOffset="1400"
         android:toDegrees="0" />
 
     <rotate
-        android:duration="800"
+        android:duration="700"
         android:fromDegrees="0"
         android:pivotX="50%"
         android:pivotY="50%"
-        android:startOffset="2400"
+        android:startOffset="2100"
         android:toDegrees="-35" />
 
     <rotate
-        android:duration="800"
+        android:duration="700"
         android:fromDegrees="-35"
         android:pivotX="50%"
         android:pivotY="50%"
-        android:startOffset="3200"
+        android:startOffset="2800"
         android:toDegrees="0" />
 </set>
