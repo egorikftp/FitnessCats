@@ -29,6 +29,7 @@ public class AllFitnessDataAdapter extends AbstractItem<AllFitnessDataAdapter, A
     private long distance;
     private int id;
     private int liked;
+    private String trackToken;
     private ArrayList<Point> points;
 
     public long getBeginsAt() {
@@ -118,6 +119,14 @@ public class AllFitnessDataAdapter extends AbstractItem<AllFitnessDataAdapter, A
                 holder.imageViewLiked.setImageDrawable(App.getInstance().getResources().getDrawable(R.drawable.ic_star_black));
                 break;
         }
+    }
+
+    public String getTrackToken() {
+        return trackToken;
+    }
+
+    public void setTrackToken(String trackToken) {
+        this.trackToken = trackToken;
     }
 
 

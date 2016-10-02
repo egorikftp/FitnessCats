@@ -7,14 +7,23 @@ import android.support.multidex.MultiDex;
 
 import com.egoriku.catsrunning.helpers.DbOpenHelper;
 import com.egoriku.catsrunning.models.State;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
 public class App extends Application {
+    private static String CHILD_TRACKS = "tracks";
+
     public static App self;
     private State state;
     private DbOpenHelper dbOpenHelper;
     private SQLiteDatabase db;
+
+    private DatabaseReference database;
+    private FirebaseUser user;
+    private DatabaseReference tracksReference;
 
 
     @Override
@@ -24,6 +33,11 @@ public class App extends Application {
         dbOpenHelper = new DbOpenHelper(this);
         db = dbOpenHelper.getWritableDatabase();
         db.execSQL("VACUUM");
+        database = FirebaseDatabase.getInstance().getReference();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user!=null) {
+            tracksReference = database.child(CHILD_TRACKS).child(user.getUid());
+        }
     }
 
 
@@ -49,5 +63,9 @@ public class App extends Application {
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
+    }
+
+    public DatabaseReference getTracksReference() {
+        return tracksReference;
     }
 }

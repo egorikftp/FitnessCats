@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Log.e("child", "removed");
+                Log.e("delete begins", String.valueOf(dataSnapshot.getValue(AllFitnessDataAdapter.class).getBeginsAt()));
             }
 
             @Override
@@ -141,12 +142,13 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < tracksList.size(); i++) {
             long idTrack = 0;
             SQLiteStatement statementTrack = App.getInstance().getDb().compileStatement(
-                    "INSERT INTO Tracks (beginsAt, time, distance) VALUES (?, ?, ?)"
+                    "INSERT INTO Tracks (beginsAt, time, distance, trackToken) VALUES (?, ?, ?)"
             );
 
             statementTrack.bindLong(1, tracksList.get(i).getBeginsAt());
             statementTrack.bindLong(2, tracksList.get(i).getTime());
             statementTrack.bindLong(3, tracksList.get(i).getDistance());
+            statementTrack.bindString(4, tracksList.get(i).getTrackToken());
 
             try {
                 idTrack = statementTrack.executeInsert();

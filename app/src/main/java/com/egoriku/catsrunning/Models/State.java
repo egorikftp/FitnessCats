@@ -1,10 +1,14 @@
 package com.egoriku.catsrunning.models;
 
 public class State {
-    /**task логина/регистрация*/
+    /**
+     * task логина/регистрация
+     */
     private boolean isStartTaskAuthentification;
 
-    /**данные сервиса пробежки*/
+    /**
+     * данные сервиса пробежки
+     */
     private long sinceTime;
     private int nowDistance;
 
