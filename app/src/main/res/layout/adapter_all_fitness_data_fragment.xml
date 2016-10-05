@@ -1,86 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card:cardCornerRadius="6dp"
+    card:cardCornerRadius="9dp"
     card:cardUseCompatPadding="true"
     card:contentPaddingBottom="8dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/main_fragment_date_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textAppearance="?android:textAppearance" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/adapter_fragment_main_time_running"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:textColor="@color/color_ic_naw_drawer" />
-
-            <TextView
-                android:id="@+id/main_fragment_time_running_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceLarge"
-                android:textColor="@color/colorPrimaryDark"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_map_black" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/adapter_fragment_main_padding_word"
-                android:paddingRight="@dimen/adapter_fragment_main_padding_word"
-                android:text="@string/adapter_fragment_main_distance"
-                android:textAppearance="?android:textAppearanceMedium" />
-
-            <TextView
-                android:id="@+id/main_fragment_distance_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceMedium" />
-        </LinearLayout>
-    </LinearLayout>
-
     <RelativeLayout
-        android:layout_width="40dp"
-        android:id="@+id/adapter_all_fitness_data_relative_layout"
-        android:layout_height="40dp"
-        android:layout_gravity="end">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/item_image_loved_yes"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_centerVertical="true"
+            android:id="@+id/adapter_all_fitness_data_ic_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/adapter_all_fitness_data_margin"
+            card:srcCompat="@drawable/ic_vec_directions_run_40dp" />
+
+        <ImageView
+            android:id="@+id/adapter_all_fitness_data_image_liked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="@dimen/adapter_all_fitness_data_padding_image_liked"
+            card:srcCompat="@drawable/ic_vec_star_border_24dp" />
+
+        <TextView
+            android:id="@+id/adapter_all_fitness_data_date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/ic_star_border_black" />
+            android:layout_margin="@dimen/adapter_all_fitness_data_margin"
+            android:textAppearance="?android:textAppearance" />
+
+        <TextView
+            android:id="@+id/adapter_all_fitness_data_time_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/adapter_all_fitness_data_date_text"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="?android:textAppearance" />
+
+        <TextView
+            android:id="@+id/adapter_all_fitness_data_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/adapter_all_fitness_data_ic_type"
+            android:layout_margin="@dimen/adapter_all_fitness_data_margin"
+            android:text="@string/adapter_all_fitness_data_distance"
+            android:textAppearance="?android:textAppearance"
+            android:textColor="@color/md_black_1000" />
+
+        <TextView
+            android:id="@+id/adapter_all_fitness_data_distance_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/adapter_all_fitness_data_ic_type"
+            android:layout_margin="@dimen/adapter_all_fitness_data_margin"
+            android:layout_toRightOf="@+id/adapter_all_fitness_data_distance" />
+
+        <TextView
+            android:id="@+id/adapter_all_fitness_data_calories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/adapter_all_fitness_data_distance"
+            android:layout_margin="@dimen/adapter_all_fitness_data_margin"
+            android:text="@string/adapter_fragment_main_calories"
+            android:textColor="@color/md_black_1000" />
+
+        <TextView
+            android:id="@+id/adapter_all_fitness_data_calories_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/adapter_all_fitness_data_distance"
+            android:layout_margin="@dimen/adapter_all_fitness_data_margin"
+            android:layout_toRightOf="@+id/adapter_all_fitness_data_calories" />
     </RelativeLayout>
 </android.support.v7.widget.CardView>

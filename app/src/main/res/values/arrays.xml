@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="all_fitness_data_categories">
+        <item>@string/tab_text_walking</item>
+        <item>@string/tab_text_running</item>
+        <item>@string/tab_text_cycling</item>
+    </string-array>
+</resources>

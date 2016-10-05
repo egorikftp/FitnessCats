@@ -7,8 +7,6 @@ import android.support.multidex.MultiDex;
 
 import com.egoriku.catsrunning.helpers.DbOpenHelper;
 import com.egoriku.catsrunning.models.State;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -22,7 +20,6 @@ public class App extends Application {
     private SQLiteDatabase db;
 
     private DatabaseReference database;
-    private FirebaseUser user;
     private DatabaseReference tracksReference;
 
 
@@ -34,10 +31,7 @@ public class App extends Application {
         db = dbOpenHelper.getWritableDatabase();
         db.execSQL("VACUUM");
         database = FirebaseDatabase.getInstance().getReference();
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user!=null) {
-            tracksReference = database.child(CHILD_TRACKS).child(user.getUid());
-        }
+        tracksReference = database.child(CHILD_TRACKS);
     }
 
 

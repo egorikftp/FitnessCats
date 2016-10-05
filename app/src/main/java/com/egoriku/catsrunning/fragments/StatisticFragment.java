@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.activities.MainActivity;
+import com.egoriku.catsrunning.activities.TracksActivity;
 
 public class StatisticFragment extends Fragment {
     public static final String TAG_STATISTIC_FRAGMENT = "TAG_STATISTIC_FRAGMENT";
@@ -23,7 +23,7 @@ public class StatisticFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((MainActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_statistic, TAG_STATISTIC_FRAGMENT);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_statistic, TAG_STATISTIC_FRAGMENT);
     }
 
 

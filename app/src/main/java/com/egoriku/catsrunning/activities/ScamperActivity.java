@@ -38,9 +38,10 @@ import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.services.RunService;
 import com.egoriku.catsrunning.utils.CustomChronometer;
 import com.egoriku.catsrunning.utils.FlipAnimation;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -81,14 +82,14 @@ public class ScamperActivity extends AppCompatActivity {
     private LocationManager manager;
     private Thread chronometerThread;
 
-    private DatabaseReference database;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scamper);
 
-        database = FirebaseDatabase.getInstance().getReference();
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
         btnStart = (Button) findViewById(R.id.scamper_activity_btn_start);
@@ -367,9 +368,11 @@ public class ScamperActivity extends AppCompatActivity {
             }
 
             if (points.size() > 0) {
-                SaveModel saveModel = new SaveModel(beginsAt, time, distance, points);
-                writeKeyToDb(App.getInstance().getTracksReference().push().getKey(), idTrack);
-                App.getInstance().getTracksReference().push().setValue(saveModel, new DatabaseReference.CompletionListener() {
+                String trackToken = App.getInstance().getTracksReference().child(user.getUid()).push().getKey();
+                writeKeyToDb(trackToken, idTrack);
+                SaveModel saveModel = new SaveModel(beginsAt, time, distance, trackToken, points);
+
+                App.getInstance().getTracksReference().child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                         if (databaseError != null) {

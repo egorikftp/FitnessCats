@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activities.RegisterActivity" />
-        <activity android:name=".activities.MainActivity" />
+        <activity android:name=".activities.TracksActivity" />
         <activity android:name=".activities.SplashActivity" android:configChanges="orientation"  android:screenOrientation="portrait">
 
             <intent-filter>
@@ -34,12 +34,12 @@
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.egoriku.catsrunning.activities.MainActivity" />
+                android:value="com.egoriku.catsrunning.activities.TracksActivity" />
         </activity>
         <activity android:name=".activities.AddReminderActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.egoriku.catsrunning.activities.MainActivity" />
+                android:value="com.egoriku.catsrunning.activities.TracksActivity" />
         </activity>
 
         <service
@@ -56,7 +56,7 @@
             android:name=".activities.TrackOnMapsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.egoriku.catsrunning.activities.MainActivity" />
+                android:value="com.egoriku.catsrunning.activities.TracksActivity" />
         </activity>
     </application>
 

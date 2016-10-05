@@ -69,16 +69,16 @@
     <string name="liked_fragment_adapter_distance">Дистанция:</string>
 
     <!-- Adapter Fragment Tracks List -->
-    <string name="adapter_fragment_main_time_running">Время пробежки:</string>
-    <string name="adapter_fragment_main_distance">Дистанция:</string>
+    <string name="adapter_fragment_main_calories">Каллории: </string>
 
 
     <!-- Фрагменты  -->
-    <!-- Tracks List Fragment -->
-    <string name="tracks_list_fragment_distance_meter">%s м</string>
-    <string name="tracks_list_no_more_tracks">Почему котики бегают, а ты нет? %s</string>
-    <string name="tracks_list_fragment_progress_dialog_title">Выполняется сихронизация</string>
-    <string name="tracks_list_fragment_progress_dialog_message">Это займет немного времени</string>
+    <!-- All Fitness Data Fragment -->
+    <string name="adapter_all_fitness_data_distance_meter">%s м</string>
+    <string name="adapter_all_fitness_data_calories">%s ккал</string>
+    <string name="adapter_all_fitness_data_distance">Дистанция: </string>
+    <string name="adapter_all_fitness_data_no_more_tracks">Почему котики бегают, а ты нет? %s</string>
+
 
     <!-- Track Fragment -->
     <string name="track_fragment_distance">Дистанция:</string>
@@ -127,5 +127,8 @@
     <string name="tab_text_cycling">Велопрогулки</string>
     <string name="tab_text_walking">Прогулки</string>
     <string name="tab_text_running">Пробежки</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

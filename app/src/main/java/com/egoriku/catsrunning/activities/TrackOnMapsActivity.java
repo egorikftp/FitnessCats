@@ -132,7 +132,6 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
                 .title(title)
                 .icon(BitmapDescriptorFactory.fromResource(idIco))
         );
-
         return marker.getPosition();
     }
 }

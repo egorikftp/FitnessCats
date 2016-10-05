@@ -1,6 +1,12 @@
 package com.egoriku.catsrunning.models;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.egoriku.catsrunning.App;
+
 public class State {
+    private static final String KEY_LOGIN = "KEY_LOGIN";
     /**
      * task логина/регистрация
      */
@@ -11,6 +17,19 @@ public class State {
      */
     private long sinceTime;
     private int nowDistance;
+
+
+    public void setLogin(boolean state) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(KEY_LOGIN, state);
+        editor.apply();
+    }
+
+    public boolean isLogin() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
+        return sharedPref.getBoolean(KEY_LOGIN, false);
+    }
 
 
     public boolean isStartTaskAuthentification() {

@@ -2,6 +2,7 @@ package com.egoriku.catsrunning.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,13 +24,13 @@ import com.egoriku.catsrunning.fragments.FitnessDataFragment;
 import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
+import com.egoriku.catsrunning.helpers.DbCursor;
+import com.egoriku.catsrunning.helpers.QueryBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -45,21 +46,15 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.firebase.analytics.FirebaseAnalytics.Event.LOGIN;
-
-public class MainActivity extends AppCompatActivity {
+public class TracksActivity extends AppCompatActivity {
     private static final String TAG_EXIT_APP = "TAG_EXIT_APP";
     private static final String TAG_SETTING = "TAG_SETTING";
     public static final String BROADCAST_SAVE_NEW_TRACKS = "BROADCAST_SAVE_NEW_TRACKS";
-    private static final String TRACKS = "tracks";
     private Toolbar toolbar;
     private Drawer result;
 
     private String emailText;
     private String nameText;
-
-    private DatabaseReference mDatabase;
-    private DatabaseReference updateDatabase;
     private List<AllFitnessDataAdapter> tracksList;
 
     @Override
@@ -67,52 +62,56 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
-
         setSupportActionBar(toolbar);
         tracksList = new ArrayList<>();
+
+        if (App.getInstance().getState() == null) {
+            App.getInstance().createState();
+        }
 
         if (savedInstanceState == null) {
             showFragment(AllFitnessDataFragment.newInstance(), FitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
         }
-
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             emailText = user.getEmail();
             nameText = user.getDisplayName();
         } else {
-            startActivity(new Intent(MainActivity.this, RegisterActivity.class));
+            startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
             finish();
         }
 
         createNavigationDrawer(savedInstanceState);
 
-        if (getIntent().getExtras() != null && getIntent().getExtras().getString(RegisterActivity.KEY_LOGIN_EXTRA).equals(LOGIN)) {
-            mDatabase = FirebaseDatabase.getInstance().getReference().child(TRACKS).child(user.getUid());
-
-            mDatabase.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+        Log.e("child", "first sync1");
+        App.getInstance().getTracksReference().child(user.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.e("child", "first sync2");
+                if (App.getInstance().getState().isLogin()) {
+                    Log.e("child", "first sync3");
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                         tracksList.add(postSnapshot.getValue(AllFitnessDataAdapter.class));
                     }
                     saveSyncTracks();
+                    App.getInstance().getState().setLogin(false);
                 }
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.e("error:", databaseError.getMessage());
-                }
-            });
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-        updateDatabase = FirebaseDatabase.getInstance().getReference().child(TRACKS).child(user.getUid());
+            }
+        });
 
-        updateDatabase.addChildEventListener(new ChildEventListener() {
+        App.getInstance().getTracksReference().child(user.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Log.e("child", "add");
+                Log.e("child add", "second sync");
             }
+
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
@@ -121,8 +120,37 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.e("child", "removed");
-                Log.e("delete begins", String.valueOf(dataSnapshot.getValue(AllFitnessDataAdapter.class).getBeginsAt()));
+                int idTrack = 0;
+                Cursor cursor = new QueryBuilder()
+                        .get("_id")
+                        .from("Tracks")
+                        .where("beginsAt=", String.valueOf(dataSnapshot.getValue(AllFitnessDataAdapter.class).getBeginsAt()))
+                        .select();
+
+                DbCursor dbCursor = new DbCursor(cursor);
+                if (dbCursor.isValid()) {
+                    idTrack = dbCursor.getInt("_id");
+                }
+                dbCursor.close();
+
+                SQLiteStatement statementPoints = App.getInstance().getDb().compileStatement(
+                        "DELETE FROM Point WHERE Point.trackId = ?");
+
+                statementPoints.bindLong(1, idTrack);
+                try {
+                    statementPoints.executeUpdateDelete();
+                } finally {
+                    statementPoints.close();
+                }
+
+                SQLiteStatement statement = App.getInstance().getDb().compileStatement("DELETE FROM Tracks WHERE Tracks._id = ?");
+                statement.bindLong(1, idTrack);
+                try {
+                    statement.execute();
+                } finally {
+                    statement.close();
+                }
+                LocalBroadcastManager.getInstance(App.getInstance()).sendBroadcastSync(new Intent(BROADCAST_SAVE_NEW_TRACKS));
             }
 
             @Override
@@ -142,13 +170,14 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < tracksList.size(); i++) {
             long idTrack = 0;
             SQLiteStatement statementTrack = App.getInstance().getDb().compileStatement(
-                    "INSERT INTO Tracks (beginsAt, time, distance, trackToken) VALUES (?, ?, ?)"
+                    "INSERT INTO Tracks (beginsAt, time, distance, trackToken, typeFit) VALUES (?, ?, ?, ?, ?)"
             );
 
             statementTrack.bindLong(1, tracksList.get(i).getBeginsAt());
             statementTrack.bindLong(2, tracksList.get(i).getTime());
             statementTrack.bindLong(3, tracksList.get(i).getDistance());
             statementTrack.bindString(4, tracksList.get(i).getTrackToken());
+            statementTrack.bindLong(5, tracksList.get(i).getTypeFit());
 
             try {
                 idTrack = statementTrack.executeInsert();
@@ -271,13 +300,13 @@ public class MainActivity extends AppCompatActivity {
                         if (tag.equals(TAG_EXIT_APP)) {
                             clearUserData();
                             FirebaseAuth.getInstance().signOut();
-                            startActivity(new Intent(MainActivity.this, RegisterActivity.class));
+                            startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
                             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
                             finish();
                         }
 
                         if (tag.equals(TAG_SETTING)) {
-                            Toast.makeText(MainActivity.this, "Setting click", Toast.LENGTH_LONG).show();
+                            Toast.makeText(TracksActivity.this, "Setting click", Toast.LENGTH_LONG).show();
                         }
                         return false;
                     }
@@ -285,8 +314,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDrawerOpened(View drawerView) {
                         //Скрываем клавиатуру при открытии Navigation Drawer
-                        InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus().getWindowToken(), 0);
+                        InputMethodManager inputMethodManager = (InputMethodManager) TracksActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(TracksActivity.this.getCurrentFocus().getWindowToken(), 0);
                     }
 
                     @Override

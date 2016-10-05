@@ -6,28 +6,19 @@ public class SaveModel {
     private long beginsAt;
     private long time;
     private int distance;
+    private String trackToken;
     private ArrayList<Point> points;
 
     public SaveModel() {
     }
 
-    public SaveModel(long beginsAt, long time, int distance, ArrayList<Point> points) {
+    public SaveModel(long beginsAt, long time, int distance, String trackToken, ArrayList<Point> points) {
         this.beginsAt = beginsAt;
         this.time = time;
         this.distance = distance;
         this.points = points;
+        this.trackToken = trackToken;
     }
-
-
-   /* public Map<String, Object> toMap(){
-        HashMap<String, Object> resultMap = new HashMap<>();
-        resultMap.put("beginsAt", beginsAt);
-        resultMap.put("time", time);
-        resultMap.put("distance", distance);
-        resultMap.put("points", points);
-
-        return resultMap;
-    }*/
 
     public long getBeginsAt() {
         return beginsAt;
@@ -59,5 +50,13 @@ public class SaveModel {
 
     public void setPoints(ArrayList<Point> points) {
         this.points = points;
+    }
+
+    public String getTrackToken() {
+        return trackToken;
+    }
+
+    public void setTrackToken(String trackToken) {
+        this.trackToken = trackToken;
     }
 }

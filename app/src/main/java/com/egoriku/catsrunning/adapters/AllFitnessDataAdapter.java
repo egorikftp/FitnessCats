@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.egoriku.catsrunning.App;
@@ -29,6 +28,7 @@ public class AllFitnessDataAdapter extends AbstractItem<AllFitnessDataAdapter, A
     private long distance;
     private int id;
     private int liked;
+    private int typeFit;
     private String trackToken;
     private ArrayList<Point> points;
 
@@ -80,6 +80,22 @@ public class AllFitnessDataAdapter extends AbstractItem<AllFitnessDataAdapter, A
         this.points = points;
     }
 
+    public String getTrackToken() {
+        return trackToken;
+    }
+
+    public void setTrackToken(String trackToken) {
+        this.trackToken = trackToken;
+    }
+
+    public int getTypeFit() {
+        return typeFit;
+    }
+
+    public void setTypeFit(int typeFit) {
+        this.typeFit = typeFit;
+    }
+
 
     @Override
     public int getType() {
@@ -98,10 +114,10 @@ public class AllFitnessDataAdapter extends AbstractItem<AllFitnessDataAdapter, A
         super.bindView(holder, payloads);
         holder.date.setText(ConverterTime.convertUnixDate(beginsAt));
         holder.timeRunning.setText(ConverterTime.ConvertTimeToStringWithMill(time));
-        holder.distance.setText(String.format(holder.format, distance));
+        holder.distance.setText(String.format(holder.formatMeters, distance));
 
         Cursor cursor = App.getInstance().getDb().rawQuery(
-                "SELECT Tracks.liked as liked FROM Tracks WHERE Tracks._id = ?", new String[]{String.valueOf(getId())});
+                "SELECT liked FROM Tracks WHERE _id = ?", new String[]{String.valueOf(getId())});
 
         if (cursor != null) {
             if (cursor.moveToNext()) {
@@ -119,14 +135,20 @@ public class AllFitnessDataAdapter extends AbstractItem<AllFitnessDataAdapter, A
                 holder.imageViewLiked.setImageDrawable(App.getInstance().getResources().getDrawable(R.drawable.ic_star_black));
                 break;
         }
-    }
 
-    public String getTrackToken() {
-        return trackToken;
-    }
+        switch (typeFit){
+            case 1:
+                holder.imageViewType.setImageDrawable(App.getInstance().getResources().getDrawable(R.drawable.ic_directions_walk_white));
+                break;
 
-    public void setTrackToken(String trackToken) {
-        this.trackToken = trackToken;
+            case 2:
+                holder.imageViewType.setImageDrawable(App.getInstance().getResources().getDrawable(R.drawable.ic_directions_run_black_service));
+                break;
+
+            case 3:
+                holder.imageViewType.setImageDrawable(App.getInstance().getResources().getDrawable(R.drawable.ic_directions_bike_white));
+                break;
+        }
     }
 
 
@@ -144,22 +166,26 @@ public class AllFitnessDataAdapter extends AbstractItem<AllFitnessDataAdapter, A
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView date;
+        public ImageView imageViewType;
+        public ImageView imageViewLiked;
+        public TextView date;
         public TextView timeRunning;
         public TextView distance;
-        public ImageView imageViewLiked;
-        public String format;
-        public RelativeLayout relativeLayout;
+        public TextView calories;
 
+        public String formatMeters;
+        public String formatCalories;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            date = (TextView) itemView.findViewById(R.id.main_fragment_date_text_view);
-            timeRunning = (TextView) itemView.findViewById(R.id.main_fragment_time_running_text_view);
-            distance = (TextView) itemView.findViewById(R.id.main_fragment_distance_text_view);
-            imageViewLiked = (ImageView) itemView.findViewById(R.id.item_image_loved_yes);
-            relativeLayout = (RelativeLayout) itemView.findViewById(R.id.adapter_all_fitness_data_relative_layout);
-            format = itemView.getResources().getString(R.string.tracks_list_fragment_distance_meter);
+            imageViewType = (ImageView) itemView.findViewById(R.id.adapter_all_fitness_data_ic_type);
+            imageViewLiked = (ImageView) itemView.findViewById(R.id.adapter_all_fitness_data_image_liked);
+            date = (TextView) itemView.findViewById(R.id.adapter_all_fitness_data_date_text);
+            timeRunning = (TextView) itemView.findViewById(R.id.adapter_all_fitness_data_time_text_view);
+            distance = (TextView) itemView.findViewById(R.id.adapter_all_fitness_data_distance_text_view);
+            calories = (TextView) itemView.findViewById(R.id.adapter_all_fitness_data_calories_text_view);
+            formatMeters = itemView.getResources().getString(R.string.adapter_all_fitness_data_distance_meter);
+            formatCalories = itemView.getResources().getString(R.string.adapter_all_fitness_data_calories);
         }
     }
 }

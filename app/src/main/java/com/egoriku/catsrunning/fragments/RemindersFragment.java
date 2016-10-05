@@ -24,7 +24,7 @@ import android.widget.TextView;
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.AddReminderActivity;
-import com.egoriku.catsrunning.activities.MainActivity;
+import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.RemindersAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.IRecyclerViewRemindersListener;
 import com.egoriku.catsrunning.fragments.dialogs.UpdateCommentDialogFragment;
@@ -62,7 +62,7 @@ public class RemindersFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((MainActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_reminders, TAG_REMINDERS_FRAGMENT);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_reminders, TAG_REMINDERS_FRAGMENT);
     }
 
 

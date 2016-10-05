@@ -27,10 +27,13 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.activities.MainActivity;
 import com.egoriku.catsrunning.activities.ScamperActivity;
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
+import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.AllFitnessDataAdapter;
+import com.egoriku.catsrunning.helpers.QueryBuilder;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -43,7 +46,7 @@ import java.util.ArrayList;
 
 public class FitnessDataFragment extends Fragment {
     public static final String TAG_MAIN_FRAGMENT = "TAG_MAIN_FRAGMENT";
-    private static final String ARG_SECTION_NUMBER = "section_number";
+    private static final String ARG_SECTION_NUMBER = "ARG_SECTION_NUMBER";
     private static final int UNICODE = 0x1F63A;
 
     private RecyclerView recyclerView;
@@ -68,8 +71,7 @@ public class FitnessDataFragment extends Fragment {
     private FastItemAdapter<AllFitnessDataAdapter> fastAdapter;
     private ArrayList<AllFitnessDataAdapter> tracksModels;
 
-
-    public FitnessDataFragment() {
+    public FitnessDataFragment(){
     }
 
     public static FitnessDataFragment newInstance(int sectionNumber) {
@@ -77,6 +79,7 @@ public class FitnessDataFragment extends Fragment {
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
+        Log.e("sectionNum", String.valueOf(sectionNumber));
         return fragment;
     }
 
@@ -84,7 +87,7 @@ public class FitnessDataFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((MainActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_main_activity, TAG_MAIN_FRAGMENT);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_main_activity, TAG_MAIN_FRAGMENT);
     }
 
 
@@ -93,6 +96,10 @@ public class FitnessDataFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (App.getInstance().getState() == null) {
             App.getInstance().createState();
+        }
+
+        if (getArguments() != null) {
+            Log.e("sectionNum2", String.valueOf(getArguments().getInt(ARG_SECTION_NUMBER)));
         }
     }
 
@@ -122,7 +129,7 @@ public class FitnessDataFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (fabStatus) {
-                    for (int i = 0; i < 20; i++) {
+                   /* for (int i = 0; i < 20; i++) {
                         SQLiteStatement statement = App.getInstance().getDb().compileStatement(
                                 "INSERT INTO Tracks (beginsAt, time, distance) VALUES (?, ?, ?)"
                         );
@@ -136,7 +143,7 @@ public class FitnessDataFragment extends Fragment {
                         } finally {
                             statement.close();
                         }
-                    }
+                    }*/
                     changeFabState(fabStatus);
                     fabStatus = false;
                 } else {
@@ -179,7 +186,7 @@ public class FitnessDataFragment extends Fragment {
         super.onResume();
         fabStatus = false;
         LocalBroadcastManager.getInstance(App.getInstance()).
-                registerReceiver(broadcastNewTracksSave, new IntentFilter(MainActivity.BROADCAST_SAVE_NEW_TRACKS));
+                registerReceiver(broadcastNewTracksSave, new IntentFilter(TracksActivity.BROADCAST_SAVE_NEW_TRACKS));
 
         setUpAdapter();
     }
@@ -209,11 +216,9 @@ public class FitnessDataFragment extends Fragment {
 
         if (tracksModels.size() == 0) {
             appBarLayout.setExpanded(false);
-            textViewNoTracks.setText(String.format(getString(R.string.tracks_list_no_more_tracks), getEmojiByUnicode(UNICODE)));
+            textViewNoTracks.setText(String.format(getString(R.string.adapter_all_fitness_data_no_more_tracks), getEmojiByUnicode(UNICODE)));
         } else {
             appBarLayout.setExpanded(true);
-            fastAdapter.withSelectable(true);
-            fastAdapter.withSelectOnLongClick(true);
             fastAdapter.set(tracksModels);
             recyclerView.setAdapter(fastAdapter);
         }
@@ -239,7 +244,7 @@ public class FitnessDataFragment extends Fragment {
             @Override
             public RecyclerView.ViewHolder onPostCreateViewHolder(final RecyclerView.ViewHolder viewHolder) {
                 if (viewHolder instanceof AllFitnessDataAdapter.ViewHolder) {
-                    clickListenerHelper.listen(viewHolder, ((AllFitnessDataAdapter.ViewHolder) viewHolder).relativeLayout, new ClickListenerHelper.OnClickListener<AllFitnessDataAdapter>() {
+                    clickListenerHelper.listen(viewHolder, ((AllFitnessDataAdapter.ViewHolder) viewHolder).imageViewLiked, new ClickListenerHelper.OnClickListener<AllFitnessDataAdapter>() {
                         @Override
                         public void onClick(View v, int position, AllFitnessDataAdapter item) {
                             int likedState = item.getLiked();
@@ -266,7 +271,7 @@ public class FitnessDataFragment extends Fragment {
 
         fastAdapter.withOnPreLongClickListener(new FastAdapter.OnLongClickListener<AllFitnessDataAdapter>() {
             @Override
-            public boolean onLongClick(View v, IAdapter<AllFitnessDataAdapter> adapter, final AllFitnessDataAdapter item, int position) {
+            public boolean onLongClick(View v, IAdapter<AllFitnessDataAdapter> adapter, final AllFitnessDataAdapter item, final int position) {
                 new AlertDialog.Builder(getActivity())
                         .setTitle("Удалить этот трек ?")
                         .setCancelable(true)
@@ -274,7 +279,11 @@ public class FitnessDataFragment extends Fragment {
                         .setPositiveButton("Удалить", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                App.getInstance().getTracksReference().equalTo(item.getTrackToken()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                new QueryBuilder()
+                                        .set("isTrackDelete", 1)
+                                        .updateWhere("Tracks._id", String.valueOf(item.getId()));
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                App.getInstance().getTracksReference().child(user.getUid()).child(item.getTrackToken()).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         Log.e("delete", "+");
@@ -286,6 +295,14 @@ public class FitnessDataFragment extends Fragment {
                                         Log.w("TodoApp", "getUser:onCancelled", databaseError.toException());
                                     }
                                 });
+
+                                tracksModels.remove(position);
+                                fastAdapter.notifyItemRemoved(position);
+                                fastAdapter.notifyItemRangeChanged(position, tracksModels.size());
+
+                                if (tracksModels.size() == 0) {
+                                    fastAdapter.clear();
+                                }
                             }
                         })
                         .show();
@@ -344,19 +361,21 @@ public class FitnessDataFragment extends Fragment {
 
 
     private void getTracksFromDb() {
-        Log.e("getTracksFromDb", "+");
+        Log.e("getTracksDB", "+");
         tracksModels = new ArrayList<>();
-        Cursor cursor = App.getInstance().getDb().rawQuery("SELECT Tracks._id AS id, Tracks.beginsAt AS date, Tracks.time AS timeRunning, Tracks.distance AS distance, Tracks.liked as liked, Tracks.trackToken AS trackToken FROM Tracks ORDER BY date DESC", null);
+        Cursor cursor = App.getInstance().getDb().rawQuery("SELECT _id, beginsAt, time, distance, liked, trackToken, typeFit FROM Tracks WHERE (isTrackDelete = ? AND typeFit = ?) ORDER BY beginsAt DESC",
+                new String[]{String.valueOf(0), String.valueOf(getArguments().getInt(ARG_SECTION_NUMBER))});
         if (cursor != null) {
             if (cursor.moveToNext()) {
                 do {
                     AllFitnessDataAdapter listAdapter = new AllFitnessDataAdapter();
-                    listAdapter.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-                    listAdapter.setBeginsAt(cursor.getInt(cursor.getColumnIndexOrThrow("date")));
-                    listAdapter.setTime(cursor.getInt(cursor.getColumnIndexOrThrow("timeRunning")));
+                    listAdapter.setId(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
+                    listAdapter.setBeginsAt(cursor.getInt(cursor.getColumnIndexOrThrow("beginsAt")));
+                    listAdapter.setTime(cursor.getInt(cursor.getColumnIndexOrThrow("time")));
                     listAdapter.setDistance(cursor.getInt(cursor.getColumnIndexOrThrow("distance")));
                     listAdapter.setLiked(cursor.getInt(cursor.getColumnIndexOrThrow("liked")));
                     listAdapter.setTrackToken(cursor.getString(cursor.getColumnIndexOrThrow("trackToken")));
+                    listAdapter.setTypeFit(cursor.getInt(cursor.getColumnIndexOrThrow("typeFit")));
                     tracksModels.add(listAdapter);
                 } while (cursor.moveToNext());
             }
@@ -382,31 +401,4 @@ public class FitnessDataFragment extends Fragment {
             statement.close();
         }
     }
-
-
-   /* class ActionBarCallBack implements ActionMode.Callback {
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            mode.getMenuInflater().inflate(R.menu.cab, menu);
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            mode.setTitle("Checkbox Selected");
-            return false;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            undoHelper.remove(recyclerView, "Item removed", "Undo", Snackbar.LENGTH_LONG, fastAdapter.getSelections());
-            mode.finish();
-            return true;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            mode.finish();
-        }
-    }*/
 }

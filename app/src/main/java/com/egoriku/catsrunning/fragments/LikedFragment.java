@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.activities.MainActivity;
+import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.adapters.LikedFragmentAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.IRecyclerViewListener;
@@ -45,7 +45,7 @@ public class LikedFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((MainActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_liked, TAG_LIKED_FRAGMENT);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_liked, TAG_LIKED_FRAGMENT);
     }
 
     @Nullable
