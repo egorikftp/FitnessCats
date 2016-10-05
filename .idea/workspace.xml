@@ -26,48 +26,7 @@
     <bookmark url="file://$PROJECT_DIR$/app/src/main/res/layout/fab_layout.xml" line="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="220db3eb-58b8-41da-93b8-2e9e30c5f1be" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/fragments/BlankFragment.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_directions_bike_24dp.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_directions_run_40dp.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_directions_walk_24dp.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_star_border_24dp.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_blank.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/values/arrays.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/hamcrest_core_1_3.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/iconics_core_2_8_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/junit_4_12.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/materialdrawer_5_6_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/materialize_1_0_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/multidex_1_0_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/multidex_instrumentation_1_0_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/values/integers.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/app/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/androidTest/java/com/egoriku/catsrunning/ExampleInstrumentedTest.java" afterPath="$PROJECT_DIR$/app/src/androidTest/java/com/egoriku/catsrunning/ExampleInstrumentedTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/App.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/App.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/Models/State.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/Models/State.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/RegisterActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/RegisterActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/ScamperActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/ScamperActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/SplashActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/SplashActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/TrackOnMapsActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/TrackOnMapsActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/adapters/AllFitnessDataAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/adapters/AllFitnessDataAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/fragments/AllFitnessDataFragment.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/fragments/AllFitnessDataFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/fragments/FitnessDataFragment.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/fragments/FitnessDataFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/fragments/LikedFragment.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/fragments/LikedFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/fragments/RemindersFragment.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/fragments/RemindersFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/fragments/StatisticFragment.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/fragments/StatisticFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/helpers/DbOpenHelper.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/helpers/DbOpenHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/models/Firebase/SaveModel.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/models/Firebase/SaveModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_track_on_maps.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_track_on_maps.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/adapter_all_fitness_data_fragment.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/adapter_all_fitness_data_fragment.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/TracksActivity.java" />
-    </list>
+    <list default="true" id="220db3eb-58b8-41da-93b8-2e9e30c5f1be" name="Default" comment="" />
     <ignored path="Fitness-Cats.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -2768,7 +2727,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
     <editor active="false" />
     <layout>
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
