@@ -22,4 +22,14 @@
     <!-- All Fitness Data -->
     <dimen name="adapter_all_fitness_data_margin">4dp</dimen>
     <dimen name="adapter_all_fitness_data_padding_image_liked">10dp</dimen>
+
+
+    <dimen name="adapter_naw_drawer_margin_item">12dp</dimen>
+    <dimen name="adapter_naw_drawer_margin_image">16dp</dimen>
+    <dimen name="navigation_drawer_width">280dp</dimen>
+    <dimen name="navigation_drawer_header_margin">16dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
+
 </resources>

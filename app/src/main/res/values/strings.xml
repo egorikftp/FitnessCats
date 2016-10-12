@@ -77,7 +77,7 @@
     <string name="adapter_all_fitness_data_distance_meter">%s м</string>
     <string name="adapter_all_fitness_data_calories">%s ккал</string>
     <string name="adapter_all_fitness_data_distance">Дистанция: </string>
-    <string name="adapter_all_fitness_data_no_more_tracks">Почему котики бегают, а ты нет? %s</string>
+    <string name="adapter_all_fitness_data_no_more_tracks">Похоже тут нет треков</string>
 
 
     <!-- Track Fragment -->
@@ -128,7 +128,16 @@
     <string name="tab_text_walking">Прогулки</string>
     <string name="tab_text_running">Пробежки</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!-- Dialog Delete Track -->
+    <string name="fitness_data_fragment_alert_title">Удалить этот трек?</string>
+    <string name="fitness_data_fragment_alert_negative_btn">Отмена</string>
+    <string name="fitness_data_fragment_alert_positive_btn">Удалить</string>
+    <string name="title_activity_delete">delete</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>

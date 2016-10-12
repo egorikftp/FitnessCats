@@ -23,7 +23,9 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
@@ -47,10 +49,10 @@ import java.util.ArrayList;
 public class FitnessDataFragment extends Fragment {
     public static final String TAG_MAIN_FRAGMENT = "TAG_MAIN_FRAGMENT";
     private static final String ARG_SECTION_NUMBER = "ARG_SECTION_NUMBER";
-    private static final int UNICODE = 0x1F63A;
 
     private RecyclerView recyclerView;
     private TextView textViewNoTracks;
+    private ImageView imageViewNoTracks;
     private AppBarLayout appBarLayout;
 
     private FloatingActionButton fabMain;
@@ -79,7 +81,6 @@ public class FitnessDataFragment extends Fragment {
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
-        Log.e("sectionNum", String.valueOf(sectionNumber));
         return fragment;
     }
 
@@ -97,10 +98,6 @@ public class FitnessDataFragment extends Fragment {
         if (App.getInstance().getState() == null) {
             App.getInstance().createState();
         }
-
-        if (getArguments() != null) {
-            Log.e("sectionNum2", String.valueOf(getArguments().getInt(ARG_SECTION_NUMBER)));
-        }
     }
 
 
@@ -108,7 +105,8 @@ public class FitnessDataFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fitness_data, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.main_fragment_recycler_view);
-        textViewNoTracks = (TextView) view.findViewById(R.id.list_fragment_no_more_tracks);
+        textViewNoTracks = (TextView) view.findViewById(R.id.fragment_fitness_data_text_no_tracks);
+        imageViewNoTracks = (ImageView) view.findViewById(R.id.fragment_fitness_data_image);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.fragment_fitness_data_appbar);
         fabMain = (FloatingActionButton) view.findViewById(R.id.floating_button);
         fabWalk = (FloatingActionButton) view.findViewById(R.id.fab_walk);
@@ -129,21 +127,6 @@ public class FitnessDataFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (fabStatus) {
-                   /* for (int i = 0; i < 20; i++) {
-                        SQLiteStatement statement = App.getInstance().getDb().compileStatement(
-                                "INSERT INTO Tracks (beginsAt, time, distance) VALUES (?, ?, ?)"
-                        );
-
-                        statement.bindDouble(1, 1474814677);
-                        statement.bindDouble(2, 68506);
-                        statement.bindLong(3, 6969);
-
-                        try {
-                            statement.execute();
-                        } finally {
-                            statement.close();
-                        }
-                    }*/
                     changeFabState(fabStatus);
                     fabStatus = false;
                 } else {
@@ -212,11 +195,13 @@ public class FitnessDataFragment extends Fragment {
 
     private void setUpAdapter() {
         getTracksFromDb();
-        textViewNoTracks.setText(null);
+        imageViewNoTracks.setVisibility(View.GONE);
+        textViewNoTracks.setVisibility(View.GONE);
 
         if (tracksModels.size() == 0) {
             appBarLayout.setExpanded(false);
-            textViewNoTracks.setText(String.format(getString(R.string.adapter_all_fitness_data_no_more_tracks), getEmojiByUnicode(UNICODE)));
+            imageViewNoTracks.setVisibility(View.VISIBLE);
+            textViewNoTracks.setVisibility(View.VISIBLE);
         } else {
             appBarLayout.setExpanded(true);
             fastAdapter.set(tracksModels);
@@ -273,10 +258,10 @@ public class FitnessDataFragment extends Fragment {
             @Override
             public boolean onLongClick(View v, IAdapter<AllFitnessDataAdapter> adapter, final AllFitnessDataAdapter item, final int position) {
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("Удалить этот трек ?")
+                        .setTitle(R.string.fitness_data_fragment_alert_title)
                         .setCancelable(true)
-                        .setNegativeButton("Отмена", null)
-                        .setPositiveButton("Удалить", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.fitness_data_fragment_alert_negative_btn, null)
+                        .setPositiveButton(R.string.fitness_data_fragment_alert_positive_btn, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 new QueryBuilder()
@@ -286,13 +271,12 @@ public class FitnessDataFragment extends Fragment {
                                 App.getInstance().getTracksReference().child(user.getUid()).child(item.getTrackToken()).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                        Log.e("delete", "+");
                                         dataSnapshot.getRef().setValue(null);
                                     }
 
                                     @Override
                                     public void onCancelled(DatabaseError databaseError) {
-                                        Log.w("TodoApp", "getUser:onCancelled", databaseError.toException());
+                                        Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
 
@@ -381,11 +365,6 @@ public class FitnessDataFragment extends Fragment {
             }
             cursor.close();
         }
-    }
-
-
-    public String getEmojiByUnicode(int unicode) {
-        return new String(Character.toChars(unicode));
     }
 
 

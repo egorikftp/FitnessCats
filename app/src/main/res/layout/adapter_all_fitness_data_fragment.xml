@@ -15,16 +15,14 @@
             android:id="@+id/adapter_all_fitness_data_ic_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/adapter_all_fitness_data_margin"
-            card:srcCompat="@drawable/ic_vec_directions_run_40dp" />
+            android:layout_margin="@dimen/adapter_all_fitness_data_margin" />
 
         <ImageView
             android:id="@+id/adapter_all_fitness_data_image_liked"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:padding="@dimen/adapter_all_fitness_data_padding_image_liked"
-            card:srcCompat="@drawable/ic_vec_star_border_24dp" />
+            android:padding="@dimen/adapter_all_fitness_data_padding_image_liked" />
 
         <TextView
             android:id="@+id/adapter_all_fitness_data_date_text"
@@ -46,7 +44,7 @@
             android:id="@+id/adapter_all_fitness_data_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/adapter_all_fitness_data_ic_type"
+            android:layout_below="@+id/adapter_all_fitness_data_time_text_view"
             android:layout_margin="@dimen/adapter_all_fitness_data_margin"
             android:text="@string/adapter_all_fitness_data_distance"
             android:textAppearance="?android:textAppearance"

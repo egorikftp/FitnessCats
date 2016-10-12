@@ -1,24 +1,32 @@
 package com.egoriku.catsrunning.activities;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.adapters.AllFitnessDataAdapter;
+import com.egoriku.catsrunning.adapters.NavigationDrawerAdapter;
+import com.egoriku.catsrunning.adapters.interfaces.OnItemSelecteListener;
 import com.egoriku.catsrunning.fragments.AllFitnessDataFragment;
 import com.egoriku.catsrunning.fragments.FitnessDataFragment;
 import com.egoriku.catsrunning.fragments.LikedFragment;
@@ -26,22 +34,13 @@ import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
 import com.egoriku.catsrunning.helpers.DbCursor;
 import com.egoriku.catsrunning.helpers.QueryBuilder;
+import com.egoriku.catsrunning.models.ItemNavigationDrawer;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,40 +50,53 @@ public class TracksActivity extends AppCompatActivity {
     private static final String TAG_SETTING = "TAG_SETTING";
     public static final String BROADCAST_SAVE_NEW_TRACKS = "BROADCAST_SAVE_NEW_TRACKS";
     private Toolbar toolbar;
-    private Drawer result;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle drawerToggle;
+    private RecyclerView recyclerView;
+    private ArrayList<ItemNavigationDrawer> drawerArrayList;
 
     private String emailText;
     private String nameText;
     private List<AllFitnessDataAdapter> tracksList;
+    private NavigationDrawerAdapter adapter;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        toolbar = (Toolbar) findViewById(R.id.toolbar_app);
-        setSupportActionBar(toolbar);
+        drawerArrayList = new ArrayList<>();
         tracksList = new ArrayList<>();
 
-        if (App.getInstance().getState() == null) {
-            App.getInstance().createState();
-        }
+        toolbar = (Toolbar) findViewById(R.id.toolbar_app);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_naw_drawer);
 
-        if (savedInstanceState == null) {
-            showFragment(AllFitnessDataFragment.newInstance(), FitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
-        }
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             emailText = user.getEmail();
             nameText = user.getDisplayName();
+            Log.e("email", emailText);
+            Log.e("name", nameText);
         } else {
             startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
             finish();
         }
 
-        createNavigationDrawer(savedInstanceState);
+        addDrawerItem();
 
-        Log.e("child", "first sync1");
+        setSupportActionBar(toolbar);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(drawerToggle);
+
+        if (savedInstanceState == null) {
+            showFragment(AllFitnessDataFragment.newInstance(), FitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
+        }
+
+        if (App.getInstance().getState() == null) {
+            App.getInstance().createState();
+        }
+
         App.getInstance().getTracksReference().child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -104,7 +116,6 @@ public class TracksActivity extends AppCompatActivity {
 
             }
         });
-
         App.getInstance().getTracksReference().child(user.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -161,6 +172,87 @@ public class TracksActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e("error:", databaseError.getMessage());
+            }
+        });
+    }
+
+
+    private void addDrawerItem() {
+        drawerArrayList.add(new ItemNavigationDrawer(nameText, emailText));
+
+        drawerArrayList.add(new ItemNavigationDrawer(
+                getString(R.string.navigation_drawer_main_activity),
+                R.drawable.ic_vec_near_me_black,
+                FitnessDataFragment.TAG_MAIN_FRAGMENT,
+                false
+        ));
+
+        drawerArrayList.add(new ItemNavigationDrawer(
+                getString(R.string.navigation_drawer_reminders),
+                R.drawable.ic_vec_notifications_active_black,
+                RemindersFragment.TAG_REMINDERS_FRAGMENT,
+                false
+        ));
+
+        drawerArrayList.add(new ItemNavigationDrawer(
+                getString(R.string.navigation_drawer_liked),
+                R.drawable.ic_vec_star_black,
+                LikedFragment.TAG_LIKED_FRAGMENT,
+                false
+        ));
+
+        drawerArrayList.add(new ItemNavigationDrawer(
+                getString(R.string.navigation_drawer_statistic),
+                R.drawable.ic_vec_equalizer_black,
+                StatisticFragment.TAG_STATISTIC_FRAGMENT,
+                false
+        ));
+
+        drawerArrayList.add(new ItemNavigationDrawer(
+                getString(R.string.navigation_drawer_exit),
+                R.drawable.ic_vec_exit_to_app_black,
+                TAG_EXIT_APP,
+                false
+        ));
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new NavigationDrawerAdapter(drawerArrayList);
+        recyclerView.setAdapter(adapter);
+        recyclerView.hasFixedSize();
+
+        adapter.setOnItemSelecteListener(new OnItemSelecteListener() {
+            @Override
+            public void onItemSelected(View v, int position) {
+                String tag = String.valueOf(drawerArrayList.get(position).getTagFragment());
+
+                if (tag.equals(FitnessDataFragment.TAG_MAIN_FRAGMENT)) {
+                    showFragment(AllFitnessDataFragment.newInstance(), FitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
+                    drawerLayout.closeDrawers();
+                }
+
+                if (tag.equals(RemindersFragment.TAG_REMINDERS_FRAGMENT)) {
+                    showFragment(RemindersFragment.newInstance(), RemindersFragment.TAG_REMINDERS_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
+                    drawerLayout.closeDrawers();
+                }
+
+                if (tag.equals(LikedFragment.TAG_LIKED_FRAGMENT)) {
+                    showFragment(LikedFragment.newInstance(), LikedFragment.TAG_LIKED_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
+                    drawerLayout.closeDrawers();
+                }
+
+                if (tag.equals(TAG_EXIT_APP)) {
+                    drawerLayout.closeDrawers();
+                    clearUserData();
+                    FirebaseAuth.getInstance().signOut();
+                    startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
+                    finish();
+                }
+
+                if (tag.equals(TAG_SETTING)) {
+                    drawerLayout.closeDrawers();
+                    Toast.makeText(TracksActivity.this, "Setting click", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -225,132 +317,54 @@ public class TracksActivity extends AppCompatActivity {
     }
 
 
-    public void onFragmentStart(int titleResId, String tag) {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(titleResId);
-        }
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
 
     @Override
     public void onBackPressed() {
-        if (result != null && result.isDrawerOpen()) {
-            result.closeDrawer();
+        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
             return;
         }
-
         if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
             finish();
             return;
         }
+        drawerToggle.setDrawerIndicatorEnabled(true);
         super.onBackPressed();
     }
 
 
-    private void createNavigationDrawer(Bundle savedInstanceState) {
-        result = new DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .withAccountHeader(createAccountHeader())
-                .addDrawerItems(
-                        new PrimaryDrawerItem().
-                                withIdentifier(1)
-                                .withName(getString(R.string.navigation_drawer_main_activity))
-                                .withIcon(getResources().getDrawable(R.drawable.ic_near_me_black))
-                                .withTag(FitnessDataFragment.TAG_MAIN_FRAGMENT),
-                        new PrimaryDrawerItem().
-                                withIdentifier(2)
-                                .withName(getString(R.string.navigation_drawer_reminders))
-                                .withIcon(getResources().getDrawable(R.drawable.ic_notifications_black))
-                                .withTag(RemindersFragment.TAG_REMINDERS_FRAGMENT),
-                        new PrimaryDrawerItem().
-                                withIdentifier(3)
-                                .withName(getString(R.string.navigation_drawer_liked))
-                                .withIcon(getResources().getDrawable(R.drawable.ic_star_black))
-                                .withTag(LikedFragment.TAG_LIKED_FRAGMENT),
-                        new PrimaryDrawerItem().
-                                withIdentifier(4)
-                                .withName(getString(R.string.navigation_drawer_statistic))
-                                .withIcon(getResources().getDrawable(R.drawable.ic_equalizer_black))
-                                .withTag(StatisticFragment.TAG_STATISTIC_FRAGMENT),
-                        new DividerDrawerItem(),
-                        new SecondaryDrawerItem().
-                                withIdentifier(5)
-                                .withName(getString(R.string.navigation_drawer_exit))
-                                .withIcon(getResources().getDrawable(R.drawable.ic_exit_to_app_black))
-                                .withTag(TAG_EXIT_APP)
-                )
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        String tag = String.valueOf(drawerItem.getTag());
+    public void onFragmentStart(int titleResId, String tag) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(titleResId);
+        }
 
-                        if (tag.equals(FitnessDataFragment.TAG_MAIN_FRAGMENT)) {
-                            showFragment(AllFitnessDataFragment.newInstance(), FitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
-                        }
-
-                        if (tag.equals(RemindersFragment.TAG_REMINDERS_FRAGMENT)) {
-                            showFragment(RemindersFragment.newInstance(), RemindersFragment.TAG_REMINDERS_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
-                        }
-
-                        if (tag.equals(LikedFragment.TAG_LIKED_FRAGMENT)) {
-                            showFragment(LikedFragment.newInstance(), LikedFragment.TAG_LIKED_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
-                        }
-
-                        if (tag.equals(TAG_EXIT_APP)) {
-                            clearUserData();
-                            FirebaseAuth.getInstance().signOut();
-                            startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
-                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
-                            finish();
-                        }
-
-                        if (tag.equals(TAG_SETTING)) {
-                            Toast.makeText(TracksActivity.this, "Setting click", Toast.LENGTH_LONG).show();
-                        }
-                        return false;
-                    }
-                }).withOnDrawerListener(new Drawer.OnDrawerListener() {
-                    @Override
-                    public void onDrawerOpened(View drawerView) {
-                        //Скрываем клавиатуру при открытии Navigation Drawer
-                        InputMethodManager inputMethodManager = (InputMethodManager) TracksActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(TracksActivity.this.getCurrentFocus().getWindowToken(), 0);
-                    }
-
-                    @Override
-                    public void onDrawerClosed(View drawerView) {
-                    }
-
-                    @Override
-                    public void onDrawerSlide(View drawerView, float slideOffset) {
-                    }
-                }).addStickyDrawerItems(
-                        new SecondaryDrawerItem()
-                                .withName(getString(R.string.navigation_drawer_setting))
-                                .withIcon(getResources().getDrawable(R.drawable.ic_settings_black))
-                                .withIdentifier(6)
-                                .withTag(TAG_SETTING)
-                )
-                .withSavedInstance(savedInstanceState)
-                .build();
-    }
-
-
-    private AccountHeader createAccountHeader() {
-        return new AccountHeaderBuilder()
-                .withActivity(this)
-                .withHeaderBackground(R.color.colorPrimaryDark)
-                .addProfiles(
-                        new ProfileDrawerItem().withName(nameText).withEmail(emailText).withIcon(getResources().getDrawable(R.mipmap.ic_launcher)))
-                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
-                    @Override
-                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
-                        Log.e("Click Account", "+");
-                        return false;
-                    }
-                })
-                .build();
+        for (int i = 1; i < drawerArrayList.size(); i++) {
+            if (drawerArrayList.get(i).getTagFragment().equals(tag)) {
+                drawerArrayList.get(i).setSelected(true);
+                adapter.notifyDataSetChanged();
+                continue;
+            }
+            drawerArrayList.get(i).setSelected(false);
+        }
     }
 
 

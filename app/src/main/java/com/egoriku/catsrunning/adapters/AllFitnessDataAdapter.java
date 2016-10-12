@@ -1,6 +1,7 @@
 package com.egoriku.catsrunning.adapters;
 
 import android.database.Cursor;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,6 +16,8 @@ import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.egoriku.catsrunning.utils.VectorToBitmap.createBitmapFromVector;
 
 public class AllFitnessDataAdapter extends AbstractItem<AllFitnessDataAdapter, AllFitnessDataAdapter.ViewHolder> {
 
@@ -128,26 +131,35 @@ public class AllFitnessDataAdapter extends AbstractItem<AllFitnessDataAdapter, A
 
         switch (liked) {
             case 0:
-                holder.imageViewLiked.setImageDrawable(App.getInstance().getResources().getDrawable(R.drawable.ic_star_border_black));
+                setImage(holder.imageViewLiked, R.drawable.ic_vec_star_border);
                 break;
 
             case 1:
-                holder.imageViewLiked.setImageDrawable(App.getInstance().getResources().getDrawable(R.drawable.ic_star_black));
+                setImage(holder.imageViewLiked, R.drawable.ic_vec_star_black);
                 break;
         }
 
-        switch (typeFit){
+        switch (typeFit) {
             case 1:
-                holder.imageViewType.setImageDrawable(App.getInstance().getResources().getDrawable(R.drawable.ic_directions_walk_white));
+                setImage(holder.imageViewType, R.drawable.ic_vec_directions_walk_40dp);
                 break;
 
             case 2:
-                holder.imageViewType.setImageDrawable(App.getInstance().getResources().getDrawable(R.drawable.ic_directions_run_black_service));
+                setImage(holder.imageViewType, R.drawable.ic_vec_directions_run_40dp);
                 break;
 
             case 3:
-                holder.imageViewType.setImageDrawable(App.getInstance().getResources().getDrawable(R.drawable.ic_directions_bike_white));
+                setImage(holder.imageViewType, R.drawable.ic_vec_directions_bike_40dp);
                 break;
+        }
+    }
+
+
+    private void setImage(ImageView imageViewLiked, int ic_vec) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            imageViewLiked.setImageDrawable(App.getInstance().getResources().getDrawable(ic_vec, App.getInstance().getTheme()));
+        } else {
+            imageViewLiked.setImageBitmap(createBitmapFromVector(App.getInstance().getResources(), ic_vec));
         }
     }
 

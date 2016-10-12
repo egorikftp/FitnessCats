@@ -21,8 +21,10 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activities.RegisterActivity" />
         <activity android:name=".activities.TracksActivity" />
-        <activity android:name=".activities.SplashActivity" android:configChanges="orientation"  android:screenOrientation="portrait">
-
+        <activity
+            android:name=".activities.SplashActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -52,8 +54,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".activities.TrackOnMapsActivity">
+        <activity android:name=".activities.TrackOnMapsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.egoriku.catsrunning.activities.TracksActivity" />

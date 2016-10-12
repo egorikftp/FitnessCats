@@ -34,7 +34,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            app:srcCompat="@drawable/ic_splash_screen" />
+            app:srcCompat="@drawable/ic_vec_splash_screen" />
 
         <View
             android:layout_width="0dp"

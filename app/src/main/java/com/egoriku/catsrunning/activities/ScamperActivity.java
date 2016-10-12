@@ -46,6 +46,7 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.ArrayList;
 
 public class ScamperActivity extends AppCompatActivity {
+    public static final String BROADCAST_FINISH_SERVICE = "BROADCAST_FINISH_SERVICE";
     private static final int REQUEST_CODE = 1;
     private static final String VIEW_BTN_START = "VIEW_BTN_START";
     private static final String VIEW_BTN_FINISH = "VIEW_BTN_FINISH";
@@ -59,8 +60,6 @@ public class ScamperActivity extends AppCompatActivity {
     private static final String KEY_START_TIME = "KEY_START_TIME";
     private static final String TOOLBAR_TEXT = "TOOLBAR_TEXT";
     private static final String EXTRA_ID_TRACK = "EXTRA_ID_TRACK";
-    public static final String BROADCAST_FINISH_SERVICE = "BROADCAST_FINISH_SERVICE";
-
     private ArrayList<Point> points;
 
     private int idTrack;
@@ -83,6 +82,67 @@ public class ScamperActivity extends AppCompatActivity {
     private Thread chronometerThread;
 
     private FirebaseUser user;
+    private BroadcastReceiver broadcastReceiverIdTrack = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            idTrack = intent.getIntExtra(EXTRA_ID_TRACK, -1);
+            textDistance.setText(String.format(getString(R.string.scamper_activity_distance_meter), App.getInstance().getState().getNowDistance()));
+
+            points = new ArrayList<>();
+            long beginsAt = 0;
+            int distance = 0;
+            long time = 0;
+
+            Cursor cursor = App.getInstance().getDb().rawQuery("SELECT Tracks.beginsAt AS date, Tracks.time AS time, Tracks.distance FROM Tracks WHERE Tracks._id = ?",
+                    new String[]{String.valueOf(idTrack)});
+
+            if (cursor != null) {
+                if (cursor.moveToNext()) {
+                    do {
+                        beginsAt = cursor.getInt(cursor.getColumnIndexOrThrow("date"));
+                        distance = cursor.getInt(cursor.getColumnIndexOrThrow("distance"));
+                        time = cursor.getInt(cursor.getColumnIndexOrThrow("time"));
+                    } while (cursor.moveToNext());
+                }
+                cursor.close();
+            }
+
+            Cursor cursorPoints = App.getInstance().getDb().rawQuery("SELECT Point._id AS id, Point.longitude AS lng, Point.latitude AS lat FROM Point WHERE Point.trackId = ?",
+                    new String[]{String.valueOf(idTrack)});
+
+            if (cursorPoints != null) {
+                if (cursorPoints.moveToNext()) {
+                    do {
+                        Point point = new Point();
+                        point.setLat(cursorPoints.getDouble(cursorPoints.getColumnIndexOrThrow("lat")));
+                        point.setLng(cursorPoints.getDouble(cursorPoints.getColumnIndexOrThrow("lng")));
+                        points.add(point);
+                    } while (cursorPoints.moveToNext());
+                }
+                cursorPoints.close();
+            }
+
+            if (points.size() > 0) {
+                String trackToken = App.getInstance().getTracksReference().child(user.getUid()).push().getKey();
+                writeKeyToDb(trackToken, idTrack);
+                SaveModel saveModel = new SaveModel(beginsAt, time, distance, trackToken, points);
+
+                App.getInstance().getTracksReference().child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError != null) {
+                            Snackbar.make(linearLayoutRoot, "Data could not be saved " + databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
+                        } else {
+                            Snackbar.make(linearLayoutRoot, "Data saved ", Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.scamper_activity_snackbar_no_points, Toast.LENGTH_SHORT).show();
+                deleteTrackData();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,7 +237,6 @@ public class ScamperActivity extends AppCompatActivity {
         });
     }
 
-
     public void updateTimer(final String timeFromChronometer) {
         runOnUiThread(new Runnable() {
             @Override
@@ -186,7 +245,6 @@ public class ScamperActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void buildAlertMessageNoGps() {
         new AlertDialog.Builder(this)
@@ -202,7 +260,6 @@ public class ScamperActivity extends AppCompatActivity {
                 .show();
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CODE) {
@@ -214,7 +271,6 @@ public class ScamperActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -224,7 +280,6 @@ public class ScamperActivity extends AppCompatActivity {
         }
         return true;
     }
-
 
     @Override
     public void onBackPressed() {
@@ -236,7 +291,6 @@ public class ScamperActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -244,14 +298,12 @@ public class ScamperActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastReceiverIdTrack);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
         loadInstance();
         LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastReceiverIdTrack, new IntentFilter(BROADCAST_FINISH_SERVICE));
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -266,7 +318,6 @@ public class ScamperActivity extends AppCompatActivity {
         outState.putString(TIME_SCAMPER_TEXT, textTimer.getText().toString());
         outState.putInt(VIEW_IMAGE, pandaFinishScamper.getVisibility());
     }
-
 
     @SuppressWarnings("WrongConstant")
     @Override
@@ -286,7 +337,6 @@ public class ScamperActivity extends AppCompatActivity {
         }
     }
 
-
     private void saveInstance() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
@@ -300,7 +350,6 @@ public class ScamperActivity extends AppCompatActivity {
         }
         editor.apply();
     }
-
 
     private void loadInstance() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -325,70 +374,6 @@ public class ScamperActivity extends AppCompatActivity {
             textYouFinishRunning.setVisibility(View.GONE);
         }
     }
-
-
-    private BroadcastReceiver broadcastReceiverIdTrack = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            idTrack = intent.getIntExtra(EXTRA_ID_TRACK, -1);
-            textDistance.setText(String.format(getString(R.string.scamper_activity_distance_meter), App.getInstance().getState().getNowDistance()));
-
-            points = new ArrayList<>();
-            long beginsAt = 0;
-            int distance = 0;
-            long time = 0;
-
-            Cursor cursor = App.getInstance().getDb().rawQuery("SELECT Tracks.beginsAt AS date, Tracks.time AS time, Tracks.distance FROM Tracks WHERE Tracks._id = ?",
-                    new String[]{String.valueOf(idTrack)});
-
-            if (cursor != null) {
-                if (cursor.moveToNext()) {
-                    do {
-                        beginsAt = cursor.getInt(cursor.getColumnIndexOrThrow("date"));
-                        distance = cursor.getInt(cursor.getColumnIndexOrThrow("distance"));
-                        time = cursor.getInt(cursor.getColumnIndexOrThrow("time"));
-                    } while (cursor.moveToNext());
-                }
-                cursor.close();
-            }
-
-            Cursor cursorPoints = App.getInstance().getDb().rawQuery("SELECT Point._id AS id, Point.longitude AS lng, Point.latitude AS lat FROM Point WHERE Point.trackId = ?",
-                    new String[]{String.valueOf(idTrack)});
-
-            if (cursorPoints != null) {
-                if (cursorPoints.moveToNext()) {
-                    do {
-                        Point point = new Point();
-                        point.setLat(cursorPoints.getDouble(cursorPoints.getColumnIndexOrThrow("lat")));
-                        point.setLng(cursorPoints.getDouble(cursorPoints.getColumnIndexOrThrow("lng")));
-                        points.add(point);
-                    } while (cursorPoints.moveToNext());
-                }
-                cursorPoints.close();
-            }
-
-            if (points.size() > 0) {
-                String trackToken = App.getInstance().getTracksReference().child(user.getUid()).push().getKey();
-                writeKeyToDb(trackToken, idTrack);
-                SaveModel saveModel = new SaveModel(beginsAt, time, distance, trackToken, points);
-
-                App.getInstance().getTracksReference().child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        if (databaseError != null) {
-                            Snackbar.make(linearLayoutRoot, "Data could not be saved " + databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
-                        } else {
-                            Snackbar.make(linearLayoutRoot, "Data saved ", Snackbar.LENGTH_LONG).show();
-                        }
-                    }
-                });
-            } else {
-                Toast.makeText(getApplicationContext(), R.string.scamper_activity_snackbar_no_points, Toast.LENGTH_SHORT).show();
-                deleteTrackData();
-            }
-        }
-    };
-
 
     private void writeKeyToDb(String key, int idTrack) {
         new QueryBuilder()

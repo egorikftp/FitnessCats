@@ -1,5 +1,6 @@
 package com.egoriku.catsrunning.adapters;
 
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import com.egoriku.catsrunning.models.LikedTracksModel;
 import com.egoriku.catsrunning.utils.ConverterTime;
 
 import java.util.ArrayList;
+
+import static com.egoriku.catsrunning.utils.VectorToBitmap.createBitmapFromVector;
 
 public class LikedFragmentAdapter extends RecyclerView.Adapter<LikedFragmentAdapter.ViewHolder> {
     private ArrayList<LikedTracksModel> modelArrayList;
@@ -38,11 +41,16 @@ public class LikedFragmentAdapter extends RecyclerView.Adapter<LikedFragmentAdap
         holder.date.setText(ConverterTime.convertUnixDate(modelArrayList.get(position).getDate()));
         holder.timeRunning.setText(ConverterTime.ConvertTimeToStringWithMill(modelArrayList.get(position).getTimeRunning()));
         holder.distance.setText(String.format(holder.format, modelArrayList.get(position).getDistance()));
-        holder.imageViewLiked.setImageDrawable(
-                App.getInstance().getResources().getDrawable(
-                        R.drawable.ic_star_black
-                )
-        );
+        setImage(holder.imageViewLiked, R.drawable.ic_vec_star_black);
+    }
+
+
+    private void setImage(ImageView imageViewLiked, int ic_vec) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            imageViewLiked.setImageDrawable(App.getInstance().getResources().getDrawable(ic_vec, App.getInstance().getTheme()));
+        } else {
+            imageViewLiked.setImageBitmap(createBitmapFromVector(App.getInstance().getResources(), ic_vec));
+        }
     }
 
 
