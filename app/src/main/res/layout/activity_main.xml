@@ -29,13 +29,12 @@
             android:id="@+id/recycler_view_naw_drawer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/include_item"
+            android:layout_above="@+id/linear_layout_setting"
             android:background="@android:color/white"
             app:elevation="6dp" />
 
         <include
-            android:id="@+id/include_item"
-            layout="@layout/adapter_navigation_drawer"
+            layout="@layout/item_navigation_drawer_setting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true" />

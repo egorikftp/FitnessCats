@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:id="@+id/linear_layout_setting"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:paddingBottom="@dimen/adapter_naw_drawer_margin_item"
+    android:paddingTop="@dimen/adapter_naw_drawer_margin_item"
+    app:elevation="8dp">
+
+    <ImageView
+        android:id="@+id/naw_drawer_item_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/adapter_naw_drawer_margin_image"
+        android:layout_marginStart="@dimen/adapter_naw_drawer_margin_image"
+        app:srcCompat="@drawable/ic_settings_black" />
+
+    <TextView
+        android:id="@+id/naw_drawer_item_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/adapter_naw_drawer_margin_image"
+        android:text="@string/navigation_drawer_setting" />
+</LinearLayout>

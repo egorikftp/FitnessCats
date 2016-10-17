@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.egoriku.catsrunning.App;
@@ -47,10 +48,10 @@ import java.util.List;
 
 public class TracksActivity extends AppCompatActivity {
     private static final String TAG_EXIT_APP = "TAG_EXIT_APP";
-    private static final String TAG_SETTING = "TAG_SETTING";
     public static final String BROADCAST_SAVE_NEW_TRACKS = "BROADCAST_SAVE_NEW_TRACKS";
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
+    private LinearLayout linearLayoutSetting;
     private ActionBarDrawerToggle drawerToggle;
     private RecyclerView recyclerView;
     private ArrayList<ItemNavigationDrawer> drawerArrayList;
@@ -71,19 +72,20 @@ public class TracksActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_naw_drawer);
+        linearLayoutSetting = (LinearLayout) findViewById(R.id.linear_layout_setting);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             emailText = user.getEmail();
             nameText = user.getDisplayName();
-            Log.e("email", emailText);
-            Log.e("name", nameText);
         } else {
             startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
             finish();
         }
 
         addDrawerItem();
+
+        initRecyclerView();
 
         setSupportActionBar(toolbar);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -174,6 +176,14 @@ public class TracksActivity extends AppCompatActivity {
                 Log.e("error:", databaseError.getMessage());
             }
         });
+
+        linearLayoutSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawerLayout.closeDrawers();
+                Toast.makeText(App.getInstance(), "Setting Click", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 
@@ -184,6 +194,7 @@ public class TracksActivity extends AppCompatActivity {
                 getString(R.string.navigation_drawer_main_activity),
                 R.drawable.ic_vec_near_me_black,
                 FitnessDataFragment.TAG_MAIN_FRAGMENT,
+                false,
                 false
         ));
 
@@ -191,6 +202,7 @@ public class TracksActivity extends AppCompatActivity {
                 getString(R.string.navigation_drawer_reminders),
                 R.drawable.ic_vec_notifications_active_black,
                 RemindersFragment.TAG_REMINDERS_FRAGMENT,
+                false,
                 false
         ));
 
@@ -198,6 +210,7 @@ public class TracksActivity extends AppCompatActivity {
                 getString(R.string.navigation_drawer_liked),
                 R.drawable.ic_vec_star_black,
                 LikedFragment.TAG_LIKED_FRAGMENT,
+                false,
                 false
         ));
 
@@ -205,6 +218,7 @@ public class TracksActivity extends AppCompatActivity {
                 getString(R.string.navigation_drawer_statistic),
                 R.drawable.ic_vec_equalizer_black,
                 StatisticFragment.TAG_STATISTIC_FRAGMENT,
+                false,
                 false
         ));
 
@@ -212,9 +226,12 @@ public class TracksActivity extends AppCompatActivity {
                 getString(R.string.navigation_drawer_exit),
                 R.drawable.ic_vec_exit_to_app_black,
                 TAG_EXIT_APP,
-                false
+                false,
+                true
         ));
+    }
 
+    private void initRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new NavigationDrawerAdapter(drawerArrayList);
         recyclerView.setAdapter(adapter);
@@ -223,38 +240,38 @@ public class TracksActivity extends AppCompatActivity {
         adapter.setOnItemSelecteListener(new OnItemSelecteListener() {
             @Override
             public void onItemSelected(View v, int position) {
-                String tag = String.valueOf(drawerArrayList.get(position).getTagFragment());
-
-                if (tag.equals(FitnessDataFragment.TAG_MAIN_FRAGMENT)) {
-                    showFragment(AllFitnessDataFragment.newInstance(), FitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
-                    drawerLayout.closeDrawers();
-                }
-
-                if (tag.equals(RemindersFragment.TAG_REMINDERS_FRAGMENT)) {
-                    showFragment(RemindersFragment.newInstance(), RemindersFragment.TAG_REMINDERS_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
-                    drawerLayout.closeDrawers();
-                }
-
-                if (tag.equals(LikedFragment.TAG_LIKED_FRAGMENT)) {
-                    showFragment(LikedFragment.newInstance(), LikedFragment.TAG_LIKED_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
-                    drawerLayout.closeDrawers();
-                }
-
-                if (tag.equals(TAG_EXIT_APP)) {
-                    drawerLayout.closeDrawers();
-                    clearUserData();
-                    FirebaseAuth.getInstance().signOut();
-                    startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
-                    finish();
-                }
-
-                if (tag.equals(TAG_SETTING)) {
-                    drawerLayout.closeDrawers();
-                    Toast.makeText(TracksActivity.this, "Setting click", Toast.LENGTH_LONG).show();
+                if (drawerArrayList.get(position).getTagFragment() != null) {
+                    changeNavigationDrawerItem(drawerArrayList.get(position).getTagFragment());
                 }
             }
         });
+    }
+
+
+    private void changeNavigationDrawerItem(String tag) {
+        if (tag.equals(FitnessDataFragment.TAG_MAIN_FRAGMENT)) {
+            showFragment(AllFitnessDataFragment.newInstance(), FitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
+            drawerLayout.closeDrawers();
+        }
+
+        if (tag.equals(RemindersFragment.TAG_REMINDERS_FRAGMENT)) {
+            showFragment(RemindersFragment.newInstance(), RemindersFragment.TAG_REMINDERS_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
+            drawerLayout.closeDrawers();
+        }
+
+        if (tag.equals(LikedFragment.TAG_LIKED_FRAGMENT)) {
+            showFragment(LikedFragment.newInstance(), LikedFragment.TAG_LIKED_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
+            drawerLayout.closeDrawers();
+        }
+
+        if (tag.equals(TAG_EXIT_APP)) {
+            drawerLayout.closeDrawers();
+            clearUserData();
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
+            finish();
+        }
     }
 
 

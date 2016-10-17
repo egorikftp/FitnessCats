@@ -5,4 +5,11 @@
         <item>@string/tab_text_running</item>
         <item>@string/tab_text_cycling</item>
     </string-array>
+
+
+    <string-array name="type_reminder">
+        <item>@string/type_walking</item>
+        <item>@string/type_running</item>
+        <item>@string/type_cycling</item>
+    </string-array>
 </resources>

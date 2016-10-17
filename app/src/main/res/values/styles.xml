@@ -59,4 +59,16 @@
     <style name="NawDrawerTheme" parent="Base.TextAppearance.AppCompat.Body1">
         <item name="android:textColor">@android:color/white</item>
     </style>
+
+    <style name="NavDrawerDefaultTheme">
+        <item name="image_color">@color/colorAccent</item>
+    </style>
+
+    <style name="NavDrawerDefaultThemeUpdate" parent="NavDrawerDefaultTheme">
+        <item name="image_color">@android:color/black</item>
+    </style>
+
+    <declare-styleable name="NavigationDrawer">
+        <attr name="image_color" format="color" />/>
+    </declare-styleable>
 </resources>

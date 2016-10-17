@@ -139,5 +139,9 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="type_cycling">Велопрогулкa</string>
+    <string name="type_walking">Прогулкa</string>
+    <string name="type_running">Пробежкa</string>
+
 </resources>

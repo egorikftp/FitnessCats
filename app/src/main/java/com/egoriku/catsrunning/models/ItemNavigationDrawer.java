@@ -9,6 +9,7 @@ public class ItemNavigationDrawer {
 
     private String userName;
     private String userEmail;
+    private boolean showLine;
 
     public ItemNavigationDrawer() {
     }
@@ -19,11 +20,12 @@ public class ItemNavigationDrawer {
     }
 
 
-    public ItemNavigationDrawer(String itemName, int imgResId, String tagFragment, boolean isSelected) {
+    public ItemNavigationDrawer(String itemName, int imgResId, String tagFragment, boolean isSelected, boolean showLine) {
         this.itemName = itemName;
         this.imgResId = imgResId;
         this.tagFragment = tagFragment;
         this.isSelected = isSelected;
+        this.showLine = showLine;
     }
 
     public String getTagFragment() {
@@ -72,5 +74,13 @@ public class ItemNavigationDrawer {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
+    }
+
+    public boolean isShowLine() {
+        return showLine;
+    }
+
+    public void setShowLine(boolean showLine) {
+        this.showLine = showLine;
     }
 }

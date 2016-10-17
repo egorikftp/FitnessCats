@@ -1,12 +1,14 @@
 package com.egoriku.catsrunning.adapters;
 
+import android.graphics.Typeface;
 import android.os.Build;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.egoriku.catsrunning.App;
@@ -16,14 +18,17 @@ import com.egoriku.catsrunning.models.ItemNavigationDrawer;
 
 import java.util.ArrayList;
 
+import static android.R.color.white;
 import static com.egoriku.catsrunning.utils.VectorToBitmap.createBitmapFromVector;
+import static com.egoriku.catsrunning.utils.VectorToBitmap.getDrawable;
 
 
 public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDrawerAdapter.ViewHolder> {
     private ArrayList<ItemNavigationDrawer> modelArray;
     private static final int TYPE_HEADER = 0;
-    private static final int TYPE_MENY = 1;
+    private static final int TYPE_MINY = 1;
     private OnItemSelecteListener onItemSelecteListener;
+
 
     public NavigationDrawerAdapter(ArrayList<ItemNavigationDrawer> modelArray) {
         this.modelArray = modelArray;
@@ -44,23 +49,37 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         if (position == 0) {
             holder.headerName.setText(modelArray.get(position).getUserName());
             holder.headerEmail.setText(modelArray.get(position).getUserEmail());
         } else {
+            if (modelArray.get(position).isShowLine()) {
+                holder.imageLine.setVisibility(View.VISIBLE);
+            }
+
             if (modelArray.get(position).isSelected()) {
-                holder.textViewItem.setTextColor(App.getInstance().getResources().getColor(R.color.colorPrimary));
-                setImage(holder.imageView, modelArray.get(position).getImgResId());
+                holder.rootLinearLayout.setBackgroundColor(App.getInstance().getResources().getColor(R.color.color_background_nav_drawer));
+                holder.imageView.setImageDrawable(
+                        getDrawable(modelArray.get(position).getImgResId(), R.style.NavDrawerDefaultTheme)
+                );
+                holder.textViewItem.setTextColor(App.getInstance().getResources().getColor(R.color.colorAccent));
+                holder.textViewItem.setTypeface(null, Typeface.BOLD);
                 holder.textViewItem.setText(modelArray.get(position).getItemName());
             } else {
-                holder.textViewItem.setTextColor(App.getInstance().getResources().getColor(R.color.color_naw_drawer_text));
-                setImage(holder.imageView, modelArray.get(position).getImgResId());
+                holder.rootLinearLayout.setBackgroundColor(App.getInstance().getResources().getColor(white));
+                holder.imageView.setImageDrawable(
+                        getDrawable(modelArray.get(position).getImgResId(), R.style.NavDrawerDefaultThemeUpdate)
+                );
+                holder.textViewItem.setTextColor(App.getInstance().getResources().getColor(R.color.color_nav_drawer_text));
+                holder.textViewItem.setTypeface(null, Typeface.NORMAL);
                 holder.textViewItem.setText(modelArray.get(position).getItemName());
             }
         }
     }
 
 
+    //получение png из vector для старых версий android
     private void setImage(ImageView image, int imgRes) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             image.setImageDrawable(App.getInstance().getResources().getDrawable(imgRes, App.getInstance().getTheme()));
@@ -81,15 +100,18 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         if (position == 0) {
             return TYPE_HEADER;
         }
-        return TYPE_MENY;
+        return TYPE_MINY;
     }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView textViewItem;
-        public ImageView imageView;
-        public TextView headerName;
-        public TextView headerEmail;
+        protected TextView textViewItem;
+        protected ImageView imageView;
+        protected ImageView imageLine;
+        protected TextView headerName;
+        protected TextView headerEmail;
+        protected LinearLayout rootLinearLayout;
+
 
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
@@ -99,6 +121,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
             } else {
                 textViewItem = (TextView) itemView.findViewById(R.id.naw_drawer_item_text);
                 imageView = (ImageView) itemView.findViewById(R.id.naw_drawer_item_image);
+                imageLine = (ImageView) itemView.findViewById(R.id.naw_drawer_item_line);
+                rootLinearLayout = (LinearLayout) itemView.findViewById(R.id.root_layout_nav_drawer_item);
             }
 
             itemView.setOnClickListener(new View.OnClickListener() {

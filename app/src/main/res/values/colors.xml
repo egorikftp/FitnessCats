@@ -13,7 +13,13 @@
     <color name="color_activity_splash_background">#AEBFB2</color>
     <color name="splash_screen_text_color">#6F4052</color>
 
-    <color name="color_naw_drawer_text_selected">#FFF</color>
-    <color name="color_naw_drawer_text">#434343</color>
+    <color name="color_nav_drawer_text_selected">#FFF</color>
+    <color name="color_nav_drawer_text">#434343</color>
+    <color name="color_nav_drawer">#99f59758</color>
+
+
+    <color name="color_background_nav_drawer">#2aaebfb2</color>
+
+
 
 </resources>

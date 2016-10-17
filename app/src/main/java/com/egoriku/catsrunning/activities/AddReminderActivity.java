@@ -19,12 +19,11 @@ import android.widget.TimePicker;
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.receivers.ReminderReceiver;
+import com.egoriku.catsrunning.ui.CustomStringPicker;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-
-import hotchemi.stringpicker.StringPicker;
 
 public class AddReminderActivity extends AppCompatActivity {
     private static final int UNICODE_EMOJI = 0x1F638;
@@ -38,7 +37,7 @@ public class AddReminderActivity extends AppCompatActivity {
     private static final String KEY_TOOLBAR = "KEY_TOOLBAR";
     private static final String KEY_VISIBLE_TEXT_VIEW = "KEY_VISIBLE_TEXT_VIEW";
 
-    private StringPicker stringPicker;
+    private CustomStringPicker stringPicker;
     private DatePicker datePicker;
     private TimePicker timePicker;
     private Toolbar toolbar;
@@ -61,7 +60,7 @@ public class AddReminderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reminder_add);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
-        stringPicker = (StringPicker) findViewById(R.id.add_reminder_part_one_string_picker);
+        stringPicker = (CustomStringPicker) findViewById(R.id.add_reminder_part_one_string_picker);
         timePicker = (TimePicker) findViewById(R.id.add_reminder_part_two_time_picker);
         datePicker = (DatePicker) findViewById(R.id.add_reminder_part_one_date_picker);
         btnNext = (Button) findViewById(R.id.add_reminder_btn_next);
@@ -80,8 +79,7 @@ public class AddReminderActivity extends AppCompatActivity {
         }
 
         allDateCalendar = Calendar.getInstance();
-        listPicker = Arrays.asList("Пробежка", "Прогулка", "Велопрогулка");
-
+        listPicker = Arrays.asList(getResources().getStringArray(R.array.type_reminder));
         timePicker.setIs24HourView(true);
 
         if (Build.VERSION.SDK_INT >= 15 && Build.VERSION.SDK_INT <= 19) {
