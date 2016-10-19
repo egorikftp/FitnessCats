@@ -1,15 +1,15 @@
 package com.egoriku.catsrunning.activities;
 
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
+import com.egoriku.catsrunning.helpers.DbCursor;
+import com.egoriku.catsrunning.helpers.QueryBuilder;
 import com.egoriku.catsrunning.utils.ConverterTime;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -63,22 +63,27 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
         coordinatesList = new ArrayList<>();
 
         if (getIntent().getExtras() != null) {
-            Cursor cursor = App.getInstance().getDb().rawQuery(
-                    "SELECT Point.longitude AS lng, Point.latitude AS lat FROM Point Where Point.trackId = ?",
-                    new String[]{String.valueOf(getIntent().getExtras().getInt(KEY_ID))}
-            );
+            Cursor cursorPoints = new QueryBuilder()
+                    .get("longitude", "latitude")
+                    .from("Point")
+                    .where("trackId=", String.valueOf(getIntent().getExtras().getInt(KEY_ID)))
+                    .select();
+            DbCursor dbCursor = new DbCursor(cursorPoints);
 
-            if (cursor != null) {
-                if (cursor.moveToNext()) {
+            if(dbCursor.isValid()){
+                if (cursorPoints.moveToNext()) {
                     do {
                         coordinatesList.add(
-                                new LatLng(cursor.getDouble(cursor.getColumnIndexOrThrow("lat")), cursor.getDouble(cursor.getColumnIndexOrThrow("lng")))
+                                new LatLng(
+                                        cursorPoints.getDouble(cursorPoints.getColumnIndexOrThrow("latitude")),
+                                        cursorPoints.getDouble(cursorPoints.getColumnIndexOrThrow("longitude"))
+                                )
                         );
-                    } while (cursor.moveToNext());
+                    } while (cursorPoints.moveToNext());
                 }
-                cursor.close();
             }
-
+            dbCursor.close();
+            
             distanceText.setText(String.format(getString(R.string.track_fragment_distance_meter), getIntent().getExtras().getLong(KEY_DISTANCE)));
             timeRunningText.setText(ConverterTime.ConvertTimeToStringWithMill(getIntent().getExtras().getLong(KEY_TIME_RUNNING)));
         }
@@ -98,7 +103,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
         } else {
             mMap.addPolyline(new PolylineOptions()
                     .addAll(coordinatesList)
-                    .color(Color.BLUE)
+                    .color(getResources().getColor(R.color.colorAccent))
                     .width(10)
             );
 
