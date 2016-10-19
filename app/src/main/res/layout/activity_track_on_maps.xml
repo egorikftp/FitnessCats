@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <include layout="@layout/toolbar" />
 
     <LinearLayout
+        android:id="@+id/track_on_maps_activity_linear_layout_distance"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_app"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="@dimen/track_on_map_activity_image_padding">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_map_black" />
+            app:srcCompat="@drawable/ic_vec_map_black" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -27,19 +29,30 @@
             android:textAppearance="?android:textAppearanceMedium" />
 
         <TextView
-            android:id="@+id/fragment_track_distance_text_view"
+            android:id="@+id/track_on_maps_activity_distance_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:textAppearanceMedium" />
     </LinearLayout>
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/track_on_maps_activity_static_image_line"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/track_on_maps_activity_linear_layout_distance"
+        app:srcCompat="@drawable/ic_vec_line" />
+
+    <LinearLayout
+        android:id="@+id/track_on_maps_activity_linear_layout_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/track_on_maps_activity_static_image_line"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="@dimen/track_on_map_activity_image_padding">
 
         <TextView
+            android:id="@+id/track_on_maps_activity_static_time_running"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/fragment_track_padding_word"
@@ -48,7 +61,7 @@
             android:textColor="@color/color_ic_naw_drawer" />
 
         <TextView
-            android:id="@+id/fragment_track_time_running_text_view"
+            android:id="@+id/track_on_maps_activity_time_running_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:textAppearanceLarge"
@@ -57,9 +70,9 @@
     </LinearLayout>
 
     <fragment
-        android:id="@+id/map_fragment_view"
+        android:id="@+id/track_on_maps_activity_map_fragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/track_on_maps_activity_linear_layout_time" />
+</RelativeLayout>

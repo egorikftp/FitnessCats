@@ -46,10 +46,10 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_on_maps);
-        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment_view);
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.track_on_maps_activity_map_fragment);
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
-        distanceText = (TextView) findViewById(R.id.fragment_track_distance_text_view);
-        timeRunningText = (TextView) findViewById(R.id.fragment_track_time_running_text_view);
+        distanceText = (TextView) findViewById(R.id.track_on_maps_activity_distance_text);
+        timeRunningText = (TextView) findViewById(R.id.track_on_maps_activity_time_running_text);
 
         startRunningHint = getString(R.string.track_fragment_start_running_hint);
         endRunningHint = getString(R.string.track_fragment_end_running_hint);

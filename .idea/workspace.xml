@@ -4,18 +4,18 @@
     <shared>
       <config>
         <devices>
-          <device id="Nexus S" />
           <device id="Nexus 5X" />
+          <device id="Galaxy Nexus" />
+          <device id="Nexus 5" />
+          <device id="Nexus S" />
           <device id="tv_1080p" />
           <device id="pixel_c" />
           <device id="Nexus 6" />
           <device id="Nexus 9" />
           <device id="Nexus 10" />
-          <device id="Galaxy Nexus" />
           <device id="Nexus 4" />
-          <device id="Nexus 5" />
         </devices>
-        <target>android-23</target>
+        <target>android-24</target>
       </config>
     </shared>
   </component>
@@ -28,20 +28,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="220db3eb-58b8-41da-93b8-2e9e30c5f1be" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_star_black_nav_drawer.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/hamcrest_core_1_3.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/junit_4_12.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/multidex_1_0_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/multidex_instrumentation_1_0_1.xml" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_map_black.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_map_black.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ic_map_black.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-xhdpi/ic_map_black.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-xxhdpi/ic_map_black.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/ic_map_black.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_track.xml" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/debug/res/values/google_maps_api.xml" afterPath="$PROJECT_DIR$/app/src/debug/res/values/google_maps_api.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/TrackOnMapsActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/TrackOnMapsActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/TracksActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/TracksActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/adapters/AllFitnessDataAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/adapters/AllFitnessDataAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/adapters/LikedFragmentAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/adapters/LikedFragmentAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_star_black.xml" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_star_black.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_line.xml" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_line.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_track_on_maps.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_track_on_maps.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/adapter_navigation_drawer.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/adapter_navigation_drawer.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/adapter_fragment_liked.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/adapter_fragment_liked.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" />
     </list>
     <ignored path="Fitness-Cats.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -109,22 +109,43 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TrackOnMapsActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TrackOnMapsActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/TrackOnMapsActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="247">
-              <caret line="47" column="48" selection-start-line="47" selection-start-column="48" selection-end-line="47" selection-end-column="48" />
+            <state relative-caret-position="145">
+              <caret line="47" column="46" selection-start-line="47" selection-start-column="46" selection-end-line="47" selection-end-column="46" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#2232#2285#0" expanded="true" />
-                <element signature="e#2312#2363#0" expanded="true" />
-                <element signature="e#2492#2540#0" expanded="true" />
-                <element signature="e#3484#3533#0" expanded="true" />
-                <element signature="e#4119#4174#0" expanded="true" />
-                <element signature="e#5188#5424#0" expanded="true" />
-                <element signature="e#5423#5424#0" expanded="true" />
+                <element signature="e#2256#2309#0" expanded="true" />
+                <element signature="e#2336#2387#0" expanded="true" />
+                <element signature="e#2516#2564#0" expanded="true" />
+                <element signature="e#3508#3557#0" expanded="true" />
+                <element signature="e#4143#4198#0" expanded="true" />
+                <element signature="e#5212#5448#0" expanded="true" />
+                <element signature="e#5447#5448#0" expanded="true" />
               </folding>
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="activity_track_on_maps.xml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_track_on_maps.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="427">
+              <caret line="78" column="0" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
+              <folding>
+                <element signature="e#620#664#0" expanded="true" />
+                <element signature="e#989#1025#0" expanded="true" />
+                <element signature="e#1059#1095#0" expanded="true" />
+                <element signature="e#1121#1154#0" expanded="true" />
+                <element signature="e#2151#2195#0" expanded="true" />
+                <element signature="e#2419#2455#0" expanded="true" />
+                <element signature="e#2481#2518#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+          <provider editor-type-id="android-designer2">
+            <state />
           </provider>
         </entry>
       </file>
@@ -2129,8 +2150,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/ScamperActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/test.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/ic_cat_in_form.xml" />
         <option value="$PROJECT_DIR$/app/build/intermediates/res/merged/debug/layout/fragment_all_fitness_data.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/fragments/AllFitnessDataFragment.java" />
@@ -2162,7 +2181,6 @@
         <option value="$PROJECT_DIR$/app/build/intermediates/data-binding-layout-out/debug/layout/adapter_all_fitness_data_fragment.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/adapter_all_fitness_data_fragment.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_reminder_add.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_line.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/ui/CustomStringPicker.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values-large/dimens.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" />
@@ -2178,8 +2196,11 @@
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_star_black.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/adapters/AllFitnessDataAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/debug/res/values/google_maps_api.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_track_on_maps.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/TrackOnMapsActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/adapter_fragment_liked.xml" />
+        <option value="$PROJECT_DIR$/app/build/intermediates/data-binding-layout-out/debug/layout/activity_track_on_maps.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_line.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_track_on_maps.xml" />
       </list>
     </option>
   </component>
@@ -2240,10 +2261,6 @@
               <option name="myItemId" value="Fitness-Cats" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -2331,11 +2348,37 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Fitness-Cats" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Fitness-Cats" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="catsrunning" />
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="values-large" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -2560,7 +2603,7 @@
     <property name="UI_DESIGNER_EDITOR_MODE.NlPaletteManager-NlPreviewForm.WIDTH" value="252" />
     <property name="UI_DESIGNER_EDITOR_MODE.NlPropertiesWindowManager-NlEditorPanel.WIDTH" value="310" />
     <property name="ScreenshotViewer.SavePath" value="$USER_HOME$/Desktop" />
-    <property name="SearchEverywhereHistoryKey" value="genym&#9;ACTION&#9;Genymotion.gdm&#10;geny&#9;ACTION&#9;Genymotion.gdm&#10;genymo&#9;ACTION&#9;Genymotion.gdm&#10;build&#9;FILE&#9;file://D:/Google Drive/Android Course/Fitness-Cats/app/build.gradle&#10;colo&#9;FILE&#9;file://D:/Google Drive/Android Course/Fitness-Cats/app/src/main/res/values/colors.xml&#10;date&#9;PSI&#9;JAVA://com.egoriku.catsrunning.adapters.AllFitnessDataAdapter.ViewHolder#date&#10;mani&#9;FILE&#9;file://D:/Google Drive/Android Course/Fitness-Cats/app/src/main/AndroidManifest.xml&#10;st&#9;FILE&#9;file://D:/Google Drive/Android Course/Fitness-Cats/app/src/main/res/values/strings.xml" />
+    <property name="SearchEverywhereHistoryKey" value="genymo&#9;ACTION&#9;Genymotion.gdm&#10;genym&#9;ACTION&#9;Genymotion.gdm&#10;geny&#9;ACTION&#9;Genymotion.gdm&#10;build&#9;FILE&#9;file://D:/Google Drive/Android Course/Fitness-Cats/app/build.gradle&#10;colo&#9;FILE&#9;file://D:/Google Drive/Android Course/Fitness-Cats/app/src/main/res/values/colors.xml&#10;date&#9;PSI&#9;JAVA://com.egoriku.catsrunning.adapters.AllFitnessDataAdapter.ViewHolder#date&#10;mani&#9;FILE&#9;file://D:/Google Drive/Android Course/Fitness-Cats/app/src/main/AndroidManifest.xml&#10;st&#9;FILE&#9;file://D:/Google Drive/Android Course/Fitness-Cats/app/src/main/res/values/strings.xml" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/app/src/main/res/drawable" />
     <property name="DEBUGGABLE_DEVICE" value="unknown-google_nexus_5___5_1_0___api_22___1080x1920-192.168.245.101:5555" />
     <property name="DEBUGGABLE_PROCESS" value="com.egoriku.catsrunning" />
@@ -2575,7 +2618,7 @@
     <property name="DEBUGGER_ID" value="Auto" />
     <property name="UI_DESIGNER_EDITOR_MODE.NlPaletteManager-NlEditorPanel.WIDTH" value="218" />
     <property name="UI_DESIGNER_EDITOR_MODE.NlPaletteManager-NlEditorPanel.SHOW" value="true" />
-    <property name="VectorAssetImportPath" value="D:\Google Drive\.фотографии\Работы Illustrator\Кот в форме" />
+    <property name="VectorAssetImportPath" value="D:\Google Drive\.фотографии\Работы Illustrator" />
     <property name="android.project.structure.last.selected" value="app" />
     <property name="android.project.structure.proportion" value="0.15" />
   </component>
@@ -3072,7 +3115,7 @@
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2708018" sideWeight="0.48312885" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39409986" sideWeight="0.48312885" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.6797386" sideWeight="0.48473284" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3267974" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32843137" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
@@ -3146,45 +3189,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mikepenz/fastadapter/1.8.2/e3dee51ddcf619c80d2ee9e74ea727b3c6e567f9/fastadapter-1.8.2-sources.jar!/com/mikepenz/fastadapter/utils/RecyclerViewCacheUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-453">
-          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_near_me_black.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="8" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_notifications_active_black.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="45" selection-start-line="6" selection-start-column="45" selection-end-line="6" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_exit_to_app_black.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="45" selection-start-line="6" selection-start-column="45" selection-end-line="6" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_equalizer_black.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="45" selection-start-line="6" selection-start-column="45" selection-end-line="6" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/values/colors.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="357">
@@ -3277,14 +3281,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_line.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="32" selection-start-line="7" selection-start-column="32" selection-end-line="7" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/values/dimens.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="411">
@@ -3297,14 +3293,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
           <caret line="43" column="25" selection-start-line="43" selection-start-column="25" selection-end-line="43" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values-large/dimens.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="45" selection-start-line="2" selection-start-column="45" selection-end-line="2" selection-end-column="45" />
           <folding />
         </state>
       </provider>
@@ -3546,27 +3534,32 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_map_black.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/egoriku/catsrunning/activities/TrackOnMapsActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="47" column="48" selection-start-line="47" selection-start-column="48" selection-end-line="47" selection-end-column="48" />
+        <state relative-caret-position="145">
+          <caret line="47" column="46" selection-start-line="47" selection-start-column="46" selection-end-line="47" selection-end-column="46" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2232#2285#0" expanded="true" />
-            <element signature="e#2312#2363#0" expanded="true" />
-            <element signature="e#2492#2540#0" expanded="true" />
-            <element signature="e#3484#3533#0" expanded="true" />
-            <element signature="e#4119#4174#0" expanded="true" />
-            <element signature="e#5188#5424#0" expanded="true" />
-            <element signature="e#5423#5424#0" expanded="true" />
+            <element signature="e#2256#2309#0" expanded="true" />
+            <element signature="e#2336#2387#0" expanded="true" />
+            <element signature="e#2516#2564#0" expanded="true" />
+            <element signature="e#3508#3557#0" expanded="true" />
+            <element signature="e#4143#4198#0" expanded="true" />
+            <element signature="e#5212#5448#0" expanded="true" />
+            <element signature="e#5447#5448#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_track_on_maps.xml">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_track.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="41" selection-start-line="18" selection-start-column="41" selection-end-line="18" selection-end-column="41" />
+        <state relative-caret-position="102">
+          <caret line="15" column="48" selection-start-line="15" selection-start-column="48" selection-end-line="15" selection-end-column="48" />
           <folding />
         </state>
       </provider>
@@ -3574,8 +3567,76 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_map_black.png">
-      <provider selected="true" editor-type-id="images">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_map_black.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/adapter_fragment_liked.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="229">
+          <caret line="61" column="24" selection-start-line="61" selection-start-column="24" selection-end-line="61" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/toolbar.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/build/intermediates/data-binding-layout-out/debug/layout/activity_track_on_maps.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="131">
+          <caret line="19" column="37" selection-start-line="19" selection-start-column="37" selection-end-line="19" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values-large/dimens.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="45" selection-start-line="2" selection-start-column="45" selection-end-line="2" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_vec_line.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="22" selection-start-line="1" selection-start-column="22" selection-end-line="1" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_track_on_maps.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="427">
+          <caret line="78" column="0" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
+          <folding>
+            <element signature="e#620#664#0" expanded="true" />
+            <element signature="e#989#1025#0" expanded="true" />
+            <element signature="e#1059#1095#0" expanded="true" />
+            <element signature="e#1121#1154#0" expanded="true" />
+            <element signature="e#2151#2195#0" expanded="true" />
+            <element signature="e#2419#2455#0" expanded="true" />
+            <element signature="e#2481#2518#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2">
         <state />
       </provider>
     </entry>
