@@ -16,7 +16,6 @@ import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.egoriku.catsrunning.utils.VectorToBitmap.getDrawable;
 import static com.egoriku.catsrunning.utils.VectorToBitmap.setImage;
 
 public class AllFitnessDataAdapter extends AbstractItem<AllFitnessDataAdapter, AllFitnessDataAdapter.ViewHolder> {
@@ -135,8 +134,7 @@ public class AllFitnessDataAdapter extends AbstractItem<AllFitnessDataAdapter, A
                 break;
 
             case 1:
-                holder.imageViewLiked.setImageDrawable(
-                        getDrawable(R.drawable.ic_vec_star_black, R.style.NavDrawerDefaultThemeUpdate));
+                setImage(holder.imageViewLiked, R.drawable.ic_vec_star_black);
                 break;
         }
 

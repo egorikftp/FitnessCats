@@ -208,7 +208,7 @@ public class TracksActivity extends AppCompatActivity {
 
         drawerArrayList.add(new ItemNavigationDrawer(
                 getString(R.string.navigation_drawer_liked),
-                R.drawable.ic_vec_star_black,
+                R.drawable.ic_vec_star_black_nav_drawer,
                 LikedFragment.TAG_LIKED_FRAGMENT,
                 false,
                 false

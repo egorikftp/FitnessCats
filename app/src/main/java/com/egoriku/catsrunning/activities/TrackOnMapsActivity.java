@@ -11,7 +11,6 @@ import android.widget.Toast;
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.utils.ConverterTime;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -47,7 +46,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_on_maps);
-        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.track_on_maps_activity_map);
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment_view);
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
         distanceText = (TextView) findViewById(R.id.fragment_track_distance_text_view);
         timeRunningText = (TextView) findViewById(R.id.fragment_track_time_running_text_view);
@@ -103,7 +102,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
                     .width(10)
             );
 
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            final LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
             for (int i = 0; i < coordinatesList.size(); i++) {
                 if (i == 0) {
@@ -117,10 +116,14 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
                 }
                 builder.include(coordinatesList.get(i));
             }
+            final LatLngBounds bounds = builder.build();
 
-            LatLngBounds bounds = builder.build();
-            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, paddingMap);
-            mMap.moveCamera(cu);
+            mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+                @Override
+                public void onMapLoaded() {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, paddingMap));
+                }
+            });
             mMap.getUiSettings().setZoomControlsEnabled(true);
         }
     }
