@@ -8,15 +8,24 @@ android {
         enabled = true
     }
 
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            output.outputFile = new File(
+                    output.outputFile.parent,
+                    "${"Fitness Cats"}.${variant.name}_${variant.versionName}.apk")
+        }
+    }
+
     defaultConfig {
         applicationId "com.egoriku.catsrunning"
         vectorDrawables.useSupportLibrary = true
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 3
-        versionName "1.2"
+        versionCode 1
+        versionName "0.01"
         multiDexEnabled true
     }
+
     buildTypes {
         release {
             minifyEnabled false
