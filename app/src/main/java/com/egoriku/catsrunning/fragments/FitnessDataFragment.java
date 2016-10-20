@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -58,6 +57,7 @@ import static com.egoriku.catsrunning.models.State.TIME;
 import static com.egoriku.catsrunning.models.State.TRACK_TOKEN;
 import static com.egoriku.catsrunning.models.State.TYPE_FIT;
 import static com.egoriku.catsrunning.models.State._ID;
+import static com.egoriku.catsrunning.models.State._ID_EQ;
 
 public class FitnessDataFragment extends Fragment {
     public static final String TAG_MAIN_FRAGMENT = "TAG_MAIN_FRAGMENT";
@@ -387,15 +387,10 @@ public class FitnessDataFragment extends Fragment {
 
 
     private void updateLikedDigit(int likedDigit, int position) {
-        SQLiteStatement statement = App.getInstance().getDb().compileStatement("UPDATE Tracks SET liked=? WHERE _id = ?");
-
-        statement.bindLong(1, likedDigit);
-        statement.bindLong(2, position);
-
-        try {
-            statement.execute();
-        } finally {
-            statement.close();
-        }
+        Void updateLiked = new InquiryBuilder()
+                .updateTable(TABLE_TRACKS)
+                .set(LIKED, likedDigit)
+                .updateWhere(_ID_EQ, String.valueOf(position))
+                .update();
     }
 }
