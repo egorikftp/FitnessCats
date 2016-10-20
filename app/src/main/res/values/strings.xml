@@ -143,5 +143,7 @@
     <string name="type_cycling">Велопрогулкa</string>
     <string name="type_walking">Прогулкa</string>
     <string name="type_running">Пробежкa</string>
+    <string name="scamper_activity_track_save_success">Трек успешно сохранен</string>
+    <string name="scamper_activity_track_save_error">Трек не сохранен</string>
 
 </resources>

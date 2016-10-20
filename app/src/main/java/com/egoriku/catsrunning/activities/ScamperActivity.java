@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,6 +31,7 @@ import android.widget.Toast;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
+import com.egoriku.catsrunning.helpers.DbCursor;
 import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.models.Firebase.Point;
 import com.egoriku.catsrunning.models.Firebase.SaveModel;
@@ -46,6 +46,19 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.egoriku.catsrunning.models.State.BEGINS_AT;
+import static com.egoriku.catsrunning.models.State.DISTANCE;
+import static com.egoriku.catsrunning.models.State.LAT;
+import static com.egoriku.catsrunning.models.State.LNG;
+import static com.egoriku.catsrunning.models.State.TABLE_POINT;
+import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
+import static com.egoriku.catsrunning.models.State.TIME;
+import static com.egoriku.catsrunning.models.State.TRACK_ID_EQ;
+import static com.egoriku.catsrunning.models.State.TRACK_TOKEN;
+import static com.egoriku.catsrunning.models.State.TYPE_FIT;
+import static com.egoriku.catsrunning.models.State._ID;
+import static com.egoriku.catsrunning.models.State._ID_EQ;
 
 public class ScamperActivity extends AppCompatActivity {
     public static final String BROADCAST_FINISH_SERVICE = "BROADCAST_FINISH_SERVICE";
@@ -192,6 +205,7 @@ public class ScamperActivity extends AppCompatActivity {
         });
     }
 
+
     public void updateTimer(final String timeFromChronometer) {
         runOnUiThread(new Runnable() {
             @Override
@@ -200,6 +214,7 @@ public class ScamperActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void buildAlertMessageNoGps() {
         new AlertDialog.Builder(this)
@@ -215,6 +230,7 @@ public class ScamperActivity extends AppCompatActivity {
                 .show();
     }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CODE) {
@@ -226,6 +242,7 @@ public class ScamperActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -235,6 +252,7 @@ public class ScamperActivity extends AppCompatActivity {
         }
         return true;
     }
+
 
     @Override
     public void onBackPressed() {
@@ -246,6 +264,7 @@ public class ScamperActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -253,12 +272,14 @@ public class ScamperActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastReceiverIdTrack);
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
         loadInstance();
         LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastReceiverIdTrack, new IntentFilter(BROADCAST_FINISH_SERVICE));
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -273,6 +294,7 @@ public class ScamperActivity extends AppCompatActivity {
         outState.putString(TIME_SCAMPER_TEXT, textTimer.getText().toString());
         outState.putInt(VIEW_IMAGE, pandaFinishScamper.getVisibility());
     }
+
 
     @SuppressWarnings("WrongConstant")
     @Override
@@ -292,6 +314,7 @@ public class ScamperActivity extends AppCompatActivity {
         }
     }
 
+
     private void saveInstance() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
@@ -305,6 +328,7 @@ public class ScamperActivity extends AppCompatActivity {
         }
         editor.apply();
     }
+
 
     private void loadInstance() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -330,11 +354,12 @@ public class ScamperActivity extends AppCompatActivity {
         }
     }
 
+
     private void writeKeyToDb(String key, int idTrack) {
         new InquiryBuilder()
-                .updateTable("Tracks")
-                .set("trackToken", key)
-                .updateWhere("Tracks._id=", String.valueOf(idTrack))
+                .updateTable(TABLE_TRACKS)
+                .set(TRACK_TOKEN, key)
+                .updateWhere(_ID_EQ, String.valueOf(idTrack))
                 .update();
     }
 
@@ -349,48 +374,55 @@ public class ScamperActivity extends AppCompatActivity {
             long beginsAt = 0;
             int distance = 0;
             long time = 0;
+            int typeFit = 0;
 
-            Cursor cursor = App.getInstance().getDb().rawQuery("SELECT Tracks.beginsAt AS date, Tracks.time AS time, Tracks.distance FROM Tracks WHERE Tracks._id = ?",
-                    new String[]{String.valueOf(idTrack)});
+            Cursor cursorData = new InquiryBuilder()
+                    .get(BEGINS_AT, TIME, DISTANCE, TYPE_FIT)
+                    .from(TABLE_TRACKS)
+                    .where(false, _ID_EQ, String.valueOf(idTrack))
+                    .select();
 
-            if (cursor != null) {
-                if (cursor.moveToNext()) {
-                    do {
-                        beginsAt = cursor.getInt(cursor.getColumnIndexOrThrow("date"));
-                        distance = cursor.getInt(cursor.getColumnIndexOrThrow("distance"));
-                        time = cursor.getInt(cursor.getColumnIndexOrThrow("time"));
-                    } while (cursor.moveToNext());
-                }
-                cursor.close();
+            DbCursor dbCursor = new DbCursor(cursorData);
+
+            if (dbCursor.isValid()) {
+                do {
+                    beginsAt = dbCursor.getInt(BEGINS_AT);
+                    distance = dbCursor.getInt(DISTANCE);
+                    time = dbCursor.getInt(TIME);
+                    typeFit = dbCursor.getInt(TYPE_FIT);
+                } while (cursorData.moveToNext());
             }
+            dbCursor.close();
 
-            Cursor cursorPoints = App.getInstance().getDb().rawQuery("SELECT Point._id AS id, Point.longitude AS lng, Point.latitude AS lat FROM Point WHERE Point.trackId = ?",
-                    new String[]{String.valueOf(idTrack)});
+            Cursor cursorPoints = new InquiryBuilder()
+                    .get(_ID, LNG, LAT)
+                    .from(TABLE_POINT)
+                    .where(false, TRACK_ID_EQ, String.valueOf(idTrack))
+                    .select();
 
-            if (cursorPoints != null) {
-                if (cursorPoints.moveToNext()) {
-                    do {
-                        Point point = new Point();
-                        point.setLat(cursorPoints.getDouble(cursorPoints.getColumnIndexOrThrow("lat")));
-                        point.setLng(cursorPoints.getDouble(cursorPoints.getColumnIndexOrThrow("lng")));
-                        points.add(point);
-                    } while (cursorPoints.moveToNext());
-                }
-                cursorPoints.close();
+            DbCursor dbCursorPoints = new DbCursor(cursorPoints);
+            if (dbCursorPoints.isValid()) {
+                do {
+                    Point point = new Point();
+                    point.setLat(dbCursorPoints.getDouble(LAT));
+                    point.setLng(dbCursorPoints.getDouble(LNG));
+                    points.add(point);
+                } while (cursorPoints.moveToNext());
             }
+            dbCursor.close();
 
-            if (points.size() > 0) {
+            if (points.size() > 1) {
                 String trackToken = App.getInstance().getTracksReference().child(user.getUid()).push().getKey();
                 writeKeyToDb(trackToken, idTrack);
-                SaveModel saveModel = new SaveModel(beginsAt, time, distance, trackToken, points);
+                SaveModel saveModel = new SaveModel(beginsAt, time, distance, trackToken, typeFit, points);
 
                 App.getInstance().getTracksReference().child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                         if (databaseError != null) {
-                            Snackbar.make(linearLayoutRoot, "Data could not be saved " + databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(linearLayoutRoot, getString(R.string.scamper_activity_track_save_error) + databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
                         } else {
-                            Snackbar.make(linearLayoutRoot, "Data saved ", Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(linearLayoutRoot, R.string.scamper_activity_track_save_success, Snackbar.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -403,22 +435,14 @@ public class ScamperActivity extends AppCompatActivity {
 
 
     private void deleteTrackData() {
-        SQLiteStatement statementDeleteTrack = App.getInstance().getDb().compileStatement("DELETE FROM Tracks WHERE _id = ?");
-        statementDeleteTrack.bindLong(1, idTrack);
+        Void deleteTrack = new InquiryBuilder()
+                .tableDelete(TABLE_TRACKS)
+                .where(false,_ID_EQ, String.valueOf(idTrack))
+                .delete();
 
-        try {
-            statementDeleteTrack.execute();
-        } finally {
-            statementDeleteTrack.close();
-        }
-
-        SQLiteStatement statementDeletePoints = App.getInstance().getDb().compileStatement("DELETE FROM Point WHERE trackId = ?");
-        statementDeletePoints.bindLong(1, idTrack);
-
-        try {
-            statementDeletePoints.execute();
-        } finally {
-            statementDeletePoints.close();
-        }
+        Void deletePoints = new InquiryBuilder()
+                .tableDelete(TABLE_POINT)
+                .where(false,_ID_EQ, String.valueOf(idTrack))
+                .delete();
     }
 }

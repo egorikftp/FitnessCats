@@ -328,6 +328,7 @@ public class InquiryBuilder implements Cursor {
         return null;
     }
 
+
     @Override
     public int getCount() {
         return 0;
