@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_alarm_add_black"
+        app:srcCompat="@drawable/ic_add_alarm_white_24dp"
         app:layout_behavior="com.egoriku.catsrunning.utils.FabFloatingOnScrollBehavior" />
 
     <TextView

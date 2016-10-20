@@ -152,21 +152,22 @@ public class FitnessDataFragment extends Fragment {
         fabWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ScamperActivity.class));
+                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(ScamperActivity.KEY_TYPE_FIT, 1));
+            }
+        });
+
+
+        fabRun.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(ScamperActivity.KEY_TYPE_FIT, 2));
             }
         });
 
         fabCycling.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ScamperActivity.class));
-            }
-        });
-
-        fabRun.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ScamperActivity.class));
+                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(ScamperActivity.KEY_TYPE_FIT, 3));
             }
         });
 

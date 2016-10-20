@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
     android:id="@+id/card_view_reminders"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -23,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:padding="@dimen/reminders_margin"
-                android:src="@drawable/ic_insert_comment_black" />
+                app:srcCompat="@drawable/ic_vec_comment_black_24dp" />
 
             <TextView
                 android:id="@+id/reminders_fragment_comment"
@@ -52,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:padding="@dimen/reminders_margin"
-                android:src="@drawable/ic_alarm_on_black" />
+                app:srcCompat="@drawable/ic_vec_access_alarm_black_24dp" />
 
             <TextView
                 android:id="@+id/reminders_fragment_date_time"

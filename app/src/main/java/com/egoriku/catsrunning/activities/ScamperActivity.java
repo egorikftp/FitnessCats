@@ -44,9 +44,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ScamperActivity extends AppCompatActivity {
     public static final String BROADCAST_FINISH_SERVICE = "BROADCAST_FINISH_SERVICE";
+    public static final String KEY_TYPE_FIT = "KEY_TYPE_FIT";
+    public static final String KEY_TYPE_FIT_NOTIFICATION = "KEY_TYPE_FIT_NOTIFICATION";
     private static final int REQUEST_CODE = 1;
     private static final String VIEW_BTN_START = "VIEW_BTN_START";
     private static final String VIEW_BTN_FINISH = "VIEW_BTN_FINISH";
@@ -80,69 +84,10 @@ public class ScamperActivity extends AppCompatActivity {
     private CustomChronometer chronometer;
     private LocationManager manager;
     private Thread chronometerThread;
+    private List<String> listTypeFit;
 
     private FirebaseUser user;
-    private BroadcastReceiver broadcastReceiverIdTrack = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            idTrack = intent.getIntExtra(EXTRA_ID_TRACK, -1);
-            textDistance.setText(String.format(getString(R.string.scamper_activity_distance_meter), App.getInstance().getState().getNowDistance()));
 
-            points = new ArrayList<>();
-            long beginsAt = 0;
-            int distance = 0;
-            long time = 0;
-
-            Cursor cursor = App.getInstance().getDb().rawQuery("SELECT Tracks.beginsAt AS date, Tracks.time AS time, Tracks.distance FROM Tracks WHERE Tracks._id = ?",
-                    new String[]{String.valueOf(idTrack)});
-
-            if (cursor != null) {
-                if (cursor.moveToNext()) {
-                    do {
-                        beginsAt = cursor.getInt(cursor.getColumnIndexOrThrow("date"));
-                        distance = cursor.getInt(cursor.getColumnIndexOrThrow("distance"));
-                        time = cursor.getInt(cursor.getColumnIndexOrThrow("time"));
-                    } while (cursor.moveToNext());
-                }
-                cursor.close();
-            }
-
-            Cursor cursorPoints = App.getInstance().getDb().rawQuery("SELECT Point._id AS id, Point.longitude AS lng, Point.latitude AS lat FROM Point WHERE Point.trackId = ?",
-                    new String[]{String.valueOf(idTrack)});
-
-            if (cursorPoints != null) {
-                if (cursorPoints.moveToNext()) {
-                    do {
-                        Point point = new Point();
-                        point.setLat(cursorPoints.getDouble(cursorPoints.getColumnIndexOrThrow("lat")));
-                        point.setLng(cursorPoints.getDouble(cursorPoints.getColumnIndexOrThrow("lng")));
-                        points.add(point);
-                    } while (cursorPoints.moveToNext());
-                }
-                cursorPoints.close();
-            }
-
-            if (points.size() > 0) {
-                String trackToken = App.getInstance().getTracksReference().child(user.getUid()).push().getKey();
-                writeKeyToDb(trackToken, idTrack);
-                SaveModel saveModel = new SaveModel(beginsAt, time, distance, trackToken, points);
-
-                App.getInstance().getTracksReference().child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        if (databaseError != null) {
-                            Snackbar.make(linearLayoutRoot, "Data could not be saved " + databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
-                        } else {
-                            Snackbar.make(linearLayoutRoot, "Data saved ", Snackbar.LENGTH_LONG).show();
-                        }
-                    }
-                });
-            } else {
-                Toast.makeText(getApplicationContext(), R.string.scamper_activity_snackbar_no_points, Toast.LENGTH_SHORT).show();
-                deleteTrackData();
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,13 +117,19 @@ public class ScamperActivity extends AppCompatActivity {
         textYouFinishRunning.setVisibility(View.GONE);
         pandaFinishScamper.setVisibility(View.GONE);
 
+        listTypeFit = Arrays.asList(getResources().getStringArray(R.array.type_reminder));
+
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            if (getIntent().getExtras() != null) {
+                int type = getIntent().getExtras().getInt(KEY_TYPE_FIT);
+                getSupportActionBar().setTitle(listTypeFit.get(type - 1));
+            }
         }
 
         final FlipAnimation flipAnimation = new FlipAnimation(btnStart, btnFinish, textTimer, textDistance, textYouFinishRunning, pandaFinishScamper);
-
 
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -207,6 +158,10 @@ public class ScamperActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(ScamperActivity.this, RunService.class);
                 intent.putExtra(RunService.START_TIME, chronometer.getStartTime());
+                if (getIntent().getExtras() != null) {
+                    intent.putExtra(KEY_TYPE_FIT_NOTIFICATION, getIntent().getExtras().getInt(KEY_TYPE_FIT));
+                }
+
                 intent.setAction(RunService.ACTION_START);
                 startService(intent);
 
@@ -382,6 +337,69 @@ public class ScamperActivity extends AppCompatActivity {
                 .updateWhere("Tracks._id=", String.valueOf(idTrack))
                 .update();
     }
+
+
+    private BroadcastReceiver broadcastReceiverIdTrack = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            idTrack = intent.getIntExtra(EXTRA_ID_TRACK, -1);
+            textDistance.setText(String.format(getString(R.string.scamper_activity_distance_meter), App.getInstance().getState().getNowDistance()));
+
+            points = new ArrayList<>();
+            long beginsAt = 0;
+            int distance = 0;
+            long time = 0;
+
+            Cursor cursor = App.getInstance().getDb().rawQuery("SELECT Tracks.beginsAt AS date, Tracks.time AS time, Tracks.distance FROM Tracks WHERE Tracks._id = ?",
+                    new String[]{String.valueOf(idTrack)});
+
+            if (cursor != null) {
+                if (cursor.moveToNext()) {
+                    do {
+                        beginsAt = cursor.getInt(cursor.getColumnIndexOrThrow("date"));
+                        distance = cursor.getInt(cursor.getColumnIndexOrThrow("distance"));
+                        time = cursor.getInt(cursor.getColumnIndexOrThrow("time"));
+                    } while (cursor.moveToNext());
+                }
+                cursor.close();
+            }
+
+            Cursor cursorPoints = App.getInstance().getDb().rawQuery("SELECT Point._id AS id, Point.longitude AS lng, Point.latitude AS lat FROM Point WHERE Point.trackId = ?",
+                    new String[]{String.valueOf(idTrack)});
+
+            if (cursorPoints != null) {
+                if (cursorPoints.moveToNext()) {
+                    do {
+                        Point point = new Point();
+                        point.setLat(cursorPoints.getDouble(cursorPoints.getColumnIndexOrThrow("lat")));
+                        point.setLng(cursorPoints.getDouble(cursorPoints.getColumnIndexOrThrow("lng")));
+                        points.add(point);
+                    } while (cursorPoints.moveToNext());
+                }
+                cursorPoints.close();
+            }
+
+            if (points.size() > 0) {
+                String trackToken = App.getInstance().getTracksReference().child(user.getUid()).push().getKey();
+                writeKeyToDb(trackToken, idTrack);
+                SaveModel saveModel = new SaveModel(beginsAt, time, distance, trackToken, points);
+
+                App.getInstance().getTracksReference().child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError != null) {
+                            Snackbar.make(linearLayoutRoot, "Data could not be saved " + databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
+                        } else {
+                            Snackbar.make(linearLayoutRoot, "Data saved ", Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.scamper_activity_snackbar_no_points, Toast.LENGTH_SHORT).show();
+                deleteTrackData();
+            }
+        }
+    };
 
 
     private void deleteTrackData() {

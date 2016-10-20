@@ -12,4 +12,10 @@
         <item>@string/type_running</item>
         <item>@string/type_cycling</item>
     </string-array>
+
+    <integer-array name="vec_ic_notification">
+        <item>@drawable/ic_directions_walk_black_service</item>
+        <item>@drawable/ic_directions_run_black_service</item>
+        <item>@drawable/ic_directions_bike_black_service</item>
+    </integer-array>
 </resources>

@@ -19,6 +19,9 @@ import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.ScamperActivity;
 import com.egoriku.catsrunning.utils.ConverterTime;
 
+import static com.egoriku.catsrunning.activities.ScamperActivity.KEY_TYPE_FIT;
+import static com.egoriku.catsrunning.activities.ScamperActivity.KEY_TYPE_FIT_NOTIFICATION;
+
 public class RunService extends Service implements LocationListener {
     private static final int NOTIFICATION_ID = 1;
     private static final long TIME_BETWEEN_UPDATES = 1000;
@@ -32,6 +35,7 @@ public class RunService extends Service implements LocationListener {
 
     private boolean isActive;
     private boolean isThreadRun;
+    private int typeFit;
 
     private long startTime;
     private float nowDistance;
@@ -42,6 +46,12 @@ public class RunService extends Service implements LocationListener {
 
     private LocationManager locationManager;
     private Location oldLocation;
+    private int[] imageResId = {
+            R.drawable.ic_vec_directions_walk_white_24dp,
+            R.drawable.ic_vec_directions_run_white_24dp,
+            R.drawable.ic_vec_directions_bike_white_24dp
+    };
+
 
     @Override
     public void onCreate() {
@@ -55,6 +65,7 @@ public class RunService extends Service implements LocationListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction().equalsIgnoreCase(ACTION_START)) {
             startTime = intent.getLongExtra(START_TIME, System.currentTimeMillis());
+            typeFit = intent.getIntExtra(KEY_TYPE_FIT_NOTIFICATION, 0);
             startNotification();
         } else {
             stopNotification();
@@ -63,7 +74,7 @@ public class RunService extends Service implements LocationListener {
 
         if (!isActive) {
             isActive = true;
-            getTrackIdStatement(startTime);
+            getTrackIdStatement(startTime, typeFit);
 
             locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
@@ -76,12 +87,13 @@ public class RunService extends Service implements LocationListener {
     }
 
 
-    private void getTrackIdStatement(long startTime) {
+    private void getTrackIdStatement(long startTime, int typeFit) {
         SQLiteStatement statement = App.getInstance().getDb().compileStatement(
-                "INSERT INTO Tracks (beginsAt) VALUES (?)"
+                "INSERT INTO Tracks (beginsAt, typeFit) VALUES (?, ?)"
         );
 
         statement.bindLong(1, startTime / 1000);
+        statement.bindLong(2, typeFit);
 
         try {
             idTrack = (int) statement.executeInsert();
@@ -219,19 +231,23 @@ public class RunService extends Service implements LocationListener {
 
     private void showNotification(String time, String distance) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_directions_run_black_service)
+                .setSmallIcon(getNotificationIcon(typeFit))
                 .setContentIntent(PendingIntent.getActivity(
                         this,
                         0,
-                        new Intent(this, ScamperActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP),
+                        new Intent(this, ScamperActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP).putExtra(KEY_TYPE_FIT, typeFit),
                         PendingIntent.FLAG_UPDATE_CURRENT
                 ))
                 .setContentTitle(getString(R.string.scamper_notification_title))
                 .setContentText(String.format(getString(R.string.notification_time_distance_format), time, distance))
                 .setAutoCancel(false)
                 .setOngoing(true);
-
         startForeground(NOTIFICATION_ID, builder.build());
+    }
+
+
+    private int getNotificationIcon(int typeFit) {
+        return imageResId[typeFit - 1];
     }
 
 
@@ -260,15 +276,18 @@ public class RunService extends Service implements LocationListener {
 
 
     @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {}
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+    }
 
 
     @Override
-    public void onProviderEnabled(String s) {}
+    public void onProviderEnabled(String s) {
+    }
 
 
     @Override
-    public void onProviderDisabled(String s) {}
+    public void onProviderDisabled(String s) {
+    }
 
 
     class UpdateNotification implements Runnable {

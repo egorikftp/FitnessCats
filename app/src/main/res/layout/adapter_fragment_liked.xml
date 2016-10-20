@@ -74,6 +74,5 @@
         android:id="@+id/liked_fragment_distance_image_view_liked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:src="@drawable/ic_star_border_black" />
+        android:layout_gravity="end" />
 </android.support.v7.widget.CardView>

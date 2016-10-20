@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 
 import com.egoriku.catsrunning.R;
 
+import static com.egoriku.catsrunning.utils.VectorToDrawable.getDrawable;
+
 
 public class AllFitnessDataFragment extends Fragment {
     private SectionsPagerAdapter sectionsPagerAdapter;
@@ -37,9 +39,9 @@ public class AllFitnessDataFragment extends Fragment {
 
         sparseTabs = new SparseArray<>();
         int[] imageResId = {
-                R.drawable.ic_directions_walk_white,
-                R.drawable.ic_directions_run_white,
-                R.drawable.ic_directions_bike_white
+                R.drawable.ic_vec_directions_walk_white_24dp,
+                R.drawable.ic_vec_directions_run_white_24dp,
+                R.drawable.ic_vec_directions_bike_white_24dp
         };
 
         initSparseTabs();
@@ -48,7 +50,7 @@ public class AllFitnessDataFragment extends Fragment {
 
         tabLayout.setupWithViewPager(viewPager);
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            tabLayout.getTabAt(i).setIcon(imageResId[i]);
+            tabLayout.getTabAt(i).setIcon(getDrawable(imageResId[i]));
         }
 
         return view;

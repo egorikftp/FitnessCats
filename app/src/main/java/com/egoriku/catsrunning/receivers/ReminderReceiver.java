@@ -30,7 +30,7 @@ public class ReminderReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentIntent(pendingIntent)
-                .setSmallIcon(R.drawable.ic_alarm_add_white)
+                .setSmallIcon(R.drawable.ic_alarm_notification)
                 .setContentTitle(context.getResources().getString(R.string.alarm_notification_title))
                 .setContentText(extras.getString(TEXT_REMINDER_KEY))
                 .setAutoCancel(true);

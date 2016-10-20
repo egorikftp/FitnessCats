@@ -19,8 +19,8 @@ import com.egoriku.catsrunning.models.ItemNavigationDrawer;
 import java.util.ArrayList;
 
 import static android.R.color.white;
-import static com.egoriku.catsrunning.utils.VectorToBitmap.createBitmapFromVector;
-import static com.egoriku.catsrunning.utils.VectorToBitmap.getDrawable;
+import static com.egoriku.catsrunning.utils.VectorToDrawable.createBitmapFromVector;
+import static com.egoriku.catsrunning.utils.VectorToDrawable.getDrawable;
 
 
 public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDrawerAdapter.ViewHolder> {

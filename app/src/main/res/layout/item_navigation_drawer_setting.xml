@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/adapter_naw_drawer_margin_image"
         android:layout_marginStart="@dimen/adapter_naw_drawer_margin_image"
-        app:srcCompat="@drawable/ic_settings_black" />
+        app:srcCompat="@drawable/ic_vec_settings_black_24dp" />
 
     <TextView
         android:id="@+id/naw_drawer_item_text"

@@ -16,7 +16,7 @@ import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.egoriku.catsrunning.utils.VectorToBitmap.setImage;
+import static com.egoriku.catsrunning.utils.VectorToDrawable.setImageAdapter;
 
 public class AllFitnessDataAdapter extends AbstractItem<AllFitnessDataAdapter, AllFitnessDataAdapter.ViewHolder> {
 
@@ -130,25 +130,25 @@ public class AllFitnessDataAdapter extends AbstractItem<AllFitnessDataAdapter, A
 
         switch (liked) {
             case 0:
-                setImage(holder.imageViewLiked, R.drawable.ic_vec_star_border);
+                setImageAdapter(holder.imageViewLiked, R.drawable.ic_vec_star_border);
                 break;
 
             case 1:
-                setImage(holder.imageViewLiked, R.drawable.ic_vec_star_black);
+                setImageAdapter(holder.imageViewLiked, R.drawable.ic_vec_star_black);
                 break;
         }
 
         switch (typeFit) {
             case 1:
-                setImage(holder.imageViewType, R.drawable.ic_vec_directions_walk_40dp);
+                setImageAdapter(holder.imageViewType, R.drawable.ic_vec_directions_walk_40dp);
                 break;
 
             case 2:
-                setImage(holder.imageViewType, R.drawable.ic_vec_directions_run_40dp);
+                setImageAdapter(holder.imageViewType, R.drawable.ic_vec_directions_run_40dp);
                 break;
 
             case 3:
-                setImage(holder.imageViewType, R.drawable.ic_vec_directions_bike_40dp);
+                setImageAdapter(holder.imageViewType, R.drawable.ic_vec_directions_bike_40dp);
                 break;
         }
     }

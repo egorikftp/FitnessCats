@@ -7,13 +7,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.adapters.interfaces.IRecyclerViewRemindersListener;
 import com.egoriku.catsrunning.models.ReminderModel;
 import com.egoriku.catsrunning.utils.ConverterTime;
 
 import java.util.ArrayList;
+
+import static com.egoriku.catsrunning.utils.VectorToDrawable.getDrawable;
 
 public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.ViewHolder> {
     private static final String TAG_VIEW_COMMENT = "comment";
@@ -38,7 +39,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
     public void onBindViewHolder(RemindersAdapter.ViewHolder holder, int position) {
         holder.reminderComment.setText(reminderModels.get(position).getTextReminder());
         holder.reminderDate.setText(ConverterTime.convertUnixDate(reminderModels.get(position).getDateReminder()));
-        holder.deleteReminder.setImageDrawable(App.getInstance().getResources().getDrawable(R.drawable.ic_clear_black));
+        holder.deleteReminder.setImageDrawable(getDrawable(R.drawable.ic_vec_clear_black_24dp));
     }
 
 

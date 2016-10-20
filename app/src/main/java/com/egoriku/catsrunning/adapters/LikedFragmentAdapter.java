@@ -14,7 +14,7 @@ import com.egoriku.catsrunning.utils.ConverterTime;
 
 import java.util.ArrayList;
 
-import static com.egoriku.catsrunning.utils.VectorToBitmap.setImage;
+import static com.egoriku.catsrunning.utils.VectorToDrawable.setImageAdapter;
 
 public class LikedFragmentAdapter extends RecyclerView.Adapter<LikedFragmentAdapter.ViewHolder> {
     private ArrayList<LikedTracksModel> modelArrayList;
@@ -39,7 +39,7 @@ public class LikedFragmentAdapter extends RecyclerView.Adapter<LikedFragmentAdap
         holder.date.setText(ConverterTime.convertUnixDate(modelArrayList.get(position).getDate()));
         holder.timeRunning.setText(ConverterTime.ConvertTimeToStringWithMill(modelArrayList.get(position).getTimeRunning()));
         holder.distance.setText(String.format(holder.format, modelArrayList.get(position).getDistance()));
-        setImage(holder.imageViewLiked, R.drawable.ic_vec_star_black);
+        setImageAdapter(holder.imageViewLiked, R.drawable.ic_vec_star_black);
 
     }
 
