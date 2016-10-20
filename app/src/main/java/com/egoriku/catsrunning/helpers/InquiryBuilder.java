@@ -13,9 +13,10 @@ import android.os.Bundle;
 import com.egoriku.catsrunning.App;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 
-public class QueryBuilder implements Cursor {
+public class InquiryBuilder implements Cursor {
     private static final String SELECT = "SELECT";
     private static final String SELECT_FROM = "SELECT FROM";
     private static final String DELETE = "DELETE FROM";
@@ -23,6 +24,7 @@ public class QueryBuilder implements Cursor {
     private static final String FROM = "FROM";
     private static final String JOIN = "JOIN";
     private static final String ON = "ON";
+    private static final String AND = "AND";
     private static final String CREATE = "CREATE TABLE";
     private static final String CREATE_INDEX = "CREATE INDEX";
     private static final String DROP_INDEX = "DROP INDEX";
@@ -41,16 +43,17 @@ public class QueryBuilder implements Cursor {
     private ArrayList<String> fields = new ArrayList<>();
     private ArrayList<String> insertFields = new ArrayList<>();
     private ArrayList<String> insertValues = new ArrayList<>();
-    StringBuilder query = new StringBuilder();
+    private StringBuilder query = new StringBuilder();
 
-    public QueryBuilder from(String table) {
-        query.append(FROM + " " + table + " ");
+    public InquiryBuilder from(String table) {
+        query.append(FROM + " ").append(table).append(" ");
         return this;
     }
 
-    public QueryBuilder get(String... columns) {
+
+    public InquiryBuilder get(String... columns) {
         for (int i = 0, len = columns.length; i < len; i++) {
-            query.append(" " + columns[i]);
+            query.append(" ").append(columns[i]);
             if (i + 1 < len) {
                 query.append(",");
             } else {
@@ -60,31 +63,36 @@ public class QueryBuilder implements Cursor {
         return this;
     }
 
-    public QueryBuilder join(String table, String condition, String param) {
+    public InquiryBuilder join(String table, String condition, String param) {
         if (param != null) {
-            query.append(JOIN + " " + table + " " + ON + " " + condition + "? ");
+            query.append(JOIN + " ").append(table).append(" ").append(ON).append(" ").append(condition).append("? ");
             params.add(param);
         } else {
-            query.append(JOIN + " " + table + " " + ON + " " + condition + " ");
+            query.append(JOIN + " ").append(table).append(" ").append(ON).append(" ").append(condition).append(" ");
         }
         return this;
     }
 
-    public QueryBuilder where(String condition, String... params) {
+
+    public InquiryBuilder where(boolean multi, String condition, String... params) {
         if (!params.equals(null)) {
-            query.append(WHERE + " " + condition + "?");
-            for (int i = 0, len = params.length; i < len; i++) {
-                this.params.add(params[i]);
+            if (multi) {
+                query.append(WHERE + " ").append(condition).append(" ");
+                Collections.addAll(this.params, params);
+            } else {
+                query.append(WHERE + " ").append(condition).append("?");
+                Collections.addAll(this.params, params);
             }
         } else {
-            query.append(WHERE + " " + condition);
+            query.append(WHERE + " ").append(condition);
         }
         return this;
     }
 
-    public QueryBuilder updateWhere(String condition, String... params) {
+
+    public InquiryBuilder updateWhere(String condition, String... params) {
         for (int i = 0, len = insertFields.size(); i < len; i++) {
-            query.append(insertFields.get(i) + "=?");
+            query.append(insertFields.get(i)).append("=?");
             if (i + 1 < len) {
                 query.append(", ");
             } else {
@@ -93,54 +101,56 @@ public class QueryBuilder implements Cursor {
         }
 
         if (!params.equals(null)) {
-            query.append(WHERE + " " + condition + "?");
-            for (int i = 0, len = params.length; i < len; i++) {
-                insertValues.add(params[i]);
-            }
+            query.append(WHERE + " ").append(condition).append("?");
+            Collections.addAll(insertValues, params);
         } else {
-            query.append(WHERE + " " + condition);
+            query.append(WHERE + " ").append(condition);
         }
         return this;
     }
+
 
     public Cursor select() {
         return getQuery(SELECT, getParams());
     }
 
+
     public String selectFrom(String table, String... columns) {
         query.append(" " + SELECT + " ");
         for (int i = 0, len = columns.length; i < len; i++) {
-            query.append(" " + columns[i]);
+            query.append(" ").append(columns[i]);
             if (i + 1 < len) {
                 query.append(",");
             } else {
-                query.append(" " + FROM + " " + table);
+                query.append(" " + FROM + " ").append(table);
             }
         }
         return query.toString();
     }
 
-    public QueryBuilder table(String table) {
-        query.append(" " + table + " (");
+
+    public InquiryBuilder table(String table) {
+        query.append(" ").append(table).append(" (");
         return this;
     }
 
-    public QueryBuilder updateTable(String table) {
-        query.append(" " + table + " " + SET + " ");
+    public InquiryBuilder updateTable(String table) {
+        query.append(" ").append(table).append(" ").append(SET).append(" ");
         return this;
     }
 
-    public QueryBuilder pkField(String field) {
-        query.append(field + " " + PRIMARY_KEY + ",");
+    public InquiryBuilder pkField(String field) {
+        query.append(field).append(" ").append(PRIMARY_KEY).append(",");
         return this;
     }
 
-    public QueryBuilder field(String field, String params) {
+
+    public InquiryBuilder field(String field, String params) {
         fields.add(field + " " + params);
         return this;
     }
 
-    public QueryBuilder set(String field, Object value) {
+    public InquiryBuilder set(String field, Object value) {
         insertFields.add(field);
         insertValues.add(String.valueOf(value));
         return this;
@@ -162,14 +172,15 @@ public class QueryBuilder implements Cursor {
         return DROP + " " + table;
     }
 
-    public QueryBuilder alter(String table) {
-        query.append(ALTER + " " + table);
+    public InquiryBuilder alter(String table) {
+        query.append(ALTER + " ").append(table);
         return this;
     }
 
     public String rename(String table) {
         return query.toString() + " " + RENAME + " " + table;
     }
+
 
     public Void insert(SQLiteDatabase db) {
         for (int i = 0, len = insertFields.size(); i < len; i++) {
@@ -200,6 +211,7 @@ public class QueryBuilder implements Cursor {
         }
         return null;
     }
+
 
     public long insertForId(SQLiteDatabase db) {
         long id;
@@ -232,10 +244,11 @@ public class QueryBuilder implements Cursor {
         return id;
     }
 
-    public QueryBuilder insertInto(String table, String... columns) {
-        query.append(INSERT + " " + table + "(");
+
+    public InquiryBuilder insertInto(String table, String... columns) {
+        query.append(INSERT + " ").append(table).append("(");
         for (int i = 0, len = columns.length; i < len; i++) {
-            query.append(" " + columns[i]);
+            query.append(" ").append(columns[i]);
             if (i + 1 < len) {
                 query.append(",");
             } else {
@@ -244,6 +257,7 @@ public class QueryBuilder implements Cursor {
         }
         return this;
     }
+
 
     public Void update() {
         SQLiteStatement statement = App.getInstance().getDb().compileStatement(UPDATE + query.toString());
@@ -257,6 +271,7 @@ public class QueryBuilder implements Cursor {
 
         return null;
     }
+
 
     private String[] getParams() {
         if (!params.isEmpty()) {
@@ -275,17 +290,17 @@ public class QueryBuilder implements Cursor {
 
     }
 
-    public QueryBuilder orderBy(String column) {
-        query.append(" " + ORDER_BY + " " + column);
+    public InquiryBuilder orderBy(String column) {
+        query.append(" " + ORDER_BY + " ").append(column);
         return this;
     }
 
-    public QueryBuilder groupBy(String column) {
-        query.append(" " + GROUP_BY + " " + column);
+    public InquiryBuilder groupBy(String column) {
+        query.append(" " + GROUP_BY + " ").append(column);
         return this;
     }
 
-    public QueryBuilder desc() {
+    public InquiryBuilder desc() {
         query.append(" " + DESC + " ");
         return this;
     }
@@ -303,8 +318,8 @@ public class QueryBuilder implements Cursor {
         return null;
     }
 
-    public QueryBuilder tableDelete(String table) {
-        query.append(" " + table + " ");
+    public InquiryBuilder tableDelete(String table) {
+        query.append(" ").append(table).append(" ");
         return this;
     }
 
@@ -504,13 +519,13 @@ public class QueryBuilder implements Cursor {
     }
 
     @Override
-    public void setExtras(Bundle extras) {
-
+    public Bundle getExtras() {
+        return null;
     }
 
     @Override
-    public Bundle getExtras() {
-        return null;
+    public void setExtras(Bundle extras) {
+
     }
 
     @Override

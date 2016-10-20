@@ -34,7 +34,7 @@ import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
 import com.egoriku.catsrunning.helpers.DbCursor;
-import com.egoriku.catsrunning.helpers.QueryBuilder;
+import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.models.ItemNavigationDrawer;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -45,6 +45,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.egoriku.catsrunning.models.State.BEGINS_AT_EQ;
+import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
+import static com.egoriku.catsrunning.models.State._ID;
 
 public class TracksActivity extends AppCompatActivity {
     private static final String TAG_EXIT_APP = "TAG_EXIT_APP";
@@ -134,15 +138,15 @@ public class TracksActivity extends AppCompatActivity {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 int idTrack = 0;
-                Cursor cursor = new QueryBuilder()
-                        .get("_id")
-                        .from("Tracks")
-                        .where("beginsAt=", String.valueOf(dataSnapshot.getValue(AllFitnessDataAdapter.class).getBeginsAt()))
+                Cursor cursor = new InquiryBuilder()
+                        .get(_ID)
+                        .from(TABLE_TRACKS)
+                        .where(false, BEGINS_AT_EQ, String.valueOf(dataSnapshot.getValue(AllFitnessDataAdapter.class).getBeginsAt()))
                         .select();
 
                 DbCursor dbCursor = new DbCursor(cursor);
                 if (dbCursor.isValid()) {
-                    idTrack = dbCursor.getInt("_id");
+                    idTrack = dbCursor.getInt(_ID);
                 }
                 dbCursor.close();
 

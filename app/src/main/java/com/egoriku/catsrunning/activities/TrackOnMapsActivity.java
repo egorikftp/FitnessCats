@@ -1,5 +1,6 @@
 package com.egoriku.catsrunning.activities;
 
+import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +10,7 @@ import android.widget.Toast;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.helpers.DbCursor;
-import com.egoriku.catsrunning.helpers.QueryBuilder;
+import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.utils.ConverterTime;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,6 +26,11 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.egoriku.catsrunning.models.State.LAT;
+import static com.egoriku.catsrunning.models.State.LNG;
+import static com.egoriku.catsrunning.models.State.TABLE_POINT;
+import static com.egoriku.catsrunning.models.State.TRACK_ID_EQ;
 
 public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     public static final String KEY_ID = "KEY_ID";
@@ -42,6 +48,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
     private String startRunningHint;
     private String endRunningHint;
 
+    @SuppressLint("StringFormatMatches")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,27 +70,21 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
         coordinatesList = new ArrayList<>();
 
         if (getIntent().getExtras() != null) {
-            Cursor cursorPoints = new QueryBuilder()
-                    .get("longitude", "latitude")
-                    .from("Point")
-                    .where("trackId=", String.valueOf(getIntent().getExtras().getInt(KEY_ID)))
+            Cursor cursorPoints = new InquiryBuilder()
+                    .get(LNG, LAT)
+                    .from(TABLE_POINT)
+                    .where(false, TRACK_ID_EQ, String.valueOf(getIntent().getExtras().getInt(KEY_ID)))
                     .select();
             DbCursor dbCursor = new DbCursor(cursorPoints);
 
-            if(dbCursor.isValid()){
-                if (cursorPoints.moveToNext()) {
-                    do {
-                        coordinatesList.add(
-                                new LatLng(
-                                        cursorPoints.getDouble(cursorPoints.getColumnIndexOrThrow("latitude")),
-                                        cursorPoints.getDouble(cursorPoints.getColumnIndexOrThrow("longitude"))
-                                )
-                        );
-                    } while (cursorPoints.moveToNext());
-                }
+            if (dbCursor.isValid()) {
+                do {
+                    coordinatesList.add(new LatLng(dbCursor.getDouble(LAT), dbCursor.getDouble(LNG))
+                    );
+                } while (cursorPoints.moveToNext());
             }
             dbCursor.close();
-            
+
             distanceText.setText(String.format(getString(R.string.track_fragment_distance_meter), getIntent().getExtras().getLong(KEY_DISTANCE)));
             timeRunningText.setText(ConverterTime.ConvertTimeToStringWithMill(getIntent().getExtras().getLong(KEY_TIME_RUNNING)));
         }

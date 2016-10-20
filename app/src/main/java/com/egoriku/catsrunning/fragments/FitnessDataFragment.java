@@ -16,7 +16,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,8 @@ import com.egoriku.catsrunning.activities.ScamperActivity;
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.AllFitnessDataAdapter;
-import com.egoriku.catsrunning.helpers.QueryBuilder;
+import com.egoriku.catsrunning.helpers.DbCursor;
+import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -45,6 +45,19 @@ import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 import com.mikepenz.fastadapter.helpers.ClickListenerHelper;
 
 import java.util.ArrayList;
+
+import static com.egoriku.catsrunning.models.State.AND;
+import static com.egoriku.catsrunning.models.State.BEGINS_AT;
+import static com.egoriku.catsrunning.models.State.DISTANCE;
+import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_EQ;
+import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_FALSE;
+import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_TRUE;
+import static com.egoriku.catsrunning.models.State.LIKED;
+import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
+import static com.egoriku.catsrunning.models.State.TIME;
+import static com.egoriku.catsrunning.models.State.TRACK_TOKEN;
+import static com.egoriku.catsrunning.models.State.TYPE_FIT;
+import static com.egoriku.catsrunning.models.State._ID;
 
 public class FitnessDataFragment extends Fragment {
     public static final String TAG_MAIN_FRAGMENT = "TAG_MAIN_FRAGMENT";
@@ -73,7 +86,7 @@ public class FitnessDataFragment extends Fragment {
     private FastItemAdapter<AllFitnessDataAdapter> fastAdapter;
     private ArrayList<AllFitnessDataAdapter> tracksModels;
 
-    public FitnessDataFragment(){
+    public FitnessDataFragment() {
     }
 
     public static FitnessDataFragment newInstance(int sectionNumber) {
@@ -264,9 +277,9 @@ public class FitnessDataFragment extends Fragment {
                         .setPositiveButton(R.string.fitness_data_fragment_alert_positive_btn, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                new QueryBuilder()
-                                        .set("isTrackDelete", 1)
-                                        .updateWhere("Tracks._id", String.valueOf(item.getId()));
+                                new InquiryBuilder()
+                                        .set(IS_TRACK_DELETE_EQ, IS_TRACK_DELETE_TRUE)
+                                        .updateWhere(TABLE_TRACKS + _ID, String.valueOf(item.getId()));
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 App.getInstance().getTracksReference().child(user.getUid()).child(item.getTrackToken()).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -345,25 +358,29 @@ public class FitnessDataFragment extends Fragment {
 
 
     private void getTracksFromDb() {
-        Log.e("getTracksDB", "+");
         tracksModels = new ArrayList<>();
-        Cursor cursor = App.getInstance().getDb().rawQuery("SELECT _id, beginsAt, time, distance, liked, trackToken, typeFit FROM Tracks WHERE (isTrackDelete = ? AND typeFit = ?) ORDER BY beginsAt DESC",
-                new String[]{String.valueOf(0), String.valueOf(getArguments().getInt(ARG_SECTION_NUMBER))});
-        if (cursor != null) {
-            if (cursor.moveToNext()) {
-                do {
-                    AllFitnessDataAdapter listAdapter = new AllFitnessDataAdapter();
-                    listAdapter.setId(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
-                    listAdapter.setBeginsAt(cursor.getInt(cursor.getColumnIndexOrThrow("beginsAt")));
-                    listAdapter.setTime(cursor.getInt(cursor.getColumnIndexOrThrow("time")));
-                    listAdapter.setDistance(cursor.getInt(cursor.getColumnIndexOrThrow("distance")));
-                    listAdapter.setLiked(cursor.getInt(cursor.getColumnIndexOrThrow("liked")));
-                    listAdapter.setTrackToken(cursor.getString(cursor.getColumnIndexOrThrow("trackToken")));
-                    listAdapter.setTypeFit(cursor.getInt(cursor.getColumnIndexOrThrow("typeFit")));
-                    tracksModels.add(listAdapter);
-                } while (cursor.moveToNext());
-            }
-            cursor.close();
+
+        Cursor cursorTracks = new InquiryBuilder()
+                .get(_ID, BEGINS_AT, TIME, DISTANCE, LIKED, TRACK_TOKEN, TYPE_FIT)
+                .from(TABLE_TRACKS)
+                .where(true, IS_TRACK_DELETE_EQ + " " + IS_TRACK_DELETE_FALSE + " " + AND + " " + TYPE_FIT + "=" + String.valueOf(getArguments().getInt(ARG_SECTION_NUMBER)))
+                .orderBy(BEGINS_AT)
+                .desc()
+                .select();
+
+        DbCursor cursor = new DbCursor(cursorTracks);
+        if (cursor.isValid()) {
+            do {
+                AllFitnessDataAdapter listAdapter = new AllFitnessDataAdapter();
+                listAdapter.setId(cursor.getInt(_ID));
+                listAdapter.setBeginsAt(cursor.getInt(BEGINS_AT));
+                listAdapter.setTime(cursor.getInt(TIME));
+                listAdapter.setDistance(cursor.getInt(DISTANCE));
+                listAdapter.setLiked(cursor.getInt(LIKED));
+                listAdapter.setTrackToken(cursor.getString(TRACK_TOKEN));
+                listAdapter.setTypeFit(cursor.getInt(TYPE_FIT));
+                tracksModels.add(listAdapter);
+            } while (cursorTracks.moveToNext());
         }
     }
 

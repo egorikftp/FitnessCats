@@ -32,7 +32,7 @@ import android.widget.Toast;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.helpers.QueryBuilder;
+import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.models.Firebase.Point;
 import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.services.RunService;
@@ -376,7 +376,7 @@ public class ScamperActivity extends AppCompatActivity {
     }
 
     private void writeKeyToDb(String key, int idTrack) {
-        new QueryBuilder()
+        new InquiryBuilder()
                 .updateTable("Tracks")
                 .set("trackToken", key)
                 .updateWhere("Tracks._id=", String.valueOf(idTrack))
