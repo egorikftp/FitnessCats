@@ -86,7 +86,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
             dbCursor.close();
 
             distanceText.setText(String.format(getString(R.string.track_fragment_distance_meter), getIntent().getExtras().getLong(KEY_DISTANCE)));
-            timeRunningText.setText(ConverterTime.ConvertTimeToStringWithMill(getIntent().getExtras().getLong(KEY_TIME_RUNNING)));
+            timeRunningText.setText(ConverterTime.ConvertTimeToString(getIntent().getExtras().getLong(KEY_TIME_RUNNING)));
         }
         mapFragment.getMapAsync(this);
     }

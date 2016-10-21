@@ -20,7 +20,7 @@
 
 
     <!-- All Fitness Data -->
-    <dimen name="adapter_all_fitness_data_margin">4dp</dimen>
+    <dimen name="adapter_all_fitness_data_margin">6dp</dimen>
     <dimen name="adapter_all_fitness_data_padding_image_liked">10dp</dimen>
 
 

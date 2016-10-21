@@ -38,7 +38,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/adapter_all_fitness_data_date_text"
             android:layout_centerHorizontal="true"
-            android:textAppearance="?android:textAppearance" />
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textColor="@color/colorPrimaryDark" />
 
         <TextView
             android:id="@+id/adapter_all_fitness_data_distance"
@@ -53,9 +54,11 @@
             android:id="@+id/adapter_all_fitness_data_distance_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/adapter_all_fitness_data_ic_type"
-            android:layout_margin="@dimen/adapter_all_fitness_data_margin"
-            android:layout_toRightOf="@+id/adapter_all_fitness_data_distance" />
+            android:layout_above="@+id/adapter_all_fitness_data_calories_text_view"
+            android:layout_below="@+id/adapter_all_fitness_data_time_text_view"
+            android:layout_marginLeft="@dimen/adapter_all_fitness_data_margin"
+            android:layout_toRightOf="@+id/adapter_all_fitness_data_calories_text_view"
+            android:gravity="center" />
 
         <TextView
             android:id="@+id/adapter_all_fitness_data_calories"

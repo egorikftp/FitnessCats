@@ -115,7 +115,7 @@ public class AllFitnessDataAdapter extends AbstractItem<AllFitnessDataAdapter, A
     public void bindView(ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
         holder.date.setText(ConverterTime.convertUnixDate(beginsAt));
-        holder.timeRunning.setText(ConverterTime.ConvertTimeToStringWithMill(time));
+        holder.timeRunning.setText(ConverterTime.ConvertTimeToString(time));
         holder.distance.setText(String.format(holder.formatMeters, distance));
 
         Cursor cursor = App.getInstance().getDb().rawQuery(

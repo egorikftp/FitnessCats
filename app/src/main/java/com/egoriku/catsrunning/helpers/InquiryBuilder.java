@@ -39,6 +39,7 @@ public class InquiryBuilder implements Cursor {
     private static final String GROUP_BY = "GROUP BY";
     private static final String VALUES = "VALUES";
     private static final String PRIMARY_KEY = "INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT";
+    public static final String EQ_QUESTION = "=?";
     private ArrayList<String> params = new ArrayList<>();
     private ArrayList<String> fields = new ArrayList<>();
     private ArrayList<String> insertFields = new ArrayList<>();
@@ -92,7 +93,7 @@ public class InquiryBuilder implements Cursor {
 
     public InquiryBuilder updateWhere(String condition, String... params) {
         for (int i = 0, len = insertFields.size(); i < len; i++) {
-            query.append(insertFields.get(i)).append("=?");
+            query.append(insertFields.get(i)).append(EQ_QUESTION);
             if (i + 1 < len) {
                 query.append(", ");
             } else {

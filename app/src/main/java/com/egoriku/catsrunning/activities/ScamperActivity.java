@@ -44,8 +44,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static com.egoriku.catsrunning.models.State.BEGINS_AT;
 import static com.egoriku.catsrunning.models.State.DISTANCE;
@@ -59,6 +57,7 @@ import static com.egoriku.catsrunning.models.State.TRACK_TOKEN;
 import static com.egoriku.catsrunning.models.State.TYPE_FIT;
 import static com.egoriku.catsrunning.models.State._ID;
 import static com.egoriku.catsrunning.models.State._ID_EQ;
+import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class ScamperActivity extends AppCompatActivity {
     public static final String BROADCAST_FINISH_SERVICE = "BROADCAST_FINISH_SERVICE";
@@ -80,10 +79,10 @@ public class ScamperActivity extends AppCompatActivity {
     private ArrayList<Point> points;
 
     private int idTrack;
+    private int typeFit;
     private String alertMessage;
     private String alertPositiveBtn;
     private String alertNegativeBtn;
-    private String titleStatistic;
 
     private Toolbar toolbar;
     private Button btnStart;
@@ -97,8 +96,6 @@ public class ScamperActivity extends AppCompatActivity {
     private CustomChronometer chronometer;
     private LocationManager manager;
     private Thread chronometerThread;
-    private List<String> listTypeFit;
-
     private FirebaseUser user;
 
 
@@ -122,7 +119,6 @@ public class ScamperActivity extends AppCompatActivity {
         alertMessage = getString(R.string.scamper_activity_alert_message_no_gps);
         alertPositiveBtn = getString(R.string.scamper_activity_alert_positive_btn);
         alertNegativeBtn = getString(R.string.scamper_activity_alert_negative_btn);
-        titleStatistic = getString(R.string.scamper_activity_toolbar_title);
 
         btnFinish.setVisibility(View.GONE);
         textTimer.setVisibility(View.GONE);
@@ -130,15 +126,13 @@ public class ScamperActivity extends AppCompatActivity {
         textYouFinishRunning.setVisibility(View.GONE);
         pandaFinishScamper.setVisibility(View.GONE);
 
-        listTypeFit = Arrays.asList(getResources().getStringArray(R.array.type_reminder));
-
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
             if (getIntent().getExtras() != null) {
-                int type = getIntent().getExtras().getInt(KEY_TYPE_FIT);
-                getSupportActionBar().setTitle(listTypeFit.get(type - 1));
+                typeFit = getIntent().getExtras().getInt(KEY_TYPE_FIT);
+                getSupportActionBar().setTitle(getTypeFit(typeFit, false, R.array.type_reminder));
             }
         }
 
@@ -197,7 +191,9 @@ public class ScamperActivity extends AppCompatActivity {
                 }
 
                 if (getSupportActionBar() != null) {
-                    getSupportActionBar().setTitle(titleStatistic);
+                    getSupportActionBar().setTitle(
+                            String.format(getString(R.string.scamper_activity_toolbar_title),getTypeFit(typeFit, true, R.array.all_fitness_data_categories))
+                    );
                 }
 
                 stopService(new Intent(ScamperActivity.this, RunService.class));

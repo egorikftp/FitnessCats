@@ -26,7 +26,7 @@
     <!-- Данные Toolbar -->
     <string name="register_activity_register_toolbar_title">Регистрация</string>
     <string name="register_activity_login_toolbar_title">Войти</string>
-    <string name="scamper_activity_toolbar_title">Статистика пробежки</string>
+    <string name="scamper_activity_toolbar_title">Статистика %s</string>
     <string name="fragment_track_toolbar_title">Подробнее о треке</string>
 
     <!-- Текст кнопок для логина/регистрации -->
@@ -40,7 +40,7 @@
     <string name="navigation_drawer_exit">Выход</string>
 
     <!-- Текст нотификации будильника -->
-    <string name="alarm_notification_title">Cats Running</string>
+    <string name="alarm_notification_title">Fitness Cat\'s</string>
 
     <!-- Текст нотификации сервиса -->
     <string name="scamper_notification_title">Ваша %s началась</string>
@@ -69,7 +69,7 @@
     <string name="liked_fragment_adapter_distance">Дистанция:</string>
 
     <!-- Adapter Fragment Tracks List -->
-    <string name="adapter_fragment_main_calories">Каллории: </string>
+    <string name="adapter_fragment_main_calories">Калории: </string>
 
 
     <!-- Фрагменты  -->
