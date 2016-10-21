@@ -26,10 +26,12 @@ public class State {
     public static final String IS_TRACK_DELETE_EQ = "isTrackDelete=";
     public static final String _ID_EQ = "_id=";
 
-
     public static final String IS_TRACK_DELETE_TRUE = "1";
     public static final String  IS_TRACK_DELETE_FALSE = "0";
 
+    public static final int TYPE_FIT_WALK = 1;
+    public static final int TYPE_FIT_RUN = 2;
+    public static final int TYPE_FIT_CYCLING = 3;
 
     private static final String KEY_LOGIN = "KEY_LOGIN";
     /**

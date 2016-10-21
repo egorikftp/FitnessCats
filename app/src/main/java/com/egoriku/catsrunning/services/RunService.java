@@ -19,6 +19,9 @@ import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.ScamperActivity;
 import com.egoriku.catsrunning.utils.ConverterTime;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static com.egoriku.catsrunning.activities.ScamperActivity.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.activities.ScamperActivity.KEY_TYPE_FIT_NOTIFICATION;
 
@@ -46,18 +49,21 @@ public class RunService extends Service implements LocationListener {
 
     private LocationManager locationManager;
     private Location oldLocation;
+
     private int[] imageResId = {
             R.drawable.ic_vec_directions_walk_white_24dp,
             R.drawable.ic_vec_directions_run_white_24dp,
             R.drawable.ic_vec_directions_bike_white_24dp
     };
 
+    private List<String> listTextNotification;
 
     @Override
     public void onCreate() {
         super.onCreate();
         isActive = false;
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        listTextNotification = Arrays.asList(getResources().getStringArray(R.array.type_reminder));
     }
 
 
@@ -238,7 +244,7 @@ public class RunService extends Service implements LocationListener {
                         new Intent(this, ScamperActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP).putExtra(KEY_TYPE_FIT, typeFit),
                         PendingIntent.FLAG_UPDATE_CURRENT
                 ))
-                .setContentTitle(getString(R.string.scamper_notification_title))
+                .setContentTitle(String.format(getString(R.string.scamper_notification_title), getNotificationText(typeFit)))
                 .setContentText(String.format(getString(R.string.notification_time_distance_format), time, distance))
                 .setAutoCancel(false)
                 .setOngoing(true);
@@ -248,6 +254,11 @@ public class RunService extends Service implements LocationListener {
 
     private int getNotificationIcon(int typeFit) {
         return imageResId[typeFit - 1];
+    }
+
+
+    private String getNotificationText(int typeFit) {
+        return listTextNotification.get(typeFit - 1).toLowerCase();
     }
 
 

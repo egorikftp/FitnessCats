@@ -43,7 +43,7 @@
     <string name="alarm_notification_title">Cats Running</string>
 
     <!-- Текст нотификации сервиса -->
-    <string name="scamper_notification_title">Ваша пробежка началась</string>
+    <string name="scamper_notification_title">Ваша %s началась</string>
     <string name="notification_time_distance_format">%1$s, дистанция %2$s м</string>
 
     <!-- Текст AlertDialog при отсутствии GPS -->

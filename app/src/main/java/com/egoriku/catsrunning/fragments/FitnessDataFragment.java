@@ -56,6 +56,9 @@ import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
 import static com.egoriku.catsrunning.models.State.TIME;
 import static com.egoriku.catsrunning.models.State.TRACK_TOKEN;
 import static com.egoriku.catsrunning.models.State.TYPE_FIT;
+import static com.egoriku.catsrunning.models.State.TYPE_FIT_CYCLING;
+import static com.egoriku.catsrunning.models.State.TYPE_FIT_RUN;
+import static com.egoriku.catsrunning.models.State.TYPE_FIT_WALK;
 import static com.egoriku.catsrunning.models.State._ID;
 import static com.egoriku.catsrunning.models.State._ID_EQ;
 
@@ -152,7 +155,7 @@ public class FitnessDataFragment extends Fragment {
         fabWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(ScamperActivity.KEY_TYPE_FIT, 1));
+                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(ScamperActivity.KEY_TYPE_FIT, TYPE_FIT_WALK));
             }
         });
 
@@ -160,14 +163,14 @@ public class FitnessDataFragment extends Fragment {
         fabRun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(ScamperActivity.KEY_TYPE_FIT, 2));
+                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(ScamperActivity.KEY_TYPE_FIT, TYPE_FIT_RUN));
             }
         });
 
         fabCycling.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(ScamperActivity.KEY_TYPE_FIT, 3));
+                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(ScamperActivity.KEY_TYPE_FIT, TYPE_FIT_CYCLING));
             }
         });
 
@@ -184,7 +187,6 @@ public class FitnessDataFragment extends Fragment {
         fabStatus = false;
         LocalBroadcastManager.getInstance(App.getInstance()).
                 registerReceiver(broadcastNewTracksSave, new IntentFilter(TracksActivity.BROADCAST_SAVE_NEW_TRACKS));
-
         setUpAdapter();
     }
 
@@ -308,6 +310,7 @@ public class FitnessDataFragment extends Fragment {
             }
         });
     }
+
 
     private void changeFabState(boolean status) {
         FrameLayout.LayoutParams layoutParamsFabRun = (FrameLayout.LayoutParams) fabRun.getLayoutParams();
