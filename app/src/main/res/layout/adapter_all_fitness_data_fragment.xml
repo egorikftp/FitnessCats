@@ -56,9 +56,9 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/adapter_all_fitness_data_calories_text_view"
             android:layout_below="@+id/adapter_all_fitness_data_time_text_view"
-            android:layout_marginLeft="@dimen/adapter_all_fitness_data_margin"
-            android:layout_toRightOf="@+id/adapter_all_fitness_data_calories_text_view"
-            android:gravity="center" />
+            android:gravity="center"
+            android:layout_toRightOf="@+id/adapter_all_fitness_data_distance"
+            android:layout_toEndOf="@+id/adapter_all_fitness_data_distance" />
 
         <TextView
             android:id="@+id/adapter_all_fitness_data_calories"

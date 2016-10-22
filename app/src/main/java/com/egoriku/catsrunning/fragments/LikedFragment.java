@@ -2,7 +2,6 @@ package com.egoriku.catsrunning.fragments;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -16,13 +15,15 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
+import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.LikedFragmentAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.IRecyclerViewListener;
 import com.egoriku.catsrunning.models.LikedTracksModel;
 
 import java.util.ArrayList;
+
+import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
 
 public class LikedFragment extends Fragment {
     public static final String TAG_LIKED_FRAGMENT = "TAG_LIKED_FRAGMENT";
@@ -118,21 +119,5 @@ public class LikedFragment extends Fragment {
 
     public String getEmojiByUnicode(int unicode) {
         return new String(Character.toChars(unicode));
-    }
-
-
-    private void updateLikedDigit(int likedDigit, int position) {
-        SQLiteStatement statement = App.getInstance().getDb().compileStatement(
-                "UPDATE Tracks SET liked=? WHERE _id = ?"
-        );
-
-        statement.bindLong(1, likedDigit);
-        statement.bindLong(2, position);
-
-        try {
-            statement.execute();
-        } finally {
-            statement.close();
-        }
     }
 }

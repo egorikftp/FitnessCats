@@ -3,15 +3,21 @@ package com.egoriku.catsrunning.activities;
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.helpers.DbCursor;
 import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.utils.ConverterTime;
+import com.egoriku.catsrunning.utils.VectorToDrawable;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -23,21 +29,33 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.egoriku.catsrunning.helpers.DbActions.deleteTrackData;
+import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
+import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_EQ;
+import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_TRUE;
 import static com.egoriku.catsrunning.models.State.LAT;
 import static com.egoriku.catsrunning.models.State.LNG;
 import static com.egoriku.catsrunning.models.State.TABLE_POINT;
+import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
 import static com.egoriku.catsrunning.models.State.TRACK_ID_EQ;
+import static com.egoriku.catsrunning.models.State._ID;
 
 public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     public static final String KEY_ID = "KEY_ID";
     public static final String KEY_DISTANCE = "KEY_DISTANCE";
     public static final String KEY_TIME_RUNNING = "KEY_TIME_RUNNING";
+    public static final String KEY_LIKED = "KEY_LIKED";
+    public static final String KEY_TOKEN = "KEY_TOKEN";
     private static final int paddingMap = 150;
-
     private GoogleMap mMap;
     private Toolbar toolbar;
     private SupportMapFragment mapFragment;
@@ -47,6 +65,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
     private List<LatLng> coordinatesList;
     private String startRunningHint;
     private String endRunningHint;
+    private int liked;
 
     @SuppressLint("StringFormatMatches")
     @Override
@@ -87,6 +106,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
 
             distanceText.setText(String.format(getString(R.string.track_fragment_distance_meter), getIntent().getExtras().getLong(KEY_DISTANCE)));
             timeRunningText.setText(ConverterTime.ConvertTimeToString(getIntent().getExtras().getLong(KEY_TIME_RUNNING)));
+            liked = getIntent().getExtras().getInt(KEY_LIKED, -1);
         }
         mapFragment.getMapAsync(this);
     }
@@ -142,5 +162,104 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
                 .icon(BitmapDescriptorFactory.fromResource(idIco))
         );
         return marker.getPosition();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.track_on_map_activity_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem likedItem = menu.findItem(R.id.menu_tracks_on_map_activity_action_like);
+        switch (liked) {
+            case 0:
+                likedItem.setIcon(VectorToDrawable.getDrawable(R.drawable.ic_vec_star_border_white));
+                break;
+            case 1:
+                likedItem.setIcon(VectorToDrawable.getDrawable(R.drawable.ic_vec_star_white));
+                break;
+
+            default:
+                likedItem.setVisible(false);
+        }
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_tracks_on_map_activity_action_like:
+                switch (liked) {
+                    case 0:
+                        liked = 1;
+                        updateLikedDigit(liked, getIntent().getExtras().getInt(KEY_ID));
+                        break;
+
+                    case 1:
+                        liked = 0;
+                        updateLikedDigit(liked, getIntent().getExtras().getInt(KEY_ID));
+                        break;
+                }
+                invalidateOptionsMenu();
+                return true;
+
+            case R.id.menu_tracks_on_map_activity_action_delete:
+                Snackbar.make(toolbar, getString(R.string.track_on_map_activity_track_delete), Snackbar.LENGTH_LONG)
+                        .setAction(getString(R.string.track_on_map_activity_cancel_delete), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Snackbar.make(toolbar, getString(R.string.track_on_map_activity_track_cancel_delete_success), Snackbar.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setCallback(new Snackbar.Callback() {
+                            @Override
+                            public void onDismissed(Snackbar snackbar, int event) {
+                                switch (event) {
+                                    case Snackbar.Callback.DISMISS_EVENT_TIMEOUT:
+                                        deleteTrackData(getIntent().getExtras().getInt(KEY_ID));
+
+                                        new InquiryBuilder()
+                                                .set(IS_TRACK_DELETE_EQ, IS_TRACK_DELETE_TRUE)
+                                                .updateWhere(TABLE_TRACKS + _ID, String.valueOf(getIntent().getExtras().getInt(KEY_ID)));
+
+                                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                        App.getInstance().getTracksReference().child(user.getUid()).child(getIntent().getExtras().getString(KEY_TOKEN)).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                dataSnapshot.getRef().setValue(null);
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+                                                Toast.makeText(TrackOnMapsActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                        break;
+                                }
+                            }
+                        }).show();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(KEY_LIKED, liked);
+        super.onSaveInstanceState(outState);
+    }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        liked = savedInstanceState.getInt(KEY_LIKED);
+        super.onRestoreInstanceState(savedInstanceState);
     }
 }

@@ -56,6 +56,7 @@
     <string name="scamper_activity_snackbar_no_points">Увы, в треке нет точек</string>
 
     <!-- Scamper Activity -->
+    <string name="scamper_activity_menu_action_delete">Удалить</string>
     <string name="scamper_activity_distance_meter">%s м</string>
     <string name="scamper_activity_start">СТАРТ</string>
     <string name="scamper_activity_finish">ФИНИШ</string>
@@ -138,12 +139,15 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
 
     <string name="type_cycling">Велопрогулкa</string>
     <string name="type_walking">Прогулкa</string>
     <string name="type_running">Пробежкa</string>
+
     <string name="scamper_activity_track_save_success">Трек успешно сохранен</string>
     <string name="scamper_activity_track_save_error">Трек не сохранен</string>
+    <string name="track_on_map_activity_track_delete">Трек удален</string>
+    <string name="track_on_map_activity_cancel_delete">Отменить?</string>
+    <string name="track_on_map_activity_track_cancel_delete_success">Удаление отменено!</string>
 
 </resources>

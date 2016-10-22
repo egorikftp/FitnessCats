@@ -45,6 +45,8 @@ import com.mikepenz.fastadapter.helpers.ClickListenerHelper;
 
 import java.util.ArrayList;
 
+import static com.egoriku.catsrunning.helpers.DbActions.deleteTrackData;
+import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
 import static com.egoriku.catsrunning.models.State.AND;
 import static com.egoriku.catsrunning.models.State.BEGINS_AT;
 import static com.egoriku.catsrunning.models.State.DISTANCE;
@@ -60,7 +62,6 @@ import static com.egoriku.catsrunning.models.State.TYPE_FIT_CYCLING;
 import static com.egoriku.catsrunning.models.State.TYPE_FIT_RUN;
 import static com.egoriku.catsrunning.models.State.TYPE_FIT_WALK;
 import static com.egoriku.catsrunning.models.State._ID;
-import static com.egoriku.catsrunning.models.State._ID_EQ;
 
 public class FitnessDataFragment extends Fragment {
     public static final String TAG_MAIN_FRAGMENT = "TAG_MAIN_FRAGMENT";
@@ -88,6 +89,12 @@ public class FitnessDataFragment extends Fragment {
     private ClickListenerHelper<AllFitnessDataAdapter> clickListenerHelper;
     private FastItemAdapter<AllFitnessDataAdapter> fastAdapter;
     private ArrayList<AllFitnessDataAdapter> tracksModels;
+    private BroadcastReceiver broadcastNewTracksSave = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            setUpAdapter();
+        }
+    };
 
     public FitnessDataFragment() {
     }
@@ -100,13 +107,11 @@ public class FitnessDataFragment extends Fragment {
         return fragment;
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
         ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_main_activity, TAG_MAIN_FRAGMENT);
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -115,7 +120,6 @@ public class FitnessDataFragment extends Fragment {
             App.getInstance().createState();
         }
     }
-
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -180,7 +184,6 @@ public class FitnessDataFragment extends Fragment {
         return view;
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -190,7 +193,6 @@ public class FitnessDataFragment extends Fragment {
         setUpAdapter();
     }
 
-
     @Override
     public void onPause() {
         super.onPause();
@@ -199,15 +201,6 @@ public class FitnessDataFragment extends Fragment {
             changeFabState(true);
         }
     }
-
-
-    private BroadcastReceiver broadcastNewTracksSave = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            setUpAdapter();
-        }
-    };
-
 
     private void setUpAdapter() {
         getTracksFromDb();
@@ -231,6 +224,8 @@ public class FitnessDataFragment extends Fragment {
                 intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_ID, item.getId());
                 intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_DISTANCE, item.getDistance());
                 intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TIME_RUNNING, item.getTime());
+                intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_LIKED, item.getLiked());
+                intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TOKEN, item.getTrackToken());
                 startActivity(intentTrackOnMaps);
                 return false;
             }
@@ -280,6 +275,8 @@ public class FitnessDataFragment extends Fragment {
                         .setPositiveButton(R.string.fitness_data_fragment_alert_positive_btn, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                deleteTrackData(item.getId());
+
                                 new InquiryBuilder()
                                         .set(IS_TRACK_DELETE_EQ, IS_TRACK_DELETE_TRUE)
                                         .updateWhere(TABLE_TRACKS + _ID, String.valueOf(item.getId()));
@@ -386,14 +383,5 @@ public class FitnessDataFragment extends Fragment {
                 tracksModels.add(listAdapter);
             } while (cursorTracks.moveToNext());
         }
-    }
-
-
-    private void updateLikedDigit(int likedDigit, int position) {
-        Void updateLiked = new InquiryBuilder()
-                .updateTable(TABLE_TRACKS)
-                .set(LIKED, likedDigit)
-                .updateWhere(_ID_EQ, String.valueOf(position))
-                .update();
     }
 }

@@ -49,9 +49,9 @@ public class RunService extends Service implements LocationListener {
     private Location oldLocation;
 
     private int[] imageResId = {
-            R.drawable.ic_vec_directions_walk_white_24dp,
-            R.drawable.ic_vec_directions_run_white_24dp,
-            R.drawable.ic_vec_directions_bike_white_24dp
+            R.drawable.ic_directions_walk_black_service,
+            R.drawable.ic_directions_run_black_service,
+            R.drawable.ic_directions_bike_black_service
     };
 
 
