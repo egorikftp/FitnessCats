@@ -1,14 +1,13 @@
 package com.egoriku.catsrunning.adapters;
 
 import android.graphics.Typeface;
-import android.os.Build;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.egoriku.catsrunning.App;
@@ -19,7 +18,6 @@ import com.egoriku.catsrunning.models.ItemNavigationDrawer;
 import java.util.ArrayList;
 
 import static android.R.color.white;
-import static com.egoriku.catsrunning.utils.VectorToDrawable.createBitmapFromVector;
 import static com.egoriku.catsrunning.utils.VectorToDrawable.getDrawable;
 
 
@@ -59,7 +57,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
             }
 
             if (modelArray.get(position).isSelected()) {
-                holder.rootLinearLayout.setBackgroundColor(App.getInstance().getResources().getColor(R.color.color_background_nav_drawer));
+                holder.rootRelativeLayout.setBackgroundColor(App.getInstance().getResources().getColor(R.color.color_background_nav_drawer));
                 holder.imageView.setImageDrawable(
                         getDrawable(modelArray.get(position).getImgResId(), R.style.NavDrawerDefaultTheme)
                 );
@@ -67,7 +65,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
                 holder.textViewItem.setTypeface(null, Typeface.BOLD);
                 holder.textViewItem.setText(modelArray.get(position).getItemName());
             } else {
-                holder.rootLinearLayout.setBackgroundColor(App.getInstance().getResources().getColor(white));
+                holder.rootRelativeLayout.setBackgroundColor(App.getInstance().getResources().getColor(white));
                 holder.imageView.setImageDrawable(
                         getDrawable(modelArray.get(position).getImgResId(), R.style.NavDrawerDefaultThemeUpdate)
                 );
@@ -75,16 +73,6 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
                 holder.textViewItem.setTypeface(null, Typeface.NORMAL);
                 holder.textViewItem.setText(modelArray.get(position).getItemName());
             }
-        }
-    }
-
-
-    //получение png из vector для старых версий android
-    private void setImage(ImageView image, int imgRes) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            image.setImageDrawable(App.getInstance().getResources().getDrawable(imgRes, App.getInstance().getTheme()));
-        } else {
-            image.setImageBitmap(createBitmapFromVector(App.getInstance().getResources(), imgRes));
         }
     }
 
@@ -110,7 +98,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         protected ImageView imageLine;
         protected TextView headerName;
         protected TextView headerEmail;
-        protected LinearLayout rootLinearLayout;
+        protected RelativeLayout rootRelativeLayout;
 
 
         public ViewHolder(View itemView, int viewType) {
@@ -122,7 +110,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
                 textViewItem = (TextView) itemView.findViewById(R.id.naw_drawer_item_text);
                 imageView = (ImageView) itemView.findViewById(R.id.naw_drawer_item_image);
                 imageLine = (ImageView) itemView.findViewById(R.id.naw_drawer_item_line);
-                rootLinearLayout = (LinearLayout) itemView.findViewById(R.id.root_layout_nav_drawer_item);
+                rootRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.root_layout_nav_drawer_item);
             }
 
             itemView.setOnClickListener(new View.OnClickListener() {

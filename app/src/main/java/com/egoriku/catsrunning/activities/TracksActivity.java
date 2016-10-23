@@ -20,7 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.egoriku.catsrunning.App;
@@ -55,7 +55,7 @@ public class TracksActivity extends AppCompatActivity {
     public static final String BROADCAST_SAVE_NEW_TRACKS = "BROADCAST_SAVE_NEW_TRACKS";
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
-    private LinearLayout linearLayoutSetting;
+    private RelativeLayout relativeLayoutSetting;
     private ActionBarDrawerToggle drawerToggle;
     private RecyclerView recyclerView;
     private ArrayList<ItemNavigationDrawer> drawerArrayList;
@@ -76,7 +76,7 @@ public class TracksActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_naw_drawer);
-        linearLayoutSetting = (LinearLayout) findViewById(R.id.linear_layout_setting);
+        relativeLayoutSetting = (RelativeLayout) findViewById(R.id.relative_layout_setting);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -181,7 +181,7 @@ public class TracksActivity extends AppCompatActivity {
             }
         });
 
-        linearLayoutSetting.setOnClickListener(new View.OnClickListener() {
+        relativeLayoutSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 drawerLayout.closeDrawers();

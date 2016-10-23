@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_layout_nav_drawer_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="?attr/selectableItemBackground"
+    android:background="?android:selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     android:paddingBottom="@dimen/adapter_naw_drawer_margin_item"
     android:paddingTop="@dimen/adapter_naw_drawer_margin_item">
 
     <ImageView
-        android:visibility="gone"
         android:id="@+id/naw_drawer_item_line"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingBottom="@dimen/adapter_naw_drawer_margin_image"
+        android:visibility="gone"
         app:srcCompat="@drawable/ic_vec_line" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+    <ImageView
+        android:id="@+id/naw_drawer_item_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/naw_drawer_item_line"
+        android:layout_marginLeft="@dimen/adapter_naw_drawer_margin_image"
+        android:layout_marginStart="@dimen/adapter_naw_drawer_margin_image" />
 
-        <ImageView
-            android:id="@+id/naw_drawer_item_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/adapter_naw_drawer_margin_image"
-            android:layout_marginStart="@dimen/adapter_naw_drawer_margin_image" />
-
-        <TextView
-            android:id="@+id/naw_drawer_item_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/adapter_naw_drawer_margin_image" />
-    </LinearLayout>
-</LinearLayout>
+    <TextView
+        android:id="@+id/naw_drawer_item_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/naw_drawer_item_image"
+        android:layout_below="@id/naw_drawer_item_line"
+        android:layout_marginLeft="@dimen/adapter_naw_drawer_margin_image"
+        android:layout_toRightOf="@id/naw_drawer_item_image"
+        android:gravity="center" />
+</RelativeLayout>
