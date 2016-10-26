@@ -84,13 +84,13 @@ public class ScamperActivity extends AppCompatActivity {
     private String alertMessage;
     private String alertPositiveBtn;
     private String alertNegativeBtn;
+    private String textNowTime;
 
     private Toolbar toolbar;
     private Button btnStart;
     private Button btnFinish;
     private TextView textTimer;
     private TextView textDistance;
-    private TextView textYouFinishRunning;
     private ImageView pandaFinishScamper;
     private LinearLayout linearLayoutRoot;
 
@@ -104,15 +104,12 @@ public class ScamperActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scamper);
-
         user = FirebaseAuth.getInstance().getCurrentUser();
-
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
         btnStart = (Button) findViewById(R.id.scamper_activity_btn_start);
         btnFinish = (Button) findViewById(R.id.scamper_activity_btn_finish);
         textTimer = (TextView) findViewById(R.id.scamper_activity_text_timer);
         textDistance = (TextView) findViewById(R.id.scamper_activity_text_distance);
-        textYouFinishRunning = (TextView) findViewById(R.id.scamper_activity_text_you_are_running);
         pandaFinishScamper = (ImageView) findViewById(R.id.image_panda_finish_scamper);
         linearLayoutRoot = (LinearLayout) findViewById(R.id.activity_scamper_root_layout);
         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -120,11 +117,11 @@ public class ScamperActivity extends AppCompatActivity {
         alertMessage = getString(R.string.scamper_activity_alert_message_no_gps);
         alertPositiveBtn = getString(R.string.scamper_activity_alert_positive_btn);
         alertNegativeBtn = getString(R.string.scamper_activity_alert_negative_btn);
+        textNowTime = getString(R.string.scamper_activity_now_time);
 
         btnFinish.setVisibility(View.GONE);
         textTimer.setVisibility(View.GONE);
         textDistance.setVisibility(View.GONE);
-        textYouFinishRunning.setVisibility(View.GONE);
         pandaFinishScamper.setVisibility(View.GONE);
 
         setSupportActionBar(toolbar);
@@ -137,7 +134,7 @@ public class ScamperActivity extends AppCompatActivity {
             }
         }
 
-        final FlipAnimation flipAnimation = new FlipAnimation(btnStart, btnFinish, textTimer, textDistance, textYouFinishRunning, pandaFinishScamper);
+        final FlipAnimation flipAnimation = new FlipAnimation(btnStart, btnFinish, textTimer, textDistance, pandaFinishScamper);
 
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -207,7 +204,7 @@ public class ScamperActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                textTimer.setText(timeFromChronometer);
+                textTimer.setText(String.format(textNowTime,timeFromChronometer));
             }
         });
     }
@@ -285,7 +282,6 @@ public class ScamperActivity extends AppCompatActivity {
         outState.putInt(VIEW_BTN_FINISH, btnFinish.getVisibility());
         outState.putInt(VIEW_TEXT_TIMER, textTimer.getVisibility());
         outState.putInt(VIEW_TEXT_DISTANCE, textDistance.getVisibility());
-        outState.putInt(VIEW_TEXT_FINISH_TEXT, textYouFinishRunning.getVisibility());
         outState.putString(TOOLBAR_TEXT, toolbar.getTitle().toString());
         outState.putString(DISTANCE_TEXT, textDistance.getText().toString());
         outState.putString(TIME_SCAMPER_TEXT, textTimer.getText().toString());
@@ -301,7 +297,6 @@ public class ScamperActivity extends AppCompatActivity {
         btnFinish.setVisibility(savedInstanceState.getInt(VIEW_BTN_FINISH));
         textTimer.setVisibility(savedInstanceState.getInt(VIEW_TEXT_TIMER));
         textDistance.setVisibility(savedInstanceState.getInt(VIEW_TEXT_DISTANCE));
-        textYouFinishRunning.setVisibility(savedInstanceState.getInt(VIEW_TEXT_FINISH_TEXT));
         pandaFinishScamper.setVisibility(savedInstanceState.getInt(VIEW_IMAGE));
         textDistance.setText(savedInstanceState.getString(DISTANCE_TEXT));
         textTimer.setText(savedInstanceState.getString(TIME_SCAMPER_TEXT));
@@ -347,7 +342,6 @@ public class ScamperActivity extends AppCompatActivity {
             btnFinish.setVisibility(View.VISIBLE);
             textTimer.setVisibility(View.VISIBLE);
             textDistance.setVisibility(View.GONE);
-            textYouFinishRunning.setVisibility(View.GONE);
         }
     }
 

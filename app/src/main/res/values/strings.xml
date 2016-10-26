@@ -26,7 +26,6 @@
     <!-- Данные Toolbar -->
     <string name="register_activity_register_toolbar_title">Регистрация</string>
     <string name="register_activity_login_toolbar_title">Войти</string>
-    <string name="scamper_activity_toolbar_title">Статистика %s</string>
     <string name="fragment_track_toolbar_title">Подробнее о треке</string>
 
     <!-- Текст кнопок для логина/регистрации -->
@@ -57,10 +56,14 @@
 
     <!-- Scamper Activity -->
     <string name="scamper_activity_menu_action_delete">Удалить</string>
-    <string name="scamper_activity_distance_meter">%s м</string>
+    <string name="scamper_activity_distance_meter">Ваш результат: %s м</string>
     <string name="scamper_activity_start">СТАРТ</string>
     <string name="scamper_activity_finish">ФИНИШ</string>
-    <string name="scamper_activity_you_are_running">Вы пробежали</string>
+    <string name="scamper_activity_track_save_success">Трек успешно сохранен</string>
+    <string name="scamper_activity_track_save_error">Трек не сохранен</string>
+    <string name="scamper_activity_toolbar_title">Статистика %s</string>
+    <string name="scamper_activity_now_time">Время: %s</string>
+
 
 
     <!-- Адаптеры  -->
@@ -144,8 +147,6 @@
     <string name="type_walking">Прогулкa</string>
     <string name="type_running">Пробежкa</string>
 
-    <string name="scamper_activity_track_save_success">Трек успешно сохранен</string>
-    <string name="scamper_activity_track_save_error">Трек не сохранен</string>
     <string name="track_on_map_activity_track_delete">Трек удален</string>
     <string name="track_on_map_activity_cancel_delete">Отменить?</string>
     <string name="track_on_map_activity_track_cancel_delete_success">Удаление отменено!</string>

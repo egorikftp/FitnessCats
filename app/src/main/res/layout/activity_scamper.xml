@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/scamper_activity_gradient"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar" />
+    <include layout="@layout/toolbar_scamper_activity" />
 
     <LinearLayout
         android:id="@+id/activity_scamper_root_layout"
@@ -20,12 +22,39 @@
 
         <Button
             android:id="@+id/scamper_activity_btn_start"
-            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:background="@drawable/scamper_activity_button_shape"
             android:text="@string/scamper_activity_start"
+            android:textColor="@android:color/white"
             android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/scamper_activity_btn_finish"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/scamper_activity_button_shape"
+            android:text="@string/scamper_activity_finish"
+            android:textColor="@android:color/white"
+            android:textSize="30sp" />
+
+        <ImageView
+            android:id="@+id/image_panda_finish_scamper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_vec_cats_weary" />
+
+        <TextView
+            android:id="@+id/scamper_activity_text_distance"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:maxLines="2"
+            android:textSize="26sp" />
 
         <TextView
             android:id="@+id/scamper_activity_text_timer"
@@ -33,45 +62,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/scamper_activity_text_color"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/scamper_activity_btn_finish"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="@string/scamper_activity_finish"
-            android:textSize="30sp" />
-
-        <ImageView
-            android:id="@+id/image_panda_finish_scamper"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:src="@drawable/panda_finish_scamper" />
-
-
-        <TextView
-            android:id="@+id/scamper_activity_text_you_are_running"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/scamper_activity_you_are_running"
-            android:textColor="@color/scamper_activity_text_color"
-            android:textSize="30sp" />
-
-        <TextView
-            android:id="@+id/scamper_activity_text_distance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:lines="1"
-            android:maxLines="2"
-            android:textColor="@color/scamper_activity_text_color"
-            android:textSize="30sp"
+            android:textSize="26sp"
             android:textStyle="bold" />
 
         <View

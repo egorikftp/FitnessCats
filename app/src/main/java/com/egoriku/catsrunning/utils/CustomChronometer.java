@@ -50,7 +50,7 @@ public class CustomChronometer implements Runnable {
             long since = System.currentTimeMillis() - startTime;
             App.getInstance().getState().setSinceTime(since);
 
-            ((ScamperActivity) context).updateTimer(ConverterTime.ConvertTimeToStringWithMill(since));
+            ((ScamperActivity) context).updateTimer(ConverterTime.ConvertTimeToString(since));
 
             try {
                 Thread.sleep(10);

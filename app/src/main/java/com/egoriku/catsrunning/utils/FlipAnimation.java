@@ -13,7 +13,6 @@ public class FlipAnimation extends Animation {
     private View btnStart;
     private View btnFinish;
     private View textTimer;
-    private View textDistance;
     private View textYouFinishRunning;
     private View pandaFinishScamper;
 
@@ -22,11 +21,10 @@ public class FlipAnimation extends Animation {
 
     private boolean isReverse = false;
 
-    public FlipAnimation(View btnStart, View btnFinish, View textTimer, View textDistance, View textYouFinishRunning, View pandaFinishScamper){
+    public FlipAnimation(View btnStart, View btnFinish, View textTimer, View textYouFinishRunning, View pandaFinishScamper){
         this.btnStart = btnStart;
         this.btnFinish = btnFinish;
         this.textTimer = textTimer;
-        this.textDistance = textDistance;
         this.textYouFinishRunning = textYouFinishRunning;
         this.pandaFinishScamper = pandaFinishScamper;
 
@@ -59,7 +57,6 @@ public class FlipAnimation extends Animation {
         if(isReverse){
             degrees=-degrees;
             btnFinish.setVisibility(View.GONE);
-            textDistance.setVisibility(View.VISIBLE);
             textYouFinishRunning.setVisibility(View.VISIBLE);
             pandaFinishScamper.setVisibility(View.VISIBLE);
         }
