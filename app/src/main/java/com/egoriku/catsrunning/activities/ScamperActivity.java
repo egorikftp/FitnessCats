@@ -69,7 +69,6 @@ public class ScamperActivity extends AppCompatActivity {
     private static final String VIEW_BTN_FINISH = "VIEW_BTN_FINISH";
     private static final String VIEW_TEXT_TIMER = "VIEW_TEXT_TIMER";
     private static final String VIEW_TEXT_DISTANCE = "VIEW_TEXT_DISTANCE";
-    private static final String VIEW_TEXT_FINISH_TEXT = "VIEW_TEXT_FINISH_TEXT";
     private static final String VIEW_IMAGE = "VIEW_IMAGE";
     private static final String DISTANCE_TEXT = "DISTANCE_TEXT";
     private static final String TIME_SCAMPER_TEXT = "TIME_SCAMPER_TEXT";
@@ -77,6 +76,8 @@ public class ScamperActivity extends AppCompatActivity {
     private static final String KEY_START_TIME = "KEY_START_TIME";
     private static final String TOOLBAR_TEXT = "TOOLBAR_TEXT";
     private static final String EXTRA_ID_TRACK = "EXTRA_ID_TRACK";
+    public static final int TOP_PADDING = 50;
+    public static final int ANOTHER_PADDING = 0;
     private ArrayList<Point> points;
 
     private int idTrack;
@@ -170,6 +171,7 @@ public class ScamperActivity extends AppCompatActivity {
                 intent.setAction(RunService.ACTION_START);
                 startService(intent);
 
+                textTimer.setPadding(ANOTHER_PADDING, TOP_PADDING, ANOTHER_PADDING, ANOTHER_PADDING);
                 linearLayoutRoot.startAnimation(flipAnimation);
             }
         });
@@ -194,6 +196,7 @@ public class ScamperActivity extends AppCompatActivity {
                     );
                 }
 
+                textTimer.setPadding(ANOTHER_PADDING, ANOTHER_PADDING, ANOTHER_PADDING, ANOTHER_PADDING);
                 stopService(new Intent(ScamperActivity.this, RunService.class));
             }
         });
@@ -342,11 +345,12 @@ public class ScamperActivity extends AppCompatActivity {
             btnFinish.setVisibility(View.VISIBLE);
             textTimer.setVisibility(View.VISIBLE);
             textDistance.setVisibility(View.GONE);
+            textTimer.setPadding(ANOTHER_PADDING, TOP_PADDING, ANOTHER_PADDING, ANOTHER_PADDING);
         }
     }
 
 
-    private void writeKeyToDb(String key, int idTrack) {
+    private void writeTokenToDb(String key, int idTrack) {
         new InquiryBuilder()
                 .updateTable(TABLE_TRACKS)
                 .set(TRACK_TOKEN, key)
@@ -404,7 +408,7 @@ public class ScamperActivity extends AppCompatActivity {
 
             if (points.size() > 1) {
                 String trackToken = App.getInstance().getTracksReference().child(user.getUid()).push().getKey();
-                writeKeyToDb(trackToken, idTrack);
+                writeTokenToDb(trackToken, idTrack);
                 SaveModel saveModel = new SaveModel(beginsAt, time, distance, trackToken, typeFit, points);
 
                 App.getInstance().getTracksReference().child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {

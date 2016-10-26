@@ -22,23 +22,13 @@
 
         <Button
             android:id="@+id/scamper_activity_btn_start"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@drawable/scamper_activity_button_shape"
-            android:text="@string/scamper_activity_start"
-            android:textColor="@android:color/white"
-            android:textSize="30sp" />
+            style="@style/BtnScamperActivityStyle"
+            android:text="@string/scamper_activity_start" />
 
         <Button
             android:id="@+id/scamper_activity_btn_finish"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@drawable/scamper_activity_button_shape"
-            android:text="@string/scamper_activity_finish"
-            android:textColor="@android:color/white"
-            android:textSize="30sp" />
+            style="@style/BtnScamperActivityStyle"
+            android:text="@string/scamper_activity_finish" />
 
         <ImageView
             android:id="@+id/image_panda_finish_scamper"
@@ -49,11 +39,11 @@
 
         <TextView
             android:id="@+id/scamper_activity_text_distance"
-            style="@style/Base.TextAppearance.AppCompat.Medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:maxLines="2"
+            android:textColor="@android:color/white"
             android:textSize="26sp" />
 
         <TextView
@@ -61,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textColor="@color/scamper_activity_text_color"
+            android:textColor="@android:color/white"
             android:textSize="26sp"
             android:textStyle="bold" />
 
