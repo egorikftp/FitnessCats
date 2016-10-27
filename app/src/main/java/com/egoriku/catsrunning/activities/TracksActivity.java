@@ -51,8 +51,8 @@ import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
 import static com.egoriku.catsrunning.models.State._ID;
 
 public class TracksActivity extends AppCompatActivity {
-    private static final String TAG_EXIT_APP = "TAG_EXIT_APP";
     public static final String BROADCAST_SAVE_NEW_TRACKS = "BROADCAST_SAVE_NEW_TRACKS";
+    private static final String TAG_EXIT_APP = "TAG_EXIT_APP";
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private RelativeLayout relativeLayoutSetting;
@@ -265,6 +265,11 @@ public class TracksActivity extends AppCompatActivity {
 
         if (tag.equals(LikedFragment.TAG_LIKED_FRAGMENT)) {
             showFragment(LikedFragment.newInstance(), LikedFragment.TAG_LIKED_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
+            drawerLayout.closeDrawers();
+        }
+
+        if (tag.equals(StatisticFragment.TAG_STATISTIC_FRAGMENT)) {
+            showFragment(StatisticFragment.newInstance(), StatisticFragment.TAG_STATISTIC_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
             drawerLayout.closeDrawers();
         }
 

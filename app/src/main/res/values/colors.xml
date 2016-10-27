@@ -21,5 +21,7 @@
     <color name="color_background_nav_drawer">#2aaebfb2</color>
 
 
-
+    <color name="chart_value_1">#E69F70</color>
+    <color name="chart_value_2">#AEBFB2</color>
+    <color name="chart_value_3">#B85967</color>
 </resources>
