@@ -59,9 +59,21 @@
         <item name="android:background">@drawable/scamper_activity_button_shape</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginLeft">15dp</item>
+        <item name="android:layout_marginRight">15dp</item>
         <item name="android:textSize">30sp</item>
     </style>
 
+
+    <!-- Стиль текста Scamper Activity-->
+    <style name="TextScamperActivityStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:textSize">26sp</item>
+    </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

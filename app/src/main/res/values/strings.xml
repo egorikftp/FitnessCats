@@ -97,8 +97,8 @@
     <string name="liked_fragment_snackbar_liked_empty">Хм, теперь тут пусто</string>
 
     <!-- Reminders Fragment -->
-    <string name="reminders_fragment_no_more_reminders">У панды нет ближайших пробежек</string>
-    <string name="reminders_fragment_snackbar_reminders_empty">Похоже бегать пока не будем?</string>
+    <string name="reminders_fragment_no_more_reminders">У котиков нет ближайших занятий</string>
+    <string name="reminders_fragment_snackbar_reminders_empty">Похоже, заниматься пока не будем?</string>
 
 
     <!-- Теги -->
@@ -137,7 +137,7 @@
     <string name="fitness_data_fragment_alert_title">Удалить этот трек?</string>
     <string name="fitness_data_fragment_alert_negative_btn">Отмена</string>
     <string name="fitness_data_fragment_alert_positive_btn">Удалить</string>
-    <string name="title_activity_delete">delete</string>
+
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -147,8 +147,9 @@
     <string name="type_walking">Прогулкa</string>
     <string name="type_running">Пробежкa</string>
 
+
     <string name="track_on_map_activity_track_delete">Трек удален</string>
-    <string name="track_on_map_activity_cancel_delete">Отменить?</string>
+    <string name="track_on_map_activity_cancel_delete">Отменить</string>
     <string name="track_on_map_activity_track_cancel_delete_success">Удаление отменено!</string>
 
 </resources>
