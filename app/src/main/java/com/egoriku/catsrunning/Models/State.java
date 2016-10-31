@@ -1,10 +1,5 @@
 package com.egoriku.catsrunning.models;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
-import com.egoriku.catsrunning.App;
-
 public class State {
     public static final String TABLE_POINT = "Point";
     public static final String TABLE_TRACKS = "Tracks";
@@ -20,6 +15,7 @@ public class State {
     public static final String LIKED = "liked";
     public static final String TRACK_TOKEN = "trackToken";
     public static final String TYPE_FIT = "typeFit";
+    public static final String TRACK_ID= "trackId";
 
     public static final String BEGINS_AT_EQ = "beginsAt=";
     public static final String TRACK_ID_EQ = "trackId=";
@@ -44,20 +40,6 @@ public class State {
      */
     private long sinceTime;
     private int nowDistance;
-
-
-    public void setLogin(boolean state) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(KEY_LOGIN, state);
-        editor.apply();
-    }
-
-    public boolean isLogin() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
-        return sharedPref.getBoolean(KEY_LOGIN, false);
-    }
-
 
     public boolean isStartTaskAuthentification() {
         return isStartTaskAuthentification;

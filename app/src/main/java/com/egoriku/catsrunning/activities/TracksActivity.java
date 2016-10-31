@@ -3,7 +3,6 @@ package com.egoriku.catsrunning.activities;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,7 +24,6 @@ import android.widget.Toast;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.adapters.AllFitnessDataAdapter;
 import com.egoriku.catsrunning.adapters.NavigationDrawerAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.OnItemSelecteListener;
 import com.egoriku.catsrunning.fragments.AllFitnessDataFragment;
@@ -35,20 +33,27 @@ import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
 import com.egoriku.catsrunning.helpers.DbCursor;
 import com.egoriku.catsrunning.helpers.InquiryBuilder;
+import com.egoriku.catsrunning.models.AllFitnessDataModel;
 import com.egoriku.catsrunning.models.ItemNavigationDrawer;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.egoriku.catsrunning.models.State.BEGINS_AT_EQ;
+import static com.egoriku.catsrunning.models.State.BEGINS_AT;
+import static com.egoriku.catsrunning.models.State.DISTANCE;
+import static com.egoriku.catsrunning.models.State.LAT;
+import static com.egoriku.catsrunning.models.State.LNG;
+import static com.egoriku.catsrunning.models.State.TABLE_POINT;
 import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
-import static com.egoriku.catsrunning.models.State._ID;
+import static com.egoriku.catsrunning.models.State.TIME;
+import static com.egoriku.catsrunning.models.State.TRACK_ID;
+import static com.egoriku.catsrunning.models.State.TRACK_TOKEN;
+import static com.egoriku.catsrunning.models.State.TYPE_FIT;
 
 public class TracksActivity extends AppCompatActivity {
     public static final String BROADCAST_SAVE_NEW_TRACKS = "BROADCAST_SAVE_NEW_TRACKS";
@@ -62,7 +67,8 @@ public class TracksActivity extends AppCompatActivity {
 
     private String emailText;
     private String nameText;
-    private List<AllFitnessDataAdapter> tracksList;
+    private List<Long> localeDbDate;
+
     private NavigationDrawerAdapter adapter;
     private FirebaseUser user;
 
@@ -71,7 +77,6 @@ public class TracksActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         drawerArrayList = new ArrayList<>();
-        tracksList = new ArrayList<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -103,30 +108,12 @@ public class TracksActivity extends AppCompatActivity {
             App.getInstance().createState();
         }
 
-        App.getInstance().getTracksReference().child(user.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.e("child", "first sync2");
-                if (App.getInstance().getState().isLogin()) {
-                    Log.e("child", "first sync3");
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        tracksList.add(postSnapshot.getValue(AllFitnessDataAdapter.class));
-                    }
-                    saveSyncTracks();
-                    App.getInstance().getState().setLogin(false);
-                }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
         App.getInstance().getTracksReference().child(user.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.e("child", "add");
-                Log.e("child add", "second sync");
+                Log.e("onChildAdded", "+");
+                saveSyncTracks(dataSnapshot.getValue(AllFitnessDataModel.class));
             }
 
 
@@ -137,37 +124,7 @@ public class TracksActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                int idTrack = 0;
-                Cursor cursor = new InquiryBuilder()
-                        .get(_ID)
-                        .from(TABLE_TRACKS)
-                        .where(false, BEGINS_AT_EQ, String.valueOf(dataSnapshot.getValue(AllFitnessDataAdapter.class).getBeginsAt()))
-                        .select();
 
-                DbCursor dbCursor = new DbCursor(cursor);
-                if (dbCursor.isValid()) {
-                    idTrack = dbCursor.getInt(_ID);
-                }
-                dbCursor.close();
-
-                SQLiteStatement statementPoints = App.getInstance().getDb().compileStatement(
-                        "DELETE FROM Point WHERE Point.trackId = ?");
-
-                statementPoints.bindLong(1, idTrack);
-                try {
-                    statementPoints.executeUpdateDelete();
-                } finally {
-                    statementPoints.close();
-                }
-
-                SQLiteStatement statement = App.getInstance().getDb().compileStatement("DELETE FROM Tracks WHERE Tracks._id = ?");
-                statement.bindLong(1, idTrack);
-                try {
-                    statement.execute();
-                } finally {
-                    statement.close();
-                }
-                LocalBroadcastManager.getInstance(App.getInstance()).sendBroadcastSync(new Intent(BROADCAST_SAVE_NEW_TRACKS));
             }
 
             @Override
@@ -177,7 +134,7 @@ public class TracksActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e("error:", databaseError.getMessage());
+
             }
         });
 
@@ -190,137 +147,45 @@ public class TracksActivity extends AppCompatActivity {
         });
     }
 
+    private void getLocaleTracksBeginsAt() {
+        localeDbDate = new ArrayList<>();
+        Cursor cursor = new InquiryBuilder()
+                .get(BEGINS_AT)
+                .from(TABLE_TRACKS)
+                .select();
 
-    private void addDrawerItem() {
-        drawerArrayList.add(new ItemNavigationDrawer(nameText, emailText));
-
-        drawerArrayList.add(new ItemNavigationDrawer(
-                getString(R.string.navigation_drawer_main_activity),
-                R.drawable.ic_vec_near_me_black,
-                FitnessDataFragment.TAG_MAIN_FRAGMENT,
-                false,
-                false
-        ));
-
-        drawerArrayList.add(new ItemNavigationDrawer(
-                getString(R.string.navigation_drawer_reminders),
-                R.drawable.ic_vec_notifications_active_black,
-                RemindersFragment.TAG_REMINDERS_FRAGMENT,
-                false,
-                false
-        ));
-
-        drawerArrayList.add(new ItemNavigationDrawer(
-                getString(R.string.navigation_drawer_liked),
-                R.drawable.ic_vec_star_black_nav_drawer,
-                LikedFragment.TAG_LIKED_FRAGMENT,
-                false,
-                false
-        ));
-
-        drawerArrayList.add(new ItemNavigationDrawer(
-                getString(R.string.navigation_drawer_statistic),
-                R.drawable.ic_vec_equalizer_black,
-                StatisticFragment.TAG_STATISTIC_FRAGMENT,
-                false,
-                false
-        ));
-
-        drawerArrayList.add(new ItemNavigationDrawer(
-                getString(R.string.navigation_drawer_exit),
-                R.drawable.ic_vec_exit_to_app_black,
-                TAG_EXIT_APP,
-                false,
-                true
-        ));
-    }
-
-    private void initRecyclerView() {
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new NavigationDrawerAdapter(drawerArrayList);
-        recyclerView.setAdapter(adapter);
-        recyclerView.hasFixedSize();
-
-        adapter.setOnItemSelecteListener(new OnItemSelecteListener() {
-            @Override
-            public void onItemSelected(View v, int position) {
-                if (drawerArrayList.get(position).getTagFragment() != null) {
-                    changeNavigationDrawerItem(drawerArrayList.get(position).getTagFragment());
-                }
-            }
-        });
+        DbCursor dbCursor = new DbCursor(cursor);
+        if (dbCursor.isValid()) {
+            do {
+                localeDbDate.add(dbCursor.getLong(BEGINS_AT));
+            } while (cursor.moveToNext());
+        }
+        dbCursor.close();
     }
 
 
-    private void changeNavigationDrawerItem(String tag) {
-        if (tag.equals(FitnessDataFragment.TAG_MAIN_FRAGMENT)) {
-            showFragment(AllFitnessDataFragment.newInstance(), FitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
-            drawerLayout.closeDrawers();
-        }
+    private void saveSyncTracks(AllFitnessDataModel someData) {
+        getLocaleTracksBeginsAt();
+        if (!localeDbDate.contains(someData.getBeginsAt())) {
+            long idTrack = new InquiryBuilder()
+                    .table(TABLE_TRACKS)
+                    .set(BEGINS_AT, someData.getBeginsAt())
+                    .set(TIME, someData.getTime())
+                    .set(DISTANCE, someData.getDistance())
+                    .set(TRACK_TOKEN, someData.getTrackToken())
+                    .set(TYPE_FIT, someData.getTypeFit())
+                    .insertForId(App.getInstance().getDb());
 
-        if (tag.equals(RemindersFragment.TAG_REMINDERS_FRAGMENT)) {
-            showFragment(RemindersFragment.newInstance(), RemindersFragment.TAG_REMINDERS_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
-            drawerLayout.closeDrawers();
-        }
-
-        if (tag.equals(LikedFragment.TAG_LIKED_FRAGMENT)) {
-            showFragment(LikedFragment.newInstance(), LikedFragment.TAG_LIKED_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
-            drawerLayout.closeDrawers();
-        }
-
-        if (tag.equals(StatisticFragment.TAG_STATISTIC_FRAGMENT)) {
-            showFragment(StatisticFragment.newInstance(), StatisticFragment.TAG_STATISTIC_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
-            drawerLayout.closeDrawers();
-        }
-
-        if (tag.equals(TAG_EXIT_APP)) {
-            drawerLayout.closeDrawers();
-            clearUserData();
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
-            finish();
-        }
-    }
-
-
-    private void saveSyncTracks() {
-        for (int i = 0; i < tracksList.size(); i++) {
-            long idTrack = 0;
-            SQLiteStatement statementTrack = App.getInstance().getDb().compileStatement(
-                    "INSERT INTO Tracks (beginsAt, time, distance, trackToken, typeFit) VALUES (?, ?, ?, ?, ?)"
-            );
-
-            statementTrack.bindLong(1, tracksList.get(i).getBeginsAt());
-            statementTrack.bindLong(2, tracksList.get(i).getTime());
-            statementTrack.bindLong(3, tracksList.get(i).getDistance());
-            statementTrack.bindString(4, tracksList.get(i).getTrackToken());
-            statementTrack.bindLong(5, tracksList.get(i).getTypeFit());
-
-            try {
-                idTrack = statementTrack.executeInsert();
-                Log.e("id", String.valueOf(idTrack));
-            } finally {
-                statementTrack.close();
-            }
-
-            for (int j = 0; j < tracksList.get(i).getPoints().size(); j++) {
-                SQLiteStatement statementPoints = App.getInstance().getDb().compileStatement(
-                        "INSERT INTO Point (latitude, longitude, trackId) VALUES (?, ?, ?)"
-                );
-
-                statementPoints.bindDouble(1, tracksList.get(i).getPoints().get(j).getLat());
-                statementPoints.bindDouble(2, tracksList.get(i).getPoints().get(j).getLng());
-                statementPoints.bindLong(3, idTrack);
-
-                try {
-                    statementPoints.execute();
-                    Log.e("execute", "points");
-                } finally {
-                    statementPoints.close();
-                }
+            for (int j = 0; j < someData.getPoints().size(); j++) {
+                new InquiryBuilder()
+                        .table(TABLE_POINT)
+                        .set(LAT, someData.getPoints().get(j).getLat())
+                        .set(LNG, someData.getPoints().get(j).getLng())
+                        .set(TRACK_ID, idTrack)
+                        .insert(App.getInstance().getDb());
             }
         }
+        localeDbDate.clear();
         LocalBroadcastManager.getInstance(App.getInstance()).sendBroadcastSync(new Intent(BROADCAST_SAVE_NEW_TRACKS));
     }
 
@@ -390,6 +255,97 @@ public class TracksActivity extends AppCompatActivity {
                 continue;
             }
             drawerArrayList.get(i).setSelected(false);
+        }
+    }
+
+    private void addDrawerItem() {
+        drawerArrayList.add(new ItemNavigationDrawer(nameText, emailText));
+
+        drawerArrayList.add(new ItemNavigationDrawer(
+                getString(R.string.navigation_drawer_main_activity),
+                R.drawable.ic_vec_near_me_black,
+                FitnessDataFragment.TAG_MAIN_FRAGMENT,
+                false,
+                false
+        ));
+
+        drawerArrayList.add(new ItemNavigationDrawer(
+                getString(R.string.navigation_drawer_reminders),
+                R.drawable.ic_vec_notifications_active_black,
+                RemindersFragment.TAG_REMINDERS_FRAGMENT,
+                false,
+                false
+        ));
+
+        drawerArrayList.add(new ItemNavigationDrawer(
+                getString(R.string.navigation_drawer_liked),
+                R.drawable.ic_vec_star_black_nav_drawer,
+                LikedFragment.TAG_LIKED_FRAGMENT,
+                false,
+                false
+        ));
+
+        drawerArrayList.add(new ItemNavigationDrawer(
+                getString(R.string.navigation_drawer_statistic),
+                R.drawable.ic_vec_equalizer_black,
+                StatisticFragment.TAG_STATISTIC_FRAGMENT,
+                false,
+                false
+        ));
+
+        drawerArrayList.add(new ItemNavigationDrawer(
+                getString(R.string.navigation_drawer_exit),
+                R.drawable.ic_vec_exit_to_app_black,
+                TAG_EXIT_APP,
+                false,
+                true
+        ));
+    }
+
+    private void initRecyclerView() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new NavigationDrawerAdapter(drawerArrayList);
+        recyclerView.setAdapter(adapter);
+        recyclerView.hasFixedSize();
+
+        adapter.setOnItemSelecteListener(new OnItemSelecteListener() {
+            @Override
+            public void onItemSelected(View v, int position) {
+                if (drawerArrayList.get(position).getTagFragment() != null) {
+                    changeNavigationDrawerItem(drawerArrayList.get(position).getTagFragment());
+                }
+            }
+        });
+    }
+
+    private void changeNavigationDrawerItem(String tag) {
+        if (tag.equals(FitnessDataFragment.TAG_MAIN_FRAGMENT)) {
+            showFragment(AllFitnessDataFragment.newInstance(), FitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
+            drawerLayout.closeDrawers();
+        }
+
+        if (tag.equals(RemindersFragment.TAG_REMINDERS_FRAGMENT)) {
+            showFragment(RemindersFragment.newInstance(), RemindersFragment.TAG_REMINDERS_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
+            drawerLayout.closeDrawers();
+        }
+
+        if (tag.equals(LikedFragment.TAG_LIKED_FRAGMENT)) {
+            showFragment(LikedFragment.newInstance(), LikedFragment.TAG_LIKED_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
+            drawerLayout.closeDrawers();
+        }
+
+        if (tag.equals(StatisticFragment.TAG_STATISTIC_FRAGMENT)) {
+            showFragment(StatisticFragment.newInstance(), StatisticFragment.TAG_STATISTIC_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
+            drawerLayout.closeDrawers();
+        }
+
+        if (tag.equals(TAG_EXIT_APP)) {
+            drawerLayout.closeDrawers();
+            clearUserData();
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
+            finish();
         }
     }
 
