@@ -113,7 +113,7 @@ public class TracksActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Log.e("onChildAdded", "+");
-                saveSyncTracks(dataSnapshot.getValue(AllFitnessDataModel.class));
+                saveSyncTrack(dataSnapshot.getValue(AllFitnessDataModel.class));
             }
 
 
@@ -124,8 +124,10 @@ public class TracksActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                Log.e("onChildRemoved", "+");
+                deleteTrack(dataSnapshot.getValue(AllFitnessDataModel.class));
             }
+
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
@@ -147,6 +149,12 @@ public class TracksActivity extends AppCompatActivity {
         });
     }
 
+
+    private void deleteTrack(AllFitnessDataModel value) {
+
+    }
+
+
     private void getLocaleTracksBeginsAt() {
         localeDbDate = new ArrayList<>();
         Cursor cursor = new InquiryBuilder()
@@ -164,7 +172,7 @@ public class TracksActivity extends AppCompatActivity {
     }
 
 
-    private void saveSyncTracks(AllFitnessDataModel someData) {
+    private void saveSyncTrack(AllFitnessDataModel someData) {
         getLocaleTracksBeginsAt();
         if (!localeDbDate.contains(someData.getBeginsAt())) {
             long idTrack = new InquiryBuilder()
@@ -355,5 +363,11 @@ public class TracksActivity extends AppCompatActivity {
         App.getInstance().getDb().execSQL("DELETE FROM Tracks");
         App.getInstance().getDb().execSQL("DELETE FROM Reminder");
         App.getInstance().getDb().execSQL("DELETE FROM Point");
+    }
+
+    public void tabTitle(String titleId) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(titleId);
+        }
     }
 }

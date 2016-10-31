@@ -7,12 +7,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.egoriku.catsrunning.R;
+import com.egoriku.catsrunning.activities.TracksActivity;
 
 import static com.egoriku.catsrunning.utils.VectorToDrawable.getDrawable;
 
@@ -53,6 +55,24 @@ public class AllFitnessDataFragment extends Fragment {
             tabLayout.getTabAt(i).setIcon(getDrawable(imageResId[i]));
         }
 
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Log.d("pos", String.valueOf(position));
+                ((TracksActivity) getActivity()).tabTitle(sparseTabs.get(position));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         return view;
     }
 
@@ -71,17 +91,12 @@ public class AllFitnessDataFragment extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
-            return FitnessDataFragment.newInstance(position+1);
+            return FitnessDataFragment.newInstance(position + 1);
         }
 
         @Override
         public int getCount() {
             return sparseTabs.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return sparseTabs.get(position);
         }
     }
 }

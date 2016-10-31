@@ -114,7 +114,7 @@ public class FitnessDataFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_main_activity, TAG_MAIN_FRAGMENT);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.tab_text_walking, TAG_MAIN_FRAGMENT);
     }
 
 
