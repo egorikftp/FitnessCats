@@ -30,20 +30,19 @@ import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.ScamperActivity;
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
-import com.egoriku.catsrunning.adapters.AllFitnessDataAdapter;
+import com.egoriku.catsrunning.adapters.FitnessDataAdapter;
+import com.egoriku.catsrunning.adapters.interfaces.IOnItemHandlerListener;
 import com.egoriku.catsrunning.helpers.DbCursor;
 import com.egoriku.catsrunning.helpers.InquiryBuilder;
+import com.egoriku.catsrunning.models.AllFitnessDataModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.mikepenz.fastadapter.FastAdapter;
-import com.mikepenz.fastadapter.IAdapter;
-import com.mikepenz.fastadapter.adapters.FastItemAdapter;
-import com.mikepenz.fastadapter.helpers.ClickListenerHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.egoriku.catsrunning.helpers.DbActions.deleteTrackData;
 import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
@@ -86,9 +85,11 @@ public class FitnessDataFragment extends Fragment {
     private Animation fabRunHide;
 
     private boolean fabStatus;
-    private ClickListenerHelper<AllFitnessDataAdapter> clickListenerHelper;
-    private FastItemAdapter<AllFitnessDataAdapter> fastAdapter;
-    private ArrayList<AllFitnessDataAdapter> tracksModels;
+
+    private List<AllFitnessDataModel> dataModelList;
+    private FitnessDataAdapter adapter;
+
+
     private BroadcastReceiver broadcastNewTracksSave = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -96,8 +97,10 @@ public class FitnessDataFragment extends Fragment {
         }
     };
 
+
     public FitnessDataFragment() {
     }
+
 
     public static FitnessDataFragment newInstance(int sectionNumber) {
         FitnessDataFragment fragment = new FitnessDataFragment();
@@ -107,11 +110,13 @@ public class FitnessDataFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onStart() {
         super.onStart();
         ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_main_activity, TAG_MAIN_FRAGMENT);
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -120,6 +125,7 @@ public class FitnessDataFragment extends Fragment {
             App.getInstance().createState();
         }
     }
+
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -132,8 +138,6 @@ public class FitnessDataFragment extends Fragment {
         fabWalk = (FloatingActionButton) view.findViewById(R.id.fab_walk);
         fabCycling = (FloatingActionButton) view.findViewById(R.id.fab_cycling);
         fabRun = (FloatingActionButton) view.findViewById(R.id.fab_run);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         fabWalkShow = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_walk_show);
         fabWalkHide = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_walk_hide);
@@ -178,11 +182,11 @@ public class FitnessDataFragment extends Fragment {
             }
         });
 
-        fastAdapter = new FastItemAdapter<>();
-        fastAdapter.withSelectable(true);
-        clickListenerHelper = new ClickListenerHelper<>(fastAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new FitnessDataAdapter();
         return view;
     }
+
 
     @Override
     public void onResume() {
@@ -193,6 +197,7 @@ public class FitnessDataFragment extends Fragment {
         setUpAdapter();
     }
 
+
     @Override
     public void onPause() {
         super.onPause();
@@ -202,24 +207,25 @@ public class FitnessDataFragment extends Fragment {
         }
     }
 
+
     private void setUpAdapter() {
         getTracksFromDb();
         imageViewNoTracks.setVisibility(View.GONE);
         textViewNoTracks.setVisibility(View.GONE);
 
-        if (tracksModels.size() == 0) {
+        if (dataModelList.size() == 0) {
             appBarLayout.setExpanded(false);
             imageViewNoTracks.setVisibility(View.VISIBLE);
             textViewNoTracks.setVisibility(View.VISIBLE);
         } else {
             appBarLayout.setExpanded(true);
-            fastAdapter.set(tracksModels);
-            recyclerView.setAdapter(fastAdapter);
+            adapter.setData(dataModelList);
+            recyclerView.setAdapter(adapter);
         }
 
-        fastAdapter.withOnClickListener(new FastAdapter.OnClickListener<AllFitnessDataAdapter>() {
+        adapter.setOnItemListener(new IOnItemHandlerListener() {
             @Override
-            public boolean onClick(View v, IAdapter<AllFitnessDataAdapter> adapter, AllFitnessDataAdapter item, int position) {
+            public void onClickItem(AllFitnessDataModel item, int position) {
                 Intent intentTrackOnMaps = new Intent(getActivity(), TrackOnMapsActivity.class);
                 intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_ID, item.getId());
                 intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_DISTANCE, item.getDistance());
@@ -227,47 +233,31 @@ public class FitnessDataFragment extends Fragment {
                 intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_LIKED, item.getLiked());
                 intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TOKEN, item.getTrackToken());
                 startActivity(intentTrackOnMaps);
-                return false;
-            }
-        });
-
-        fastAdapter.withOnCreateViewHolderListener(new FastAdapter.OnCreateViewHolderListener() {
-            @Override
-            public RecyclerView.ViewHolder onPreCreateViewHolder(ViewGroup parent, int viewType) {
-                return fastAdapter.getTypeInstance(viewType).getViewHolder(parent);
             }
 
             @Override
-            public RecyclerView.ViewHolder onPostCreateViewHolder(final RecyclerView.ViewHolder viewHolder) {
-                if (viewHolder instanceof AllFitnessDataAdapter.ViewHolder) {
-                    clickListenerHelper.listen(viewHolder, ((AllFitnessDataAdapter.ViewHolder) viewHolder).imageViewLiked, new ClickListenerHelper.OnClickListener<AllFitnessDataAdapter>() {
-                        @Override
-                        public void onClick(View v, int position, AllFitnessDataAdapter item) {
-                            int likedState = item.getLiked();
+            public void onLikedClick(AllFitnessDataModel item, int position) {
+                int likedState = item.getLiked();
 
-                            switch (likedState) {
-                                case 0:
-                                    likedState = 1;
-                                    updateLikedDigit(likedState, item.getId());
-                                    fastAdapter.notifyAdapterDataSetChanged();
-                                    break;
+                switch (likedState) {
+                    case 0:
+                        likedState = 1;
+                        updateLikedDigit(likedState, item.getId());
+                        dataModelList.get(position).setLiked(likedState);
+                        adapter.notifyItemChanged(position);
+                        break;
 
-                                case 1:
-                                    likedState = 0;
-                                    updateLikedDigit(likedState, item.getId());
-                                    fastAdapter.notifyAdapterDataSetChanged();
-                                    break;
-                            }
-                        }
-                    });
+                    case 1:
+                        likedState = 0;
+                        updateLikedDigit(likedState, item.getId());
+                        dataModelList.get(position).setLiked(likedState);
+                        adapter.notifyItemChanged(position);
+                        break;
                 }
-                return viewHolder;
             }
-        });
 
-        fastAdapter.withOnPreLongClickListener(new FastAdapter.OnLongClickListener<AllFitnessDataAdapter>() {
             @Override
-            public boolean onLongClick(View v, IAdapter<AllFitnessDataAdapter> adapter, final AllFitnessDataAdapter item, final int position) {
+            public void onLongClick(final AllFitnessDataModel item, final int position) {
                 new AlertDialog.Builder(getActivity())
                         .setTitle(R.string.fitness_data_fragment_alert_title)
                         .setCancelable(true)
@@ -293,17 +283,16 @@ public class FitnessDataFragment extends Fragment {
                                     }
                                 });
 
-                                tracksModels.remove(position);
-                                fastAdapter.notifyItemRemoved(position);
-                                fastAdapter.notifyItemRangeChanged(position, tracksModels.size());
+                                dataModelList.remove(position);
+                                adapter.notifyItemRemoved(position);
+                                adapter.notifyItemRangeChanged(position, dataModelList.size());
 
-                                if (tracksModels.size() == 0) {
-                                    fastAdapter.clear();
+                                if (dataModelList.size() == 0) {
+                                    setUpAdapter();
                                 }
                             }
                         })
                         .show();
-                return true;
             }
         });
     }
@@ -359,7 +348,7 @@ public class FitnessDataFragment extends Fragment {
 
 
     private void getTracksFromDb() {
-        tracksModels = new ArrayList<>();
+        dataModelList = new ArrayList<>();
 
         Cursor cursorTracks = new InquiryBuilder()
                 .get(_ID, BEGINS_AT, TIME, DISTANCE, LIKED, TRACK_TOKEN, TYPE_FIT)
@@ -372,7 +361,7 @@ public class FitnessDataFragment extends Fragment {
         DbCursor cursor = new DbCursor(cursorTracks);
         if (cursor.isValid()) {
             do {
-                AllFitnessDataAdapter listAdapter = new AllFitnessDataAdapter();
+                AllFitnessDataModel listAdapter = new AllFitnessDataModel();
                 listAdapter.setId(cursor.getInt(_ID));
                 listAdapter.setBeginsAt(cursor.getInt(BEGINS_AT));
                 listAdapter.setTime(cursor.getInt(TIME));
@@ -380,7 +369,7 @@ public class FitnessDataFragment extends Fragment {
                 listAdapter.setLiked(cursor.getInt(LIKED));
                 listAdapter.setTrackToken(cursor.getString(TRACK_TOKEN));
                 listAdapter.setTypeFit(cursor.getInt(TYPE_FIT));
-                tracksModels.add(listAdapter);
+                dataModelList.add(listAdapter);
             } while (cursorTracks.moveToNext());
         }
     }
