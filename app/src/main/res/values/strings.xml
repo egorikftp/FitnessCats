@@ -97,7 +97,7 @@
     <string name="liked_fragment_snackbar_liked_empty">Хм, теперь тут пусто</string>
 
     <!-- Reminders Fragment -->
-    <string name="reminders_fragment_no_more_reminders">У котиков нет ближайших занятий</string>
+    <string name="reminders_fragment_no_more_reminders">У котиков нет ближайших занятий %s</string>
     <string name="reminders_fragment_snackbar_reminders_empty">Похоже, заниматься пока не будем?</string>
 
 
@@ -107,7 +107,7 @@
 
 
     <!-- Dialogs Add Reminder -->
-    <string name="add_reminder_part_one_dialog_title">Добавим напоминание о занятии?</string>
+    <string name="add_reminder_part_one_dialog_title">Добавим напоминание</string>
     <string name="add_reminder_part_one_dialog_negative_btn">Отмена</string>
     <string name="add_reminder_part_one_dialog_positive_btn">Далее</string>
     <string name="add_reminder_part_one_dialog_back_btn">Назад</string>

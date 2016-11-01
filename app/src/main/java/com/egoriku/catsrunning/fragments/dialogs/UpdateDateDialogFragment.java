@@ -39,13 +39,13 @@ public class UpdateDateDialogFragment extends DialogFragment {
     }
 
 
-    public static UpdateDateDialogFragment newInstance(int id, String textReminder, int timeInMillis) {
+    public static UpdateDateDialogFragment newInstance(int id, String textReminder, long timeInMillis) {
         UpdateDateDialogFragment updateDateDialogFragment = new UpdateDateDialogFragment();
 
         Bundle bundle = new Bundle();
         bundle.putInt(RemindersFragment.KEY_ID, id);
         bundle.putString(RemindersFragment.KEY_TYPE_REMINDER, textReminder);
-        bundle.putInt(RemindersFragment.KEY_UPDATE_REMINDER, timeInMillis);
+        bundle.putLong(RemindersFragment.KEY_UPDATE_REMINDER, timeInMillis);
         updateDateDialogFragment.setArguments(bundle);
 
         return updateDateDialogFragment;
@@ -71,7 +71,7 @@ public class UpdateDateDialogFragment extends DialogFragment {
         final Calendar reminderTime = Calendar.getInstance();
         final Calendar oldDate = Calendar.getInstance();
 
-        oldDate.setTime(new Date(getArguments().getInt(RemindersFragment.KEY_UPDATE_REMINDER) * 1000L));
+        oldDate.setTime(new Date(getArguments().getLong(RemindersFragment.KEY_UPDATE_REMINDER) * 1000L));
 
         if (android.os.Build.VERSION.SDK_INT >= 15 && android.os.Build.VERSION.SDK_INT <= 19) {
             datePicker.setCalendarViewShown(false);

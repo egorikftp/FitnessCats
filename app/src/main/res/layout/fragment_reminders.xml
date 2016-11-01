@@ -6,7 +6,7 @@
     android:background="@android:color/background_light">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/main.appbar"
+        android:id="@+id/reminders_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -49,10 +49,6 @@
         app:srcCompat="@drawable/ic_add_alarm_white_24dp"
         app:layout_behavior="com.egoriku.catsrunning.utils.FabFloatingOnScrollBehavior" />
 
-    <TextView
-        android:id="@+id/reminders_fragment_no_more_reminders"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textAppearance="?android:textAppearanceMedium" />
+    <include layout="@layout/no_reminders_layout"  />
+
 </android.support.design.widget.CoordinatorLayout>

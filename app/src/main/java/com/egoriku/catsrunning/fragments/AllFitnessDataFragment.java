@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.TracksActivity;
 
+import static com.egoriku.catsrunning.fragments.FitnessDataFragment.TAG_MAIN_FRAGMENT;
 import static com.egoriku.catsrunning.utils.VectorToDrawable.getDrawable;
 
 
@@ -30,6 +31,13 @@ public class AllFitnessDataFragment extends Fragment {
 
     public static AllFitnessDataFragment newInstance() {
         return new AllFitnessDataFragment();
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.tab_text_walking, TAG_MAIN_FRAGMENT);
     }
 
     @Nullable

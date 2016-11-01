@@ -2,12 +2,18 @@ package com.egoriku.catsrunning.models;
 
 public class ReminderModel {
 
+    private int id;
+    private long dateReminder;
+    private String textReminder;
+
     public ReminderModel() {
     }
 
-    private int id;
-    private int dateReminder;
-    private String textReminder;
+    public ReminderModel(int id, long dateReminder, String textReminder) {
+        this.id = id;
+        this.dateReminder = dateReminder;
+        this.textReminder = textReminder;
+    }
 
     public int getId() {
         return id;
@@ -17,11 +23,11 @@ public class ReminderModel {
         this.id = id;
     }
 
-    public int getDateReminder() {
+    public long getDateReminder() {
         return dateReminder;
     }
 
-    public void setDateReminder(int dateReminder) {
+    public void setDateReminder(long dateReminder) {
         this.dateReminder = dateReminder;
     }
 

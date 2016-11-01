@@ -1,6 +1,5 @@
 package com.egoriku.catsrunning.adapters;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,84 +7,111 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.adapters.interfaces.IRecyclerViewRemindersListener;
+import com.egoriku.catsrunning.adapters.interfaces.IRemindersClickListener;
 import com.egoriku.catsrunning.models.ReminderModel;
 import com.egoriku.catsrunning.utils.ConverterTime;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.egoriku.catsrunning.utils.VectorToDrawable.getDrawable;
 
-public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.ViewHolder> {
-    private static final String TAG_VIEW_COMMENT = "comment";
-    private static final String TAG_VIEW_DATE = "date";
+public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
+    private List<ReminderModel> reminderModel = new ArrayList<>();
+    private IRemindersClickListener iRemindersClickListener;
 
-    private ArrayList<ReminderModel> reminderModels;
-    public static IRecyclerViewRemindersListener iRecyclerViewRemindersListener;
-
-    public RemindersAdapter(ArrayList<ReminderModel> models) {
-        this.reminderModels = models;
+    public RemindersAdapter() {
     }
 
-    @Override
-    public RemindersAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflater = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.adapter_fragment_reminders, parent, false);
 
-        return new ViewHolder(inflater);
+    public void setOnItemClickListener(IRemindersClickListener iRemindersClickListener) {
+        this.iRemindersClickListener = iRemindersClickListener;
     }
 
+
     @Override
-    public void onBindViewHolder(RemindersAdapter.ViewHolder holder, int position) {
-        holder.reminderComment.setText(reminderModels.get(position).getTextReminder());
-        holder.reminderDate.setText(ConverterTime.convertUnixDate(reminderModels.get(position).getDateReminder()));
-        holder.deleteReminder.setImageDrawable(getDrawable(R.drawable.ic_vec_clear_black_24dp));
+    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View inflater = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_fragment_reminders, parent, false);
+        return new AbstractViewHolder(inflater);
     }
 
 
     @Override
     public int getItemCount() {
-        return reminderModels.size();
+        return reminderModel.size();
     }
 
 
+    @Override
+    public void onBind(AbstractViewHolder holder, RemindersAdapter remindersAdapter, final int position, int viewType) {
+        holder.<TextView>get(R.id.reminders_fragment_comment)
+                .setText(reminderModel.get(position).getTextReminder());
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView reminderComment;
-        public TextView reminderDate;
-        public ImageView deleteReminder;
+        holder.<TextView>get(R.id.reminders_fragment_date_time)
+                .setText(ConverterTime.convertUnixDate(reminderModel.get(position).getDateReminder()));
 
+        holder.<ImageView>get(R.id.reminders_fragment_delete_reminder)
+                .setImageDrawable(getDrawable(R.drawable.ic_vec_clear_black_24dp));
 
-        public ViewHolder(View itemView) {
-            super(itemView);
-            reminderComment = (TextView) itemView.findViewById(R.id.reminders_fragment_comment);
-            reminderDate = (TextView) itemView.findViewById(R.id.reminders_fragment_date_time);
-            deleteReminder = (ImageView) itemView.findViewById(R.id.reminders_fragment_delete_reminder);
+        holder.<ImageView>get(R.id.reminders_fragment_delete_reminder)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (iRemindersClickListener != null) {
+                            iRemindersClickListener.onDeleteReminderClick(
+                                    reminderModel.get(position).getId(),
+                                    reminderModel.get(position).getTextReminder(),
+                                    position
+                            );
+                        }
+                    }
+                });
 
-            reminderComment.setOnClickListener(this);
-            reminderDate.setOnClickListener(this);
-            deleteReminder.setOnClickListener(this);
-        }
+        holder.<TextView>get(R.id.reminders_fragment_comment)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (iRemindersClickListener != null) {
+                            iRemindersClickListener.onCommentReminderClick(
+                                    reminderModel.get(position).getId(),
+                                    reminderModel.get(position).getDateReminder(),
+                                    reminderModel.get(position).getTextReminder(),
+                                    position
+                            );
+                        }
+                    }
+                });
 
-
-        @Override
-        public void onClick(View view) {
-            if (view instanceof ImageView) {
-                iRecyclerViewRemindersListener.onDeleteReminderClick(getPosition());
-            } else {
-                if (view.getTag().equals(TAG_VIEW_COMMENT)) {
-                    iRecyclerViewRemindersListener.onCommentReminderClick(getPosition());
-                }
-
-                if (view.getTag().equals(TAG_VIEW_DATE)) {
-                    iRecyclerViewRemindersListener.onDateReminderClick(getPosition());
-                }
-            }
-        }
+        holder.<TextView>get(R.id.reminders_fragment_date_time)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (iRemindersClickListener != null) {
+                            iRemindersClickListener.onDateReminderClick(
+                                    reminderModel.get(position).getId(),
+                                    reminderModel.get(position).getDateReminder(),
+                                    reminderModel.get(position).getTextReminder(),
+                                    position
+                            );
+                        }
+                    }
+                });
     }
 
 
-    public void setOnItemClickListener(IRecyclerViewRemindersListener listener) {
-        this.iRecyclerViewRemindersListener = listener;
+    @Override
+    public RemindersAdapter getItem(int position) {
+        return null;
+    }
+
+
+    public void setiRemindersClickListener(IRemindersClickListener iRemindersClickListener) {
+        this.iRemindersClickListener = iRemindersClickListener;
+    }
+
+
+    public void setData(List<ReminderModel> reminderModel) {
+        this.reminderModel = reminderModel;
+        notifyDataSetChanged();
     }
 }

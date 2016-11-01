@@ -3,6 +3,7 @@ package com.egoriku.catsrunning.models;
 public class State {
     public static final String TABLE_POINT = "Point";
     public static final String TABLE_TRACKS = "Tracks";
+    public static final String TABLE_REMINDER = "Reminder";
 
     public static final String AND = "AND";
 
@@ -16,6 +17,10 @@ public class State {
     public static final String TRACK_TOKEN = "trackToken";
     public static final String TYPE_FIT = "typeFit";
     public static final String TRACK_ID= "trackId";
+    public static final String DATE_REMINDER= "dateReminder";
+    public static final String TEXT_REMINDER= "textReminder";
+
+
 
     public static final String BEGINS_AT_EQ = "beginsAt=";
     public static final String TRACK_ID_EQ = "trackId=";
