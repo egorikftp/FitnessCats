@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,18 +65,15 @@ public class AllFitnessDataFragment extends Fragment {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
             public void onPageSelected(int position) {
-                Log.d("pos", String.valueOf(position));
                 ((TracksActivity) getActivity()).tabTitle(sparseTabs.get(position));
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
 

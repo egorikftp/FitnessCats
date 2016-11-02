@@ -16,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -44,6 +43,7 @@ import com.google.firebase.database.DatabaseError;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.egoriku.catsrunning.helpers.DbActions.deleteSyncTrackData;
 import static com.egoriku.catsrunning.models.State.BEGINS_AT;
 import static com.egoriku.catsrunning.models.State.DISTANCE;
 import static com.egoriku.catsrunning.models.State.LAT;
@@ -112,20 +112,19 @@ public class TracksActivity extends AppCompatActivity {
         App.getInstance().getTracksReference().child(user.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.e("onChildAdded", "+");
                 saveSyncTrack(dataSnapshot.getValue(AllFitnessDataModel.class));
             }
 
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
             }
+
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.e("onChildRemoved", "+");
-                deleteTrack(dataSnapshot.getValue(AllFitnessDataModel.class));
+                deleteSyncTrackData(dataSnapshot.getValue(AllFitnessDataModel.class).getBeginsAt());
+                LocalBroadcastManager.getInstance(App.getInstance()).sendBroadcastSync(new Intent(BROADCAST_SAVE_NEW_TRACKS));
             }
 
 
@@ -147,11 +146,6 @@ public class TracksActivity extends AppCompatActivity {
                 Toast.makeText(App.getInstance(), "Setting Click", Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-
-    private void deleteTrack(AllFitnessDataModel value) {
-
     }
 
 

@@ -38,7 +38,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.egoriku.catsrunning.helpers.DbActions.deleteTrackData;
+import static com.egoriku.catsrunning.helpers.DbActions.deleteTrackDataById;
 import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
 import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_EQ;
 import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_TRUE;
@@ -220,7 +220,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
                             public void onDismissed(Snackbar snackbar, int event) {
                                 switch (event) {
                                     case Snackbar.Callback.DISMISS_EVENT_TIMEOUT:
-                                        deleteTrackData(getIntent().getExtras().getInt(KEY_ID));
+                                        deleteTrackDataById(getIntent().getExtras().getInt(KEY_ID));
 
                                         new InquiryBuilder()
                                                 .set(IS_TRACK_DELETE_EQ, IS_TRACK_DELETE_TRUE)

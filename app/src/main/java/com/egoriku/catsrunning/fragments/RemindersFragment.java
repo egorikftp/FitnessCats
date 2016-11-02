@@ -178,6 +178,7 @@ public class RemindersFragment extends Fragment {
 
 
     private void getRemindersFromDb() {
+        reminderModels.clear();
         Cursor cursorReminders = new InquiryBuilder()
                 .get(_ID, DATE_REMINDER, TEXT_REMINDER)
                 .from(TABLE_REMINDER)

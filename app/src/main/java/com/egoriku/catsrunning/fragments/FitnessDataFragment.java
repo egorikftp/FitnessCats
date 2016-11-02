@@ -43,7 +43,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.egoriku.catsrunning.helpers.DbActions.deleteTrackData;
 import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
 import static com.egoriku.catsrunning.models.State.AND;
 import static com.egoriku.catsrunning.models.State.BEGINS_AT;
@@ -112,6 +111,8 @@ public class FitnessDataFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dataModelList = new ArrayList<>();
+
         if (App.getInstance().getState() == null) {
             App.getInstance().createState();
         }
@@ -204,6 +205,7 @@ public class FitnessDataFragment extends Fragment {
 
         if (dataModelList.size() == 0) {
             appBarLayout.setExpanded(false);
+            adapter.clear();
             textViewNoTracks.setVisibility(View.VISIBLE);
         } else {
             appBarLayout.setExpanded(true);
@@ -253,8 +255,6 @@ public class FitnessDataFragment extends Fragment {
                         .setPositiveButton(R.string.fitness_data_fragment_alert_positive_btn, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                deleteTrackData(item.getId());
-
                                 new InquiryBuilder()
                                         .set(IS_TRACK_DELETE_EQ, IS_TRACK_DELETE_TRUE)
                                         .updateWhere(TABLE_TRACKS + _ID, String.valueOf(item.getId()));
@@ -336,7 +336,7 @@ public class FitnessDataFragment extends Fragment {
 
 
     private void getTracksFromDb() {
-        dataModelList = new ArrayList<>();
+        dataModelList.clear();
 
         Cursor cursorTracks = new InquiryBuilder()
                 .get(_ID, BEGINS_AT, TIME, DISTANCE, LIKED, TRACK_TOKEN, TYPE_FIT)
@@ -360,7 +360,6 @@ public class FitnessDataFragment extends Fragment {
                 dataModelList.add(listAdapter);
             } while (cursorTracks.moveToNext());
         }
-
         cursor.close();
     }
 }

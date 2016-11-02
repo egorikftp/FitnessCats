@@ -45,7 +45,7 @@ import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 
-import static com.egoriku.catsrunning.helpers.DbActions.deleteTrackData;
+import static com.egoriku.catsrunning.helpers.DbActions.deleteTrackDataById;
 import static com.egoriku.catsrunning.models.State.BEGINS_AT;
 import static com.egoriku.catsrunning.models.State.DISTANCE;
 import static com.egoriku.catsrunning.models.State.LAT;
@@ -423,7 +423,7 @@ public class ScamperActivity extends AppCompatActivity {
                 });
             } else {
                 Toast.makeText(getApplicationContext(), R.string.scamper_activity_snackbar_no_points, Toast.LENGTH_SHORT).show();
-                deleteTrackData(idTrack);
+                deleteTrackDataById(idTrack);
             }
         }
     };
