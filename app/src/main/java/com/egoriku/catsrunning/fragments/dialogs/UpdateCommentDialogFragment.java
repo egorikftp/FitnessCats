@@ -22,6 +22,9 @@ import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.receivers.ReminderReceiver;
 
+import static com.egoriku.catsrunning.models.State.EXTRA_ID_REMINDER_KEY;
+import static com.egoriku.catsrunning.models.State.EXTRA_TEXT_TYPE_REMINDER_KEY;
+
 public class UpdateCommentDialogFragment extends DialogFragment {
 
     public static final String BROADCAST_UPDATE_REMINDER_COMMENT = "BROADCAST_UPDATE_REMINDER_COMMENT";
@@ -122,8 +125,8 @@ public class UpdateCommentDialogFragment extends DialogFragment {
                 App.getInstance(),
                 id,
                 new Intent(App.getInstance(), ReminderReceiver.class)
-                        .putExtra(ReminderReceiver.ID_KEY, id)
-                        .putExtra(ReminderReceiver.TEXT_REMINDER_KEY, textReminder),
+                        .putExtra(EXTRA_ID_REMINDER_KEY, id)
+                        .putExtra(EXTRA_TEXT_TYPE_REMINDER_KEY, textReminder),
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
 

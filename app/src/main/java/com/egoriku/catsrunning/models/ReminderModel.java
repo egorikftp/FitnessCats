@@ -4,15 +4,15 @@ public class ReminderModel {
 
     private int id;
     private long dateReminder;
-    private String textReminder;
+    private int typeReminder;
 
     public ReminderModel() {
     }
 
-    public ReminderModel(int id, long dateReminder, String textReminder) {
+    public ReminderModel(int id, long dateReminder, int typeReminder) {
         this.id = id;
         this.dateReminder = dateReminder;
-        this.textReminder = textReminder;
+        this.typeReminder = typeReminder;
     }
 
     public int getId() {
@@ -31,11 +31,11 @@ public class ReminderModel {
         this.dateReminder = dateReminder;
     }
 
-    public String getTextReminder() {
-        return textReminder;
+    public int getTypeReminder() {
+        return typeReminder;
     }
 
-    public void setTextReminder(String textReminder) {
-        this.textReminder = textReminder;
+    public void setTypeReminder(int typeReminder) {
+        this.typeReminder = typeReminder;
     }
 }

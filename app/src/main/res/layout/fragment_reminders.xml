@@ -12,13 +12,12 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/main.collapsing"
+            android:id="@+id/reminders_fragment_collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorPrimaryDark"
             android:fitsSystemWindows="true"
-            app:contentScrim="@color/colorPrimaryDark"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:contentScrim="@color/colorPrimaryDark">
 
             <ImageView
                 android:layout_width="match_parent"

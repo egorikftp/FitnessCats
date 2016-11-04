@@ -13,9 +13,13 @@ import android.support.v4.app.NotificationManagerCompat;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.ScamperActivity;
 
+import static com.egoriku.catsrunning.models.State.EXTRA_ID_REMINDER_KEY;
+import static com.egoriku.catsrunning.models.State.KEY_TYPE_FIT;
+import static com.egoriku.catsrunning.models.State.EXTRA_TEXT_TYPE_REMINDER_KEY;
+import static com.egoriku.catsrunning.models.State.TYPE_REMINDER_KEY;
+
 public class ReminderReceiver extends BroadcastReceiver {
-    public static final String ID_KEY = "ID_KEY";
-    public static final String TEXT_REMINDER_KEY = "TEXT_REMINDER_KEY";
+    public static final String ANDROID_RESOURCE = "android.resource://";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -23,8 +27,8 @@ public class ReminderReceiver extends BroadcastReceiver {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context,
-                extras.getInt(ID_KEY, 0),
-                new Intent(context, ScamperActivity.class),
+                extras.getInt(EXTRA_ID_REMINDER_KEY, 0),
+                new Intent(context, ScamperActivity.class).putExtra(KEY_TYPE_FIT, extras.getInt(TYPE_REMINDER_KEY)),
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
 
@@ -32,16 +36,13 @@ public class ReminderReceiver extends BroadcastReceiver {
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.ic_alarm_notification)
                 .setContentTitle(context.getResources().getString(R.string.alarm_notification_title))
-                .setContentText(extras.getString(TEXT_REMINDER_KEY))
+                .setContentText(extras.getString(EXTRA_TEXT_TYPE_REMINDER_KEY))
                 .setAutoCancel(true);
 
         Notification notification = builder.build();
-        notification.sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.spaceship);
+        notification.sound = Uri.parse(ANDROID_RESOURCE + context.getPackageName() + "/" + R.raw.spaceship);
 
         NotificationManagerCompat manager = NotificationManagerCompat.from(context);
-        manager.notify(
-                extras.getInt(ID_KEY, 0),
-                notification
-        );
+        manager.notify(extras.getInt(EXTRA_ID_REMINDER_KEY, 0), notification);
     }
 }

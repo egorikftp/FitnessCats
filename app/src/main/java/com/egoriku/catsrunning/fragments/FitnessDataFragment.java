@@ -50,6 +50,7 @@ import static com.egoriku.catsrunning.models.State.DISTANCE;
 import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_EQ;
 import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_FALSE;
 import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_TRUE;
+import static com.egoriku.catsrunning.models.State.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.models.State.LIKED;
 import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
 import static com.egoriku.catsrunning.models.State.TIME;
@@ -154,7 +155,7 @@ public class FitnessDataFragment extends Fragment {
         fabWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(ScamperActivity.KEY_TYPE_FIT, TYPE_FIT_WALK));
+                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(KEY_TYPE_FIT, TYPE_FIT_WALK));
             }
         });
 
@@ -162,14 +163,14 @@ public class FitnessDataFragment extends Fragment {
         fabRun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(ScamperActivity.KEY_TYPE_FIT, TYPE_FIT_RUN));
+                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(KEY_TYPE_FIT, TYPE_FIT_RUN));
             }
         });
 
         fabCycling.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(ScamperActivity.KEY_TYPE_FIT, TYPE_FIT_CYCLING));
+                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(KEY_TYPE_FIT, TYPE_FIT_CYCLING));
             }
         });
 

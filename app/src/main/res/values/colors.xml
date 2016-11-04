@@ -17,11 +17,11 @@
     <color name="color_nav_drawer_text">#434343</color>
     <color name="color_nav_drawer">#99f59758</color>
 
-
     <color name="color_background_nav_drawer">#2aaebfb2</color>
-
+    <color name="color_vec_ic_reminders">#6F4052</color>
 
     <color name="chart_value_1">#E69F70</color>
     <color name="chart_value_2">#AEBFB2</color>
     <color name="chart_value_3">#B85967</color>
+
 </resources>

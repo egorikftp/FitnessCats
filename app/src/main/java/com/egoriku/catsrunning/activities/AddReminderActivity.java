@@ -1,13 +1,7 @@
 package com.egoriku.catsrunning.activities;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.database.sqlite.SQLiteStatement;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -16,14 +10,16 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.receivers.ReminderReceiver;
 import com.egoriku.catsrunning.ui.CustomStringPicker;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+
+import static com.egoriku.catsrunning.helpers.DbActions.writeReminderDb;
+import static com.egoriku.catsrunning.utils.AlarmsUtills.setAlarm;
+import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class AddReminderActivity extends AppCompatActivity {
     private static final int UNICODE_EMOJI = 0x1F638;
@@ -86,6 +82,7 @@ public class AddReminderActivity extends AppCompatActivity {
             datePicker.setCalendarViewShown(false);
         }
 
+
         timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker timePicker, int hour, int minutes) {
@@ -94,7 +91,15 @@ public class AddReminderActivity extends AppCompatActivity {
             }
         });
 
-        textViewType.setText(textType + " " + getEmojiByUnicode(UNICODE_EMOJI) );
+
+        datePicker.init(allDateCalendar.get(Calendar.YEAR), allDateCalendar.get(Calendar.MONTH), allDateCalendar.get(Calendar.DAY_OF_MONTH) + 1, new DatePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                allDateCalendar.set(year, monthOfYear, dayOfMonth);
+            }
+        });
+
+        textViewType.setText(textType + " " + getEmojiByUnicode(UNICODE_EMOJI));
 
         stringPicker.setVisibility(View.VISIBLE);
         datePicker.setVisibility(View.GONE);
@@ -119,17 +124,18 @@ public class AddReminderActivity extends AppCompatActivity {
                     timePicker.setVisibility(View.GONE);
                     datePicker.setVisibility(View.VISIBLE);
                     btnNext.setText(textBtnFinish);
-                    allDateCalendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
                     condition = 3;
                     return;
                 }
 
                 if (condition == 3) {
                     setAlarm(
-                            writeAlarmDB(allDateCalendar.getTimeInMillis() / 1000, stringPicker.getCurrentValue()),
-                            stringPicker.getCurrentValue(),
-                            allDateCalendar.getTimeInMillis()
+                            writeReminderDb(allDateCalendar.getTimeInMillis() / 1000, stringPicker.getCurrent() + 1),
+                            getTypeFit(stringPicker.getCurrent() + 1, false, R.array.type_reminder),
+                            allDateCalendar.getTimeInMillis(),
+                            stringPicker.getCurrent() + 1
                     );
+                    finish();
                     return;
                 }
             }
@@ -139,7 +145,7 @@ public class AddReminderActivity extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(condition == 2){
+                if (condition == 2) {
                     textViewType.setVisibility(View.VISIBLE);
                     stringPicker.setVisibility(View.VISIBLE);
                     timePicker.setVisibility(View.GONE);
@@ -148,7 +154,7 @@ public class AddReminderActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(condition == 3){
+                if (condition == 3) {
                     timePicker.setVisibility(View.VISIBLE);
                     datePicker.setVisibility(View.GONE);
                     btnBack.setVisibility(View.VISIBLE);
@@ -166,56 +172,6 @@ public class AddReminderActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-
-    private void setAlarm(int id, String textReminder, long timeInMillis) {
-        AlarmManager alarmManager = (AlarmManager) App.getInstance().getSystemService(Context.ALARM_SERVICE);
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                App.getInstance(),
-                id,
-                new Intent(App.getInstance(), ReminderReceiver.class)
-                        .putExtra(ReminderReceiver.ID_KEY, id)
-                        .putExtra(ReminderReceiver.TEXT_REMINDER_KEY, textReminder),
-                PendingIntent.FLAG_UPDATE_CURRENT
-        );
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    timeInMillis,
-                    pendingIntent
-            );
-        } else {
-            alarmManager.set(
-                    AlarmManager.RTC_WAKEUP,
-                    timeInMillis,
-                    pendingIntent
-            );
-        }
-
-        LocalBroadcastManager.getInstance(
-                App.getInstance()).sendBroadcastSync(new Intent(BROADCAST_ADD_NEW_REMINDER));
-        finish();
-    }
-
-
-    private int writeAlarmDB(long dateReminderUnix, String textReminder) {
-        int idAlarm;
-        SQLiteStatement statement = App.getInstance().getDb().compileStatement(
-                "INSERT INTO Reminder (dateReminder, textReminder) VALUES (?, ?)"
-        );
-
-        statement.bindLong(1, dateReminderUnix);
-        statement.bindString(2, textReminder);
-
-        try {
-            idAlarm = (int) statement.executeInsert();
-        } finally {
-            statement.close();
-        }
-        return idAlarm;
     }
 
 

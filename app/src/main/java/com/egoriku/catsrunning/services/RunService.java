@@ -19,8 +19,8 @@ import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.ScamperActivity;
 import com.egoriku.catsrunning.utils.ConverterTime;
 
-import static com.egoriku.catsrunning.activities.ScamperActivity.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.activities.ScamperActivity.KEY_TYPE_FIT_NOTIFICATION;
+import static com.egoriku.catsrunning.models.State.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class RunService extends Service implements LocationListener {

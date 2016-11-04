@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -36,47 +37,52 @@ import com.egoriku.catsrunning.models.ReminderModel;
 import com.egoriku.catsrunning.receivers.ReminderReceiver;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
+import static com.egoriku.catsrunning.helpers.DbActions.deleteReminderDb;
 import static com.egoriku.catsrunning.models.State.DATE_REMINDER;
+import static com.egoriku.catsrunning.models.State.EXTRA_ID_REMINDER_KEY;
+import static com.egoriku.catsrunning.models.State.EXTRA_TEXT_TYPE_REMINDER_KEY;
 import static com.egoriku.catsrunning.models.State.TABLE_REMINDER;
-import static com.egoriku.catsrunning.models.State.TEXT_REMINDER;
+import static com.egoriku.catsrunning.models.State.TYPE_REMINDER;
 import static com.egoriku.catsrunning.models.State._ID;
-import static com.egoriku.catsrunning.models.State._ID_EQ;
+import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class RemindersFragment extends Fragment {
     public static final String TAG_REMINDERS_FRAGMENT = "TAG_REMINDERS_FRAGMENT";
     public static final String KEY_ID = "KEY_ID";
     public static final String KEY_TYPE_REMINDER = "KEY_TYPE_REMINDER";
     public static final String KEY_UPDATE_REMINDER = "KEY_UPDATE_REMINDER";
-    private static final int UNICODE_EMOJI = 0x1F61E;
+    private static final int UNICODE_EMOJI = 0x1F638;
 
     private RecyclerView recyclerView;
     private FloatingActionButton floatingActionButton;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
     private AppBarLayout appBarLayout;
     private ImageView imageViewNoTracks;
     private TextView noReminders;
 
-    private ArrayList<ReminderModel> reminderModels;
+    private ArrayList<ReminderModel> reminderModel;
     private RemindersAdapter remindersAdapter;
 
     private BroadcastReceiver broadcastAddReminder = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            reminderModels.clear();
+            reminderModel.clear();
             showReminders();
         }
     };
     private BroadcastReceiver broadcastCommentUpdateReminder = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            reminderModels.clear();
+            reminderModel.clear();
             showReminders();
         }
     };
     private BroadcastReceiver broadcastDateUpdateReminder = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            reminderModels.clear();
+            reminderModel.clear();
             showReminders();
         }
     };
@@ -98,8 +104,9 @@ public class RemindersFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        reminderModels = new ArrayList<>();
+        reminderModel = new ArrayList<>();
     }
+
 
     @Nullable
     @Override
@@ -110,6 +117,7 @@ public class RemindersFragment extends Fragment {
         noReminders = (TextView) view.findViewById(R.id.reminders_fragment_no_more_reminders);
         imageViewNoTracks = (ImageView) view.findViewById(R.id.fragment_fitness_data_image);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.reminders_appbar);
+        collapsingToolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.reminders_fragment_collapsing_toolbar);
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,71 +136,107 @@ public class RemindersFragment extends Fragment {
         noReminders.setText(null);
         getRemindersFromDb();
 
-        if (reminderModels.size() == 0) {
-            appBarLayout.setExpanded(false);
+        if (reminderModel.size() == 0) {
+            setScrollingEnabled(false);
             imageViewNoTracks.setVisibility(View.VISIBLE);
             noReminders.setText(String.format((String) getResources().getText(R.string.reminders_fragment_no_more_reminders), getEmojiByUnicode(UNICODE_EMOJI)));
         } else {
-            appBarLayout.setExpanded(true);
+            setScrollingEnabled(true);
             imageViewNoTracks.setVisibility(View.GONE);
-            remindersAdapter.setData(reminderModels);
+            remindersAdapter.setData(reminderModel);
             recyclerView.setAdapter(remindersAdapter);
 
             remindersAdapter.setOnItemClickListener(new IRemindersClickListener() {
                 @Override
-                public void onDeleteReminderClick(int id, String textReminder, int position) {
-                    cancelAlarm(id, textReminder);
-                    updateDb(id);
+                public void onDeleteReminderClick(final int id, final int position, final int typeFit) {
+                    if (reminderModel.get(position).getDateReminder() < Calendar.getInstance().getTimeInMillis() / 1000L) {
+                        cancelAlarm(id, getTypeFit(typeFit, true, R.array.type_reminder));
+                        deleteReminderDb(id);
+                        remindersAdapter.deletePositionData(position);
 
-                    reminderModels.remove(position);
-                    remindersAdapter.notifyItemRemoved(position);
-                    remindersAdapter.notifyItemRangeChanged(position, reminderModels.size());
-
-                    if (reminderModels.size() == 0) {
-                        Snackbar.make(recyclerView, R.string.reminders_fragment_snackbar_reminders_empty, Snackbar.LENGTH_LONG)
-                                .setCallback(new Snackbar.Callback() {
-                                    @Override
-                                    public void onDismissed(Snackbar snackbar, int event) {
-                                        switch (event) {
-                                            case Snackbar.Callback.DISMISS_EVENT_TIMEOUT:
-                                                showReminders();
-                                                break;
-                                        }
-                                    }
-                                }).show();
+                        if (reminderModel.size() == 0) {
+                            showReminders();
+                        }
+                    } else {
+                        if (reminderModel.size() == 1) {
+                            showSnackBar(position, typeFit, R.string.reminders_fragment_snackbar_reminders_empty, R.string.reminders_fragment_cancel_delete, true);
+                        } else {
+                            showSnackBar(position, typeFit, R.string.reminders_fragment_snackbar_alarm_delete, R.string.reminders_fragment_snackbar_revert, false);
+                        }
                     }
                 }
 
                 @Override
-                public void onCommentReminderClick(int id, long dateReminder, String textReminder, int position) {
-                    UpdateCommentDialogFragment.newInstance(id, textReminder, dateReminder).show(getFragmentManager(), null);
-                }
+                public void onRecyclerViewClickEvent(int id, long dateReminder, int typeReminder, int position) {
 
-                @Override
-                public void onDateReminderClick(int id, long dateReminder, String textReminder, int position) {
-                    UpdateDateDialogFragment.newInstance(id, textReminder, dateReminder).show(getFragmentManager(), null);
                 }
+                //UpdateDateDialogFragment.newInstance(id, textReminder, dateReminder).show(getFragmentManager(), null);
             });
         }
     }
 
 
+    private void setScrollingEnabled(boolean isEnabled) {
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) collapsingToolbarLayout.getLayoutParams();
+        if (isEnabled) {
+            params.setScrollFlags((AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS));
+            collapsingToolbarLayout.setVisibility(View.VISIBLE);
+            appBarLayout.setExpanded(isEnabled, isEnabled);
+        } else {
+            appBarLayout.setExpanded(isEnabled, isEnabled);
+            params.setScrollFlags(0);
+            collapsingToolbarLayout.setVisibility(View.GONE);
+        }
+    }
+
+
+    private void showSnackBar(final int position, final int typeFit, int resTitleId, int resActionId, final boolean isEnd) {
+        final int idAlarm = reminderModel.get(position).getId();
+        final long dateAlarm = reminderModel.get(position).getDateReminder();
+        final int typeAlarm = reminderModel.get(position).getTypeReminder();
+        remindersAdapter.deletePositionData(position);
+
+        Snackbar.make(recyclerView, resTitleId, Snackbar.LENGTH_LONG)
+                .setAction(resActionId, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ReminderModel reminderModelItem = new ReminderModel(idAlarm, dateAlarm, typeAlarm);
+                        remindersAdapter.addData(position, reminderModelItem);
+                    }
+                })
+                .setCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar snackbar, int event) {
+                        switch (event) {
+                            case Snackbar.Callback.DISMISS_EVENT_TIMEOUT:
+                                cancelAlarm(idAlarm, getTypeFit(typeFit, true, R.array.type_reminder));
+                                deleteReminderDb(idAlarm);
+
+                                if (isEnd) {
+                                    showReminders();
+                                }
+                                break;
+                        }
+                    }
+                }).show();
+    }
+
+
     private void getRemindersFromDb() {
-        reminderModels.clear();
+        reminderModel.clear();
         Cursor cursorReminders = new InquiryBuilder()
-                .get(_ID, DATE_REMINDER, TEXT_REMINDER)
+                .get(_ID, DATE_REMINDER, TYPE_REMINDER)
                 .from(TABLE_REMINDER)
-                .orderBy(TEXT_REMINDER)
-                .desc()
+                .orderBy(DATE_REMINDER)
                 .select();
 
         DbCursor dbCursor = new DbCursor(cursorReminders);
         if (dbCursor.isValid()) {
             do {
-                reminderModels.add(new ReminderModel(
+                reminderModel.add(new ReminderModel(
                         dbCursor.getInt(_ID),
                         dbCursor.getLong(DATE_REMINDER),
-                        dbCursor.getString(TEXT_REMINDER)
+                        dbCursor.getInt(TYPE_REMINDER)
                 ));
             } while (cursorReminders.moveToNext());
         }
@@ -207,20 +251,12 @@ public class RemindersFragment extends Fragment {
                 App.getInstance(),
                 id,
                 new Intent(App.getInstance(), ReminderReceiver.class)
-                        .putExtra(ReminderReceiver.ID_KEY, id)
-                        .putExtra(ReminderReceiver.TEXT_REMINDER_KEY, textReminder),
+                        .putExtra(EXTRA_ID_REMINDER_KEY, id)
+                        .putExtra(EXTRA_TEXT_TYPE_REMINDER_KEY, textReminder),
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
 
         alarmManager.cancel(pendingIntent);
-    }
-
-
-    private void updateDb(int idReminder) {
-        new InquiryBuilder()
-                .tableDelete(TABLE_REMINDER)
-                .where(false, _ID_EQ, String.valueOf(idReminder))
-                .delete();
     }
 
 

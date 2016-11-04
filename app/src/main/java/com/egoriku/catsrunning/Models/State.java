@@ -1,6 +1,12 @@
 package com.egoriku.catsrunning.models;
 
 public class State {
+    public static final String EXTRA_ID_REMINDER_KEY = "EXTRA_ID_REMINDER_KEY";
+    public static final String EXTRA_TEXT_TYPE_REMINDER_KEY = "EXTRA_TEXT_TYPE_REMINDER_KEY";
+    public static final String TYPE_REMINDER_KEY = "TYPE_REMINDER_KEY";
+
+    public static final String KEY_TYPE_FIT = "KEY_TYPE_FIT";
+
     public static final String TABLE_POINT = "Point";
     public static final String TABLE_TRACKS = "Tracks";
     public static final String TABLE_REMINDER = "Reminder";
@@ -18,7 +24,7 @@ public class State {
     public static final String TYPE_FIT = "typeFit";
     public static final String TRACK_ID= "trackId";
     public static final String DATE_REMINDER= "dateReminder";
-    public static final String TEXT_REMINDER= "textReminder";
+    public static final String TYPE_REMINDER = "typeReminder";
 
 
 

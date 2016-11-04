@@ -36,7 +36,7 @@ public class LikedFragmentAdapter extends RecyclerView.Adapter<LikedFragmentAdap
 
     @Override
     public void onBindViewHolder(LikedFragmentAdapter.ViewHolder holder, int position) {
-        holder.date.setText(ConverterTime.convertUnixDate(modelArrayList.get(position).getDate()));
+        holder.date.setText(ConverterTime.convertDateReminder(modelArrayList.get(position).getDate()));
         holder.timeRunning.setText(ConverterTime.ConvertTimeToString(modelArrayList.get(position).getTimeRunning()));
         holder.distance.setText(String.format(holder.format, modelArrayList.get(position).getDistance()));
         setImageAdapter(holder.imageViewLiked, R.drawable.ic_vec_star_black);

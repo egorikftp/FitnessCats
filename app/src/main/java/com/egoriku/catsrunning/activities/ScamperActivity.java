@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import static com.egoriku.catsrunning.helpers.DbActions.deleteTrackDataById;
 import static com.egoriku.catsrunning.models.State.BEGINS_AT;
 import static com.egoriku.catsrunning.models.State.DISTANCE;
+import static com.egoriku.catsrunning.models.State.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.models.State.LAT;
 import static com.egoriku.catsrunning.models.State.LNG;
 import static com.egoriku.catsrunning.models.State.TABLE_POINT;
@@ -62,7 +63,6 @@ import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class ScamperActivity extends AppCompatActivity {
     public static final String BROADCAST_FINISH_SERVICE = "BROADCAST_FINISH_SERVICE";
-    public static final String KEY_TYPE_FIT = "KEY_TYPE_FIT";
     public static final String KEY_TYPE_FIT_NOTIFICATION = "KEY_TYPE_FIT_NOTIFICATION";
     private static final int REQUEST_CODE = 1;
     private static final String VIEW_BTN_START = "VIEW_BTN_START";
@@ -192,7 +192,7 @@ public class ScamperActivity extends AppCompatActivity {
 
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(
-                            String.format(getString(R.string.scamper_activity_toolbar_title),getTypeFit(typeFit, true, R.array.all_fitness_data_categories))
+                            String.format(getString(R.string.scamper_activity_toolbar_title), getTypeFit(typeFit, true, R.array.all_fitness_data_categories))
                     );
                 }
 
@@ -207,7 +207,7 @@ public class ScamperActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                textTimer.setText(String.format(textNowTime,timeFromChronometer));
+                textTimer.setText(String.format(textNowTime, timeFromChronometer));
             }
         });
     }
@@ -261,6 +261,13 @@ public class ScamperActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (App.getInstance().getState() == null) {
+            App.getInstance().createState();
+        }
+    }
 
     @Override
     protected void onPause() {

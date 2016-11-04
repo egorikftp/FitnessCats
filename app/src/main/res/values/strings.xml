@@ -97,8 +97,10 @@
     <string name="liked_fragment_snackbar_liked_empty">Хм, теперь тут пусто</string>
 
     <!-- Reminders Fragment -->
-    <string name="reminders_fragment_no_more_reminders">У котиков нет ближайших занятий %s</string>
+    <string name="reminders_fragment_no_more_reminders">Я в форме - круг это форма %s</string>
     <string name="reminders_fragment_snackbar_reminders_empty">Похоже, заниматься пока не будем?</string>
+    <string name="reminders_fragment_snackbar_alarm_delete">Напоминание удалено</string>
+    <string name="reminders_fragment_snackbar_revert">Отмена</string>
 
 
     <!-- Теги -->
@@ -151,5 +153,7 @@
     <string name="track_on_map_activity_track_delete">Трек удален</string>
     <string name="track_on_map_activity_cancel_delete">Отменить</string>
     <string name="track_on_map_activity_track_cancel_delete_success">Удаление отменено!</string>
+
+    <string name="reminders_fragment_cancel_delete">Будем!</string>
 
 </resources>
