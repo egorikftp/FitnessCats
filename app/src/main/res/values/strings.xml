@@ -103,11 +103,6 @@
     <string name="reminders_fragment_snackbar_revert">Отмена</string>
 
 
-    <!-- Теги -->
-    <string name="reminders_tag_comment">comment</string>
-    <string name="reminders_tag_date">beginsAt</string>
-
-
     <!-- Dialogs Add Reminder -->
     <string name="add_reminder_part_one_dialog_title">Добавим напоминание</string>
     <string name="add_reminder_part_one_dialog_negative_btn">Отмена</string>
@@ -115,16 +110,14 @@
     <string name="add_reminder_part_one_dialog_back_btn">Назад</string>
     <string name="add_reminder_part_one_dialog_final_btn">Готово</string>
     <string name="add_reminder_part_one_dialog_text_type">Выбери тип будущего занятия</string>
-
-    <string name="comment_dialog_title">Установить новое напоминание</string>
-
-    <string name="comment_dialog_positive_btn_text">Обновить</string>
-
-
-    <string name="date_dialog_title">Установить новую дату и время</string>
+    <string name="reminders_fragment_cancel_delete">Будем!</string>
+    <string name="reminders_fragment_error_date">И зачем нам в прошлое?</string>
+    <string name="time_dialog_title">Установить новое время</string>
+    <string name="date_dialog_title">Установить новую дату</string>
     <string name="date_dialog_negative_btn_text">Отмена</string>
     <string name="date_dialog_positive_btn_text">Обновить</string>
-    <string name="date_dialog_message">Будильник зазвонит по указанному времени</string>
+
+
     <string name="navigation_drawer_setting">Настройки</string>
     <string name="navigation_drawer_statistic">Статистика</string>
 
@@ -153,7 +146,4 @@
     <string name="track_on_map_activity_track_delete">Трек удален</string>
     <string name="track_on_map_activity_cancel_delete">Отменить</string>
     <string name="track_on_map_activity_track_cancel_delete_success">Удаление отменено!</string>
-
-    <string name="reminders_fragment_cancel_delete">Будем!</string>
-
 </resources>

@@ -48,7 +48,8 @@ public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
     @Override
     public void onBind(AbstractViewHolder holder, final RemindersAdapter remindersAdapter, final int position, int viewType) {
         Calendar calendar = Calendar.getInstance();
-        if(calendar.getTimeInMillis()/1000L > reminderModelList.get(position).getDateReminder()){
+
+        if (calendar.getTimeInMillis() / 1000L > reminderModelList.get(position).getDateReminder()) {
             holder.<RelativeLayout>get(R.id.reminders_fragment_relative_layout)
                     .setBackgroundColor(Color.LTGRAY);
         }
@@ -73,12 +74,27 @@ public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
                     }
                 });
 
-        holder.<RelativeLayout>get(R.id.reminders_fragment_relative_layout)
+        holder.<TextView>get(R.id.reminders_fragment_time)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (iRemindersClickListener != null) {
-                            iRemindersClickListener.onRecyclerViewClickEvent(
+                            iRemindersClickListener.onTimeReminderClick(
+                                    reminderModelList.get(position).getId(),
+                                    reminderModelList.get(position).getDateReminder(),
+                                    reminderModelList.get(position).getTypeReminder(),
+                                    position
+                            );
+                        }
+                    }
+                });
+
+        holder.<TextView>get(R.id.reminders_fragment_date)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(iRemindersClickListener!=null){
+                            iRemindersClickListener.onDateReminderClick(
                                     reminderModelList.get(position).getId(),
                                     reminderModelList.get(position).getDateReminder(),
                                     reminderModelList.get(position).getTypeReminder(),
@@ -121,7 +137,7 @@ public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
     }
 
 
-    public void deletePositionData(int position){
+    public void deletePositionData(int position) {
         reminderModelList.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, reminderModelList.size());

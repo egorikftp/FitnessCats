@@ -29,8 +29,8 @@ import com.egoriku.catsrunning.activities.AddReminderActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.RemindersAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.IRemindersClickListener;
-import com.egoriku.catsrunning.fragments.dialogs.UpdateCommentDialogFragment;
-import com.egoriku.catsrunning.fragments.dialogs.UpdateDateDialogFragment;
+import com.egoriku.catsrunning.dialogs.UpdateDateReminderDialog;
+import com.egoriku.catsrunning.dialogs.UpdateTimeReminderDialog;
 import com.egoriku.catsrunning.helpers.DbCursor;
 import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.models.ReminderModel;
@@ -52,7 +52,7 @@ public class RemindersFragment extends Fragment {
     public static final String TAG_REMINDERS_FRAGMENT = "TAG_REMINDERS_FRAGMENT";
     public static final String KEY_ID = "KEY_ID";
     public static final String KEY_TYPE_REMINDER = "KEY_TYPE_REMINDER";
-    public static final String KEY_UPDATE_REMINDER = "KEY_UPDATE_REMINDER";
+    public static final String KEY_DATE_REMINDER = "KEY_DATE_REMINDER";
     private static final int UNICODE_EMOJI = 0x1F638;
 
     private RecyclerView recyclerView;
@@ -65,24 +65,15 @@ public class RemindersFragment extends Fragment {
     private ArrayList<ReminderModel> reminderModel;
     private RemindersAdapter remindersAdapter;
 
-    private BroadcastReceiver broadcastAddReminder = new BroadcastReceiver() {
+    private BroadcastReceiver broadcastUpdateTime = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            reminderModel.clear();
             showReminders();
         }
     };
-    private BroadcastReceiver broadcastCommentUpdateReminder = new BroadcastReceiver() {
+    private BroadcastReceiver broadcastUpdateDate = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            reminderModel.clear();
-            showReminders();
-        }
-    };
-    private BroadcastReceiver broadcastDateUpdateReminder = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            reminderModel.clear();
             showReminders();
         }
     };
@@ -167,10 +158,14 @@ public class RemindersFragment extends Fragment {
                 }
 
                 @Override
-                public void onRecyclerViewClickEvent(int id, long dateReminder, int typeReminder, int position) {
-
+                public void onTimeReminderClick(int id, long dateReminder, int typeReminder, int position) {
+                    UpdateTimeReminderDialog.newInstance(id, dateReminder, typeReminder).show(getFragmentManager(), null);
                 }
-                //UpdateDateDialogFragment.newInstance(id, textReminder, dateReminder).show(getFragmentManager(), null);
+
+                @Override
+                public void onDateReminderClick(int id, long dateReminder, int typeReminder, int position) {
+                    UpdateDateReminderDialog.newInstance(id, dateReminder, typeReminder).show(getFragmentManager(), null);
+                }
             });
         }
     }
@@ -271,35 +266,17 @@ public class RemindersFragment extends Fragment {
         showReminders();
 
         LocalBroadcastManager.getInstance(App.getInstance())
-                .registerReceiver(
-                        broadcastAddReminder,
-                        new IntentFilter(AddReminderActivity.BROADCAST_ADD_NEW_REMINDER)
-                );
+                .registerReceiver(broadcastUpdateTime, new IntentFilter(UpdateTimeReminderDialog.BROADCAST_UPDATE_REMINDER_TIME));
 
         LocalBroadcastManager.getInstance(App.getInstance())
-                .registerReceiver(
-                        broadcastCommentUpdateReminder,
-                        new IntentFilter(UpdateCommentDialogFragment.BROADCAST_UPDATE_REMINDER_COMMENT)
-                );
-
-        LocalBroadcastManager.getInstance(App.getInstance())
-                .registerReceiver(
-                        broadcastDateUpdateReminder,
-                        new IntentFilter(UpdateDateDialogFragment.BROADCAST_UPDATE_REMINDER_DATE)
-                );
+                .registerReceiver(broadcastUpdateDate, new IntentFilter(UpdateDateReminderDialog.BROADCAST_UPDATE_REMINDER_DATE));
     }
 
 
     @Override
     public void onPause() {
         super.onPause();
-        LocalBroadcastManager.getInstance(App.getInstance())
-                .unregisterReceiver(broadcastAddReminder);
-
-        LocalBroadcastManager.getInstance(App.getInstance())
-                .unregisterReceiver(broadcastCommentUpdateReminder);
-
-        LocalBroadcastManager.getInstance(App.getInstance())
-                .unregisterReceiver(broadcastDateUpdateReminder);
+        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastUpdateTime);
+        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastUpdateDate);
     }
 }

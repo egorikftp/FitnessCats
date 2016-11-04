@@ -9,7 +9,9 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.ui.CustomStringPicker;
 
@@ -92,7 +94,7 @@ public class AddReminderActivity extends AppCompatActivity {
         });
 
 
-        datePicker.init(allDateCalendar.get(Calendar.YEAR), allDateCalendar.get(Calendar.MONTH), allDateCalendar.get(Calendar.DAY_OF_MONTH) + 1, new DatePicker.OnDateChangedListener() {
+        datePicker.init(allDateCalendar.get(Calendar.YEAR), allDateCalendar.get(Calendar.MONTH), allDateCalendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
             @Override
             public void onDateChanged(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
                 allDateCalendar.set(year, monthOfYear, dayOfMonth);
@@ -129,6 +131,12 @@ public class AddReminderActivity extends AppCompatActivity {
                 }
 
                 if (condition == 3) {
+                    if (allDateCalendar.getTimeInMillis() < Calendar.getInstance().getTimeInMillis()) {
+                        Toast.makeText(App.getInstance(), getString(R.string.reminders_fragment_error_date) + " " + getEmojiByUnicode(UNICODE_EMOJI), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    btnNext.setClickable(false);
                     setAlarm(
                             writeReminderDb(allDateCalendar.getTimeInMillis() / 1000, stringPicker.getCurrent() + 1),
                             getTypeFit(stringPicker.getCurrent() + 1, false, R.array.type_reminder),

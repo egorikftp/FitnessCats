@@ -2,5 +2,6 @@ package com.egoriku.catsrunning.adapters.interfaces;
 
 public interface IRemindersClickListener {
     void onDeleteReminderClick(int id, int position, int typeReminder);
-    void onRecyclerViewClickEvent(int id, long dateReminder, int typeReminder, int position);
+    void onTimeReminderClick(int id, long dateReminder, int typeReminder, int position);
+    void onDateReminderClick(int id, long dateReminder, int typeReminder, int position);
 }
