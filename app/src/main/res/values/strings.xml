@@ -3,10 +3,10 @@
 
     <!-- Экран входа. Подсказки для ввода -->
     <string name="register_activity_hint_email">E-mail</string>
-    <string name="register_activity_hint_password">Пароль</string>
+    <string name="register_activity_hint_password">Password</string>
     <string name="register_activity_hint_double_password">Повторите пароль</string>
-    <string name="register_activity_hint_name">Имя</string>
-    <string name="register_activity_hint_surname">Фамилия</string>
+    <string name="register_activity_hint_name">Name</string>
+    <string name="register_activity_hint_surname">Surname</string>
     <string name="register_activity_snackbar_error_auth_google">Google Sign In failed</string>
 
     <!-- Обработка ошибок после ввода данных для логина или регистации -->
@@ -29,8 +29,8 @@
     <string name="fragment_track_toolbar_title">Подробнее о треке</string>
 
     <!-- Текст кнопок для логина/регистрации -->
-    <string name="btn_text_registration">Зарегистрироваться</string>
-    <string name="btn_text_login">Войти</string>
+    <string name="btn_text_registration">Sign up</string>
+    <string name="btn_text_login">Sign in</string>
 
     <!-- Текст для NavigationDrawer -->
     <string name="navigation_drawer_main_activity">Список треков</string>
@@ -38,7 +38,7 @@
     <string name="navigation_drawer_liked">Избранное [alpha]</string>
     <string name="navigation_drawer_statistic">Статистика [alpha]</string>
     <string name="navigation_drawer_exit">Выход</string>
-    <string name="navigation_drawer_setting">Настройки [alpha]</string>
+    <string name="navigation_drawer_setting">Settings [alpha]</string>
 
 
     <!-- Текст нотификации будильника -->
@@ -76,22 +76,22 @@
     <string name="liked_fragment_adapter_distance">Дистанция:</string>
 
     <!-- Adapter Fragment Tracks List -->
-    <string name="adapter_fragment_main_calories">Калории: </string>
+    <string name="adapter_fragment_main_calories">Calories:</string>
 
 
     <!-- Фрагменты  -->
     <!-- All Fitness Data Fragment -->
     <string name="adapter_all_fitness_data_distance_meter">%s м</string>
     <string name="adapter_all_fitness_data_calories">%s ккал</string>
-    <string name="adapter_all_fitness_data_distance">Дистанция: </string>
+    <string name="adapter_all_fitness_data_distance">Distance:</string>
     <string name="adapter_all_fitness_data_no_more_tracks">Похоже тут нет треков</string>
 
 
     <!-- Track Fragment -->
     <string name="track_fragment_distance">Дистанция:</string>
     <string name="track_fragment_time_running">Время пробежки:</string>
-    <string name="track_fragment_start_running_hint">Старт</string>
-    <string name="track_fragment_end_running_hint">Финиш</string>
+    <string name="track_fragment_start_running_hint">START</string>
+    <string name="track_fragment_end_running_hint">FINISH</string>
     <string name="track_fragment_distance_meter">%s м</string>
     <string name="track_fragment_toast_text_no_points">Точки отстутсвуют</string>
 
@@ -102,7 +102,7 @@
     <!-- Reminders Fragment -->
     <string name="reminders_fragment_no_more_reminders">Я в форме - круг это форма %s</string>
     <string name="reminders_fragment_snackbar_alarm_delete">Напоминание удалено</string>
-    <string name="reminders_fragment_snackbar_revert">Отмена</string>
+    <string name="reminders_fragment_snackbar_revert">Cancel</string>
 
 
     <!-- Dialogs Add Reminder -->
@@ -112,7 +112,6 @@
     <string name="add_reminder_part_one_dialog_back_btn">Назад</string>
     <string name="add_reminder_part_one_dialog_final_btn">Готово</string>
     <string name="add_reminder_part_one_dialog_text_type">Выбери тип будущего занятия</string>
-    <string name="reminders_fragment_cancel_delete">Будем!</string>
     <string name="reminders_fragment_error_date">И зачем нам в прошлое?</string>
     <string name="time_dialog_title">Установить новое время</string>
     <string name="date_dialog_title">Установить новую дату</string>
@@ -128,12 +127,12 @@
 
     <!-- Dialog Delete Track -->
     <string name="fitness_data_fragment_alert_title">Удалить этот трек?</string>
-    <string name="fitness_data_fragment_alert_negative_btn">Отмена</string>
+    <string name="fitness_data_fragment_alert_negative_btn">Cancel</string>
     <string name="fitness_data_fragment_alert_positive_btn">Удалить</string>
 
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open">\" \"</string>
+    <string name="navigation_drawer_close">" "</string>
 
 
     <string name="type_cycling">Велопрогулкa</string>
