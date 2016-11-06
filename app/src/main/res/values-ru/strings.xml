@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fitness Cat\'s</string>
+    <string name="adapter_all_fitness_data_calories">%s ккал</string>
+    <string name="adapter_all_fitness_data_distance">Дистанция:</string>
+    <string name="adapter_all_fitness_data_distance_meter">%s м</string>
+    <string name="adapter_all_fitness_data_no_more_tracks">Похоже тут нет треков</string>
+    <string name="adapter_fragment_main_calories">Калории:</string>
+    <string name="add_reminder_part_one_dialog_back_btn">Назад</string>
+    <string name="add_reminder_part_one_dialog_final_btn">Готово</string>
+    <string name="type_walking">Прогулкa</string>
+    <string name="type_running">Пробежкa</string>
+    <string name="type_cycling">Велопрогулкa</string>
+    <string name="track_on_map_activity_track_delete">Трек удален</string>
+    <string name="track_on_map_activity_track_cancel_delete_success">Удаление отменено!</string>
+</resources>

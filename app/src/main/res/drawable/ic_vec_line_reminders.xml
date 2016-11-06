@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="1dp"
+    android:viewportHeight="1.0"
+    android:viewportWidth="454.05">
+    <path
+        android:pathData="M0,0.5L454.05,0.5"
+        android:strokeColor="@color/color_vec_ic_reminders"
+        android:strokeWidth="2" />
+</vector>

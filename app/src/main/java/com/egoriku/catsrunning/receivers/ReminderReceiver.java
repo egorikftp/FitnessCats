@@ -14,8 +14,8 @@ import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.ScamperActivity;
 
 import static com.egoriku.catsrunning.models.State.EXTRA_ID_REMINDER_KEY;
-import static com.egoriku.catsrunning.models.State.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.models.State.EXTRA_TEXT_TYPE_REMINDER_KEY;
+import static com.egoriku.catsrunning.models.State.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.models.State.TYPE_REMINDER_KEY;
 
 public class ReminderReceiver extends BroadcastReceiver {
@@ -37,7 +37,8 @@ public class ReminderReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.ic_alarm_notification)
                 .setContentTitle(context.getResources().getString(R.string.alarm_notification_title))
                 .setContentText(extras.getString(EXTRA_TEXT_TYPE_REMINDER_KEY))
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .setVibrate(new long[]{ 100, 300, 500, 300});
 
         Notification notification = builder.build();
         notification.sound = Uri.parse(ANDROID_RESOURCE + context.getPackageName() + "/" + R.raw.spaceship);

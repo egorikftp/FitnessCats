@@ -20,6 +20,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.RotateAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -131,9 +135,11 @@ public class RemindersFragment extends Fragment {
             setScrollingEnabled(false);
             imageViewNoTracks.setVisibility(View.VISIBLE);
             noReminders.setText(String.format((String) getResources().getText(R.string.reminders_fragment_no_more_reminders), getEmojiByUnicode(UNICODE_EMOJI)));
+            animateView();
         } else {
             setScrollingEnabled(true);
             imageViewNoTracks.setVisibility(View.GONE);
+
             remindersAdapter.setData(reminderModel);
             recyclerView.setAdapter(remindersAdapter);
 
@@ -149,11 +155,7 @@ public class RemindersFragment extends Fragment {
                             showReminders();
                         }
                     } else {
-                        if (reminderModel.size() == 1) {
-                            showSnackBar(position, typeFit, R.string.reminders_fragment_snackbar_reminders_empty, R.string.reminders_fragment_cancel_delete, true);
-                        } else {
-                            showSnackBar(position, typeFit, R.string.reminders_fragment_snackbar_alarm_delete, R.string.reminders_fragment_snackbar_revert, false);
-                        }
+                        showSnackBar(position, typeFit, R.string.reminders_fragment_snackbar_alarm_delete, R.string.reminders_fragment_snackbar_revert);
                     }
                 }
 
@@ -171,6 +173,24 @@ public class RemindersFragment extends Fragment {
     }
 
 
+    private void animateView() {
+        AnimationSet rollingIn = new AnimationSet(true);
+        Animation moving = new TranslateAnimation(Animation.RELATIVE_TO_SELF, -5, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0);
+        moving.setDuration(1500);
+
+        Animation rotating = new RotateAnimation(0, 720, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotating.setDuration(1500);
+
+        rollingIn.addAnimation(rotating);
+        rollingIn.addAnimation(moving);
+        imageViewNoTracks.setAnimation(rollingIn);
+
+        Animation movingText = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.ZORDER_TOP, -5, Animation.RELATIVE_TO_SELF, 0);
+        movingText.setDuration(1000);
+        noReminders.setAnimation(movingText);
+    }
+
+
     private void setScrollingEnabled(boolean isEnabled) {
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) collapsingToolbarLayout.getLayoutParams();
         if (isEnabled) {
@@ -185,13 +205,13 @@ public class RemindersFragment extends Fragment {
     }
 
 
-    private void showSnackBar(final int position, final int typeFit, int resTitleId, int resActionId, final boolean isEnd) {
+    private void showSnackBar(final int position, final int typeFit, int resTitleId, int resActionId) {
         final int idAlarm = reminderModel.get(position).getId();
         final long dateAlarm = reminderModel.get(position).getDateReminder();
         final int typeAlarm = reminderModel.get(position).getTypeReminder();
         remindersAdapter.deletePositionData(position);
 
-        Snackbar.make(recyclerView, resTitleId, Snackbar.LENGTH_LONG)
+        Snackbar.make(recyclerView, resTitleId, Snackbar.LENGTH_SHORT)
                 .setAction(resActionId, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -207,7 +227,7 @@ public class RemindersFragment extends Fragment {
                                 cancelAlarm(idAlarm, getTypeFit(typeFit, true, R.array.type_reminder));
                                 deleteReminderDb(idAlarm);
 
-                                if (isEnd) {
+                                if (reminderModel.size() == 0) {
                                     showReminders();
                                 }
                                 break;

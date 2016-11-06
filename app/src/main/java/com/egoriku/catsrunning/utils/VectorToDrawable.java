@@ -48,4 +48,13 @@ public class VectorToDrawable {
             imageViewLiked.setImageBitmap(createBitmapFromVector(App.getInstance().getResources(), ic_vec));
         }
     }
+
+
+    public static void setImageButtonAdapter(ImageView view, int ic_vec) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            view.setImageDrawable(App.getInstance().getResources().getDrawable(ic_vec, App.getInstance().getTheme()));
+        } else {
+            view.setImageBitmap(createBitmapFromVector(App.getInstance().getResources(), ic_vec));
+        }
+    }
 }

@@ -45,5 +45,6 @@
     <dimen name="reminders_fragment_card_view_padding_bottom">8dp</dimen>
     <dimen name="reminders_fragment_card_view_corner_radius">6dp</dimen>
     <dimen name="reminders_fragment_padding_view">10dp</dimen>
+    <dimen name="reminders_fragment_padding_view_ic_delete">16dp</dimen>
 
 </resources>
