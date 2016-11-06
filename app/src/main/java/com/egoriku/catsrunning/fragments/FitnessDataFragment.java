@@ -43,13 +43,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.egoriku.catsrunning.helpers.DbActions.updateIsTrackDelete;
 import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
 import static com.egoriku.catsrunning.models.State.AND;
 import static com.egoriku.catsrunning.models.State.BEGINS_AT;
 import static com.egoriku.catsrunning.models.State.DISTANCE;
 import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_EQ;
 import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_FALSE;
-import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_TRUE;
 import static com.egoriku.catsrunning.models.State.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.models.State.LIKED;
 import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
@@ -256,9 +256,8 @@ public class FitnessDataFragment extends Fragment {
                         .setPositiveButton(R.string.fitness_data_fragment_alert_positive_btn, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                new InquiryBuilder()
-                                        .set(IS_TRACK_DELETE_EQ, IS_TRACK_DELETE_TRUE)
-                                        .updateWhere(TABLE_TRACKS + _ID, String.valueOf(item.getId()));
+                                updateIsTrackDelete(item.getId());
+
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 App.getInstance().getTracksReference().child(user.getUid()).child(item.getTrackToken()).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
@@ -62,6 +63,7 @@ public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
         final ImageButton imageBtnExpand = holder.<ImageButton>get(R.id.reminders_fragment_image_expand_info);
         final ImageView imageViewLine = holder.<ImageView>get(R.id.reminders_fragment_static_line);
         final ImageView imageViewLiked = holder.<ImageView>get(R.id.reminders_fragment_image_type_reminder);
+        final Switch aSwitch = holder.<Switch>get(R.id.reminder_fragment_switch);
 
         if (calendar.getTimeInMillis() / 1000L > reminderModelList.get(position).getDateReminder()) {
             relativeLayout.setBackgroundColor(Color.LTGRAY);
@@ -128,6 +130,21 @@ public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
             }
         });
 
+        aSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (iRemindersClickListener != null) {
+                    iRemindersClickListener.onSwitcherReminderClick(
+                            reminderModelList.get(position).getId(),
+                            reminderModelList.get(position).getDateReminder(),
+                            reminderModelList.get(position).getTypeReminder(),
+                            position,
+                            aSwitch.isChecked()
+                    );
+                }
+            }
+        });
+
         switch (reminderModelList.get(position).getTypeReminder()) {
             case 1:
                 setImageAdapter(imageViewLiked, R.drawable.ic_vec_directions_walk_reminders);
@@ -139,6 +156,16 @@ public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
 
             case 3:
                 setImageAdapter(imageViewLiked, R.drawable.ic_vec_directions_bike_reminders);
+                break;
+        }
+
+        switch (reminderModelList.get(position).getIsRing()){
+            case 0:
+                aSwitch.setChecked(false);
+                break;
+
+            case 1:
+                aSwitch.setChecked(true);
                 break;
         }
     }

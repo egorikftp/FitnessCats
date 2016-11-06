@@ -23,7 +23,6 @@
             android:paddingLeft="@dimen/reminders_fragment_padding_view"
             android:paddingRight="@dimen/reminders_fragment_padding_view"
             android:paddingTop="@dimen/reminders_fragment_padding_top"
-            android:text="21:40"
             android:textSize="@dimen/reminders_fragment_time_size"
             android:textStyle="italic" />
 
@@ -33,8 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:padding="@dimen/reminders_fragment_padding_view"
-            app:srcCompat="@drawable/ic_vec_directions_walk_reminders" />
+            android:padding="@dimen/reminders_fragment_padding_view" />
 
         <TextView
             android:id="@+id/reminders_fragment_date"
@@ -42,7 +40,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/reminders_fragment_time"
             android:paddingLeft="@dimen/reminders_fragment_padding_view"
-            android:text="27 ноября 2016"
             android:textSize="@dimen/reminders_fragment_date_size" />
 
         <ImageView
@@ -71,7 +68,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:checked="true"
             android:padding="@dimen/reminders_fragment_padding_view" />
 
         <ImageButton

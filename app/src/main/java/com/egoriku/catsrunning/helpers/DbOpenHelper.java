@@ -36,7 +36,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             case 1: {
                 db.execSQL("CREATE TABLE User (firstName TEXT NOT NULL, lastName TEXT NOT NULL);");
                 db.execSQL("CREATE TABLE Tracks (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, isTrackDelete INTEGER NOT NULL DEFAULT 0, beginsAt INTEGER NOT NULL, time INTEGER NOT NULL DEFAULT 0, distance INTEGER NOT NULL DEFAULT 0, liked INTEGER NOT NULL DEFAULT 0, trackToken TEXT NOT NULL DEFAULT '', typeFit INTEGER NOT NULL DEFAULT 0);");
-                db.execSQL("CREATE TABLE Reminder (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, dateReminder INTEGER NOT NULL, typeReminder INTEGER NOT NULL);");
+                db.execSQL("CREATE TABLE Reminder (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, dateReminder INTEGER NOT NULL, typeReminder INTEGER NOT NULL, isRings INTEGER NOT NULL);");
                 db.execSQL("CREATE TABLE Point (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, latitude REAL NOT NULL, longitude REAL NOT NULL, trackId INTEGER NOT NULL, FOREIGN KEY(trackId) REFERENCES Tracks(_id) ON DELETE CASCADE);");
 
                 db.execSQL("CREATE INDEX user_firstName ON USER (firstName)");
@@ -51,6 +51,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
 
                 db.execSQL("CREATE INDEX reminder_dateReminder ON Reminder (dateReminder)");
                 db.execSQL("CREATE INDEX reminder_typeReminder ON Reminder (typeReminder)");
+                db.execSQL("CREATE INDEX reminder_isRings ON Reminder (isRings)");
 
                 db.execSQL("CREATE INDEX points_latitude ON Point (latitude)");
                 db.execSQL("CREATE INDEX points_longitude ON Point (longitude)");

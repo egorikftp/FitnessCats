@@ -38,16 +38,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.egoriku.catsrunning.helpers.DbActions.deleteTrackDataById;
+import static com.egoriku.catsrunning.helpers.DbActions.updateIsTrackDelete;
 import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
-import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_EQ;
-import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_TRUE;
 import static com.egoriku.catsrunning.models.State.LAT;
 import static com.egoriku.catsrunning.models.State.LNG;
 import static com.egoriku.catsrunning.models.State.TABLE_POINT;
-import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
 import static com.egoriku.catsrunning.models.State.TRACK_ID_EQ;
-import static com.egoriku.catsrunning.models.State._ID;
 
 public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     public static final String KEY_ID = "KEY_ID";
@@ -220,11 +216,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
                             public void onDismissed(Snackbar snackbar, int event) {
                                 switch (event) {
                                     case Snackbar.Callback.DISMISS_EVENT_TIMEOUT:
-                                        deleteTrackDataById(getIntent().getExtras().getInt(KEY_ID));
-
-                                        new InquiryBuilder()
-                                                .set(IS_TRACK_DELETE_EQ, IS_TRACK_DELETE_TRUE)
-                                                .updateWhere(TABLE_TRACKS + _ID, String.valueOf(getIntent().getExtras().getInt(KEY_ID)));
+                                        updateIsTrackDelete(getIntent().getExtras().getInt(KEY_ID));
 
                                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                         App.getInstance().getTracksReference().child(user.getUid()).child(getIntent().getExtras().getString(KEY_TOKEN)).addListenerForSingleValueEvent(new ValueEventListener() {

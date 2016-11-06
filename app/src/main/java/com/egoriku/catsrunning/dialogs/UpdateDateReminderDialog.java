@@ -3,7 +3,6 @@ package com.egoriku.catsrunning.dialogs;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -19,6 +18,7 @@ import com.egoriku.catsrunning.fragments.RemindersFragment;
 
 import java.util.Calendar;
 
+import static com.egoriku.catsrunning.helpers.DbActions.updateReminder;
 import static com.egoriku.catsrunning.utils.AlarmsUtills.setAlarm;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
@@ -81,12 +81,7 @@ public class UpdateDateReminderDialog extends DialogFragment {
                 .setPositiveButton(dialogPositiveBtnText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        reminderDate.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
-
-                        updateDB(
-                                reminderDate.getTimeInMillis() / 1000,
-                                getArguments().getInt(RemindersFragment.KEY_ID)
-                        );
+                        updateReminder(reminderDate.getTimeInMillis() / 1000, getArguments().getInt(RemindersFragment.KEY_ID));
 
                         setAlarm(
                                 getArguments().getInt(RemindersFragment.KEY_ID),
@@ -99,21 +94,5 @@ public class UpdateDateReminderDialog extends DialogFragment {
                                 .sendBroadcastSync(new Intent(BROADCAST_UPDATE_REMINDER_DATE));
                     }
                 }).show();
-    }
-
-
-    private void updateDB(long dateReminderUnix, int id) {
-        SQLiteStatement sqLiteStatement = App.getInstance().getDb().compileStatement(
-                "UPDATE Reminder SET dateReminder = ? WHERE _id = ?"
-        );
-
-        sqLiteStatement.bindLong(1, dateReminderUnix);
-        sqLiteStatement.bindLong(2, id);
-
-        try {
-            sqLiteStatement.execute();
-        } finally {
-            sqLiteStatement.close();
-        }
     }
 }

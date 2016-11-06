@@ -25,8 +25,8 @@ public class State {
     public static final String TRACK_ID= "trackId";
     public static final String DATE_REMINDER= "dateReminder";
     public static final String TYPE_REMINDER = "typeReminder";
-
-
+    public static final String IS_RINGS = "isRings";
+    public static final String IS_TRACK_DELETE = "isTrackDelete";
 
     public static final String BEGINS_AT_EQ = "beginsAt=";
     public static final String TRACK_ID_EQ = "trackId=";
@@ -39,6 +39,9 @@ public class State {
     public static final int TYPE_FIT_WALK = 1;
     public static final int TYPE_FIT_RUN = 2;
     public static final int TYPE_FIT_CYCLING = 3;
+
+    public static final int IS_RING_TRUE = 1;
+    public static final int IS_RING_FALSE = 0;
 
     private static final String KEY_LOGIN = "KEY_LOGIN";
     /**

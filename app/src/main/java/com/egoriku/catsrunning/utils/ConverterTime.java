@@ -30,10 +30,6 @@ public class ConverterTime {
         int hours = (int) ((beginsAt / (MILLS_TO_HOURS)) % 24);
         //String endTime = String.format("%02d:%02d", hours, minutes);
         String endTime = simpleDateFormat.format(new Date((timeInMillis + beginsAt / 1000L) * 1000L));
-
-        Log.e("time", String.valueOf(timeInMillis));
-        Log.e("begins", String.valueOf(beginsAt + timeInMillis));
-
         return startTime + " - " + endTime;
     }
 

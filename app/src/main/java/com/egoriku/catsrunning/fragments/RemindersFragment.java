@@ -44,12 +44,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import static com.egoriku.catsrunning.helpers.DbActions.deleteReminderDb;
+import static com.egoriku.catsrunning.helpers.DbActions.updateAlarmCondition;
 import static com.egoriku.catsrunning.models.State.DATE_REMINDER;
 import static com.egoriku.catsrunning.models.State.EXTRA_ID_REMINDER_KEY;
 import static com.egoriku.catsrunning.models.State.EXTRA_TEXT_TYPE_REMINDER_KEY;
+import static com.egoriku.catsrunning.models.State.IS_RINGS;
+import static com.egoriku.catsrunning.models.State.IS_RING_FALSE;
+import static com.egoriku.catsrunning.models.State.IS_RING_TRUE;
 import static com.egoriku.catsrunning.models.State.TABLE_REMINDER;
 import static com.egoriku.catsrunning.models.State.TYPE_REMINDER;
 import static com.egoriku.catsrunning.models.State._ID;
+import static com.egoriku.catsrunning.utils.AlarmsUtills.setAlarm;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class RemindersFragment extends Fragment {
@@ -168,6 +173,21 @@ public class RemindersFragment extends Fragment {
                 public void onDateReminderClick(int id, long dateReminder, int typeReminder, int position) {
                     UpdateDateReminderDialog.newInstance(id, dateReminder, typeReminder).show(getFragmentManager(), null);
                 }
+
+                @Override
+                public void onSwitcherReminderClick(int id, long dateReminder, int typeReminder, int position, boolean isChecked) {
+                    if (isChecked) {
+                        setAlarm(id, getTypeFit(typeReminder, false, R.array.type_reminder), dateReminder, typeReminder);
+                        updateAlarmCondition(id, IS_RING_TRUE);
+                        reminderModel.get(position).setIsRing(IS_RING_TRUE);
+                        remindersAdapter.notifyItemChanged(position);
+                    } else {
+                        cancelAlarm(id, getTypeFit(typeReminder, false, R.array.type_reminder));
+                        updateAlarmCondition(id, IS_RING_FALSE);
+                        reminderModel.get(position).setIsRing(IS_RING_FALSE);
+                        remindersAdapter.notifyItemChanged(position);
+                    }
+                }
             });
         }
     }
@@ -209,13 +229,14 @@ public class RemindersFragment extends Fragment {
         final int idAlarm = reminderModel.get(position).getId();
         final long dateAlarm = reminderModel.get(position).getDateReminder();
         final int typeAlarm = reminderModel.get(position).getTypeReminder();
+        final int isRing = reminderModel.get(position).getIsRing();
         remindersAdapter.deletePositionData(position);
 
         Snackbar.make(recyclerView, resTitleId, Snackbar.LENGTH_SHORT)
                 .setAction(resActionId, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ReminderModel reminderModelItem = new ReminderModel(idAlarm, dateAlarm, typeAlarm);
+                        ReminderModel reminderModelItem = new ReminderModel(idAlarm, dateAlarm, typeAlarm, isRing);
                         remindersAdapter.addData(position, reminderModelItem);
                     }
                 })
@@ -240,7 +261,7 @@ public class RemindersFragment extends Fragment {
     private void getRemindersFromDb() {
         reminderModel.clear();
         Cursor cursorReminders = new InquiryBuilder()
-                .get(_ID, DATE_REMINDER, TYPE_REMINDER)
+                .get(_ID, DATE_REMINDER, TYPE_REMINDER, IS_RINGS)
                 .from(TABLE_REMINDER)
                 .orderBy(DATE_REMINDER)
                 .select();
@@ -249,10 +270,12 @@ public class RemindersFragment extends Fragment {
         if (dbCursor.isValid()) {
             do {
                 reminderModel.add(new ReminderModel(
-                        dbCursor.getInt(_ID),
-                        dbCursor.getLong(DATE_REMINDER),
-                        dbCursor.getInt(TYPE_REMINDER)
-                ));
+                                dbCursor.getInt(_ID),
+                                dbCursor.getLong(DATE_REMINDER),
+                                dbCursor.getInt(TYPE_REMINDER),
+                                dbCursor.getInt(IS_RINGS)
+                        )
+                );
             } while (cursorReminders.moveToNext());
         }
         dbCursor.close();
