@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,7 +69,9 @@ public class FitnessDataFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private TextView textViewNoTracks;
+    private ImageView imageViewNoTracks;
     private AppBarLayout appBarLayout;
+    private CollapsingToolbarLayout toolbarLayout;
 
     private FloatingActionButton fabMain;
     private FloatingActionButton fabWalk;
@@ -125,6 +129,8 @@ public class FitnessDataFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_fitness_data, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.main_fragment_recycler_view);
         textViewNoTracks = (TextView) view.findViewById(R.id.fragment_fitness_data_text_no_tracks);
+        imageViewNoTracks = (ImageView) view.findViewById(R.id.fragment_fitness_data_image_cats_no_track);
+        toolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.fitness_fragment_collapsing_toolbar);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.fragment_fitness_data_appbar);
         fabMain = (FloatingActionButton) view.findViewById(R.id.floating_button);
         fabWalk = (FloatingActionButton) view.findViewById(R.id.fab_walk);
@@ -203,13 +209,16 @@ public class FitnessDataFragment extends Fragment {
     private void setUpAdapter() {
         getTracksFromDb();
         textViewNoTracks.setVisibility(View.GONE);
+        imageViewNoTracks.setVisibility(View.GONE);
 
         if (dataModelList.size() == 0) {
-            appBarLayout.setExpanded(false);
+            setScrollingEnabled(false);
             adapter.clear();
             textViewNoTracks.setVisibility(View.VISIBLE);
+            imageViewNoTracks.setVisibility(View.VISIBLE);
+            setTextNoTracks(textViewNoTracks);
         } else {
-            appBarLayout.setExpanded(true);
+            setScrollingEnabled(true);
             adapter.setData(dataModelList);
             recyclerView.setAdapter(adapter);
         }
@@ -284,6 +293,25 @@ public class FitnessDataFragment extends Fragment {
             }
         });
     }
+
+    private void setTextNoTracks(TextView textViewNoTracks) {
+        textViewNoTracks.setText(getString(R.string.no_tracks_text));
+    }
+
+
+    private void setScrollingEnabled(boolean isEnabled) {
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbarLayout.getLayoutParams();
+        if (isEnabled) {
+            params.setScrollFlags((AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS));
+            toolbarLayout.setVisibility(View.VISIBLE);
+            appBarLayout.setExpanded(isEnabled, isEnabled);
+        } else {
+            appBarLayout.setExpanded(isEnabled, isEnabled);
+            params.setScrollFlags(0);
+            toolbarLayout.setVisibility(View.GONE);
+        }
+    }
+
 
 
     private void changeFabState(boolean status) {

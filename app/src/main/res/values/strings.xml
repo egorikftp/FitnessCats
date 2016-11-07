@@ -143,4 +143,7 @@
     <string name="track_on_map_activity_track_delete">Трек удален</string>
     <string name="track_on_map_activity_cancel_delete">Отменить</string>
     <string name="track_on_map_activity_track_cancel_delete_success">Удаление отменено!</string>
+
+
+    <string name="no_tracks_text">И почему нету треков?</string>
 </resources>
