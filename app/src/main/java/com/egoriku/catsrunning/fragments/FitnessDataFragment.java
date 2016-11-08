@@ -182,6 +182,18 @@ public class FitnessDataFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new FitnessDataAdapter();
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (fabStatus) {
+                    changeFabState(fabStatus);
+                    fabStatus = false;
+                }
+            }
+        });
+
         return view;
     }
 
@@ -311,7 +323,6 @@ public class FitnessDataFragment extends Fragment {
             toolbarLayout.setVisibility(View.GONE);
         }
     }
-
 
 
     private void changeFabState(boolean status) {
