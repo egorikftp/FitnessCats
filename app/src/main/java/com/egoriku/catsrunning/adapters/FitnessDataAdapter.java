@@ -32,7 +32,7 @@ public class FitnessDataAdapter extends AbstractAdapter<AllFitnessDataModel> {
 
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_all_fitness_data_fragment, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_fitness_data_fragment, parent, false);
         return new AbstractViewHolder(view);
     }
 

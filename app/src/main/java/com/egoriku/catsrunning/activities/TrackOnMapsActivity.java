@@ -44,6 +44,7 @@ import static com.egoriku.catsrunning.models.State.LAT;
 import static com.egoriku.catsrunning.models.State.LNG;
 import static com.egoriku.catsrunning.models.State.TABLE_POINT;
 import static com.egoriku.catsrunning.models.State.TRACK_ID_EQ;
+import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     public static final String KEY_ID = "KEY_ID";
@@ -51,17 +52,20 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
     public static final String KEY_TIME_RUNNING = "KEY_TIME_RUNNING";
     public static final String KEY_LIKED = "KEY_LIKED";
     public static final String KEY_TOKEN = "KEY_TOKEN";
+    public static final String KEY_TYPE_FIT = "KEY_TYPE_FIT";
     private static final int paddingMap = 150;
     private GoogleMap mMap;
     private Toolbar toolbar;
     private SupportMapFragment mapFragment;
     private TextView distanceText;
     private TextView timeRunningText;
+    private TextView typeFitText;
 
     private List<LatLng> coordinatesList;
     private String startRunningHint;
     private String endRunningHint;
     private int liked;
+
 
     @SuppressLint("StringFormatMatches")
     @Override
@@ -72,6 +76,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
         distanceText = (TextView) findViewById(R.id.track_on_maps_activity_distance_text);
         timeRunningText = (TextView) findViewById(R.id.track_on_maps_activity_time_running_text);
+        typeFitText = (TextView) findViewById(R.id.track_on_maps_activity_type_fit);
 
         startRunningHint = getString(R.string.track_fragment_start_running_hint);
         endRunningHint = getString(R.string.track_fragment_end_running_hint);
@@ -94,13 +99,13 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
 
             if (dbCursor.isValid()) {
                 do {
-                    coordinatesList.add(new LatLng(dbCursor.getDouble(LAT), dbCursor.getDouble(LNG))
-                    );
+                    coordinatesList.add(new LatLng(dbCursor.getDouble(LAT), dbCursor.getDouble(LNG)));
                 } while (cursorPoints.moveToNext());
             }
             dbCursor.close();
 
             distanceText.setText(String.format(getString(R.string.track_fragment_distance_meter), getIntent().getExtras().getLong(KEY_DISTANCE)));
+            typeFitText.setText(String.format(getString(R.string.track_fragment_time_running), getTypeFit(getIntent().getExtras().getInt(KEY_TYPE_FIT), true, R.array.all_fitness_data_categories)));
             timeRunningText.setText(ConverterTime.ConvertTimeToString(getIntent().getExtras().getLong(KEY_TIME_RUNNING)));
             liked = getIntent().getExtras().getInt(KEY_LIKED, -1);
         }

@@ -15,7 +15,7 @@
     <string name="track_on_map_activity_track_cancel_delete_success">Удаление отменено!</string>
     <string name="track_on_map_activity_cancel_delete">Отменить</string>
     <string name="track_fragment_toast_text_no_points">Точки отстутсвуют</string>
-    <string name="track_fragment_time_running">Время пробежки:</string>
+    <string name="track_fragment_time_running">Время %s:</string>
     <string name="track_fragment_start_running_hint">Старт</string>
     <string name="track_fragment_end_running_hint">Финиш</string>
     <string name="track_fragment_distance_meter">%s м</string>

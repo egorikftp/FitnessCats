@@ -26,8 +26,8 @@ android {
         vectorDrawables.useSupportLibrary = true
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 3
-        versionName "0.03"
+        versionCode 4
+        versionName "0.04"
         multiDexEnabled true
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
@@ -41,6 +41,12 @@ android {
     }
     dexOptions {
         javaMaxHeapSize "4g"
+    }
+
+    tasks.whenTaskAdded { task ->
+        if (task.name.equals("lint")) {
+            task.enabled = false
+        }
     }
 }
 
