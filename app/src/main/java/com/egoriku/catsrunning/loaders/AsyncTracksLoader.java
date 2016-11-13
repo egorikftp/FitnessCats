@@ -22,6 +22,7 @@ import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
 import static com.egoriku.catsrunning.models.State.TIME;
 import static com.egoriku.catsrunning.models.State.TRACK_TOKEN;
 import static com.egoriku.catsrunning.models.State.TYPE_FIT;
+import static com.egoriku.catsrunning.models.State.TYPE_FIT_EQ;
 import static com.egoriku.catsrunning.models.State._ID;
 import static com.egoriku.catsrunning.utils.ConstansTag.ARG_SECTION_NUMBER;
 
@@ -54,7 +55,7 @@ public class AsyncTracksLoader extends AsyncTaskLoader<List<AllFitnessDataModel>
         Cursor cursorTracks = new InquiryBuilder()
                 .get(_ID, BEGINS_AT, TIME, DISTANCE, LIKED, TRACK_TOKEN, TYPE_FIT)
                 .from(TABLE_TRACKS)
-                .where(true, IS_TRACK_DELETE_EQ + " " + IS_TRACK_DELETE_FALSE + " " + AND + " " + TYPE_FIT + "=" + typeReminder)
+                .where(true, IS_TRACK_DELETE_EQ + " " + IS_TRACK_DELETE_FALSE + " " + AND + " " + TYPE_FIT_EQ + typeReminder)
                 .orderBy(BEGINS_AT)
                 .desc()
                 .select();

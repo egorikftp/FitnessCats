@@ -30,6 +30,7 @@ public class State {
 
     public static final String BEGINS_AT_EQ = "beginsAt=";
     public static final String TRACK_ID_EQ = "trackId=";
+    public static final String TYPE_FIT_EQ = "typeFit=";
     public static final String IS_TRACK_DELETE_EQ = "isTrackDelete=";
     public static final String _ID_EQ = "_id=";
 
