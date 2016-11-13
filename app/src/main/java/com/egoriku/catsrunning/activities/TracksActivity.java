@@ -30,6 +30,7 @@ import com.egoriku.catsrunning.fragments.FitnessDataFragment;
 import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
+import com.egoriku.catsrunning.helpers.AsyncWrite;
 import com.egoriku.catsrunning.helpers.DbCursor;
 import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
@@ -39,21 +40,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.egoriku.catsrunning.helpers.DbActions.deleteSyncTrackData;
 import static com.egoriku.catsrunning.models.State.BEGINS_AT;
-import static com.egoriku.catsrunning.models.State.DISTANCE;
-import static com.egoriku.catsrunning.models.State.LAT;
-import static com.egoriku.catsrunning.models.State.LNG;
-import static com.egoriku.catsrunning.models.State.TABLE_POINT;
 import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
-import static com.egoriku.catsrunning.models.State.TIME;
-import static com.egoriku.catsrunning.models.State.TRACK_ID;
-import static com.egoriku.catsrunning.models.State.TRACK_TOKEN;
-import static com.egoriku.catsrunning.models.State.TYPE_FIT;
 
 public class TracksActivity extends AppCompatActivity {
     public static final String BROADCAST_SAVE_NEW_TRACKS = "BROADCAST_SAVE_NEW_TRACKS";
@@ -71,6 +65,7 @@ public class TracksActivity extends AppCompatActivity {
 
     private NavigationDrawerAdapter adapter;
     private FirebaseUser user;
+    private long countTracks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,11 +103,39 @@ public class TracksActivity extends AppCompatActivity {
             App.getInstance().createState();
         }
 
+        App.getInstance().getTracksReference().child(user.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot dataSnapshot) {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        List<AllFitnessDataModel> allFitnessDataModels = new ArrayList<>();
+                        countTracks = dataSnapshot.getChildrenCount();
+
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            allFitnessDataModels.add(snapshot.getValue(AllFitnessDataModel.class));
+                        }
+
+                        getLocaleTracksBeginsAt();
+                        for (int i = 0; i < allFitnessDataModels.size(); i++) {
+                            if (!localeDbDate.contains(allFitnessDataModels.get(i).getBeginsAt())) {
+                                AsyncWrite.writeData(allFitnessDataModels.get(i), countTracks);
+                            }
+                            countTracks--;
+                        }
+                    }
+                }.start();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         App.getInstance().getTracksReference().child(user.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                saveSyncTrack(dataSnapshot.getValue(AllFitnessDataModel.class));
             }
 
 
@@ -120,13 +143,11 @@ public class TracksActivity extends AppCompatActivity {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
             }
 
-
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 deleteSyncTrackData(dataSnapshot.getValue(AllFitnessDataModel.class).getBeginsAt());
                 LocalBroadcastManager.getInstance(App.getInstance()).sendBroadcastSync(new Intent(BROADCAST_SAVE_NEW_TRACKS));
             }
-
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
@@ -163,32 +184,6 @@ public class TracksActivity extends AppCompatActivity {
             } while (cursor.moveToNext());
         }
         dbCursor.close();
-    }
-
-
-    private void saveSyncTrack(AllFitnessDataModel someData) {
-        getLocaleTracksBeginsAt();
-        if (!localeDbDate.contains(someData.getBeginsAt())) {
-            long idTrack = new InquiryBuilder()
-                    .table(TABLE_TRACKS)
-                    .set(BEGINS_AT, someData.getBeginsAt())
-                    .set(TIME, someData.getTime())
-                    .set(DISTANCE, someData.getDistance())
-                    .set(TRACK_TOKEN, someData.getTrackToken())
-                    .set(TYPE_FIT, someData.getTypeFit())
-                    .insertForId(App.getInstance().getDb());
-
-            for (int j = 0; j < someData.getPoints().size(); j++) {
-                new InquiryBuilder()
-                        .table(TABLE_POINT)
-                        .set(LAT, someData.getPoints().get(j).getLat())
-                        .set(LNG, someData.getPoints().get(j).getLng())
-                        .set(TRACK_ID, idTrack)
-                        .insert(App.getInstance().getDb());
-            }
-        }
-        localeDbDate.clear();
-        LocalBroadcastManager.getInstance(App.getInstance()).sendBroadcastSync(new Intent(BROADCAST_SAVE_NEW_TRACKS));
     }
 
 
@@ -260,6 +255,7 @@ public class TracksActivity extends AppCompatActivity {
         }
     }
 
+
     private void addDrawerItem() {
         drawerArrayList.add(new ItemNavigationDrawer(nameText, emailText));
 
@@ -304,6 +300,7 @@ public class TracksActivity extends AppCompatActivity {
         ));
     }
 
+
     private void initRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new NavigationDrawerAdapter(drawerArrayList);
@@ -319,6 +316,7 @@ public class TracksActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void changeNavigationDrawerItem(String tag) {
         if (tag.equals(FitnessDataFragment.TAG_MAIN_FRAGMENT)) {
@@ -358,6 +356,7 @@ public class TracksActivity extends AppCompatActivity {
         App.getInstance().getDb().execSQL("DELETE FROM Reminder");
         App.getInstance().getDb().execSQL("DELETE FROM Point");
     }
+
 
     public void tabTitle(String titleId) {
         if (getSupportActionBar() != null) {

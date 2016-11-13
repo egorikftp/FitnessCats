@@ -1,11 +1,12 @@
 package com.egoriku.catsrunning.fragments;
 
+import android.app.LoaderManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
+import android.content.Loader;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -33,8 +34,7 @@ import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.FitnessDataAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.IOnItemHandlerListener;
-import com.egoriku.catsrunning.helpers.DbCursor;
-import com.egoriku.catsrunning.helpers.InquiryBuilder;
+import com.egoriku.catsrunning.loaders.AsyncTracksLoader;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,60 +42,41 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.egoriku.catsrunning.helpers.DbActions.updateIsTrackDelete;
 import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
-import static com.egoriku.catsrunning.models.State.AND;
-import static com.egoriku.catsrunning.models.State.BEGINS_AT;
-import static com.egoriku.catsrunning.models.State.DISTANCE;
-import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_EQ;
-import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_FALSE;
 import static com.egoriku.catsrunning.models.State.KEY_TYPE_FIT;
-import static com.egoriku.catsrunning.models.State.LIKED;
-import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
-import static com.egoriku.catsrunning.models.State.TIME;
-import static com.egoriku.catsrunning.models.State.TRACK_TOKEN;
-import static com.egoriku.catsrunning.models.State.TYPE_FIT;
 import static com.egoriku.catsrunning.models.State.TYPE_FIT_CYCLING;
 import static com.egoriku.catsrunning.models.State.TYPE_FIT_RUN;
 import static com.egoriku.catsrunning.models.State.TYPE_FIT_WALK;
-import static com.egoriku.catsrunning.models.State._ID;
+import static com.egoriku.catsrunning.utils.ConstansTag.ARG_SECTION_NUMBER;
 
-public class FitnessDataFragment extends Fragment {
+public class FitnessDataFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AllFitnessDataModel>> {
     public static final String TAG_MAIN_FRAGMENT = "TAG_MAIN_FRAGMENT";
-    private static final String ARG_SECTION_NUMBER = "ARG_SECTION_NUMBER";
-
     private RecyclerView recyclerView;
     private TextView textViewNoTracks;
     private ImageView imageViewNoTracks;
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout toolbarLayout;
-
     private FloatingActionButton fabMain;
     private FloatingActionButton fabWalk;
     private FloatingActionButton fabCycling;
     private FloatingActionButton fabRun;
-
     private Animation fabWalkShow;
     private Animation fabCyclingShow;
     private Animation fabRunShow;
-
     private Animation fabWalkHide;
     private Animation fabCyclingHide;
     private Animation fabRunHide;
-
     private boolean fabStatus;
-
-    private List<AllFitnessDataModel> dataModelList;
     private FitnessDataAdapter adapter;
-
+    private Loader<List<AllFitnessDataModel>> loader;
 
     private BroadcastReceiver broadcastNewTracksSave = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            setUpAdapter();
+            startLoadData();
         }
     };
 
@@ -116,8 +97,6 @@ public class FitnessDataFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dataModelList = new ArrayList<>();
-
         if (App.getInstance().getState() == null) {
             App.getInstance().createState();
         }
@@ -136,6 +115,7 @@ public class FitnessDataFragment extends Fragment {
         fabWalk = (FloatingActionButton) view.findViewById(R.id.fab_walk);
         fabCycling = (FloatingActionButton) view.findViewById(R.id.fab_cycling);
         fabRun = (FloatingActionButton) view.findViewById(R.id.fab_run);
+
 
         fabWalkShow = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_walk_show);
         fabWalkHide = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_walk_hide);
@@ -194,6 +174,10 @@ public class FitnessDataFragment extends Fragment {
             }
         });
 
+        setScrollingEnabled(false);
+        textViewNoTracks.setVisibility(View.VISIBLE);
+        imageViewNoTracks.setVisibility(View.VISIBLE);
+        setTextNoTracks(textViewNoTracks);
         return view;
     }
 
@@ -204,7 +188,7 @@ public class FitnessDataFragment extends Fragment {
         fabStatus = false;
         LocalBroadcastManager.getInstance(App.getInstance()).
                 registerReceiver(broadcastNewTracksSave, new IntentFilter(TracksActivity.BROADCAST_SAVE_NEW_TRACKS));
-        setUpAdapter();
+        loader = getActivity().getLoaderManager().initLoader(getArguments().getInt(ARG_SECTION_NUMBER), getArguments(), this);
     }
 
 
@@ -218,21 +202,18 @@ public class FitnessDataFragment extends Fragment {
     }
 
 
-    private void setUpAdapter() {
-        getTracksFromDb();
-        textViewNoTracks.setVisibility(View.GONE);
-        imageViewNoTracks.setVisibility(View.GONE);
-
+    private void setUpAdapter(final List<AllFitnessDataModel> dataModelList) {
         if (dataModelList.size() == 0) {
             setScrollingEnabled(false);
             adapter.clear();
-            textViewNoTracks.setVisibility(View.VISIBLE);
-            imageViewNoTracks.setVisibility(View.VISIBLE);
             setTextNoTracks(textViewNoTracks);
         } else {
+            textViewNoTracks.setVisibility(View.GONE);
+            imageViewNoTracks.setVisibility(View.GONE);
             setScrollingEnabled(true);
             adapter.setData(dataModelList);
             recyclerView.setAdapter(adapter);
+
         }
 
         adapter.setOnItemListener(new IOnItemHandlerListener() {
@@ -297,7 +278,7 @@ public class FitnessDataFragment extends Fragment {
                                 adapter.notifyItemRangeChanged(position, dataModelList.size());
 
                                 if (dataModelList.size() == 0) {
-                                    setUpAdapter();
+                                    startLoadData();
                                 }
                             }
                         })
@@ -305,6 +286,25 @@ public class FitnessDataFragment extends Fragment {
             }
         });
     }
+
+
+    @Override
+    public Loader<List<AllFitnessDataModel>> onCreateLoader(int id, Bundle args) {
+        return new AsyncTracksLoader(getContext(), args);
+    }
+
+
+    @Override
+    public void onLoadFinished(Loader<List<AllFitnessDataModel>> loader, List<AllFitnessDataModel> models) {
+        setUpAdapter(models);
+    }
+
+
+    @Override
+    public void onLoaderReset(Loader<List<AllFitnessDataModel>> loader) {
+
+    }
+
 
     private void setTextNoTracks(TextView textViewNoTracks) {
         textViewNoTracks.setText(getString(R.string.no_tracks_text));
@@ -374,31 +374,7 @@ public class FitnessDataFragment extends Fragment {
     }
 
 
-    private void getTracksFromDb() {
-        dataModelList.clear();
-
-        Cursor cursorTracks = new InquiryBuilder()
-                .get(_ID, BEGINS_AT, TIME, DISTANCE, LIKED, TRACK_TOKEN, TYPE_FIT)
-                .from(TABLE_TRACKS)
-                .where(true, IS_TRACK_DELETE_EQ + " " + IS_TRACK_DELETE_FALSE + " " + AND + " " + TYPE_FIT + "=" + String.valueOf(getArguments().getInt(ARG_SECTION_NUMBER)))
-                .orderBy(BEGINS_AT)
-                .desc()
-                .select();
-
-        DbCursor cursor = new DbCursor(cursorTracks);
-        if (cursor.isValid()) {
-            do {
-                AllFitnessDataModel listAdapter = new AllFitnessDataModel();
-                listAdapter.setId(cursor.getInt(_ID));
-                listAdapter.setBeginsAt(cursor.getInt(BEGINS_AT));
-                listAdapter.setTime(cursor.getInt(TIME));
-                listAdapter.setDistance(cursor.getInt(DISTANCE));
-                listAdapter.setLiked(cursor.getInt(LIKED));
-                listAdapter.setTrackToken(cursor.getString(TRACK_TOKEN));
-                listAdapter.setTypeFit(cursor.getInt(TYPE_FIT));
-                dataModelList.add(listAdapter);
-            } while (cursorTracks.moveToNext());
-        }
-        cursor.close();
+    private void startLoadData() {
+        loader.onContentChanged();
     }
 }

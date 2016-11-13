@@ -131,7 +131,7 @@
     <string name="fitness_data_fragment_alert_positive_btn">Удалить</string>
 
 
-    <string name="navigation_drawer_open">\" \"</string>
+    <string name="navigation_drawer_open">" "</string>
     <string name="navigation_drawer_close">" "</string>
 
 

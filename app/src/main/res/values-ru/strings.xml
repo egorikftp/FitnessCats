@@ -48,7 +48,7 @@
     <string name="navigation_drawer_exit">Выход</string>
     <string name="navigation_drawer_liked">Избранное [alpha]</string>
     <string name="navigation_drawer_main_activity">Список треков</string>
-    <string name="navigation_drawer_open">\" \"</string>
+    <string name="navigation_drawer_open">" "</string>
     <string name="navigation_drawer_reminders">Напоминания</string>
     <string name="navigation_drawer_setting">Настройки [alpha]</string>
     <string name="navigation_drawer_statistic">Статистика [alpha]</string>
