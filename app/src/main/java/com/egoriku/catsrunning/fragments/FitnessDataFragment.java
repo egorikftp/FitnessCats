@@ -9,9 +9,6 @@ import android.content.IntentFilter;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -20,16 +17,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.activities.ScamperActivity;
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.FitnessDataAdapter;
@@ -46,10 +39,6 @@ import java.util.List;
 
 import static com.egoriku.catsrunning.helpers.DbActions.updateIsTrackDelete;
 import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
-import static com.egoriku.catsrunning.models.State.KEY_TYPE_FIT;
-import static com.egoriku.catsrunning.models.State.TYPE_FIT_CYCLING;
-import static com.egoriku.catsrunning.models.State.TYPE_FIT_RUN;
-import static com.egoriku.catsrunning.models.State.TYPE_FIT_WALK;
 import static com.egoriku.catsrunning.utils.ConstansTag.ARG_SECTION_NUMBER;
 
 public class FitnessDataFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AllFitnessDataModel>> {
@@ -57,26 +46,15 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
     private RecyclerView recyclerView;
     private TextView textViewNoTracks;
     private ImageView imageViewNoTracks;
-    private AppBarLayout appBarLayout;
-    private CollapsingToolbarLayout toolbarLayout;
-    private FloatingActionButton fabMain;
-    private FloatingActionButton fabWalk;
-    private FloatingActionButton fabCycling;
-    private FloatingActionButton fabRun;
-    private Animation fabWalkShow;
-    private Animation fabCyclingShow;
-    private Animation fabRunShow;
-    private Animation fabWalkHide;
-    private Animation fabCyclingHide;
-    private Animation fabRunHide;
-    private boolean fabStatus;
+
     private FitnessDataAdapter adapter;
     private Loader<List<AllFitnessDataModel>> loader;
+    private static IFABScroll ifabScroll;
 
     private BroadcastReceiver broadcastNewTracksSave = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            startLoadData();
+            reloadData();
         }
     };
 
@@ -85,10 +63,11 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
     }
 
 
-    public static FitnessDataFragment newInstance(int sectionNumber) {
+    public static FitnessDataFragment newInstance(int sectionNumber, IFABScroll iFabScroll) {
         FitnessDataFragment fragment = new FitnessDataFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        ifabScroll = iFabScroll;
         fragment.setArguments(args);
         return fragment;
     }
@@ -106,59 +85,9 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fitness_data, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.main_fragment_recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.fitness_data_fragment_recycler_view);
         textViewNoTracks = (TextView) view.findViewById(R.id.fragment_fitness_data_text_no_tracks);
         imageViewNoTracks = (ImageView) view.findViewById(R.id.fragment_fitness_data_image_cats_no_track);
-        toolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.fitness_fragment_collapsing_toolbar);
-        appBarLayout = (AppBarLayout) view.findViewById(R.id.fragment_fitness_data_appbar);
-        fabMain = (FloatingActionButton) view.findViewById(R.id.floating_button);
-        fabWalk = (FloatingActionButton) view.findViewById(R.id.fab_walk);
-        fabCycling = (FloatingActionButton) view.findViewById(R.id.fab_cycling);
-        fabRun = (FloatingActionButton) view.findViewById(R.id.fab_run);
-
-
-        fabWalkShow = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_walk_show);
-        fabWalkHide = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_walk_hide);
-        fabRunShow = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_run_show);
-        fabRunHide = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_run_hide);
-        fabCyclingShow = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_cycling_show);
-        fabCyclingHide = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_cycling_hide);
-        fabStatus = false;
-
-        fabMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (fabStatus) {
-                    changeFabState(fabStatus);
-                    fabStatus = false;
-                } else {
-                    changeFabState(fabStatus);
-                    fabStatus = true;
-                }
-            }
-        });
-
-        fabWalk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(KEY_TYPE_FIT, TYPE_FIT_WALK));
-            }
-        });
-
-
-        fabRun.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(KEY_TYPE_FIT, TYPE_FIT_RUN));
-            }
-        });
-
-        fabCycling.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(KEY_TYPE_FIT, TYPE_FIT_CYCLING));
-            }
-        });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new FitnessDataAdapter();
@@ -167,14 +96,14 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (fabStatus) {
-                    changeFabState(fabStatus);
-                    fabStatus = false;
+                if (ifabScroll != null) {
+                    ifabScroll.onScrollChange();
                 }
             }
         });
 
-        setScrollingEnabled(false);
+        recyclerView.setNestedScrollingEnabled(false);
+
         textViewNoTracks.setVisibility(View.VISIBLE);
         imageViewNoTracks.setVisibility(View.VISIBLE);
         setTextNoTracks(textViewNoTracks);
@@ -185,7 +114,6 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onResume() {
         super.onResume();
-        fabStatus = false;
         LocalBroadcastManager.getInstance(App.getInstance()).
                 registerReceiver(broadcastNewTracksSave, new IntentFilter(TracksActivity.BROADCAST_SAVE_NEW_TRACKS));
         loader = getActivity().getLoaderManager().initLoader(getArguments().getInt(ARG_SECTION_NUMBER), getArguments(), this);
@@ -196,24 +124,25 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastNewTracksSave);
-        if (fabStatus) {
-            changeFabState(true);
-        }
     }
 
 
     private void setUpAdapter(final List<AllFitnessDataModel> dataModelList) {
         if (dataModelList.size() == 0) {
-            setScrollingEnabled(false);
+            if (ifabScroll != null) {
+                ifabScroll.onModelListEmpty(false);
+            }
+            textViewNoTracks.setVisibility(View.VISIBLE);
+            imageViewNoTracks.setVisibility(View.VISIBLE);
             adapter.clear();
-            setTextNoTracks(textViewNoTracks);
         } else {
             textViewNoTracks.setVisibility(View.GONE);
             imageViewNoTracks.setVisibility(View.GONE);
-            setScrollingEnabled(true);
+            if (ifabScroll != null) {
+                ifabScroll.onModelListEmpty(true);
+            }
             adapter.setData(dataModelList);
             recyclerView.setAdapter(adapter);
-
         }
 
         adapter.setOnItemListener(new IOnItemHandlerListener() {
@@ -225,6 +154,7 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
                 intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TIME_RUNNING, item.getTime());
                 intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_LIKED, item.getLiked());
                 intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TOKEN, item.getTrackToken());
+                intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TYPE_FIT, item.getTypeFit());
                 startActivity(intentTrackOnMaps);
             }
 
@@ -278,7 +208,7 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
                                 adapter.notifyItemRangeChanged(position, dataModelList.size());
 
                                 if (dataModelList.size() == 0) {
-                                    startLoadData();
+                                    reloadData();
                                 }
                             }
                         })
@@ -311,70 +241,7 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
     }
 
 
-    private void setScrollingEnabled(boolean isEnabled) {
-        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbarLayout.getLayoutParams();
-        if (isEnabled) {
-            params.setScrollFlags((AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS));
-            toolbarLayout.setVisibility(View.VISIBLE);
-            appBarLayout.setExpanded(isEnabled, isEnabled);
-        } else {
-            appBarLayout.setExpanded(isEnabled, isEnabled);
-            params.setScrollFlags(0);
-            toolbarLayout.setVisibility(View.GONE);
-        }
-    }
-
-
-    private void changeFabState(boolean status) {
-        FrameLayout.LayoutParams layoutParamsFabRun = (FrameLayout.LayoutParams) fabRun.getLayoutParams();
-        FrameLayout.LayoutParams layoutParamsFabWalk = (FrameLayout.LayoutParams) fabWalk.getLayoutParams();
-        FrameLayout.LayoutParams layoutParamsFabCycling = (FrameLayout.LayoutParams) fabCycling.getLayoutParams();
-
-        if (status) {
-            layoutParamsFabWalk.rightMargin -= (int) (fabWalk.getWidth() * 1.4);
-            layoutParamsFabWalk.bottomMargin -= (int) (fabWalk.getHeight() * 0.0);
-            fabWalk.setLayoutParams(layoutParamsFabWalk);
-
-            layoutParamsFabRun.rightMargin -= (int) (fabRun.getWidth() * 1.1);
-            layoutParamsFabRun.bottomMargin -= (int) (fabRun.getHeight() * 1.1);
-            fabRun.setLayoutParams(layoutParamsFabRun);
-
-            layoutParamsFabCycling.rightMargin -= (int) (fabCycling.getWidth() * 0.0);
-            layoutParamsFabCycling.bottomMargin -= (int) (fabCycling.getHeight() * 1.4);
-            fabCycling.setLayoutParams(layoutParamsFabCycling);
-
-            fabRun.setClickable(false);
-            fabWalk.setClickable(false);
-            fabCycling.setClickable(false);
-
-            fabRun.startAnimation(fabRunHide);
-            fabWalk.startAnimation(fabWalkHide);
-            fabCycling.startAnimation(fabCyclingHide);
-        } else {
-            layoutParamsFabWalk.rightMargin += (int) (fabWalk.getWidth() * 1.4);
-            layoutParamsFabWalk.bottomMargin += (int) (fabWalk.getHeight() * 0.0);
-            fabWalk.setLayoutParams(layoutParamsFabWalk);
-
-            layoutParamsFabRun.rightMargin += (int) (fabRun.getWidth() * 1.1);
-            layoutParamsFabRun.bottomMargin += (int) (fabRun.getHeight() * 1.1);
-            fabRun.setLayoutParams(layoutParamsFabRun);
-
-            layoutParamsFabCycling.rightMargin += (int) (fabCycling.getWidth() * 0.0);
-            layoutParamsFabCycling.bottomMargin += (int) (fabCycling.getHeight() * 1.4);
-            fabCycling.setLayoutParams(layoutParamsFabCycling);
-
-            fabRun.setClickable(true);
-            fabWalk.setClickable(true);
-            fabCycling.setClickable(true);
-
-            fabRun.startAnimation(fabRunShow);
-            fabWalk.startAnimation(fabWalkShow);
-            fabCycling.startAnimation(fabCyclingShow);
-        }
-    }
-
-
-    private void startLoadData() {
+    private void reloadData() {
         loader.onContentChanged();
     }
 }

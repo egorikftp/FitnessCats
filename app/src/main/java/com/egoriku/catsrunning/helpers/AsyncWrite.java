@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
@@ -15,7 +14,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static com.egoriku.catsrunning.activities.TracksActivity.TAG;
 import static com.egoriku.catsrunning.models.State.BEGINS_AT;
 import static com.egoriku.catsrunning.models.State.DISTANCE;
 import static com.egoriku.catsrunning.models.State.LAT;
@@ -61,7 +59,6 @@ public class AsyncWrite {
         public WriteTaskTrack(AllFitnessDataModel someData, long countTracks) {
             this.someData = someData;
             this.countTracks = countTracks;
-            Log.e(TAG, "WriteTaskTrack " + this.countTracks);
         }
 
 
@@ -87,7 +84,6 @@ public class AsyncWrite {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Log.e(TAG, "onPost " + countTracks);
             if (countTracks == 1) {
                 LocalBroadcastManager.getInstance(App.getInstance()).sendBroadcastSync(new Intent(BROADCAST_SAVE_NEW_TRACKS));
             }

@@ -52,11 +52,10 @@
         android:padding="@dimen/track_on_map_activity_image_padding">
 
         <TextView
-            android:id="@+id/track_on_maps_activity_static_time_running"
+            android:id="@+id/track_on_maps_activity_type_fit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/fragment_track_padding_word"
-            android:text="@string/track_fragment_time_running"
             android:textAppearance="?android:textAppearanceMedium"
             android:textColor="@color/color_ic_naw_drawer" />
 
