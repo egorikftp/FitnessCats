@@ -70,12 +70,12 @@ public class TracksActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_tracks);
         drawerArrayList = new ArrayList<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_naw_drawer);
+        drawerLayout = (DrawerLayout) findViewById(R.id.tracks_activity_drawer_layout);
+        recyclerView = (RecyclerView) findViewById(R.id.tracks_activity_recycler_view_nav_drawer);
         relativeLayoutSetting = (RelativeLayout) findViewById(R.id.relative_layout_setting);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -198,7 +198,7 @@ public class TracksActivity extends AppCompatActivity {
         }
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment, tag);
+        transaction.replace(R.id.tracks_activity_fragment_container, fragment, tag);
         transaction.addToBackStack(tag);
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         transaction.commit();

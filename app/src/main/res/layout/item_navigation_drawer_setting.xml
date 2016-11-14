@@ -7,27 +7,37 @@
     android:background="@android:color/white"
     android:clickable="true"
     android:focusable="true"
-    app:elevation="6dp"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:paddingBottom="@dimen/adapter_naw_drawer_margin_item"
-    android:paddingTop="@dimen/adapter_naw_drawer_margin_item">
+    android:foreground="?android:attr/selectableItemBackground">
 
-    <ImageView
-        android:id="@+id/naw_drawer_item_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/adapter_naw_drawer_margin_image"
-        android:layout_marginStart="@dimen/adapter_naw_drawer_margin_image"
-        app:srcCompat="@drawable/ic_vec_settings_black_24dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/naw_drawer_item_image"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="@dimen/adapter_naw_drawer_margin_image"
-        android:layout_toRightOf="@id/naw_drawer_item_image"
-        android:gravity="center"
-        android:text="@string/navigation_drawer_setting" />
+        android:background="@drawable/drop_shadow_naw_drawer" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/adapter_naw_drawer_margin_item"
+        android:paddingTop="@dimen/adapter_naw_drawer_margin_item">
+
+        <ImageView
+            android:id="@+id/naw_drawer_item_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/adapter_naw_drawer_margin_image"
+            android:layout_marginStart="@dimen/adapter_naw_drawer_margin_image"
+            app:srcCompat="@drawable/ic_vec_settings_black_24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/naw_drawer_item_image"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="@dimen/adapter_naw_drawer_margin_image"
+            android:layout_toRightOf="@id/naw_drawer_item_image"
+            android:gravity="center"
+            android:text="@string/navigation_drawer_setting" />
+    </RelativeLayout>
 </RelativeLayout>
 

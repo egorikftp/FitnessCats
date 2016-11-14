@@ -19,7 +19,7 @@ import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.LikedFragmentAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.IRecyclerViewListener;
-import com.egoriku.catsrunning.models.LikedTracksModel;
+import com.egoriku.catsrunning.models.AllFitnessDataModel;
 
 import java.util.ArrayList;
 
@@ -33,7 +33,7 @@ public class LikedFragment extends Fragment {
     private RecyclerView recyclerViewLikedFragment;
     private TextView noMoreTracksView;
 
-    private ArrayList<LikedTracksModel> likedTracksModels = new ArrayList<>();
+    private ArrayList<AllFitnessDataModel> likedTracksModels = new ArrayList<>();
     private LikedFragmentAdapter likedFragmentAdapter;
 
     public LikedFragment() {
@@ -63,18 +63,20 @@ public class LikedFragment extends Fragment {
     private void showLikedTracks() {
         noMoreTracksView.setText(null);
 
-        Cursor cursor = App.getInstance().getDb().rawQuery("SELECT Tracks._id AS id, Tracks.beginsAt AS date, Tracks.time AS timeRunning, Tracks.distance AS distance, Tracks.liked as liked FROM Tracks WHERE Tracks.liked=?",
+        Cursor cursor = App.getInstance().getDb().rawQuery("SELECT _id, beginsAt, time, distance, liked, typeFit, trackToken FROM Tracks WHERE liked=?",
                 new String[]{String.valueOf(LIKED_ID)}
         );
         if (cursor != null) {
             if (cursor.moveToNext()) {
                 do {
-                    LikedTracksModel mainModel = new LikedTracksModel();
-                    mainModel.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-                    mainModel.setDate(cursor.getInt(cursor.getColumnIndexOrThrow("date")));
-                    mainModel.setTimeRunning(cursor.getInt(cursor.getColumnIndexOrThrow("timeRunning")));
+                    AllFitnessDataModel mainModel = new AllFitnessDataModel();
+                    mainModel.setId(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
+                    mainModel.setBeginsAt(cursor.getInt(cursor.getColumnIndexOrThrow("beginsAt")));
+                    mainModel.setTime(cursor.getInt(cursor.getColumnIndexOrThrow("time")));
                     mainModel.setDistance(cursor.getInt(cursor.getColumnIndexOrThrow("distance")));
                     mainModel.setLiked(cursor.getInt(cursor.getColumnIndexOrThrow("liked")));
+                    mainModel.setTrackToken(cursor.getString(cursor.getColumnIndexOrThrow("trackToken")));
+                    mainModel.setTypeFit(cursor.getInt(cursor.getColumnIndexOrThrow("typeFit")));
 
                     likedTracksModels.add(mainModel);
                 } while (cursor.moveToNext());
@@ -96,7 +98,8 @@ public class LikedFragment extends Fragment {
                     Intent intentTrackOnMaps = new Intent(getActivity(), TrackOnMapsActivity.class);
                     intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_ID, likedTracksModels.get(position).getId());
                     intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_DISTANCE, likedTracksModels.get(position).getDistance());
-                    intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TIME_RUNNING, likedTracksModels.get(position).getTimeRunning());
+                    intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TIME_RUNNING, likedTracksModels.get(position).getTime());
+                    intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TYPE_FIT, likedTracksModels.get(position).getTypeFit());
                     startActivity(intentTrackOnMaps);
                 }
 

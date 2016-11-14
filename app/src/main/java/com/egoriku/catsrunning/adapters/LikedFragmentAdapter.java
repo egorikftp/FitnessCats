@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.adapters.interfaces.IRecyclerViewListener;
-import com.egoriku.catsrunning.models.LikedTracksModel;
+import com.egoriku.catsrunning.models.AllFitnessDataModel;
 import com.egoriku.catsrunning.utils.ConverterTime;
 
 import java.util.ArrayList;
@@ -17,10 +17,10 @@ import java.util.ArrayList;
 import static com.egoriku.catsrunning.utils.VectorToDrawable.setImageAdapter;
 
 public class LikedFragmentAdapter extends RecyclerView.Adapter<LikedFragmentAdapter.ViewHolder> {
-    private ArrayList<LikedTracksModel> modelArrayList;
+    private ArrayList<AllFitnessDataModel> modelArrayList;
     public static IRecyclerViewListener iRecyclerViewListener;
 
-    public LikedFragmentAdapter(ArrayList<LikedTracksModel> models) {
+    public LikedFragmentAdapter(ArrayList<AllFitnessDataModel> models) {
         this.modelArrayList = models;
     }
 
@@ -36,11 +36,10 @@ public class LikedFragmentAdapter extends RecyclerView.Adapter<LikedFragmentAdap
 
     @Override
     public void onBindViewHolder(LikedFragmentAdapter.ViewHolder holder, int position) {
-        holder.date.setText(ConverterTime.convertDateReminder(modelArrayList.get(position).getDate()));
-        holder.timeRunning.setText(ConverterTime.ConvertTimeToString(modelArrayList.get(position).getTimeRunning()));
+        holder.date.setText(ConverterTime.convertDateReminder(modelArrayList.get(position).getBeginsAt()));
+        holder.timeRunning.setText(ConverterTime.ConvertTimeToString(modelArrayList.get(position).getTime()));
         holder.distance.setText(String.format(holder.format, modelArrayList.get(position).getDistance()));
         setImageAdapter(holder.imageViewLiked, R.drawable.ic_vec_star_black);
-
     }
 
 

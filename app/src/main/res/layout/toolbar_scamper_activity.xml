@@ -18,5 +18,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="4dp"
-        android:background="@drawable/drop_shadow_toolbat_scamper_activity" />
+        android:background="@drawable/drop_shadow_toolbar_scamper_activity" />
 </LinearLayout>
