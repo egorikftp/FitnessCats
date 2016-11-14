@@ -377,7 +377,7 @@ public class ScamperActivity extends AppCompatActivity {
             int distance = 0;
             long time = 0;
             int typeFit = 0;
-
+            //TODO move out from UI thread
             Cursor cursorData = new InquiryBuilder()
                     .get(BEGINS_AT, TIME, DISTANCE, TYPE_FIT)
                     .from(TABLE_TRACKS)

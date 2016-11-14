@@ -1,5 +1,6 @@
 package com.egoriku.catsrunning.models;
 
+//TODO rename to Constants
 public class State {
     public static final String EXTRA_ID_REMINDER_KEY = "EXTRA_ID_REMINDER_KEY";
     public static final String EXTRA_TEXT_TYPE_REMINDER_KEY = "EXTRA_TEXT_TYPE_REMINDER_KEY";
@@ -7,6 +8,7 @@ public class State {
 
     public static final String KEY_TYPE_FIT = "KEY_TYPE_FIT";
 
+    //TODO create inner class Tables, Columns, Extras, etc.
     public static final String TABLE_POINT = "Point";
     public static final String TABLE_TRACKS = "Tracks";
     public static final String TABLE_REMINDER = "Reminder";
@@ -45,14 +47,16 @@ public class State {
     public static final int IS_RING_FALSE = 0;
 
     private static final String KEY_LOGIN = "KEY_LOGIN";
-    /**
+    /**TODO beee
      * task логина/регистрация
      */
     private boolean isStartTaskAuthentification;
 
+    //TODO beee
     /**
      * данные сервиса пробежки
      */
+    //TODO move to separate class
     private long sinceTime;
     private int nowDistance;
 
