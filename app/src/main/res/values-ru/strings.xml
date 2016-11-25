@@ -88,4 +88,6 @@
     <string name="tab_text_walking">Прогулки</string>
     <string name="time_dialog_title">Установить новое время</string>
     <string name="track_fragment_distance">Дистанция:</string>
+    <string name="adapter_fragment_liked_calories">Калории:</string>
+    <string name="adapter_fragment_liked_distance">Дистанция:</string>
 </resources>

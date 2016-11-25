@@ -1,15 +1,15 @@
 package com.egoriku.catsrunning.fragments;
 
-import android.app.LoaderManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.Loader;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,13 +44,16 @@ import static com.egoriku.catsrunning.utils.ConstansTag.ARG_SECTION_NUMBER;
 
 public class FitnessDataFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AllFitnessDataModel>> {
     public static final String TAG_MAIN_FRAGMENT = "TAG_MAIN_FRAGMENT";
+    public static final String TAG = "TAG";
     private RecyclerView recyclerView;
     private TextView textViewNoTracks;
     private ImageView imageViewNoTracks;
+    private ProgressBar progressBar;
 
     private FitnessDataAdapter adapter;
     private Loader<List<AllFitnessDataModel>> loader;
     private static IFABScroll ifabScroll;
+
 
     private BroadcastReceiver broadcastNewTracksSave = new BroadcastReceiver() {
         @Override
@@ -85,13 +89,17 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fitness_data, container, false);
+        progressBar = (ProgressBar) view.findViewById(R.id.fragment_fitness_data_progress_bar);
         recyclerView = (RecyclerView) view.findViewById(R.id.fitness_data_fragment_recycler_view);
         textViewNoTracks = (TextView) view.findViewById(R.id.fragment_fitness_data_text_no_tracks);
         imageViewNoTracks = (ImageView) view.findViewById(R.id.fragment_fitness_data_image_cats_no_track);
 
+        loader = getLoaderManager().restartLoader(getArguments().getInt(ARG_SECTION_NUMBER), getArguments(), this);
+
+        progressBar.setVisibility(View.VISIBLE);
+        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new FitnessDataAdapter();
-
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -102,11 +110,6 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
             }
         });
 
-        recyclerView.setNestedScrollingEnabled(false);
-
-        textViewNoTracks.setVisibility(View.VISIBLE);
-        imageViewNoTracks.setVisibility(View.VISIBLE);
-        setTextNoTracks(textViewNoTracks);
         return view;
     }
 
@@ -116,7 +119,6 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
         super.onResume();
         LocalBroadcastManager.getInstance(App.getInstance()).
                 registerReceiver(broadcastNewTracksSave, new IntentFilter(TracksActivity.BROADCAST_SAVE_NEW_TRACKS));
-        loader = getActivity().getLoaderManager().initLoader(getArguments().getInt(ARG_SECTION_NUMBER), getArguments(), this);
     }
 
 
@@ -128,19 +130,15 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
 
 
     private void setUpAdapter(final List<AllFitnessDataModel> dataModelList) {
+        progressBar.setVisibility(View.GONE);
         if (dataModelList.size() == 0) {
-            if (ifabScroll != null) {
-                ifabScroll.onModelListEmpty(false);
-            }
             textViewNoTracks.setVisibility(View.VISIBLE);
             imageViewNoTracks.setVisibility(View.VISIBLE);
+            setTextNoTracks(textViewNoTracks);
             adapter.clear();
         } else {
             textViewNoTracks.setVisibility(View.GONE);
             imageViewNoTracks.setVisibility(View.GONE);
-            if (ifabScroll != null) {
-                ifabScroll.onModelListEmpty(true);
-            }
             adapter.setData(dataModelList);
             recyclerView.setAdapter(adapter);
         }
@@ -207,9 +205,9 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
                                 adapter.notifyItemRemoved(position);
                                 adapter.notifyItemRangeChanged(position, dataModelList.size());
 
-                                if (dataModelList.size() == 0) {
+                                /*if (dataModelList.size() == 0) {
                                     reloadData();
-                                }
+                                }*/
                             }
                         })
                         .show();
@@ -218,30 +216,30 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
     }
 
 
+    private void setTextNoTracks(TextView textViewNoTracks) {
+        textViewNoTracks.setText(getString(R.string.no_tracks_text));
+    }
+
+
     @Override
     public Loader<List<AllFitnessDataModel>> onCreateLoader(int id, Bundle args) {
         return new AsyncTracksLoader(getContext(), args);
     }
 
-
     @Override
-    public void onLoadFinished(Loader<List<AllFitnessDataModel>> loader, List<AllFitnessDataModel> models) {
-        setUpAdapter(models);
+    public void onLoadFinished(Loader<List<AllFitnessDataModel>> loader, List<AllFitnessDataModel> data) {
+        setUpAdapter(data);
     }
 
 
     @Override
-    public void onLoaderReset(Loader<List<AllFitnessDataModel>> loader) {
-
-    }
-
-
-    private void setTextNoTracks(TextView textViewNoTracks) {
-        textViewNoTracks.setText(getString(R.string.no_tracks_text));
+    public void onLoaderReset(Loader loader) {
+        setUpAdapter(null);
     }
 
 
     private void reloadData() {
         loader.onContentChanged();
     }
+
 }

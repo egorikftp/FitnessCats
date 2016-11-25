@@ -232,7 +232,7 @@ public class AllFitnessDataFragment extends Fragment {
 
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-        public SectionsPagerAdapter(FragmentManager fm) {
+        private SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -245,11 +245,6 @@ public class AllFitnessDataFragment extends Fragment {
                         changeFabState(fabStatus);
                         fabStatus = false;
                     }
-                }
-
-                @Override
-                public void onModelListEmpty(boolean isEmpty) {
-                        appBarLayout.setExpanded(isEmpty, true);
                 }
             });
         }

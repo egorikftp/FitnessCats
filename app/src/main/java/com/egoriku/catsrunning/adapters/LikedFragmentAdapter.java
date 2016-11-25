@@ -1,6 +1,6 @@
 package com.egoriku.catsrunning.adapters;
 
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,87 +8,112 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.adapters.interfaces.IRecyclerViewListener;
+import com.egoriku.catsrunning.adapters.interfaces.ILikedClickListener;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
 import com.egoriku.catsrunning.utils.ConverterTime;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static com.egoriku.catsrunning.utils.VectorToDrawable.setImageAdapter;
 
-public class LikedFragmentAdapter extends RecyclerView.Adapter<LikedFragmentAdapter.ViewHolder> {
-    private ArrayList<AllFitnessDataModel> modelArrayList;
-    public static IRecyclerViewListener iRecyclerViewListener;
+public class LikedFragmentAdapter extends AbstractAdapter<AllFitnessDataModel> {
+    private List<AllFitnessDataModel> modelList;
+    public ILikedClickListener iLikedClickListener;
 
-    public LikedFragmentAdapter(ArrayList<AllFitnessDataModel> models) {
-        this.modelArrayList = models;
+
+    public LikedFragmentAdapter() {
+    }
+
+
+    public LikedFragmentAdapter(ILikedClickListener iLikedClickListener) {
+        this.iLikedClickListener = iLikedClickListener;
     }
 
 
     @Override
-    public LikedFragmentAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflater = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.adapter_fragment_liked, parent, false);
-
-        return new ViewHolder(inflater);
-    }
-
-
-    @Override
-    public void onBindViewHolder(LikedFragmentAdapter.ViewHolder holder, int position) {
-        holder.date.setText(ConverterTime.convertDateReminder(modelArrayList.get(position).getBeginsAt()));
-        holder.timeRunning.setText(ConverterTime.ConvertTimeToString(modelArrayList.get(position).getTime()));
-        holder.distance.setText(String.format(holder.format, modelArrayList.get(position).getDistance()));
-        setImageAdapter(holder.imageViewLiked, R.drawable.ic_vec_star_black);
+    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_fragment_liked, parent, false);
+        return new AbstractViewHolder(view);
     }
 
 
     @Override
     public int getItemCount() {
-        return modelArrayList.size();
+        return modelList.size();
     }
 
 
+    @Override
+    public void onBind(AbstractViewHolder holder, AllFitnessDataModel allFitnessDataModel, final int position, int viewType) {
+        final String format = holder.getString(R.string.liked_fragment_adapter_distance_meter);
+        final ImageView imageViewLiked = holder.<ImageView>get(R.id.adapter_fragment_liked_image_view_liked);
+        final ImageView imageViewType = holder.<ImageView>get(R.id.adapter_fragment_liked_data_ic_type);
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView date;
-        public TextView timeRunning;
-        public TextView distance;
-        public ImageView imageViewLiked;
-        public String format;
+        holder.<TextView>get(R.id.adapter_fragment_liked_date_text_view)
+                .setText(ConverterTime.convertDateReminder(modelList.get(position).getBeginsAt()));
 
+        holder.<TextView>get(R.id.adapter_fragment_liked_time_running_text_view)
+                .setText(ConverterTime.ConvertTimeToString(modelList.get(position).getTime()));
 
-        public ViewHolder(View itemView) {
-            super(itemView);
-            date = (TextView) itemView.findViewById(R.id.liked_fragment_date_text_view);
-            timeRunning = (TextView) itemView.findViewById(R.id.liked_fragment_time_running_text_view);
-            distance = (TextView) itemView.findViewById(R.id.liked_fragment_distance_text_view);
-            imageViewLiked = (ImageView) itemView.findViewById(R.id.liked_fragment_distance_image_view_liked);
-            format = itemView.getResources().getString(R.string.liked_fragment_adapter_distance_meter);
+        holder.<TextView>get(R.id.adapter_fragment_liked_distance_text_view)
+                .setText(String.format(format, modelList.get(position).getDistance()));
 
-            itemView.setOnClickListener(this);
-            imageViewLiked.setOnClickListener(this);
-        }
-
-
-        @Override
-        public void onClick(View view) {
-            if (view instanceof ImageView) {
-                iRecyclerViewListener.onLikedClick(getPosition());
-            } else {
-                iRecyclerViewListener.onItemClick(getPosition());
+        imageViewLiked.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (iLikedClickListener != null) {
+                    iLikedClickListener.onLikedClick(modelList.get(position), position);
+                }
             }
+        });
+
+        holder.<CardView>get(R.id.adapter_fragment_liked_card_view).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (iLikedClickListener != null) {
+                    iLikedClickListener.onItemClick(modelList.get(position), position);
+                }
+            }
+        });
+
+        setImageAdapter(imageViewLiked, R.drawable.ic_vec_star_black);
+
+        switch (allFitnessDataModel.getTypeFit()) {
+            case 1:
+
+                setImageAdapter(imageViewType, R.drawable.ic_vec_directions_walk_40dp);
+                break;
+
+            case 2:
+                setImageAdapter(imageViewType, R.drawable.ic_vec_directions_run_40dp);
+                break;
+
+            case 3:
+                setImageAdapter(imageViewType, R.drawable.ic_vec_directions_bike_40dp);
+                break;
         }
     }
 
 
-    public void setOnItemClickListener(IRecyclerViewListener listener) {
-        this.iRecyclerViewListener = listener;
+    @Override
+    public AllFitnessDataModel getItem(int position) {
+        return modelList.get(position);
+    }
+
+
+    public void setOnItemClickListener(ILikedClickListener listener) {
+        this.iLikedClickListener = listener;
     }
 
 
     public void clear() {
-        modelArrayList.clear();
+        modelList.clear();
+        notifyDataSetChanged();
+    }
+
+
+    public void setData(List<AllFitnessDataModel> allFitnessDataModels) {
+        this.modelList = allFitnessDataModels;
         notifyDataSetChanged();
     }
 }

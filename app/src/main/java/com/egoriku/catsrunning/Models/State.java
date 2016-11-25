@@ -22,8 +22,8 @@ public class State {
     public static final String LIKED = "liked";
     public static final String TRACK_TOKEN = "trackToken";
     public static final String TYPE_FIT = "typeFit";
-    public static final String TRACK_ID= "trackId";
-    public static final String DATE_REMINDER= "dateReminder";
+    public static final String TRACK_ID = "trackId";
+    public static final String DATE_REMINDER = "dateReminder";
     public static final String TYPE_REMINDER = "typeReminder";
     public static final String IS_RINGS = "isRings";
     public static final String IS_TRACK_DELETE = "isTrackDelete";
@@ -33,9 +33,12 @@ public class State {
     public static final String TYPE_FIT_EQ = "typeFit=";
     public static final String IS_TRACK_DELETE_EQ = "isTrackDelete=";
     public static final String _ID_EQ = "_id=";
+    public static final String LIKED_EQ = "liked=";
 
     public static final String IS_TRACK_DELETE_TRUE = "1";
-    public static final String  IS_TRACK_DELETE_FALSE = "0";
+    public static final String IS_TRACK_DELETE_FALSE = "0";
+    public static final String IS_LIKED = "1";
+
 
     public static final int TYPE_FIT_WALK = 1;
     public static final int TYPE_FIT_RUN = 2;

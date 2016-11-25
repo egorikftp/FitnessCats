@@ -75,8 +75,11 @@
     <string name="liked_fragment_adapter_time_running">Время пробежки:</string>
     <string name="liked_fragment_adapter_distance">Дистанция:</string>
 
-    <!-- Adapter Fragment Tracks List -->
-    <string name="adapter_fragment_main_calories">Calories:</string>
+
+
+    <!-- Adapter Fragment Liked -->
+    <string name="adapter_fragment_liked_calories">Calories:</string>
+    <string name="adapter_fragment_liked_distance">Distance:</string>
 
 
     <!-- Фрагменты  -->
@@ -85,6 +88,7 @@
     <string name="adapter_all_fitness_data_calories">%s ккал</string>
     <string name="adapter_all_fitness_data_distance">Distance:</string>
     <string name="adapter_all_fitness_data_no_more_tracks">Похоже тут нет треков</string>
+    <string name="adapter_fragment_main_calories">Calories:</string>
 
 
     <!-- Track Fragment -->

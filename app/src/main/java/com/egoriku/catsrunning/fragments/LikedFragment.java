@@ -18,30 +18,43 @@ import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.LikedFragmentAdapter;
-import com.egoriku.catsrunning.adapters.interfaces.IRecyclerViewListener;
+import com.egoriku.catsrunning.adapters.interfaces.ILikedClickListener;
+import com.egoriku.catsrunning.helpers.DbCursor;
+import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
 
 import java.util.ArrayList;
 
 import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
+import static com.egoriku.catsrunning.models.State.BEGINS_AT;
+import static com.egoriku.catsrunning.models.State.DISTANCE;
+import static com.egoriku.catsrunning.models.State.IS_LIKED;
+import static com.egoriku.catsrunning.models.State.LIKED;
+import static com.egoriku.catsrunning.models.State.LIKED_EQ;
+import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
+import static com.egoriku.catsrunning.models.State.TIME;
+import static com.egoriku.catsrunning.models.State.TRACK_TOKEN;
+import static com.egoriku.catsrunning.models.State.TYPE_FIT;
+import static com.egoriku.catsrunning.models.State._ID;
 
 public class LikedFragment extends Fragment {
     public static final String TAG_LIKED_FRAGMENT = "TAG_LIKED_FRAGMENT";
     private static final int UNICODE_SAD_CAT = 0x1F640;
-    private static final int LIKED_ID = 1;
 
-    private RecyclerView recyclerViewLikedFragment;
+    private RecyclerView recyclerView;
     private TextView noMoreTracksView;
-
-    private ArrayList<AllFitnessDataModel> likedTracksModels = new ArrayList<>();
+    private ArrayList<AllFitnessDataModel> likedTracksModels;
     private LikedFragmentAdapter likedFragmentAdapter;
+
 
     public LikedFragment() {
     }
 
+
     public static LikedFragment newInstance() {
         return new LikedFragment();
     }
+
 
     @Override
     public void onStart() {
@@ -49,62 +62,70 @@ public class LikedFragment extends Fragment {
         ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_liked, TAG_LIKED_FRAGMENT);
     }
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_liked, container, false);
-        recyclerViewLikedFragment = (RecyclerView) view.findViewById(R.id.liked_fragment_recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.liked_fragment_recycler_view);
         noMoreTracksView = (TextView) view.findViewById(R.id.liked_fragment_no_more_tracks);
+
+        likedTracksModels = new ArrayList<>();
+        likedFragmentAdapter = new LikedFragmentAdapter();
+        recyclerView.setLayoutManager(new LinearLayoutManager(App.getInstance()));
+        recyclerView.hasFixedSize();
 
         showLikedTracks();
         return view;
     }
 
+
     private void showLikedTracks() {
         noMoreTracksView.setText(null);
 
-        Cursor cursor = App.getInstance().getDb().rawQuery("SELECT _id, beginsAt, time, distance, liked, typeFit, trackToken FROM Tracks WHERE liked=?",
-                new String[]{String.valueOf(LIKED_ID)}
-        );
-        if (cursor != null) {
-            if (cursor.moveToNext()) {
-                do {
-                    AllFitnessDataModel mainModel = new AllFitnessDataModel();
-                    mainModel.setId(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
-                    mainModel.setBeginsAt(cursor.getInt(cursor.getColumnIndexOrThrow("beginsAt")));
-                    mainModel.setTime(cursor.getInt(cursor.getColumnIndexOrThrow("time")));
-                    mainModel.setDistance(cursor.getInt(cursor.getColumnIndexOrThrow("distance")));
-                    mainModel.setLiked(cursor.getInt(cursor.getColumnIndexOrThrow("liked")));
-                    mainModel.setTrackToken(cursor.getString(cursor.getColumnIndexOrThrow("trackToken")));
-                    mainModel.setTypeFit(cursor.getInt(cursor.getColumnIndexOrThrow("typeFit")));
+        Cursor cursor = new InquiryBuilder()
+                .get(_ID, BEGINS_AT, TIME, DISTANCE, LIKED, TRACK_TOKEN, TYPE_FIT)
+                .from(TABLE_TRACKS)
+                .where(false, LIKED_EQ, String.valueOf(IS_LIKED))
+                .select();
 
-                    likedTracksModels.add(mainModel);
-                } while (cursor.moveToNext());
-            }
-            cursor.close();
+        DbCursor dbCursor = new DbCursor(cursor);
+        if (dbCursor.isValid()) {
+            do {
+                AllFitnessDataModel likedItem = new AllFitnessDataModel();
+                likedItem.setId(dbCursor.getInt(_ID));
+                likedItem.setBeginsAt(dbCursor.getInt(BEGINS_AT));
+                likedItem.setTime(dbCursor.getInt(TIME));
+                likedItem.setDistance(dbCursor.getInt(DISTANCE));
+                likedItem.setLiked(dbCursor.getInt(LIKED));
+                likedItem.setTrackToken(dbCursor.getString(TRACK_TOKEN));
+                likedItem.setTypeFit(dbCursor.getInt(TYPE_FIT));
+                likedTracksModels.add(likedItem);
+            } while (cursor.moveToNext());
         }
+        dbCursor.close();
 
         if (likedTracksModels.size() == 0) {
             noMoreTracksView.setText(getString(R.string.liked_fragment_no_more_liked_tracks) + "" + getEmojiByUnicode(UNICODE_SAD_CAT));
         } else {
-            likedFragmentAdapter = new LikedFragmentAdapter(likedTracksModels);
-            recyclerViewLikedFragment.setLayoutManager(new LinearLayoutManager(App.getInstance()));
-            recyclerViewLikedFragment.setAdapter(likedFragmentAdapter);
-            recyclerViewLikedFragment.hasFixedSize();
+            likedFragmentAdapter.setData(likedTracksModels);
+            recyclerView.setAdapter(likedFragmentAdapter);
 
-            likedFragmentAdapter.setOnItemClickListener(new IRecyclerViewListener() {
+            likedFragmentAdapter.setOnItemClickListener(new ILikedClickListener() {
                 @Override
-                public void onItemClick(int position) {
+                public void onItemClick(AllFitnessDataModel item, int position) {
                     Intent intentTrackOnMaps = new Intent(getActivity(), TrackOnMapsActivity.class);
-                    intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_ID, likedTracksModels.get(position).getId());
-                    intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_DISTANCE, likedTracksModels.get(position).getDistance());
-                    intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TIME_RUNNING, likedTracksModels.get(position).getTime());
-                    intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TYPE_FIT, likedTracksModels.get(position).getTypeFit());
+                    intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_ID, item.getId());
+                    intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_DISTANCE, item.getDistance());
+                    intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TIME_RUNNING, item.getTime());
+                    intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TYPE_FIT, item.getTypeFit());
+                    intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_LIKED, item.getLiked());
+                    intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TOKEN, item.getTrackToken());
                     startActivity(intentTrackOnMaps);
                 }
 
                 @Override
-                public void onLikedClick(int position) {
+                public void onLikedClick(AllFitnessDataModel item, int position) {
                     int likedDigit = 0;
                     updateLikedDigit(likedDigit, likedTracksModels.get(position).getId());
                     likedTracksModels.remove(position);
@@ -112,7 +133,7 @@ public class LikedFragment extends Fragment {
                     likedFragmentAdapter.notifyItemRangeChanged(position, likedTracksModels.size());
 
                     if (likedTracksModels.size() == 0) {
-                        Snackbar.make(recyclerViewLikedFragment, R.string.liked_fragment_snackbar_liked_empty, Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(recyclerView, R.string.liked_fragment_snackbar_liked_empty, Snackbar.LENGTH_LONG).show();
                     }
                 }
             });

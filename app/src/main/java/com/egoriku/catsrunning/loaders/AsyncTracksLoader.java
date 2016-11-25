@@ -1,10 +1,9 @@
 package com.egoriku.catsrunning.loaders;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-
+import android.support.v4.content.AsyncTaskLoader;
 import com.egoriku.catsrunning.helpers.DbCursor;
 import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
@@ -30,6 +29,7 @@ public class AsyncTracksLoader extends AsyncTaskLoader<List<AllFitnessDataModel>
     private List<AllFitnessDataModel> dataModelList;
     private int typeReminder;
 
+
     public AsyncTracksLoader(Context context, Bundle args) {
         super(context);
         if (args != null) {
@@ -41,11 +41,14 @@ public class AsyncTracksLoader extends AsyncTaskLoader<List<AllFitnessDataModel>
     @Override
     protected void onStartLoading() {
         super.onStartLoading();
-        if (dataModelList != null) {
-            deliverResult(dataModelList);
-        } else {
+        if (dataModelList == null || takeContentChanged()) {
             forceLoad();
         }
+
+        if (dataModelList != null) {
+            deliverResult(dataModelList);
+        }
+
     }
 
 
@@ -75,7 +78,6 @@ public class AsyncTracksLoader extends AsyncTaskLoader<List<AllFitnessDataModel>
             } while (cursorTracks.moveToNext());
         }
         cursor.close();
-
         return dataModelList;
     }
 

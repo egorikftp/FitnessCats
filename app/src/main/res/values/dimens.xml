@@ -47,4 +47,8 @@
     <dimen name="reminders_fragment_padding_view">10dp</dimen>
     <dimen name="reminders_fragment_padding_view_ic_delete">16dp</dimen>
 
+
+    <!-- Adapter Liked Fragment -->
+    <dimen name="adapter_fragment_liked_margin">6dp</dimen>
+    <dimen name="adapter_fragment_liked_padding_image_liked">10dp</dimen>
 </resources>

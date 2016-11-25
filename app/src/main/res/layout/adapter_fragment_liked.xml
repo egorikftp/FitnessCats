@@ -1,79 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/tools"
-    android:id="@+id/card_view"
+    android:id="@+id/adapter_fragment_liked_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="?android:attr/selectableItemBackground"
-    card:cardCornerRadius="6dp"
+    card:cardCornerRadius="9dp"
     card:cardUseCompatPadding="true"
     card:contentPaddingBottom="8dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/liked_fragment_date_text_view"
+        <ImageView
+            android:id="@+id/adapter_fragment_liked_data_ic_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_margin="@dimen/adapter_fragment_liked_margin" />
+
+        <ImageView
+            android:id="@+id/adapter_fragment_liked_image_view_liked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="@dimen/adapter_fragment_liked_padding_image_liked" />
+
+        <TextView
+            android:id="@+id/adapter_fragment_liked_date_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/adapter_fragment_liked_margin"
             android:textAppearance="?android:textAppearance" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/adapter_fragment_liked_time_running_text_view"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_below="@+id/adapter_fragment_liked_date_text_view"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textColor="@color/colorPrimaryDark" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/liked_fragment_adapter_time_running"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:textColor="@color/color_ic_naw_drawer" />
+        <TextView
+            android:id="@+id/adapter_fragment_liked_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/adapter_fragment_liked_time_running_text_view"
+            android:layout_margin="@dimen/adapter_fragment_liked_margin"
+            android:text="@string/adapter_fragment_liked_distance"
+            android:textAppearance="?android:textAppearance" />
 
-            <TextView
-                android:id="@+id/liked_fragment_time_running_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceLarge"
-                android:textColor="@color/colorPrimaryDark"
-                android:textStyle="bold" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/adapter_fragment_liked_distance_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/adapter_fragment_liked_calories_text_view"
+            android:layout_below="@+id/adapter_fragment_liked_time_running_text_view"
+            android:layout_toEndOf="@+id/adapter_fragment_liked_distance"
+            android:layout_toRightOf="@+id/adapter_fragment_liked_distance"
+            android:gravity="center" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal">
+        <TextView
+            android:id="@+id/adapter_fragment_liked_calories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/adapter_fragment_liked_distance"
+            android:layout_margin="@dimen/adapter_fragment_liked_margin"
+            android:text="@string/adapter_fragment_liked_calories"
+            android:textAppearance="?android:textAppearance" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_vec_map_black" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/adapter_fragment_liked_padding_word"
-                android:paddingRight="@dimen/adapter_fragment_liked_padding_word"
-                android:text="@string/liked_fragment_adapter_distance"
-                android:textAppearance="?android:textAppearanceMedium" />
-
-            <TextView
-                android:id="@+id/liked_fragment_distance_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceMedium" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/liked_fragment_distance_image_view_liked"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end" />
+        <TextView
+            android:id="@+id/adapter_fragment_liked_calories_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/adapter_fragment_liked_distance"
+            android:layout_margin="@dimen/adapter_fragment_liked_margin"
+            android:layout_toRightOf="@+id/adapter_fragment_liked_calories" />
+    </RelativeLayout>
 </android.support.v7.widget.CardView>
+
