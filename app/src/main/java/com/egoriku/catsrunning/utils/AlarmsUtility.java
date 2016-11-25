@@ -10,12 +10,12 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.receivers.ReminderReceiver;
 
-import static com.egoriku.catsrunning.activities.AddReminderActivity.BROADCAST_ADD_NEW_REMINDER;
-import static com.egoriku.catsrunning.models.State.EXTRA_ID_REMINDER_KEY;
-import static com.egoriku.catsrunning.models.State.EXTRA_TEXT_TYPE_REMINDER_KEY;
-import static com.egoriku.catsrunning.models.State.TYPE_REMINDER_KEY;
+import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_ADD_NEW_REMINDER;
+import static com.egoriku.catsrunning.models.Constants.Extras.EXTRA_ID_REMINDER_KEY;
+import static com.egoriku.catsrunning.models.Constants.Extras.EXTRA_TEXT_TYPE_REMINDER_KEY;
+import static com.egoriku.catsrunning.models.Constants.Extras.TYPE_REMINDER_KEY;
 
-public class AlarmsUtills {
+public class AlarmsUtility {
 
     public static void setAlarm(int id, String typeReminderText, long timeInMillis, int typeReminder) {
         AlarmManager alarmManager = (AlarmManager) App.getInstance().getSystemService(Context.ALARM_SERVICE);

@@ -11,8 +11,6 @@ public class ItemNavigationDrawer {
     private String userEmail;
     private boolean showLine;
 
-    public ItemNavigationDrawer() {
-    }
 
     public ItemNavigationDrawer(String userName, String userEmail) {
         this.userName = userName;

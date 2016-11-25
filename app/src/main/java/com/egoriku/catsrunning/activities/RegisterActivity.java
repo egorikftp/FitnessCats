@@ -36,21 +36,20 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import static com.egoriku.catsrunning.models.Constants.ModelRegister.BTN_REGISTER_TEXT;
+import static com.egoriku.catsrunning.models.Constants.ModelRegister.DOUBLE_PASSWORD_KEY;
+import static com.egoriku.catsrunning.models.Constants.ModelRegister.EMAIL_KEY;
+import static com.egoriku.catsrunning.models.Constants.ModelRegister.HAVE_ACCOUNT_TEXT;
+import static com.egoriku.catsrunning.models.Constants.ModelRegister.NAME_KEY;
+import static com.egoriku.catsrunning.models.Constants.ModelRegister.PASSWORD_KEY;
+import static com.egoriku.catsrunning.models.Constants.ModelRegister.SIGN_GOOGLE_BTN_KEY;
+import static com.egoriku.catsrunning.models.Constants.ModelRegister.SURNAME_KEY;
+import static com.egoriku.catsrunning.models.Constants.ModelRegister.TOOLBAR_TEXT;
+
 public class RegisterActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     //TODO create Parcelable/Serializable Model
-    private static final String EMAIL_KEY = "EMAIL_KEY";
-    private static final String PASSWORD_KEY = "PASSWORD_KEY";
-    private static final String DOUBLE_PASSWORD_KEY = "DOUBLE_PASSWORD_KEY";
-    private static final String NAME_KEY = "NAME_KEY";
-    private static final String SURNAME_KEY = "SURNAME_KEY";
-    private static final String SIGN_GOOGLE_BTN_KEY = "SIGN_GOOGLE_BTN_KEY";
-    private static final String HAVE_ACCOUNT_TEXT = "HAVE_ACCOUNT_TEXT";
-    private static final String BTN_REGISTER_TEXT = "BTN_REGISTER_TEXT";
-    private static final String TOOLBAR_TEXT = "TOOLBAR_TEXT";
     private static final int RC_SIGN_IN = 4706;
-
     private GoogleApiClient googleApiClient;
-
     private TextInputLayout inputLayoutEmail;
     private TextInputLayout inputLayoutPassword;
     private TextInputLayout inputLayoutDoublePassword;
@@ -340,7 +339,6 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
 
 
     private void initializeGoogle() {
-        // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -363,12 +361,9 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
-                // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
             } else {
@@ -456,6 +451,7 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
         toolbar.setTitle(savedInstanceState.getString(TOOLBAR_TEXT));
         super.onRestoreInstanceState(savedInstanceState);
     }
+
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

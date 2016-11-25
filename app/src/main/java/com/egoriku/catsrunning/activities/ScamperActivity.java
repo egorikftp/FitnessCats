@@ -46,36 +46,38 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.ArrayList;
 
 import static com.egoriku.catsrunning.helpers.DbActions.deleteTrackDataById;
-import static com.egoriku.catsrunning.models.State.BEGINS_AT;
-import static com.egoriku.catsrunning.models.State.DISTANCE;
-import static com.egoriku.catsrunning.models.State.KEY_TYPE_FIT;
-import static com.egoriku.catsrunning.models.State.LAT;
-import static com.egoriku.catsrunning.models.State.LNG;
-import static com.egoriku.catsrunning.models.State.TABLE_POINT;
-import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
-import static com.egoriku.catsrunning.models.State.TIME;
-import static com.egoriku.catsrunning.models.State.TRACK_ID_EQ;
-import static com.egoriku.catsrunning.models.State.TRACK_TOKEN;
-import static com.egoriku.catsrunning.models.State.TYPE_FIT;
-import static com.egoriku.catsrunning.models.State._ID;
-import static com.egoriku.catsrunning.models.State._ID_EQ;
+import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_FINISH_SERVICE;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.BEGINS_AT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.DISTANCE;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LAT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LNG;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TIME;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TRACK_TOKEN;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TYPE_FIT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns._ID;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.TRACK_ID_EQ;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query._ID_EQ;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_POINT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
+import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
+import static com.egoriku.catsrunning.models.Constants.KeyNotification.KEY_TYPE_FIT_NOTIFICATION;
+import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.DISTANCE_TEXT;
+import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.EXTRA_ID_TRACK;
+import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.KEY_IS_CHRONOMETER_RUNNING;
+import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.KEY_START_TIME;
+import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.TIME_SCAMPER_TEXT;
+import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.TOOLBAR_TEXT;
+import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.VIEW_BTN_FINISH;
+import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.VIEW_BTN_START;
+import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.VIEW_IMAGE;
+import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.VIEW_TEXT_DISTANCE;
+import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.VIEW_TEXT_TIMER;
+import static com.egoriku.catsrunning.models.Constants.RunService.ACTION_START;
+import static com.egoriku.catsrunning.models.Constants.RunService.START_TIME;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class ScamperActivity extends AppCompatActivity {
-    public static final String BROADCAST_FINISH_SERVICE = "BROADCAST_FINISH_SERVICE";
-    public static final String KEY_TYPE_FIT_NOTIFICATION = "KEY_TYPE_FIT_NOTIFICATION";
     private static final int REQUEST_CODE = 1;
-    private static final String VIEW_BTN_START = "VIEW_BTN_START";
-    private static final String VIEW_BTN_FINISH = "VIEW_BTN_FINISH";
-    private static final String VIEW_TEXT_TIMER = "VIEW_TEXT_TIMER";
-    private static final String VIEW_TEXT_DISTANCE = "VIEW_TEXT_DISTANCE";
-    private static final String VIEW_IMAGE = "VIEW_IMAGE";
-    private static final String DISTANCE_TEXT = "DISTANCE_TEXT";
-    private static final String TIME_SCAMPER_TEXT = "TIME_SCAMPER_TEXT";
-    private static final String KEY_IS_CHRONOMETER_RUNNING = "KEY_IS_CHRONOMETER_RUNNING";
-    private static final String KEY_START_TIME = "KEY_START_TIME";
-    private static final String TOOLBAR_TEXT = "TOOLBAR_TEXT";
-    private static final String EXTRA_ID_TRACK = "EXTRA_ID_TRACK";
     public static final int TOP_PADDING = 50;
     public static final int ANOTHER_PADDING = 0;
     private ArrayList<Point> points;
@@ -163,12 +165,12 @@ public class ScamperActivity extends AppCompatActivity {
                 }
 
                 Intent intent = new Intent(ScamperActivity.this, RunService.class);
-                intent.putExtra(RunService.START_TIME, chronometer.getStartTime());
+                intent.putExtra(START_TIME, chronometer.getStartTime());
                 if (getIntent().getExtras() != null) {
                     intent.putExtra(KEY_TYPE_FIT_NOTIFICATION, getIntent().getExtras().getInt(KEY_TYPE_FIT));
                 }
 
-                intent.setAction(RunService.ACTION_START);
+                intent.setAction(ACTION_START);
                 startService(intent);
 
                 textTimer.setPadding(ANOTHER_PADDING, TOP_PADDING, ANOTHER_PADDING, ANOTHER_PADDING);
@@ -414,11 +416,11 @@ public class ScamperActivity extends AppCompatActivity {
             dbCursor.close();
 
             if (points.size() > 1) {
-                String trackToken = App.getInstance().getTracksReference().child(user.getUid()).push().getKey();
+                String trackToken = App.getInstance().getFirebaseDbReference().child(user.getUid()).push().getKey();
                 writeTokenToDb(trackToken, idTrack);
                 SaveModel saveModel = new SaveModel(beginsAt, time, distance, trackToken, typeFit, points);
 
-                App.getInstance().getTracksReference().child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {
+                App.getInstance().getFirebaseDbReference().child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                         if (databaseError != null) {

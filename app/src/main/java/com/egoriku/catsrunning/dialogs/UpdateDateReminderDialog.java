@@ -14,16 +14,18 @@ import android.widget.DatePicker;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.fragments.RemindersFragment;
 
 import java.util.Calendar;
 
 import static com.egoriku.catsrunning.helpers.DbActions.updateReminder;
-import static com.egoriku.catsrunning.utils.AlarmsUtills.setAlarm;
+import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_UPDATE_REMINDER_DATE;
+import static com.egoriku.catsrunning.models.Constants.KeyReminder.KEY_DATE_REMINDER;
+import static com.egoriku.catsrunning.models.Constants.KeyReminder.KEY_ID;
+import static com.egoriku.catsrunning.models.Constants.KeyReminder.KEY_TYPE_REMINDER;
+import static com.egoriku.catsrunning.utils.AlarmsUtility.setAlarm;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class UpdateDateReminderDialog extends DialogFragment {
-    public static final String BROADCAST_UPDATE_REMINDER_DATE = "BROADCAST_UPDATE_REMINDER_DATE";
     private String dialogTitle;
     private String dialogNegativeBtnText;
     private String dialogPositiveBtnText;
@@ -37,9 +39,9 @@ public class UpdateDateReminderDialog extends DialogFragment {
         UpdateDateReminderDialog updateDateDialogFragment = new UpdateDateReminderDialog();
 
         Bundle bundle = new Bundle();
-        bundle.putInt(RemindersFragment.KEY_ID, id);
-        bundle.putLong(RemindersFragment.KEY_DATE_REMINDER, dateReminder);
-        bundle.putInt(RemindersFragment.KEY_TYPE_REMINDER, typeReminder);
+        bundle.putInt(KEY_ID, id);
+        bundle.putLong(KEY_DATE_REMINDER, dateReminder);
+        bundle.putInt(KEY_TYPE_REMINDER, typeReminder);
         updateDateDialogFragment.setArguments(bundle);
         return updateDateDialogFragment;
     }
@@ -61,7 +63,7 @@ public class UpdateDateReminderDialog extends DialogFragment {
         final DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.update_dialog_date_picker);
         final Calendar reminderDate = Calendar.getInstance();
 
-        reminderDate.setTimeInMillis(getArguments().getLong(RemindersFragment.KEY_DATE_REMINDER) * 1000L);
+        reminderDate.setTimeInMillis(getArguments().getLong(KEY_DATE_REMINDER) * 1000L);
 
         if (android.os.Build.VERSION.SDK_INT >= 15 && android.os.Build.VERSION.SDK_INT <= 19) {
             datePicker.setCalendarViewShown(false);
@@ -81,13 +83,13 @@ public class UpdateDateReminderDialog extends DialogFragment {
                 .setPositiveButton(dialogPositiveBtnText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        updateReminder(reminderDate.getTimeInMillis() / 1000, getArguments().getInt(RemindersFragment.KEY_ID));
+                        updateReminder(reminderDate.getTimeInMillis() / 1000, getArguments().getInt(KEY_ID));
 
                         setAlarm(
-                                getArguments().getInt(RemindersFragment.KEY_ID),
-                                getTypeFit(getArguments().getInt(RemindersFragment.KEY_TYPE_REMINDER), false, R.array.type_reminder),
+                                getArguments().getInt(KEY_ID),
+                                getTypeFit(getArguments().getInt(KEY_TYPE_REMINDER), false, R.array.type_reminder),
                                 reminderDate.getTimeInMillis(),
-                                getArguments().getInt(RemindersFragment.KEY_TYPE_REMINDER)
+                                getArguments().getInt(KEY_TYPE_REMINDER)
                         );
 
                         LocalBroadcastManager.getInstance(App.getInstance())

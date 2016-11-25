@@ -40,19 +40,19 @@ import java.util.List;
 
 import static com.egoriku.catsrunning.helpers.DbActions.updateIsTrackDelete;
 import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
-import static com.egoriku.catsrunning.models.State.LAT;
-import static com.egoriku.catsrunning.models.State.LNG;
-import static com.egoriku.catsrunning.models.State.TABLE_POINT;
-import static com.egoriku.catsrunning.models.State.TRACK_ID_EQ;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LAT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LNG;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.TRACK_ID_EQ;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_POINT;
+import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
+import static com.egoriku.catsrunning.models.Constants.KeyReminder.KEY_ID;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_DISTANCE;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_LIKED;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_TIME_RUNNING;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_TOKEN;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReadyCallback {
-    public static final String KEY_ID = "KEY_ID";
-    public static final String KEY_DISTANCE = "KEY_DISTANCE";
-    public static final String KEY_TIME_RUNNING = "KEY_TIME_RUNNING";
-    public static final String KEY_LIKED = "KEY_LIKED";
-    public static final String KEY_TOKEN = "KEY_TOKEN";
-    public static final String KEY_TYPE_FIT = "KEY_TYPE_FIT";
     private static final int paddingMap = 150;
     private GoogleMap mMap;
     private Toolbar toolbar;
@@ -224,7 +224,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
                                         updateIsTrackDelete(getIntent().getExtras().getInt(KEY_ID));
 
                                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                        App.getInstance().getTracksReference().child(user.getUid()).child(getIntent().getExtras().getString(KEY_TOKEN)).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        App.getInstance().getFirebaseDbReference().child(user.getUid()).child(getIntent().getExtras().getString(KEY_TOKEN)).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
                                                 dataSnapshot.getRef().setValue(null);

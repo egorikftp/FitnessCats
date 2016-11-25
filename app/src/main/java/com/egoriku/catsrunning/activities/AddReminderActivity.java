@@ -20,21 +20,19 @@ import java.util.Calendar;
 import java.util.List;
 
 import static com.egoriku.catsrunning.helpers.DbActions.writeReminderDb;
-import static com.egoriku.catsrunning.utils.AlarmsUtills.setAlarm;
+import static com.egoriku.catsrunning.models.Constants.ModelReminder.KEY_CALENDAR;
+import static com.egoriku.catsrunning.models.Constants.ModelReminder.KEY_CONDITION;
+import static com.egoriku.catsrunning.models.Constants.ModelReminder.KEY_TOOLBAR;
+import static com.egoriku.catsrunning.models.Constants.ModelReminder.KEY_VISIBLE_BTN_BACK;
+import static com.egoriku.catsrunning.models.Constants.ModelReminder.KEY_VISIBLE_DATE_PICKER;
+import static com.egoriku.catsrunning.models.Constants.ModelReminder.KEY_VISIBLE_STRING_PICKER;
+import static com.egoriku.catsrunning.models.Constants.ModelReminder.KEY_VISIBLE_TEXT_VIEW;
+import static com.egoriku.catsrunning.models.Constants.ModelReminder.KEY_VISIBLE_TIME_PICKER;
+import static com.egoriku.catsrunning.utils.AlarmsUtility.setAlarm;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class AddReminderActivity extends AppCompatActivity {
     private static final int UNICODE_EMOJI = 0x1F638;
-    public static final String BROADCAST_ADD_NEW_REMINDER = "BROADCAST_ADD_NEW_REMINDER";
-    private static final String KEY_VISIBLE_STRING_PICKER = "KEY_VISIBLE_STRING_PICKER";
-    private static final String KEY_VISIBLE_DATE_PICKER = "KEY_VISIBLE_DATE_PICKER";
-    private static final String KEY_VISIBLE_TIME_PICKER = "KEY_VISIBLE_TIME_PICKER";
-    private static final String KEY_VISIBLE_BTN_BACK = "KEY_VISIBLE_BTN_BACK";
-    private static final String KEY_CONDITION = "KEY_CONDITION";
-    private static final String KEY_CALENDAR = "KEY_CALENDAR";
-    private static final String KEY_TOOLBAR = "KEY_TOOLBAR";
-    private static final String KEY_VISIBLE_TEXT_VIEW = "KEY_VISIBLE_TEXT_VIEW";
-
     private CustomStringPicker stringPicker;
     private DatePicker datePicker;
     private TimePicker timePicker;
@@ -51,6 +49,7 @@ public class AddReminderActivity extends AppCompatActivity {
     private String textBtnNext;
     private String textToolbar;
     private String textType;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,7 +83,6 @@ public class AddReminderActivity extends AppCompatActivity {
             datePicker.setCalendarViewShown(false);
         }
 
-
         timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker timePicker, int hour, int minutes) {
@@ -92,7 +90,6 @@ public class AddReminderActivity extends AppCompatActivity {
                 allDateCalendar.set(Calendar.MINUTE, minutes);
             }
         });
-
 
         datePicker.init(allDateCalendar.get(Calendar.YEAR), allDateCalendar.get(Calendar.MONTH), allDateCalendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
             @Override

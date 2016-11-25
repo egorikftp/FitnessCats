@@ -25,7 +25,6 @@ import android.widget.Toast;
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
-import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.FitnessDataAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.IOnItemHandlerListener;
 import com.egoriku.catsrunning.loaders.AsyncTracksLoader;
@@ -40,11 +39,16 @@ import java.util.List;
 
 import static com.egoriku.catsrunning.helpers.DbActions.updateIsTrackDelete;
 import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
-import static com.egoriku.catsrunning.utils.ConstansTag.ARG_SECTION_NUMBER;
+import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_SAVE_NEW_TRACKS;
+import static com.egoriku.catsrunning.models.Constants.Tags.ARG_SECTION_NUMBER;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_DISTANCE;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_ID;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_LIKED;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_TIME_RUNNING;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_TOKEN;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_TYPE_FIT;
 
 public class FitnessDataFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AllFitnessDataModel>> {
-    public static final String TAG_MAIN_FRAGMENT = "TAG_MAIN_FRAGMENT";
-    public static final String TAG = "TAG";
     private RecyclerView recyclerView;
     private TextView textViewNoTracks;
     private ImageView imageViewNoTracks;
@@ -118,7 +122,7 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
     public void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(App.getInstance()).
-                registerReceiver(broadcastNewTracksSave, new IntentFilter(TracksActivity.BROADCAST_SAVE_NEW_TRACKS));
+                registerReceiver(broadcastNewTracksSave, new IntentFilter(BROADCAST_SAVE_NEW_TRACKS));
     }
 
 
@@ -147,12 +151,12 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
             @Override
             public void onClickItem(AllFitnessDataModel item, int position) {
                 Intent intentTrackOnMaps = new Intent(getActivity(), TrackOnMapsActivity.class);
-                intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_ID, item.getId());
-                intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_DISTANCE, item.getDistance());
-                intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TIME_RUNNING, item.getTime());
-                intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_LIKED, item.getLiked());
-                intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TOKEN, item.getTrackToken());
-                intentTrackOnMaps.putExtra(TrackOnMapsActivity.KEY_TYPE_FIT, item.getTypeFit());
+                intentTrackOnMaps.putExtra(KEY_ID, item.getId());
+                intentTrackOnMaps.putExtra(KEY_DISTANCE, item.getDistance());
+                intentTrackOnMaps.putExtra(KEY_TIME_RUNNING, item.getTime());
+                intentTrackOnMaps.putExtra(KEY_LIKED, item.getLiked());
+                intentTrackOnMaps.putExtra(KEY_TOKEN, item.getTrackToken());
+                intentTrackOnMaps.putExtra(KEY_TYPE_FIT, item.getTypeFit());
                 startActivity(intentTrackOnMaps);
             }
 
@@ -189,7 +193,7 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
                                 updateIsTrackDelete(item.getId());
 
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                App.getInstance().getTracksReference().child(user.getUid()).child(item.getTrackToken()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                App.getInstance().getFirebaseDbReference().child(user.getUid()).child(item.getTrackToken()).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         dataSnapshot.getRef().setValue(null);
@@ -234,12 +238,10 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoaderReset(Loader loader) {
-        setUpAdapter(null);
     }
 
 
     private void reloadData() {
         loader.onContentChanged();
     }
-
 }

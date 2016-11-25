@@ -4,9 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class DbOpenHelper extends SQLiteOpenHelper {
+import static com.egoriku.catsrunning.models.Constants.DB_NAME;
 
-    private static final String DB_NAME = "catsDB.db";
+public class DbOpenHelper extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
 
     public DbOpenHelper(Context context) {

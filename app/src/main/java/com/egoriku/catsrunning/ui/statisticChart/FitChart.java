@@ -18,8 +18,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.egoriku.catsrunning.models.Constants.FitChart.ANIMATION_SEEK;
+
 public class FitChart extends View {
-    public static final String ANIMATION_SEEK = "animationSeek";
     static final int DEFAULT_VIEW_RADIUS = 0;
     static final int DEFAULT_MIN_VALUE = 0;
     static final int DEFAULT_MAX_VALUE = 100;

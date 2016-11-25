@@ -45,25 +45,23 @@ import java.util.Calendar;
 
 import static com.egoriku.catsrunning.helpers.DbActions.deleteReminderDb;
 import static com.egoriku.catsrunning.helpers.DbActions.updateAlarmCondition;
-import static com.egoriku.catsrunning.models.State.DATE_REMINDER;
-import static com.egoriku.catsrunning.models.State.EXTRA_ID_REMINDER_KEY;
-import static com.egoriku.catsrunning.models.State.EXTRA_TEXT_TYPE_REMINDER_KEY;
-import static com.egoriku.catsrunning.models.State.IS_RINGS;
-import static com.egoriku.catsrunning.models.State.IS_RING_FALSE;
-import static com.egoriku.catsrunning.models.State.IS_RING_TRUE;
-import static com.egoriku.catsrunning.models.State.TABLE_REMINDER;
-import static com.egoriku.catsrunning.models.State.TYPE_REMINDER;
-import static com.egoriku.catsrunning.models.State._ID;
-import static com.egoriku.catsrunning.utils.AlarmsUtills.setAlarm;
+import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_UPDATE_REMINDER_DATE;
+import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_UPDATE_REMINDER_TIME;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.DATE_REMINDER;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.IS_RINGS;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TYPE_REMINDER;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns._ID;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_RING_FALSE;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_RING_TRUE;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_REMINDER;
+import static com.egoriku.catsrunning.models.Constants.Extras.EXTRA_ID_REMINDER_KEY;
+import static com.egoriku.catsrunning.models.Constants.Extras.EXTRA_TEXT_TYPE_REMINDER_KEY;
+import static com.egoriku.catsrunning.models.Constants.Tags.TAG_REMINDERS_FRAGMENT;
+import static com.egoriku.catsrunning.utils.AlarmsUtility.setAlarm;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class RemindersFragment extends Fragment {
-    public static final String TAG_REMINDERS_FRAGMENT = "TAG_REMINDERS_FRAGMENT";
-    public static final String KEY_ID = "KEY_ID";
-    public static final String KEY_TYPE_REMINDER = "KEY_TYPE_REMINDER";
-    public static final String KEY_DATE_REMINDER = "KEY_DATE_REMINDER";
     private static final int UNICODE_EMOJI = 0x1F638;
-
     private RecyclerView recyclerView;
     private FloatingActionButton floatingActionButton;
     private CollapsingToolbarLayout collapsingToolbarLayout;
@@ -95,11 +93,13 @@ public class RemindersFragment extends Fragment {
         return new RemindersFragment();
     }
 
+
     @Override
     public void onStart() {
         super.onStart();
         ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_reminders, TAG_REMINDERS_FRAGMENT);
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -216,9 +216,9 @@ public class RemindersFragment extends Fragment {
         if (isEnabled) {
             params.setScrollFlags((AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS));
             collapsingToolbarLayout.setVisibility(View.VISIBLE);
-            appBarLayout.setExpanded(isEnabled, isEnabled);
+            appBarLayout.setExpanded(true, true);
         } else {
-            appBarLayout.setExpanded(isEnabled, isEnabled);
+            appBarLayout.setExpanded(false, false);
             params.setScrollFlags(0);
             collapsingToolbarLayout.setVisibility(View.GONE);
         }
@@ -309,10 +309,10 @@ public class RemindersFragment extends Fragment {
         showReminders();
 
         LocalBroadcastManager.getInstance(App.getInstance())
-                .registerReceiver(broadcastUpdateTime, new IntentFilter(UpdateTimeReminderDialog.BROADCAST_UPDATE_REMINDER_TIME));
+                .registerReceiver(broadcastUpdateTime, new IntentFilter(BROADCAST_UPDATE_REMINDER_TIME));
 
         LocalBroadcastManager.getInstance(App.getInstance())
-                .registerReceiver(broadcastUpdateDate, new IntentFilter(UpdateDateReminderDialog.BROADCAST_UPDATE_REMINDER_DATE));
+                .registerReceiver(broadcastUpdateDate, new IntentFilter(BROADCAST_UPDATE_REMINDER_DATE));
     }
 
 

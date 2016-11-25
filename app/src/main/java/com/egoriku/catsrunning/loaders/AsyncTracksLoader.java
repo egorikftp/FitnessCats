@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
+
 import com.egoriku.catsrunning.helpers.DbCursor;
 import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
@@ -11,19 +12,19 @@ import com.egoriku.catsrunning.models.AllFitnessDataModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.egoriku.catsrunning.models.State.AND;
-import static com.egoriku.catsrunning.models.State.BEGINS_AT;
-import static com.egoriku.catsrunning.models.State.DISTANCE;
-import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_EQ;
-import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_FALSE;
-import static com.egoriku.catsrunning.models.State.LIKED;
-import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
-import static com.egoriku.catsrunning.models.State.TIME;
-import static com.egoriku.catsrunning.models.State.TRACK_TOKEN;
-import static com.egoriku.catsrunning.models.State.TYPE_FIT;
-import static com.egoriku.catsrunning.models.State.TYPE_FIT_EQ;
-import static com.egoriku.catsrunning.models.State._ID;
-import static com.egoriku.catsrunning.utils.ConstansTag.ARG_SECTION_NUMBER;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.BEGINS_AT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.DISTANCE;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LIKED;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TIME;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TRACK_TOKEN;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TYPE_FIT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns._ID;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.AND;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_TRACK_DELETE_EQ;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_TRACK_DELETE_FALSE;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.TYPE_FIT_EQ;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
+import static com.egoriku.catsrunning.models.Constants.Tags.ARG_SECTION_NUMBER;
 
 public class AsyncTracksLoader extends AsyncTaskLoader<List<AllFitnessDataModel>> {
     private List<AllFitnessDataModel> dataModelList;

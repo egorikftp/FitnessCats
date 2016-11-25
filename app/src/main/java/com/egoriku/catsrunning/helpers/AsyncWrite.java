@@ -14,23 +14,22 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static com.egoriku.catsrunning.models.State.BEGINS_AT;
-import static com.egoriku.catsrunning.models.State.DISTANCE;
-import static com.egoriku.catsrunning.models.State.LAT;
-import static com.egoriku.catsrunning.models.State.LNG;
-import static com.egoriku.catsrunning.models.State.TABLE_POINT;
-import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
-import static com.egoriku.catsrunning.models.State.TIME;
-import static com.egoriku.catsrunning.models.State.TRACK_ID;
-import static com.egoriku.catsrunning.models.State.TRACK_TOKEN;
-import static com.egoriku.catsrunning.models.State.TYPE_FIT;
+import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_SAVE_NEW_TRACKS;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.BEGINS_AT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.DISTANCE;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LAT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LNG;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TIME;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TRACK_ID;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TRACK_TOKEN;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TYPE_FIT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_POINT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
 
 public class AsyncWrite {
-    private static final String BROADCAST_SAVE_NEW_TRACKS = "BROADCAST_SAVE_NEW_TRACKS";
     private static final int CORE_POOL_SIZE = 4;
     private static final int MAXIMUM_POOL_SIZE = 4;
     private static final int KEEP_ALIVE = 1;
-
     private static WriteTaskTrack writeTaskTrack;
 
     private static final ThreadPoolExecutor customExecutor = new ThreadPoolExecutor(
@@ -95,7 +94,7 @@ public class AsyncWrite {
         private ArrayList<Point> points = new ArrayList<>();
         private long idTrack;
 
-        public WriteTaskPoints(ArrayList<Point> points, long idTrack) {
+        private WriteTaskPoints(ArrayList<Point> points, long idTrack) {
             this.idTrack = idTrack;
             this.points = points;
         }

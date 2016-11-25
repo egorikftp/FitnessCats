@@ -93,15 +93,15 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        protected TextView textViewItem;
-        protected ImageView imageView;
-        protected ImageView imageLine;
-        protected TextView headerName;
-        protected TextView headerEmail;
-        protected RelativeLayout rootRelativeLayout;
+        private TextView textViewItem;
+        private ImageView imageView;
+        private ImageView imageLine;
+        private TextView headerName;
+        private TextView headerEmail;
+        private RelativeLayout rootRelativeLayout;
 
 
-        public ViewHolder(View itemView, int viewType) {
+        private ViewHolder(View itemView, int viewType) {
             super(itemView);
             if (viewType == 0) {
                 headerName = (TextView) itemView.findViewById(R.id.nav_drawer_user_name);

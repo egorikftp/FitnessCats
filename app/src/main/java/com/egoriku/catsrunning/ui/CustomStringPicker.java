@@ -11,16 +11,19 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import static com.egoriku.catsrunning.models.Constants.CustomStringPicker.ANDROID_WIDGET_NUMBER_PICKER;
+import static com.egoriku.catsrunning.models.Constants.CustomStringPicker.COM_ANDROID_INTERNAL_WIDGET_NUMBER_PICKER;
+import static com.egoriku.catsrunning.models.Constants.CustomStringPicker.GET_CURRENT;
+import static com.egoriku.catsrunning.models.Constants.CustomStringPicker.GET_VALUE;
+import static com.egoriku.catsrunning.models.Constants.CustomStringPicker.SET_CURRENT;
+import static com.egoriku.catsrunning.models.Constants.CustomStringPicker.SET_DESCENDANT_FOCUSABILITY;
+import static com.egoriku.catsrunning.models.Constants.CustomStringPicker.SET_DISPLAYED_VALUES;
+import static com.egoriku.catsrunning.models.Constants.CustomStringPicker.SET_MAX_VALUE;
+import static com.egoriku.catsrunning.models.Constants.CustomStringPicker.SET_MIN_VALUE;
+import static com.egoriku.catsrunning.models.Constants.CustomStringPicker.SET_RANGE;
+import static com.egoriku.catsrunning.models.Constants.CustomStringPicker.SET_VALUE;
+
 public class CustomStringPicker extends LinearLayout {
-    private static final String SET_CURRENT = "setCurrent";
-    private static final String SET_VALUE = "setValue";
-    private static final String GET_CURRENT = "getCurrent";
-    private static final String GET_VALUE = "getValue";
-    private static final String SET_RANGE = "setRange";
-    private static final String SET_MAX_VALUE = "setMaxValue";
-    private static final String SET_MIN_VALUE = "setMinValue";
-    private static final String SET_DISPLAYED_VALUES = "setDisplayedValues";
-    private static final String SET_DESCENDANT_FOCUSABILITY = "setDescendantFocusability";
     private Object mInstance;
     private Class<?> mClazz;
     private String[] values;
@@ -29,8 +32,7 @@ public class CustomStringPicker extends LinearLayout {
 
     static {
         SDK_VERSION = Build.VERSION.SDK_INT;
-        PICKER_CLASS = SDK_VERSION < Build.VERSION_CODES.FROYO ?
-                "com.android.internal.widget.NumberPicker" : "android.widget.NumberPicker";
+        PICKER_CLASS = SDK_VERSION < Build.VERSION_CODES.FROYO ? COM_ANDROID_INTERNAL_WIDGET_NUMBER_PICKER : ANDROID_WIDGET_NUMBER_PICKER;
     }
 
 

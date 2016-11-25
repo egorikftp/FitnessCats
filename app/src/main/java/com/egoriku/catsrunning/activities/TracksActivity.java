@@ -26,7 +26,6 @@ import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.adapters.NavigationDrawerAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.OnItemSelecteListener;
 import com.egoriku.catsrunning.fragments.AllFitnessDataFragment;
-import com.egoriku.catsrunning.fragments.FitnessDataFragment;
 import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
@@ -46,12 +45,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.egoriku.catsrunning.helpers.DbActions.deleteSyncTrackData;
-import static com.egoriku.catsrunning.models.State.BEGINS_AT;
-import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
+import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_SAVE_NEW_TRACKS;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.BEGINS_AT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_POINT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_REMINDER;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_USER;
+import static com.egoriku.catsrunning.models.Constants.Tags.TAG_EXIT_APP;
+import static com.egoriku.catsrunning.models.Constants.Tags.TAG_LIKED_FRAGMENT;
+import static com.egoriku.catsrunning.models.Constants.Tags.TAG_MAIN_FRAGMENT;
+import static com.egoriku.catsrunning.models.Constants.Tags.TAG_REMINDERS_FRAGMENT;
+import static com.egoriku.catsrunning.models.Constants.Tags.TAG_STATISTIC_FRAGMENT;
 
 public class TracksActivity extends AppCompatActivity {
-    public static final String BROADCAST_SAVE_NEW_TRACKS = "BROADCAST_SAVE_NEW_TRACKS";
-    private static final String TAG_EXIT_APP = "TAG_EXIT_APP";
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private RelativeLayout relativeLayoutSetting;
@@ -96,14 +102,14 @@ public class TracksActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(drawerToggle);
 
         if (savedInstanceState == null) {
-            showFragment(AllFitnessDataFragment.newInstance(), FitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
+            showFragment(AllFitnessDataFragment.newInstance(), TAG_MAIN_FRAGMENT, null, true);
         }
 
         if (App.getInstance().getState() == null) {
             App.getInstance().createState();
         }
 
-        App.getInstance().getTracksReference().child(user.getUid()).addValueEventListener(new ValueEventListener() {
+        App.getInstance().getFirebaseDbReference().child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
                 new Thread() {
@@ -133,7 +139,7 @@ public class TracksActivity extends AppCompatActivity {
             }
         });
 
-        App.getInstance().getTracksReference().child(user.getUid()).addChildEventListener(new ChildEventListener() {
+        App.getInstance().getFirebaseDbReference().child(user.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             }
@@ -262,7 +268,7 @@ public class TracksActivity extends AppCompatActivity {
         drawerArrayList.add(new ItemNavigationDrawer(
                 getString(R.string.navigation_drawer_main_activity),
                 R.drawable.ic_vec_near_me_black,
-                FitnessDataFragment.TAG_MAIN_FRAGMENT,
+                TAG_MAIN_FRAGMENT,
                 false,
                 false
         ));
@@ -270,7 +276,7 @@ public class TracksActivity extends AppCompatActivity {
         drawerArrayList.add(new ItemNavigationDrawer(
                 getString(R.string.navigation_drawer_reminders),
                 R.drawable.ic_vec_notifications_active_black,
-                RemindersFragment.TAG_REMINDERS_FRAGMENT,
+                TAG_REMINDERS_FRAGMENT,
                 false,
                 false
         ));
@@ -278,7 +284,7 @@ public class TracksActivity extends AppCompatActivity {
         drawerArrayList.add(new ItemNavigationDrawer(
                 getString(R.string.navigation_drawer_liked),
                 R.drawable.ic_vec_star_black_nav_drawer,
-                LikedFragment.TAG_LIKED_FRAGMENT,
+                TAG_LIKED_FRAGMENT,
                 false,
                 false
         ));
@@ -286,7 +292,7 @@ public class TracksActivity extends AppCompatActivity {
         drawerArrayList.add(new ItemNavigationDrawer(
                 getString(R.string.navigation_drawer_statistic),
                 R.drawable.ic_vec_equalizer_black,
-                StatisticFragment.TAG_STATISTIC_FRAGMENT,
+                TAG_STATISTIC_FRAGMENT,
                 false,
                 false
         ));
@@ -319,23 +325,23 @@ public class TracksActivity extends AppCompatActivity {
 
 
     private void changeNavigationDrawerItem(String tag) {
-        if (tag.equals(FitnessDataFragment.TAG_MAIN_FRAGMENT)) {
-            showFragment(AllFitnessDataFragment.newInstance(), FitnessDataFragment.TAG_MAIN_FRAGMENT, null, true);
+        if (tag.equals(TAG_MAIN_FRAGMENT)) {
+            showFragment(AllFitnessDataFragment.newInstance(), TAG_MAIN_FRAGMENT, null, true);
             drawerLayout.closeDrawers();
         }
 
-        if (tag.equals(RemindersFragment.TAG_REMINDERS_FRAGMENT)) {
-            showFragment(RemindersFragment.newInstance(), RemindersFragment.TAG_REMINDERS_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
+        if (tag.equals(TAG_REMINDERS_FRAGMENT)) {
+            showFragment(RemindersFragment.newInstance(), TAG_REMINDERS_FRAGMENT, TAG_MAIN_FRAGMENT, false);
             drawerLayout.closeDrawers();
         }
 
-        if (tag.equals(LikedFragment.TAG_LIKED_FRAGMENT)) {
-            showFragment(LikedFragment.newInstance(), LikedFragment.TAG_LIKED_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
+        if (tag.equals(TAG_LIKED_FRAGMENT)) {
+            showFragment(LikedFragment.newInstance(), TAG_LIKED_FRAGMENT, TAG_MAIN_FRAGMENT, false);
             drawerLayout.closeDrawers();
         }
 
-        if (tag.equals(StatisticFragment.TAG_STATISTIC_FRAGMENT)) {
-            showFragment(StatisticFragment.newInstance(), StatisticFragment.TAG_STATISTIC_FRAGMENT, FitnessDataFragment.TAG_MAIN_FRAGMENT, false);
+        if (tag.equals(TAG_STATISTIC_FRAGMENT)) {
+            showFragment(StatisticFragment.newInstance(), TAG_STATISTIC_FRAGMENT, TAG_MAIN_FRAGMENT, false);
             drawerLayout.closeDrawers();
         }
 
@@ -351,11 +357,11 @@ public class TracksActivity extends AppCompatActivity {
 
 
     private void clearUserData() {
-        App.getInstance().getDb().execSQL("DELETE FROM User");
-        App.getInstance().getDb().execSQL("DELETE FROM Tracks");
-        App.getInstance().getDb().execSQL("DELETE FROM Reminder");
-        App.getInstance().getDb().execSQL("DELETE FROM Point");
-    }
+
+        new InquiryBuilder().cleanTable(TABLE_USER);
+        new InquiryBuilder().cleanTable(TABLE_TRACKS);
+        new InquiryBuilder().cleanTable(TABLE_REMINDER);
+        new InquiryBuilder().cleanTable(TABLE_POINT);}
 
 
     public void tabTitle(String titleId) {

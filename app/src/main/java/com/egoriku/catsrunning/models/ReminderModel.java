@@ -1,15 +1,11 @@
 package com.egoriku.catsrunning.models;
 
 public class ReminderModel {
-
     private int id;
     private long dateReminder;
     private int typeReminder;
-
     private int isRing;
 
-    public ReminderModel() {
-    }
 
     public ReminderModel(int id, long dateReminder, int typeReminder, int isRing) {
         this.id = id;

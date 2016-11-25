@@ -17,8 +17,9 @@ import com.egoriku.catsrunning.ui.statisticChart.FitChartValue;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static com.egoriku.catsrunning.models.Constants.Tags.TAG_STATISTIC_FRAGMENT;
+
 public class StatisticFragment extends Fragment {
-    public static final String TAG_STATISTIC_FRAGMENT = "TAG_STATISTIC_FRAGMENT";
     private FitChart fitChart;
     private Button button;
 

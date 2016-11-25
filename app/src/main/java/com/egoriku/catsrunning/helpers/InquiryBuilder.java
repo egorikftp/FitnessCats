@@ -14,37 +14,36 @@ import com.egoriku.catsrunning.App;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.ALTER;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.CREATE;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.CREATE_INDEX;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.DELETE;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.DESC;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.DROP;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.DROP_INDEX;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.EQ_QUESTION;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.FROM;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.GROUP_BY;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.INSERT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.JOIN;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.ON;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.ORDER_BY;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.PRIMARY_KEY;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.RENAME;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.SELECT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.SET;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.UPDATE;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.VALUES;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.WHERE;
 
 
 public class InquiryBuilder implements Cursor {
-    private static final String SELECT = "SELECT";
-    private static final String SELECT_FROM = "SELECT FROM";
-    private static final String DELETE = "DELETE FROM";
-    private static final String WHERE = "WHERE";
-    private static final String FROM = "FROM";
-    private static final String JOIN = "JOIN";
-    private static final String ON = "ON";
-    private static final String AND = "AND";
-    private static final String CREATE = "CREATE TABLE";
-    private static final String CREATE_INDEX = "CREATE INDEX";
-    private static final String DROP_INDEX = "DROP INDEX";
-    private static final String DROP = "DROP TABLE";
-    private static final String ALTER = "ALTER TABLE";
-    private static final String RENAME = "RENAME TO";
-    private static final String INSERT = "INSERT INTO";
-    private static final String UPDATE = "UPDATE";
-    private static final String SET = "SET";
-    private static final String ORDER_BY = "ORDER BY";
-    private static final String DESC = "DESC";
-    private static final String GROUP_BY = "GROUP BY";
-    private static final String VALUES = "VALUES";
-    private static final String PRIMARY_KEY = "INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT";
-    public static final String EQ_QUESTION = "=?";
-    //TODO List<String>
-    private ArrayList<String> params = new ArrayList<>();
-    private ArrayList<String> fields = new ArrayList<>();
-    private ArrayList<String> insertFields = new ArrayList<>();
-    private ArrayList<String> insertValues = new ArrayList<>();
+    private List<String> params = new ArrayList<>();
+    private List<String> fields = new ArrayList<>();
+    private List<String> insertFields = new ArrayList<>();
+    private List<String> insertValues = new ArrayList<>();
     private StringBuilder query = new StringBuilder();
 
     public InquiryBuilder from(String table) {

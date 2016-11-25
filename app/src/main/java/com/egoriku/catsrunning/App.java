@@ -10,20 +10,16 @@ import com.egoriku.catsrunning.models.State;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import static com.egoriku.catsrunning.models.Constants.ConstantsFirebase.CHILD_TRACKS;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.SQL_VACUUM;
+
 
 public class App extends Application {
-    private static String CHILD_TRACKS = "tracks";
-
     public static App self;
     private State state;
-
-    //TODO create wrapper for DB's
     private DbOpenHelper dbOpenHelper;
     private SQLiteDatabase db;
-
-    //TODO rename to more friendly name
-    private DatabaseReference database;
-    private DatabaseReference tracksReference;
+    private DatabaseReference firebaseDbReference;
 
 
     @Override
@@ -34,10 +30,8 @@ public class App extends Application {
         //TODO do not hold WritableDatabase
         //use only like local var
         db = dbOpenHelper.getWritableDatabase();
-        //TODO transactions
-        db.execSQL("VACUUM");
-        database = FirebaseDatabase.getInstance().getReference();
-        tracksReference = database.child(CHILD_TRACKS);
+        db.execSQL(SQL_VACUUM);
+        firebaseDbReference = FirebaseDatabase.getInstance().getReference().child(CHILD_TRACKS);
     }
 
 
@@ -50,9 +44,11 @@ public class App extends Application {
         return state;
     }
 
+
     public SQLiteDatabase getDb() {
         return db;
     }
+
 
     public static App getInstance() {
         return self;
@@ -65,7 +61,9 @@ public class App extends Application {
         MultiDex.install(this);
     }
 
-    public DatabaseReference getTracksReference() {
-        return tracksReference;
+
+    public DatabaseReference getFirebaseDbReference() {
+        return firebaseDbReference;
     }
 }
+

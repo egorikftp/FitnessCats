@@ -22,11 +22,11 @@ import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.ScamperActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
 
-import static com.egoriku.catsrunning.fragments.FitnessDataFragment.TAG_MAIN_FRAGMENT;
-import static com.egoriku.catsrunning.models.State.KEY_TYPE_FIT;
-import static com.egoriku.catsrunning.models.State.TYPE_FIT_CYCLING;
-import static com.egoriku.catsrunning.models.State.TYPE_FIT_RUN;
-import static com.egoriku.catsrunning.models.State.TYPE_FIT_WALK;
+import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
+import static com.egoriku.catsrunning.models.Constants.Tags.TAG_MAIN_FRAGMENT;
+import static com.egoriku.catsrunning.models.Constants.TypeFit.TYPE_FIT_CYCLING;
+import static com.egoriku.catsrunning.models.Constants.TypeFit.TYPE_FIT_RUN;
+import static com.egoriku.catsrunning.models.Constants.TypeFit.TYPE_FIT_WALK;
 import static com.egoriku.catsrunning.utils.VectorToDrawable.getDrawable;
 
 public class AllFitnessDataFragment extends Fragment {

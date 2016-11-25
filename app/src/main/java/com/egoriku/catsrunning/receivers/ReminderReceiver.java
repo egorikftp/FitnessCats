@@ -13,14 +13,13 @@ import android.support.v4.app.NotificationManagerCompat;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.ScamperActivity;
 
-import static com.egoriku.catsrunning.models.State.EXTRA_ID_REMINDER_KEY;
-import static com.egoriku.catsrunning.models.State.EXTRA_TEXT_TYPE_REMINDER_KEY;
-import static com.egoriku.catsrunning.models.State.KEY_TYPE_FIT;
-import static com.egoriku.catsrunning.models.State.TYPE_REMINDER_KEY;
+import static com.egoriku.catsrunning.models.Constants.ANDROID_RESOURCE;
+import static com.egoriku.catsrunning.models.Constants.Extras.EXTRA_ID_REMINDER_KEY;
+import static com.egoriku.catsrunning.models.Constants.Extras.EXTRA_TEXT_TYPE_REMINDER_KEY;
+import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
+import static com.egoriku.catsrunning.models.Constants.Extras.TYPE_REMINDER_KEY;
 
 public class ReminderReceiver extends BroadcastReceiver {
-    public static final String ANDROID_RESOURCE = "android.resource://";
-
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle extras = intent.getExtras();

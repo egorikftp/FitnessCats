@@ -15,16 +15,18 @@ import android.widget.TimePicker;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.fragments.RemindersFragment;
 
 import java.util.Calendar;
 
 import static com.egoriku.catsrunning.helpers.DbActions.updateReminder;
-import static com.egoriku.catsrunning.utils.AlarmsUtills.setAlarm;
+import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_UPDATE_REMINDER_TIME;
+import static com.egoriku.catsrunning.models.Constants.KeyReminder.KEY_DATE_REMINDER;
+import static com.egoriku.catsrunning.models.Constants.KeyReminder.KEY_ID;
+import static com.egoriku.catsrunning.models.Constants.KeyReminder.KEY_TYPE_REMINDER;
+import static com.egoriku.catsrunning.utils.AlarmsUtility.setAlarm;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class UpdateTimeReminderDialog extends DialogFragment {
-    public static final String BROADCAST_UPDATE_REMINDER_TIME = "BROADCAST_UPDATE_REMINDER_TIME";
     private String dialogTitle;
     private String dialogNegativeBtnText;
     private String dialogPositiveBtnText;
@@ -37,9 +39,9 @@ public class UpdateTimeReminderDialog extends DialogFragment {
     public static UpdateTimeReminderDialog newInstance(int id, long dateReminder, int typeReminder) {
         UpdateTimeReminderDialog updateDateDialogFragment = new UpdateTimeReminderDialog();
         Bundle bundle = new Bundle();
-        bundle.putInt(RemindersFragment.KEY_ID, id);
-        bundle.putLong(RemindersFragment.KEY_DATE_REMINDER, dateReminder);
-        bundle.putInt(RemindersFragment.KEY_TYPE_REMINDER, typeReminder);
+        bundle.putInt(KEY_ID, id);
+        bundle.putLong(KEY_DATE_REMINDER, dateReminder);
+        bundle.putInt(KEY_TYPE_REMINDER, typeReminder);
         updateDateDialogFragment.setArguments(bundle);
         return updateDateDialogFragment;
     }
@@ -61,7 +63,7 @@ public class UpdateTimeReminderDialog extends DialogFragment {
         final TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.update_dialog_time_picker);
         final Calendar reminderTime = Calendar.getInstance();
 
-        reminderTime.setTimeInMillis(getArguments().getLong(RemindersFragment.KEY_DATE_REMINDER) * 1000L);
+        reminderTime.setTimeInMillis(getArguments().getLong(KEY_DATE_REMINDER) * 1000L);
         timePicker.setIs24HourView(true);
 
         if (Build.VERSION.SDK_INT >= 15 && Build.VERSION.SDK_INT <= 22) {
@@ -87,13 +89,13 @@ public class UpdateTimeReminderDialog extends DialogFragment {
                 .setPositiveButton(dialogPositiveBtnText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        updateReminder(reminderTime.getTimeInMillis() / 1000, getArguments().getInt(RemindersFragment.KEY_ID));
+                        updateReminder(reminderTime.getTimeInMillis() / 1000, getArguments().getInt(KEY_ID));
 
                         setAlarm(
-                                getArguments().getInt(RemindersFragment.KEY_ID),
-                                getTypeFit(getArguments().getInt(RemindersFragment.KEY_TYPE_REMINDER), false, R.array.type_reminder),
+                                getArguments().getInt(KEY_ID),
+                                getTypeFit(getArguments().getInt(KEY_TYPE_REMINDER), false, R.array.type_reminder),
                                 reminderTime.getTimeInMillis(),
-                                getArguments().getInt(RemindersFragment.KEY_TYPE_REMINDER)
+                                getArguments().getInt(KEY_TYPE_REMINDER)
                         );
 
                         LocalBroadcastManager.getInstance(App.getInstance())

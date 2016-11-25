@@ -2,17 +2,17 @@ package com.egoriku.catsrunning.helpers;
 
 import com.egoriku.catsrunning.App;
 
-import static com.egoriku.catsrunning.models.State.BEGINS_AT_EQ;
-import static com.egoriku.catsrunning.models.State.DATE_REMINDER;
-import static com.egoriku.catsrunning.models.State.IS_RINGS;
-import static com.egoriku.catsrunning.models.State.IS_RING_TRUE;
-import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE;
-import static com.egoriku.catsrunning.models.State.IS_TRACK_DELETE_TRUE;
-import static com.egoriku.catsrunning.models.State.LIKED;
-import static com.egoriku.catsrunning.models.State.TABLE_REMINDER;
-import static com.egoriku.catsrunning.models.State.TABLE_TRACKS;
-import static com.egoriku.catsrunning.models.State.TYPE_REMINDER;
-import static com.egoriku.catsrunning.models.State._ID_EQ;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.DATE_REMINDER;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.IS_RINGS;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.IS_TRACK_DELETE;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LIKED;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TYPE_REMINDER;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.BEGINS_AT_EQ;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_RING_TRUE;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_TRACK_DELETE_TRUE;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query._ID_EQ;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_REMINDER;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
 
 public class DbActions {
     public static void deleteTrackDataById(int idTrack) {

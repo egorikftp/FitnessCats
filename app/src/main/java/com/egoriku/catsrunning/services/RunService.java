@@ -4,7 +4,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteStatement;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -17,10 +16,25 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.ScamperActivity;
+import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.utils.ConverterTime;
 
-import static com.egoriku.catsrunning.activities.ScamperActivity.KEY_TYPE_FIT_NOTIFICATION;
-import static com.egoriku.catsrunning.models.State.KEY_TYPE_FIT;
+import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_FINISH_SERVICE;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.BEGINS_AT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.DISTANCE;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LAT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LNG;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TIME;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TRACK_ID;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TYPE_FIT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query._ID_EQ;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_POINT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
+import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
+import static com.egoriku.catsrunning.models.Constants.KeyNotification.KEY_TYPE_FIT_NOTIFICATION;
+import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.EXTRA_ID_TRACK;
+import static com.egoriku.catsrunning.models.Constants.RunService.ACTION_START;
+import static com.egoriku.catsrunning.models.Constants.RunService.START_TIME;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class RunService extends Service implements LocationListener {
@@ -29,18 +43,13 @@ public class RunService extends Service implements LocationListener {
     private static final float UPDATE_DISTANCE_THRESHOLD_METERS = 5.0f;
     private static final int TWO_MINUTES = 1000 * 60 * 2;
 
-    public static final String START_TIME = "START_TIME";
-    public static final String ACTION_START = "START_NOTIFY_SERVICE";
-    public static final String BROADCAST_FINISH_SERVICE = "BROADCAST_FINISH_SERVICE";
-    private static final String EXTRA_ID_TRACK = "EXTRA_ID_TRACK";
-
     private boolean isActive;
     private boolean isThreadRun;
     private int typeFit;
 
     private long startTime;
     private float nowDistance;
-    private int idTrack;
+    private long idTrack;
 
     private UpdateNotification updateNotification;
     private Thread updateThread;
@@ -90,18 +99,11 @@ public class RunService extends Service implements LocationListener {
 
 
     private void getTrackIdStatement(long startTime, int typeFit) {
-        SQLiteStatement statement = App.getInstance().getDb().compileStatement(
-                "INSERT INTO Tracks (beginsAt, typeFit) VALUES (?, ?)"
-        );
-
-        statement.bindLong(1, startTime / 1000);
-        statement.bindLong(2, typeFit);
-
-        try {
-            idTrack = (int) statement.executeInsert();
-        } finally {
-            statement.close();
-        }
+        idTrack = new InquiryBuilder()
+                .table(TABLE_TRACKS)
+                .set(BEGINS_AT, startTime / 1000)
+                .set(TYPE_FIT, typeFit)
+                .insertForId(App.getInstance().getDb());
     }
 
 
@@ -120,25 +122,18 @@ public class RunService extends Service implements LocationListener {
             }
 
             oldLocation = location;
-            insertLocationToDb(location.getLongitude(), location.getLatitude(), idTrack);
+            insertLocationToDb(location.getLongitude(), location.getLatitude());
         }
     }
 
 
-    private void insertLocationToDb(double longitude, double latitude, int id) {
-        SQLiteStatement statement = App.getInstance().getDb().compileStatement(
-                "INSERT INTO Point (longitude, latitude, trackId) VALUES (?, ?, ?)"
-        );
-
-        statement.bindDouble(1, longitude);
-        statement.bindDouble(2, latitude);
-        statement.bindLong(3, id);
-
-        try {
-            statement.execute();
-        } finally {
-            statement.close();
-        }
+    private void insertLocationToDb(double longitude, double latitude) {
+        new InquiryBuilder()
+                .table(TABLE_POINT)
+                .set(LAT, latitude)
+                .set(LNG, longitude)
+                .set(TRACK_ID, idTrack)
+                .insert(App.getInstance().getDb());
     }
 
 
@@ -158,19 +153,12 @@ public class RunService extends Service implements LocationListener {
 
 
     private void insertTrackData(float nowDistance, long sinceTime) {
-        SQLiteStatement statement = App.getInstance().getDb().compileStatement(
-                "UPDATE Tracks SET distance = ?, time = ? WHERE _id = ?"
-        );
-
-        statement.bindDouble(1, nowDistance);
-        statement.bindLong(2, sinceTime);
-        statement.bindDouble(3, idTrack);
-
-        try {
-            statement.execute();
-        } finally {
-            statement.close();
-        }
+        new InquiryBuilder()
+                .updateTable(TABLE_TRACKS)
+                .set(DISTANCE, nowDistance)
+                .set(TIME, sinceTime)
+                .updateWhere(_ID_EQ, String.valueOf(idTrack))
+                .update();
     }
 
 
