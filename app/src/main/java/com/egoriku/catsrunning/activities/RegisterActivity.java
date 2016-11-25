@@ -37,6 +37,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class RegisterActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+    //TODO create Parcelable/Serializable Model
     private static final String EMAIL_KEY = "EMAIL_KEY";
     private static final String PASSWORD_KEY = "PASSWORD_KEY";
     private static final String DOUBLE_PASSWORD_KEY = "DOUBLE_PASSWORD_KEY";
@@ -424,6 +425,7 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        //TODO put model
         outState.putInt(EMAIL_KEY, inputLayoutEmail.getVisibility());
         outState.putInt(PASSWORD_KEY, inputLayoutPassword.getVisibility());
         outState.putInt(DOUBLE_PASSWORD_KEY, inputLayoutDoublePassword.getVisibility());
@@ -441,6 +443,7 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
     @SuppressWarnings("WrongConstant")
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        //TODO get model
         inputLayoutEmail.setVisibility(savedInstanceState.getInt(EMAIL_KEY));
         inputLayoutPassword.setVisibility(savedInstanceState.getInt(PASSWORD_KEY));
         inputLayoutDoublePassword.setVisibility(savedInstanceState.getInt(DOUBLE_PASSWORD_KEY));

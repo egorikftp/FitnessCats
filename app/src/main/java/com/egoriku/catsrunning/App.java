@@ -16,9 +16,12 @@ public class App extends Application {
 
     public static App self;
     private State state;
+
+    //TODO create wrapper for DB's
     private DbOpenHelper dbOpenHelper;
     private SQLiteDatabase db;
 
+    //TODO rename to more friendly name
     private DatabaseReference database;
     private DatabaseReference tracksReference;
 
@@ -28,7 +31,10 @@ public class App extends Application {
         super.onCreate();
         self = this;
         dbOpenHelper = new DbOpenHelper(this);
+        //TODO do not hold WritableDatabase
+        //use only like local var
         db = dbOpenHelper.getWritableDatabase();
+        //TODO transactions
         db.execSQL("VACUUM");
         database = FirebaseDatabase.getInstance().getReference();
         tracksReference = database.child(CHILD_TRACKS);
