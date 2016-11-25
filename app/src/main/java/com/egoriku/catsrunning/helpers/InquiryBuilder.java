@@ -40,6 +40,7 @@ public class InquiryBuilder implements Cursor {
     private static final String VALUES = "VALUES";
     private static final String PRIMARY_KEY = "INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT";
     public static final String EQ_QUESTION = "=?";
+    //TODO List<String>
     private ArrayList<String> params = new ArrayList<>();
     private ArrayList<String> fields = new ArrayList<>();
     private ArrayList<String> insertFields = new ArrayList<>();
