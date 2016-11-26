@@ -15,7 +15,7 @@ import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
 
 public class DbActions {
-    public static void deleteTrackDataById(int idTrack) {
+    public static void deleteTrackDataById(long idTrack) {
         new InquiryBuilder()
                 .tableDelete(TABLE_TRACKS)
                 .where(false, _ID_EQ, String.valueOf(idTrack))

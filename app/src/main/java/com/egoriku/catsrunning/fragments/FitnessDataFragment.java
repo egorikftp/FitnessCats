@@ -191,32 +191,38 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 updateIsTrackDelete(item.getId());
-
-                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                App.getInstance().getFirebaseDbReference().child(user.getUid()).child(item.getTrackToken()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        dataSnapshot.getRef().setValue(null);
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                        Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                                deleteFromFirebaseDb(item);
 
                                 dataModelList.remove(position);
                                 adapter.notifyItemRemoved(position);
                                 adapter.notifyItemRangeChanged(position, dataModelList.size());
 
-                                /*if (dataModelList.size() == 0) {
+                                if (dataModelList.size() == 0) {
                                     reloadData();
-                                }*/
+                                }
                             }
                         })
                         .show();
             }
         });
+    }
+
+
+    private void deleteFromFirebaseDb(AllFitnessDataModel item) {
+        if (item.getTrackToken() != null) {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            App.getInstance().getFirebaseDbReference().child(user.getUid()).child(item.getTrackToken()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    dataSnapshot.getRef().setValue(null);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
 

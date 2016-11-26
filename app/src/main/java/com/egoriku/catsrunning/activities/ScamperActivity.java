@@ -82,7 +82,7 @@ public class ScamperActivity extends AppCompatActivity {
     public static final int ANOTHER_PADDING = 0;
     private ArrayList<Point> points;
 
-    private int idTrack;
+    private long idTrack;
     private int typeFit;
     private String alertMessage;
     private String alertPositiveBtn;
@@ -359,7 +359,7 @@ public class ScamperActivity extends AppCompatActivity {
     }
 
 
-    private void writeTokenToDb(String key, int idTrack) {
+    private void writeTokenToDb(String key, long idTrack) {
         new InquiryBuilder()
                 .updateTable(TABLE_TRACKS)
                 .set(TRACK_TOKEN, key)
@@ -371,7 +371,7 @@ public class ScamperActivity extends AppCompatActivity {
     private BroadcastReceiver broadcastReceiverIdTrack = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            idTrack = intent.getIntExtra(EXTRA_ID_TRACK, -1);
+            idTrack = intent.getLongExtra(EXTRA_ID_TRACK, -1);
             textDistance.setText(String.format(getString(R.string.scamper_activity_distance_meter), App.getInstance().getState().getNowDistance()));
 
             points = new ArrayList<>();
