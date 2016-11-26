@@ -37,7 +37,7 @@
     <string name="error_email">Возможно некорректный email</string>
     <string name="fitness_data_fragment_alert_negative_btn">Отмена</string>
     <string name="fitness_data_fragment_alert_positive_btn">Удалить</string>
-    <string name="fitness_data_fragment_alert_title">Удалить этот трек?</string>
+    <string name="fitness_data_fragment_alert_title">Удалить этот маршрут?</string>
     <string name="fragment_track_toolbar_title">Подробнее о треке</string>
     <string name="liked_fragment_adapter_distance">Дистанция:</string>
     <string name="liked_fragment_adapter_distance_meter">%s м</string>
@@ -47,7 +47,7 @@
     <string name="navigation_drawer_close">\" \"</string>
     <string name="navigation_drawer_exit">Выход</string>
     <string name="navigation_drawer_liked">Избранное [alpha]</string>
-    <string name="navigation_drawer_main_activity">Список треков</string>
+    <string name="navigation_drawer_main_activity">Список маршрутов</string>
     <string name="navigation_drawer_open">" "</string>
     <string name="navigation_drawer_reminders">Напоминания</string>
     <string name="navigation_drawer_setting">Настройки [alpha]</string>

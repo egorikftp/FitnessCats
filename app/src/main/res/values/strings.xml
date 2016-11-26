@@ -33,7 +33,7 @@
     <string name="btn_text_login">Sign in</string>
 
     <!-- Текст для NavigationDrawer -->
-    <string name="navigation_drawer_main_activity">Список треков</string>
+    <string name="navigation_drawer_main_activity">Список маршрутов</string>
     <string name="navigation_drawer_reminders">Напоминания</string>
     <string name="navigation_drawer_liked">Избранное [alpha]</string>
     <string name="navigation_drawer_statistic">Статистика [alpha]</string>
@@ -130,7 +130,7 @@
 
 
     <!-- Dialog Delete Track -->
-    <string name="fitness_data_fragment_alert_title">Удалить этот трек?</string>
+    <string name="fitness_data_fragment_alert_title">Удалить этот маршрут?</string>
     <string name="fitness_data_fragment_alert_negative_btn">Cancel</string>
     <string name="fitness_data_fragment_alert_positive_btn">Удалить</string>
 

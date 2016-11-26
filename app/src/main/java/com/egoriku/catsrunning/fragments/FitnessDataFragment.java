@@ -98,8 +98,6 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
         textViewNoTracks = (TextView) view.findViewById(R.id.fragment_fitness_data_text_no_tracks);
         imageViewNoTracks = (ImageView) view.findViewById(R.id.fragment_fitness_data_image_cats_no_track);
 
-        loader = getLoaderManager().restartLoader(getArguments().getInt(ARG_SECTION_NUMBER), getArguments(), this);
-
         progressBar.setVisibility(View.VISIBLE);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -121,8 +119,10 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(App.getInstance()).
-                registerReceiver(broadcastNewTracksSave, new IntentFilter(BROADCAST_SAVE_NEW_TRACKS));
+        loader = getLoaderManager().restartLoader(getArguments().getInt(ARG_SECTION_NUMBER), getArguments(), this);
+
+        LocalBroadcastManager.getInstance(App.getInstance())
+                .registerReceiver(broadcastNewTracksSave, new IntentFilter(BROADCAST_SAVE_NEW_TRACKS));
     }
 
 
@@ -235,6 +235,7 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
     public Loader<List<AllFitnessDataModel>> onCreateLoader(int id, Bundle args) {
         return new AsyncTracksLoader(getContext(), args);
     }
+
 
     @Override
     public void onLoadFinished(Loader<List<AllFitnessDataModel>> loader, List<AllFitnessDataModel> data) {
