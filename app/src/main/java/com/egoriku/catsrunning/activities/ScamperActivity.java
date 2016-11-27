@@ -113,7 +113,7 @@ public class ScamperActivity extends AppCompatActivity {
         btnFinish = (Button) findViewById(R.id.scamper_activity_btn_finish);
         textTimer = (TextView) findViewById(R.id.scamper_activity_text_timer);
         textDistance = (TextView) findViewById(R.id.scamper_activity_text_distance);
-        pandaFinishScamper = (ImageView) findViewById(R.id.image_panda_finish_scamper);
+        pandaFinishScamper = (ImageView) findViewById(R.id.image_finish_scamper);
         linearLayoutRoot = (LinearLayout) findViewById(R.id.activity_scamper_root_layout);
         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 

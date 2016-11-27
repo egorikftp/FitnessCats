@@ -35,7 +35,7 @@
     <!-- Текст для NavigationDrawer -->
     <string name="navigation_drawer_main_activity">Список маршрутов</string>
     <string name="navigation_drawer_reminders">Напоминания</string>
-    <string name="navigation_drawer_liked">Избранное [alpha]</string>
+    <string name="navigation_drawer_liked">Избранное</string>
     <string name="navigation_drawer_statistic">Статистика [alpha]</string>
     <string name="navigation_drawer_exit">Выход</string>
     <string name="navigation_drawer_setting">Settings [alpha]</string>
@@ -100,7 +100,7 @@
     <string name="track_fragment_toast_text_no_points">Точки отстутсвуют</string>
 
     <!-- Liked Fragment -->
-    <string name="liked_fragment_no_more_liked_tracks">У котиков нет любимых треков</string>
+    <string name="liked_fragment_no_more_liked_tracks">У котиков нет любимых занятий</string>
     <string name="liked_fragment_snackbar_liked_empty">Хм, теперь тут пусто</string>
 
     <!-- Reminders Fragment -->

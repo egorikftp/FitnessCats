@@ -50,10 +50,10 @@ public class LikedFragmentAdapter extends AbstractAdapter<AllFitnessDataModel> {
         final ImageView imageViewType = holder.<ImageView>get(R.id.adapter_fragment_liked_data_ic_type);
 
         holder.<TextView>get(R.id.adapter_fragment_liked_date_text_view)
-                .setText(ConverterTime.convertDateReminder(modelList.get(position).getBeginsAt()));
+                .setText(ConverterTime.convertUnixDateWithoutHours(allFitnessDataModel.getBeginsAt()));
 
         holder.<TextView>get(R.id.adapter_fragment_liked_time_running_text_view)
-                .setText(ConverterTime.ConvertTimeToString(modelList.get(position).getTime()));
+                .setText(ConverterTime.ConvertTimeAllFitnessData(allFitnessDataModel.getBeginsAt(), allFitnessDataModel.getTime()));
 
         holder.<TextView>get(R.id.adapter_fragment_liked_distance_text_view)
                 .setText(String.format(format, modelList.get(position).getDistance()));

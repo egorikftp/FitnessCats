@@ -62,6 +62,9 @@ import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class RemindersFragment extends Fragment {
     private static final int UNICODE_EMOJI = 0x1F638;
+    public static final int DURATION = 1500;
+    public static final int DURATION_TEXT = 1000;
+    public static final int ROTATION_DEGREES = 720;
     private RecyclerView recyclerView;
     private FloatingActionButton floatingActionButton;
     private CollapsingToolbarLayout collapsingToolbarLayout;
@@ -196,17 +199,17 @@ public class RemindersFragment extends Fragment {
     private void animateView() {
         AnimationSet rollingIn = new AnimationSet(true);
         Animation moving = new TranslateAnimation(Animation.RELATIVE_TO_SELF, -5, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0);
-        moving.setDuration(1500);
+        moving.setDuration(DURATION);
 
-        Animation rotating = new RotateAnimation(0, 720, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotating.setDuration(1500);
+        Animation rotating = new RotateAnimation(0, ROTATION_DEGREES, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotating.setDuration(DURATION);
 
         rollingIn.addAnimation(rotating);
         rollingIn.addAnimation(moving);
         imageViewNoTracks.setAnimation(rollingIn);
 
         Animation movingText = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.ZORDER_TOP, -5, Animation.RELATIVE_TO_SELF, 0);
-        movingText.setDuration(1000);
+        movingText.setDuration(DURATION_TEXT);
         noReminders.setAnimation(movingText);
     }
 

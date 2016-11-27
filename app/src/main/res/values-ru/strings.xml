@@ -42,11 +42,11 @@
     <string name="liked_fragment_adapter_distance">Дистанция:</string>
     <string name="liked_fragment_adapter_distance_meter">%s м</string>
     <string name="liked_fragment_adapter_time_running">Время пробежки:</string>
-    <string name="liked_fragment_no_more_liked_tracks">У котиков нет любимых треков</string>
+    <string name="liked_fragment_no_more_liked_tracks">У котиков нет любимых занятий</string>
     <string name="liked_fragment_snackbar_liked_empty">Хм, теперь тут пусто</string>
     <string name="navigation_drawer_close">\" \"</string>
     <string name="navigation_drawer_exit">Выход</string>
-    <string name="navigation_drawer_liked">Избранное [alpha]</string>
+    <string name="navigation_drawer_liked">Избранное</string>
     <string name="navigation_drawer_main_activity">Список маршрутов</string>
     <string name="navigation_drawer_open">" "</string>
     <string name="navigation_drawer_reminders">Напоминания</string>
