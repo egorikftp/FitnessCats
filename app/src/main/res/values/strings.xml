@@ -20,7 +20,7 @@
     <string name="empty_surname">Введите фамилию</string>
 
     <!-- Данные ProgressDialog -->
-    <string name="progress_dialog_register_title">Выполняется запрос</string>
+    <string name="progress_dialog_register_title">Выполняется вход</string>
     <string name="progress_dialog_register_message">Это займет буквально несколько секунд</string>
 
     <!-- Данные Toolbar -->

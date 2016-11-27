@@ -135,15 +135,7 @@ public interface Constants {
     }
 
     interface ModelRegister {
-        String EMAIL_KEY = "EMAIL_KEY";
-        String PASSWORD_KEY = "PASSWORD_KEY";
-        String DOUBLE_PASSWORD_KEY = "DOUBLE_PASSWORD_KEY";
-        String NAME_KEY = "NAME_KEY";
-        String SURNAME_KEY = "SURNAME_KEY";
-        String SIGN_GOOGLE_BTN_KEY = "SIGN_GOOGLE_BTN_KEY";
-        String HAVE_ACCOUNT_TEXT = "HAVE_ACCOUNT_TEXT";
-        String BTN_REGISTER_TEXT = "BTN_REGISTER_TEXT";
-        String TOOLBAR_TEXT = "TOOLBAR_TEXT";
+        String PARCELABLE_REGISTER = "PARCELABLE_REGISTER";
     }
 
     interface ModelScamperActivity {

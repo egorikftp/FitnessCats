@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
+import com.egoriku.catsrunning.models.ParcelableRegisterActivityModel;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -36,18 +37,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-import static com.egoriku.catsrunning.models.Constants.ModelRegister.BTN_REGISTER_TEXT;
-import static com.egoriku.catsrunning.models.Constants.ModelRegister.DOUBLE_PASSWORD_KEY;
-import static com.egoriku.catsrunning.models.Constants.ModelRegister.EMAIL_KEY;
-import static com.egoriku.catsrunning.models.Constants.ModelRegister.HAVE_ACCOUNT_TEXT;
-import static com.egoriku.catsrunning.models.Constants.ModelRegister.NAME_KEY;
-import static com.egoriku.catsrunning.models.Constants.ModelRegister.PASSWORD_KEY;
-import static com.egoriku.catsrunning.models.Constants.ModelRegister.SIGN_GOOGLE_BTN_KEY;
-import static com.egoriku.catsrunning.models.Constants.ModelRegister.SURNAME_KEY;
-import static com.egoriku.catsrunning.models.Constants.ModelRegister.TOOLBAR_TEXT;
+import static com.egoriku.catsrunning.models.Constants.ModelRegister.PARCELABLE_REGISTER;
 
 public class RegisterActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
-    //TODO create Parcelable/Serializable Model
     private static final int RC_SIGN_IN = 4706;
     private GoogleApiClient googleApiClient;
     private TextInputLayout inputLayoutEmail;
@@ -420,41 +412,43 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        //TODO put model
-        outState.putInt(EMAIL_KEY, inputLayoutEmail.getVisibility());
-        outState.putInt(PASSWORD_KEY, inputLayoutPassword.getVisibility());
-        outState.putInt(DOUBLE_PASSWORD_KEY, inputLayoutDoublePassword.getVisibility());
-        outState.putInt(NAME_KEY, inputLayoutName.getVisibility());
-        outState.putInt(SURNAME_KEY, inputLayoutSurname.getVisibility());
-        outState.putInt(SIGN_GOOGLE_BTN_KEY, signInGoogleBtn.getVisibility());
-
-        outState.putString(BTN_REGISTER_TEXT, registerBtn.getText().toString());
-        outState.putString(HAVE_ACCOUNT_TEXT, loginBtn.getText().toString());
-        outState.putString(TOOLBAR_TEXT, toolbar.getTitle().toString());
+        outState.putParcelable(PARCELABLE_REGISTER,
+                new ParcelableRegisterActivityModel(
+                        inputLayoutEmail.getVisibility(),
+                        inputLayoutPassword.getVisibility(),
+                        inputLayoutDoublePassword.getVisibility(),
+                        inputLayoutName.getVisibility(),
+                        inputLayoutSurname.getVisibility(),
+                        signInGoogleBtn.getVisibility(),
+                        toolbar.getTitle().toString(),
+                        registerBtn.getText().toString(),
+                        loginBtn.getText().toString()
+                ));
         super.onSaveInstanceState(outState);
     }
 
 
-    @SuppressWarnings("WrongConstant")
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        //TODO get model
-        inputLayoutEmail.setVisibility(savedInstanceState.getInt(EMAIL_KEY));
-        inputLayoutPassword.setVisibility(savedInstanceState.getInt(PASSWORD_KEY));
-        inputLayoutDoublePassword.setVisibility(savedInstanceState.getInt(DOUBLE_PASSWORD_KEY));
-        inputLayoutName.setVisibility(savedInstanceState.getInt(NAME_KEY));
-        inputLayoutSurname.setVisibility(savedInstanceState.getInt(SURNAME_KEY));
-        signInGoogleBtn.setVisibility(savedInstanceState.getInt(SIGN_GOOGLE_BTN_KEY));
+        ParcelableRegisterActivityModel parcelableRegisterActivityModel = savedInstanceState.getParcelable(PARCELABLE_REGISTER);
 
-        registerBtn.setText(savedInstanceState.getString(BTN_REGISTER_TEXT));
-        loginBtn.setText(savedInstanceState.getString(HAVE_ACCOUNT_TEXT));
-        toolbar.setTitle(savedInstanceState.getString(TOOLBAR_TEXT));
+        if (parcelableRegisterActivityModel != null) {
+            inputLayoutEmail.setVisibility(parcelableRegisterActivityModel.getInputLayoutEmail());
+            inputLayoutPassword.setVisibility(parcelableRegisterActivityModel.getInputLayoutPassword());
+            inputLayoutDoublePassword.setVisibility(parcelableRegisterActivityModel.getInputLayoutDoublePassword());
+            toolbar.setTitle(parcelableRegisterActivityModel.getToolbarText());
+            inputLayoutName.setVisibility(parcelableRegisterActivityModel.getInputLayoutName());
+            inputLayoutSurname.setVisibility(parcelableRegisterActivityModel.getInputLayoutSurname());
+            signInGoogleBtn.setVisibility(parcelableRegisterActivityModel.getSignInGoogleBtn());
+            registerBtn.setText(parcelableRegisterActivityModel.getRegisterBtn());
+            loginBtn.setText(parcelableRegisterActivityModel.getLoginBtn());
+        }
         super.onRestoreInstanceState(savedInstanceState);
     }
 
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Snackbar.make(linearLayoutRegister, getString(R.string.no_ethernet_connection), Snackbar.LENGTH_SHORT).show();
     }
 }
