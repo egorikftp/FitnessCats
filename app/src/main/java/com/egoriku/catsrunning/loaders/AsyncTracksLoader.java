@@ -49,7 +49,6 @@ public class AsyncTracksLoader extends AsyncTaskLoader<List<AllFitnessDataModel>
         if (dataModelList != null) {
             deliverResult(dataModelList);
         }
-
     }
 
 

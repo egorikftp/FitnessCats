@@ -1,13 +1,14 @@
 package com.egoriku.catsrunning.fragments;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.egoriku.catsrunning.App;
@@ -25,23 +27,12 @@ import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.LikedFragmentAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.ILikedClickListener;
-import com.egoriku.catsrunning.helpers.DbCursor;
-import com.egoriku.catsrunning.helpers.InquiryBuilder;
+import com.egoriku.catsrunning.loaders.AsyncTaskLoaderLikedTracks;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.BEGINS_AT;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.DISTANCE;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LIKED;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TIME;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TRACK_TOKEN;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TYPE_FIT;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns._ID;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_LIKED;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.LIKED_EQ;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
 import static com.egoriku.catsrunning.models.Constants.Tags.TAG_LIKED_FRAGMENT;
 import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_DISTANCE;
 import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_ID;
@@ -50,13 +41,14 @@ import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_T
 import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_TOKEN;
 import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_TYPE_FIT;
 
-public class LikedFragment extends Fragment {
+public class LikedFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AllFitnessDataModel>> {
     private static final int UNICODE_SAD_CAT = 0x1F640;
     public static final int DURATION = 1000;
+    public static final int ID_LOADER = 1;
     private RecyclerView recyclerView;
     private TextView noLikedTracksTextView;
     private ImageView imageViewCat;
-    private ArrayList<AllFitnessDataModel> likedTracksModels;
+    private ProgressBar progressBar;
     private LikedFragmentAdapter likedFragmentAdapter;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private AppBarLayout appBarLayout;
@@ -85,6 +77,7 @@ public class LikedFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.liked_fragment_recycler_view);
         noLikedTracksTextView = (TextView) view.findViewById(R.id.liked_fragment_textview_no_liked);
         imageViewCat = (ImageView) view.findViewById(R.id.liked_fragment_image_no_liked);
+        progressBar = (ProgressBar) view.findViewById(R.id.liked_fragment_progress_bar);
         collapsingToolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.liked_fragment_collapsing_toolbar);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.liked_fragment_appbar);
 
@@ -92,23 +85,23 @@ public class LikedFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(App.getInstance()));
         recyclerView.hasFixedSize();
 
-        showLikedTracks();
+        noLikedTracksTextView.setText(null);
+        imageViewCat.setVisibility(View.GONE);
         return view;
     }
 
 
-    private void showLikedTracks() {
-        noLikedTracksTextView.setText(null);
-        getLikedTracks();
+    private void setUpAdapter(final List<AllFitnessDataModel> data) {
+        progressBar.setVisibility(View.GONE);
 
-        if (likedTracksModels.size() == 0) {
+        if (data.size() == 0) {
             setScrollingEnabled(false);
             noLikedTracksTextView.setText(getString(R.string.liked_fragment_no_more_liked_tracks) + "" + getEmojiByUnicode(UNICODE_SAD_CAT));
             animateView();
         } else {
             setScrollingEnabled(true);
             imageViewCat.setVisibility(View.GONE);
-            likedFragmentAdapter.setData(likedTracksModels);
+            likedFragmentAdapter.setData(data);
             recyclerView.setAdapter(likedFragmentAdapter);
 
             likedFragmentAdapter.setOnItemClickListener(new ILikedClickListener() {
@@ -127,14 +120,14 @@ public class LikedFragment extends Fragment {
                 @Override
                 public void onLikedClick(AllFitnessDataModel item, int position) {
                     int likedDigit = 0;
-                    updateLikedDigit(likedDigit, likedTracksModels.get(position).getId());
-                    likedTracksModels.remove(position);
+                    updateLikedDigit(likedDigit, data.get(position).getId());
+                    data.remove(position);
                     likedFragmentAdapter.notifyItemRemoved(position);
-                    likedFragmentAdapter.notifyItemRangeChanged(position, likedTracksModels.size());
+                    likedFragmentAdapter.notifyItemRangeChanged(position, data.size());
 
-                    if (likedTracksModels.size() == 0) {
+                    if (data.size() == 0) {
                         Snackbar.make(recyclerView, R.string.liked_fragment_snackbar_liked_empty, Snackbar.LENGTH_LONG).show();
-                        showLikedTracks();
+                        setUpAdapter(data);
                     }
                 }
             });
@@ -168,35 +161,32 @@ public class LikedFragment extends Fragment {
     }
 
 
-    private void getLikedTracks() {
-        likedTracksModels = new ArrayList<>();
-        Cursor cursor = new InquiryBuilder()
-                .get(_ID, BEGINS_AT, TIME, DISTANCE, LIKED, TRACK_TOKEN, TYPE_FIT)
-                .from(TABLE_TRACKS)
-                .where(false, LIKED_EQ, String.valueOf(IS_LIKED))
-                .orderBy(BEGINS_AT)
-                .desc()
-                .select();
-
-        DbCursor dbCursor = new DbCursor(cursor);
-        if (dbCursor.isValid()) {
-            do {
-                AllFitnessDataModel likedItem = new AllFitnessDataModel();
-                likedItem.setId(dbCursor.getInt(_ID));
-                likedItem.setBeginsAt(dbCursor.getInt(BEGINS_AT));
-                likedItem.setTime(dbCursor.getInt(TIME));
-                likedItem.setDistance(dbCursor.getInt(DISTANCE));
-                likedItem.setLiked(dbCursor.getInt(LIKED));
-                likedItem.setTrackToken(dbCursor.getString(TRACK_TOKEN));
-                likedItem.setTypeFit(dbCursor.getInt(TYPE_FIT));
-                likedTracksModels.add(likedItem);
-            } while (cursor.moveToNext());
-        }
-        dbCursor.close();
+    @Override
+    public void onResume() {
+        super.onResume();
+        getLoaderManager().initLoader(ID_LOADER, null, this);
     }
 
 
     public String getEmojiByUnicode(int unicode) {
         return new String(Character.toChars(unicode));
+    }
+
+
+    @Override
+    public Loader<List<AllFitnessDataModel>> onCreateLoader(int id, Bundle args) {
+        return new AsyncTaskLoaderLikedTracks(getContext());
+    }
+
+
+    @Override
+    public void onLoadFinished(Loader<List<AllFitnessDataModel>> loader, List<AllFitnessDataModel> data) {
+        setUpAdapter(data);
+    }
+
+
+    @Override
+    public void onLoaderReset(Loader<List<AllFitnessDataModel>> loader) {
+
     }
 }

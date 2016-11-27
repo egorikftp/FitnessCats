@@ -6,13 +6,20 @@
     android:layout_height="match_parent"
     tools:showIn="@layout/fragment_liked">
 
+    <ProgressBar
+        android:id="@+id/liked_fragment_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+
     <TextView
-        android:layout_marginBottom="@dimen/liked_fragment_text_margin"
         android:id="@+id/liked_fragment_textview_no_liked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/liked_fragment_image_no_liked"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/liked_fragment_text_margin"
         android:text="@string/liked_fragment_no_more_liked_tracks"
         android:textAppearance="?android:textAppearanceMedium" />
 
