@@ -13,7 +13,7 @@
 
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.egoriku.catsrunning.activities.ScamperActivity"
+            android:targetClass="com.egoriku.catsrunning.activities.FitActivity"
             android:targetPackage="com.egoriku.catsrunning">
             <extra
                 android:name="KEY_TYPE_FIT"
@@ -34,7 +34,7 @@
 
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.egoriku.catsrunning.activities.ScamperActivity"
+            android:targetClass="com.egoriku.catsrunning.activities.FitActivity"
             android:targetPackage="com.egoriku.catsrunning">
             <extra
                 android:name="KEY_TYPE_FIT"
@@ -55,7 +55,7 @@
 
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.egoriku.catsrunning.activities.ScamperActivity"
+            android:targetClass="com.egoriku.catsrunning.activities.FitActivity"
             android:targetPackage="com.egoriku.catsrunning">
             <extra
                 android:name="KEY_TYPE_FIT"

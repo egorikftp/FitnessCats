@@ -9,24 +9,24 @@ import android.view.animation.Transformation;
 
 public class FlipAnimation extends Animation {
     private Camera camera;
-
     private View btnStart;
     private View btnFinish;
     private View textTimer;
+    private View textFinalTimeFit;
     private View textYouFinishRunning;
-    private View pandaFinishScamper;
-
+    private View imageFinishScamper;
     private float centerX;
     private float centerY;
-
     private boolean isReverse = false;
 
-    public FlipAnimation(View btnStart, View btnFinish, View textTimer, View textYouFinishRunning, View pandaFinishScamper){
+
+    public FlipAnimation(View btnStart, View btnFinish, View textTimer, View textFinalTimeFit, View textYouFinishRunning, View imageFinishScamper){
         this.btnStart = btnStart;
         this.btnFinish = btnFinish;
         this.textTimer = textTimer;
+        this.textFinalTimeFit = textFinalTimeFit;
         this.textYouFinishRunning = textYouFinishRunning;
-        this.pandaFinishScamper = pandaFinishScamper;
+        this.imageFinishScamper = imageFinishScamper;
 
         setDuration(700);
         setFillAfter(false);
@@ -50,6 +50,7 @@ public class FlipAnimation extends Animation {
         if(interpolatedTime >=0.5f){
             degrees -=180.f;
             btnStart.setVisibility(View.GONE);
+            textFinalTimeFit.setVisibility(View.GONE);
             textTimer.setVisibility(View.VISIBLE);
             btnFinish.setVisibility(View.VISIBLE);
         }
@@ -58,7 +59,9 @@ public class FlipAnimation extends Animation {
             degrees=-degrees;
             btnFinish.setVisibility(View.GONE);
             textYouFinishRunning.setVisibility(View.VISIBLE);
-            pandaFinishScamper.setVisibility(View.VISIBLE);
+            imageFinishScamper.setVisibility(View.VISIBLE);
+            textTimer.setVisibility(View.GONE);
+            textFinalTimeFit.setVisibility(View.VISIBLE);
         }
 
         final Matrix matrix = t.getMatrix();

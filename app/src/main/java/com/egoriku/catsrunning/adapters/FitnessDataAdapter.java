@@ -1,5 +1,8 @@
 package com.egoriku.catsrunning.adapters;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +17,10 @@ import com.egoriku.catsrunning.utils.ConverterTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.egoriku.catsrunning.models.Constants.Color.COLOR_NOW_FIT;
 import static com.egoriku.catsrunning.utils.VectorToDrawable.setImageAdapter;
 
 public class FitnessDataAdapter extends AbstractAdapter<AllFitnessDataModel> {
-
     private List<AllFitnessDataModel> modelList = new ArrayList<>();
     private IOnItemHandlerListener onItemListener;
 
@@ -45,19 +48,22 @@ public class FitnessDataAdapter extends AbstractAdapter<AllFitnessDataModel> {
 
     @Override
     public void onBind(AbstractViewHolder holder, final AllFitnessDataModel allFitnessDataModel, final int position, int viewType) {
-        holder.<TextView>get(R.id.adapter_all_fitness_data_date_text)
-                .setText(ConverterTime.convertUnixDateWithoutHours(allFitnessDataModel.getBeginsAt()));
+        final ImageView imageViewStar = holder.<ImageView>get(R.id.adapter_all_fitness_data_image_liked);
+        final ImageView imageViewTypeFit = holder.<ImageView>get(R.id.adapter_all_fitness_data_ic_type);
+        final TextView textViewDate = holder.<TextView>get(R.id.adapter_all_fitness_data_date_text);
+        final TextView textViewTime = holder.<TextView>get(R.id.adapter_all_fitness_data_time_text_view);
+        final CardView cardView = holder.<CardView>get(R.id.adapter_fitness_data_fragment_root_cardview);
 
-        holder.<TextView>get(R.id.adapter_all_fitness_data_time_text_view)
-                .setText(ConverterTime.ConvertTimeAllFitnessData(allFitnessDataModel.getBeginsAt(), allFitnessDataModel.getTime()));
+        if (allFitnessDataModel.getTime() == 0) {
+            textViewDate.setTypeface(null, Typeface.BOLD);
+            textViewTime.setTypeface(null, Typeface.BOLD);
+            cardView.setCardBackgroundColor(Color.parseColor(COLOR_NOW_FIT));
+        }
 
-        holder.<TextView>get(R.id.adapter_all_fitness_data_distance_text_view)
-                .setText(
-                        String.format(
-                                holder.<String>getString(R.string.adapter_all_fitness_data_distance_meter),
-                                allFitnessDataModel.getDistance()
-                        )
-                );
+        textViewDate.setText(ConverterTime.convertUnixDateWithoutHours(allFitnessDataModel.getBeginsAt()));
+        textViewTime.setText(ConverterTime.ConvertTimeAllFitnessData(allFitnessDataModel.getBeginsAt(), allFitnessDataModel.getTime()));
+
+        holder.<TextView>get(R.id.adapter_all_fitness_data_distance_text_view).setText(String.format(holder.<String>getString(R.string.adapter_all_fitness_data_distance_meter), allFitnessDataModel.getDistance()));
 
         holder.<TextView>get(R.id.adapter_all_fitness_data_calories_text_view);
 
@@ -65,25 +71,25 @@ public class FitnessDataAdapter extends AbstractAdapter<AllFitnessDataModel> {
 
         switch (allFitnessDataModel.getLiked()) {
             case 0:
-                setImageAdapter(holder.<ImageView>get(R.id.adapter_all_fitness_data_image_liked), R.drawable.ic_vec_star_border);
+                setImageAdapter(imageViewStar, R.drawable.ic_vec_star_border);
                 break;
 
             case 1:
-                setImageAdapter(holder.<ImageView>get(R.id.adapter_all_fitness_data_image_liked), R.drawable.ic_vec_star_black);
+                setImageAdapter(imageViewStar, R.drawable.ic_vec_star_black);
                 break;
         }
 
         switch (allFitnessDataModel.getTypeFit()) {
             case 1:
-                setImageAdapter(holder.<ImageView>get(R.id.adapter_all_fitness_data_ic_type), R.drawable.ic_vec_directions_walk_40dp);
+                setImageAdapter(imageViewTypeFit, R.drawable.ic_vec_directions_walk_40dp);
                 break;
 
             case 2:
-                setImageAdapter(holder.<ImageView>get(R.id.adapter_all_fitness_data_ic_type), R.drawable.ic_vec_directions_run_40dp);
+                setImageAdapter(imageViewTypeFit, R.drawable.ic_vec_directions_run_40dp);
                 break;
 
             case 3:
-                setImageAdapter(holder.<ImageView>get(R.id.adapter_all_fitness_data_ic_type), R.drawable.ic_vec_directions_bike_40dp);
+                setImageAdapter(imageViewTypeFit, R.drawable.ic_vec_directions_bike_40dp);
                 break;
         }
 
@@ -96,7 +102,7 @@ public class FitnessDataAdapter extends AbstractAdapter<AllFitnessDataModel> {
             }
         });
 
-        holder.<ImageView>get(R.id.adapter_all_fitness_data_image_liked).setOnClickListener(new View.OnClickListener() {
+        imageViewStar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (onItemListener != null) {
@@ -129,7 +135,7 @@ public class FitnessDataAdapter extends AbstractAdapter<AllFitnessDataModel> {
     }
 
 
-    public void clear(){
+    public void clear() {
         modelList.clear();
         notifyDataSetChanged();
     }

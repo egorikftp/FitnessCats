@@ -18,7 +18,10 @@ import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TIME
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TRACK_TOKEN;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TYPE_FIT;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns._ID;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.AND;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_LIKED;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_TRACK_DELETE_EQ;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_TRACK_DELETE_FALSE;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.LIKED_EQ;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
 
@@ -49,7 +52,7 @@ public class AsyncTaskLoaderLikedTracks extends AsyncTaskLoader<List<AllFitnessD
         Cursor cursor = new InquiryBuilder()
                 .get(_ID, BEGINS_AT, TIME, DISTANCE, LIKED, TRACK_TOKEN, TYPE_FIT)
                 .from(TABLE_TRACKS)
-                .where(false, LIKED_EQ, String.valueOf(IS_LIKED))
+                .where(true, IS_TRACK_DELETE_EQ + " " + IS_TRACK_DELETE_FALSE + " " + AND + " " + LIKED_EQ + " " + String.valueOf(IS_LIKED))
                 .orderBy(BEGINS_AT)
                 .desc()
                 .select();

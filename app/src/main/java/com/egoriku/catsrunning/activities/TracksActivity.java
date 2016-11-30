@@ -39,6 +39,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ import java.util.List;
 
 import static com.egoriku.catsrunning.helpers.DbActions.deleteSyncTrackData;
 import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_SAVE_NEW_TRACKS;
+import static com.egoriku.catsrunning.models.Constants.ConstantsFirebase.CHILD_TRACKS;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.BEGINS_AT;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_POINT;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_REMINDER;
@@ -109,7 +111,7 @@ public class TracksActivity extends AppCompatActivity {
             App.getInstance().createState();
         }
 
-        App.getInstance().getFirebaseDbReference().child(user.getUid()).addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child(CHILD_TRACKS).child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
                 new Thread() {
@@ -139,7 +141,7 @@ public class TracksActivity extends AppCompatActivity {
             }
         });
 
-        App.getInstance().getFirebaseDbReference().child(user.getUid()).addChildEventListener(new ChildEventListener() {
+        FirebaseDatabase.getInstance().getReference().child(CHILD_TRACKS).child(user.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             }
@@ -357,7 +359,6 @@ public class TracksActivity extends AppCompatActivity {
 
 
     private void clearUserData() {
-
         new InquiryBuilder().cleanTable(TABLE_USER);
         new InquiryBuilder().cleanTable(TABLE_TRACKS);
         new InquiryBuilder().cleanTable(TABLE_REMINDER);

@@ -1,5 +1,7 @@
 package com.egoriku.catsrunning.adapters;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import com.egoriku.catsrunning.utils.ConverterTime;
 
 import java.util.List;
 
+import static com.egoriku.catsrunning.models.Constants.Color.COLOR_NOW_FIT;
 import static com.egoriku.catsrunning.utils.VectorToDrawable.setImageAdapter;
 
 public class LikedFragmentAdapter extends AbstractAdapter<AllFitnessDataModel> {
@@ -44,16 +47,22 @@ public class LikedFragmentAdapter extends AbstractAdapter<AllFitnessDataModel> {
 
 
     @Override
-    public void onBind(AbstractViewHolder holder, AllFitnessDataModel allFitnessDataModel, final int position, int viewType) {
+    public void onBind(AbstractViewHolder holder, AllFitnessDataModel model, final int position, int viewType) {
         final String format = holder.getString(R.string.liked_fragment_adapter_distance_meter);
         final ImageView imageViewLiked = holder.<ImageView>get(R.id.adapter_fragment_liked_image_view_liked);
         final ImageView imageViewType = holder.<ImageView>get(R.id.adapter_fragment_liked_data_ic_type);
+        final CardView cardView = holder.<CardView>get(R.id.adapter_fragment_liked_root_card_view);
+        final TextView textViewDate = holder.<TextView>get(R.id.adapter_fragment_liked_date_text_view);
+        final TextView textViewTime = holder.<TextView>get(R.id.adapter_fragment_liked_time_running_text_view);
 
-        holder.<TextView>get(R.id.adapter_fragment_liked_date_text_view)
-                .setText(ConverterTime.convertUnixDateWithoutHours(allFitnessDataModel.getBeginsAt()));
+        if (model.getTime() == 0) {
+            textViewDate.setTypeface(null, Typeface.BOLD);
+            textViewTime.setTypeface(null, Typeface.BOLD);
+            cardView.setCardBackgroundColor(Color.parseColor(COLOR_NOW_FIT));
+        }
 
-        holder.<TextView>get(R.id.adapter_fragment_liked_time_running_text_view)
-                .setText(ConverterTime.ConvertTimeAllFitnessData(allFitnessDataModel.getBeginsAt(), allFitnessDataModel.getTime()));
+        textViewDate.setText(ConverterTime.convertUnixDateWithoutHours(model.getBeginsAt()));
+        textViewTime.setText(ConverterTime.ConvertTimeAllFitnessData(model.getBeginsAt(), model.getTime()));
 
         holder.<TextView>get(R.id.adapter_fragment_liked_distance_text_view)
                 .setText(String.format(format, modelList.get(position).getDistance()));
@@ -67,7 +76,7 @@ public class LikedFragmentAdapter extends AbstractAdapter<AllFitnessDataModel> {
             }
         });
 
-        holder.<CardView>get(R.id.adapter_fragment_liked_card_view).setOnClickListener(new View.OnClickListener() {
+        cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (iLikedClickListener != null) {
@@ -78,7 +87,7 @@ public class LikedFragmentAdapter extends AbstractAdapter<AllFitnessDataModel> {
 
         setImageAdapter(imageViewLiked, R.drawable.ic_vec_star_black);
 
-        switch (allFitnessDataModel.getTypeFit()) {
+        switch (model.getTypeFit()) {
             case 1:
 
                 setImageAdapter(imageViewType, R.drawable.ic_vec_directions_walk_40dp);
@@ -103,12 +112,6 @@ public class LikedFragmentAdapter extends AbstractAdapter<AllFitnessDataModel> {
 
     public void setOnItemClickListener(ILikedClickListener listener) {
         this.iLikedClickListener = listener;
-    }
-
-
-    public void clear() {
-        modelList.clear();
-        notifyDataSetChanged();
     }
 
 

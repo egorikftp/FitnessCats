@@ -3,7 +3,7 @@ package com.egoriku.catsrunning.utils;
 import android.content.Context;
 
 import com.egoriku.catsrunning.App;
-import com.egoriku.catsrunning.activities.ScamperActivity;
+import com.egoriku.catsrunning.activities.FitActivity;
 
 public class CustomChronometer implements Runnable {
     private Context context;
@@ -50,7 +50,7 @@ public class CustomChronometer implements Runnable {
             long since = System.currentTimeMillis() - startTime;
             App.getInstance().getState().setSinceTime(since);
 
-            ((ScamperActivity) context).updateTimer(ConverterTime.ConvertTimeToString(since));
+            ((FitActivity) context).updateTimer(ConverterTime.ConvertTimeToString(since));
 
             try {
                 Thread.sleep(10);

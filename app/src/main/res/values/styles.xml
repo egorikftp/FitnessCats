@@ -1,6 +1,6 @@
 <resources>
 
-    <!-- Стандартная тема приложения -->
+    <!-- App Theme -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">#AEBFB2</item>
         <item name="colorPrimaryDark">#75927C</item>
@@ -8,7 +8,7 @@
     </style>
 
 
-    <!-- Тема полей ввода текста -->
+    <!-- EditText Theme -->
     <style name="EditTextEntrance">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
@@ -16,7 +16,7 @@
     </style>
 
 
-    <!-- Тема TextInputLayout -->
+    <!-- Theme TextInputLayout -->
     <style name="TextInputLayoutStyleEntrance">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -25,14 +25,14 @@
     </style>
 
 
-    <!-- Тема для показа ошибки в TextInputLayout -->
+    <!-- Error in TextInputLayout -->
     <style name="ErrorText" parent="TextAppearance.AppCompat.Small">
         <item name="android:textStyle">bold|italic</item>
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
 
-    <!-- Стиль кнопки Регистрации -->
+    <!-- Register Btn -->
     <style name="EntranceButtonStyle" parent="Base.Widget.AppCompat.Button.Colored">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -42,7 +42,7 @@
     </style>
 
 
-    <!-- Стиль кнопки Логина -->
+    <!-- Btn Login -->
     <style name="BtnLoginStyle">
         <item name="android:textAllCaps">false</item>
         <item name="android:layout_width">wrap_content</item>
@@ -52,20 +52,19 @@
     </style>
 
 
-    <!-- Стиль кнопок Scamper Activity-->
+    <!-- Scamper Activity Btn-->
     <style name="BtnScamperActivityStyle">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_height">120dp</item>
         <item name="android:background">@drawable/scamper_activity_button_shape</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:layout_weight">1</item>
         <item name="android:layout_marginLeft">15dp</item>
         <item name="android:layout_marginRight">15dp</item>
         <item name="android:textSize">30sp</item>
     </style>
 
 
-    <!-- Стиль текста Scamper Activity-->
+    <!-- Scamper Activity-->
     <style name="TextScamperActivityStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

@@ -25,7 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,18 +35,22 @@ import com.egoriku.catsrunning.helpers.DbCursor;
 import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.models.Firebase.Point;
 import com.egoriku.catsrunning.models.Firebase.SaveModel;
+import com.egoriku.catsrunning.models.ParcelableFitActivityModel;
 import com.egoriku.catsrunning.services.RunService;
 import com.egoriku.catsrunning.utils.CustomChronometer;
 import com.egoriku.catsrunning.utils.FlipAnimation;
+import com.egoriku.catsrunning.utils.IntentBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 import static com.egoriku.catsrunning.helpers.DbActions.deleteTrackDataById;
 import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_FINISH_SERVICE;
+import static com.egoriku.catsrunning.models.Constants.ConstantsFirebase.CHILD_TRACKS;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.BEGINS_AT;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.DISTANCE;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LAT;
@@ -61,22 +65,15 @@ import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.models.Constants.KeyNotification.KEY_TYPE_FIT_NOTIFICATION;
-import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.DISTANCE_TEXT;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.EXTRA_ID_TRACK;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.KEY_IS_CHRONOMETER_RUNNING;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.KEY_START_TIME;
-import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.TIME_SCAMPER_TEXT;
-import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.TOOLBAR_TEXT;
-import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.VIEW_BTN_FINISH;
-import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.VIEW_BTN_START;
-import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.VIEW_IMAGE;
-import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.VIEW_TEXT_DISTANCE;
-import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.VIEW_TEXT_TIMER;
+import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.PARCELABLE_FIT_ACTIVITY_KEY;
 import static com.egoriku.catsrunning.models.Constants.RunService.ACTION_START;
 import static com.egoriku.catsrunning.models.Constants.RunService.START_TIME;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
-public class ScamperActivity extends AppCompatActivity {
+public class FitActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 1;
     public static final int TOP_PADDING = 50;
     public static final int ANOTHER_PADDING = 0;
@@ -94,8 +91,9 @@ public class ScamperActivity extends AppCompatActivity {
     private Button btnFinish;
     private TextView textTimer;
     private TextView textDistance;
-    private ImageView pandaFinishScamper;
-    private LinearLayout linearLayoutRoot;
+    private TextView textFinalTimeFit;
+    private ImageView imageViewFinish;
+    private RelativeLayout relativeRootLayout;
 
     private CustomChronometer chronometer;
     private LocationManager manager;
@@ -109,23 +107,25 @@ public class ScamperActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scamper);
         user = FirebaseAuth.getInstance().getCurrentUser();
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
-        btnStart = (Button) findViewById(R.id.scamper_activity_btn_start);
-        btnFinish = (Button) findViewById(R.id.scamper_activity_btn_finish);
-        textTimer = (TextView) findViewById(R.id.scamper_activity_text_timer);
-        textDistance = (TextView) findViewById(R.id.scamper_activity_text_distance);
-        pandaFinishScamper = (ImageView) findViewById(R.id.image_finish_scamper);
-        linearLayoutRoot = (LinearLayout) findViewById(R.id.activity_scamper_root_layout);
+        btnStart = (Button) findViewById(R.id.fit_activity_btn_start);
+        btnFinish = (Button) findViewById(R.id.fit_activity_btn_finish);
+        textTimer = (TextView) findViewById(R.id.fit_activity_text_now_time);
+        textFinalTimeFit = (TextView) findViewById(R.id.fit_activity_text_time);
+        textDistance = (TextView) findViewById(R.id.fit_activity_text_distance);
+        imageViewFinish = (ImageView) findViewById(R.id.fit_activity_image_finish);
+        relativeRootLayout = (RelativeLayout) findViewById(R.id.fit_activity_root_layout);
         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        alertMessage = getString(R.string.scamper_activity_alert_message_no_gps);
-        alertPositiveBtn = getString(R.string.scamper_activity_alert_positive_btn);
-        alertNegativeBtn = getString(R.string.scamper_activity_alert_negative_btn);
-        textNowTime = getString(R.string.scamper_activity_now_time);
+        alertMessage = getString(R.string.fit_activity_alert_message_no_gps);
+        alertPositiveBtn = getString(R.string.fit_activity_alert_positive_btn);
+        alertNegativeBtn = getString(R.string.fit_activity_alert_negative_btn);
+        textNowTime = getString(R.string.fit_activity_now_time);
 
         btnFinish.setVisibility(View.GONE);
         textTimer.setVisibility(View.GONE);
         textDistance.setVisibility(View.GONE);
-        pandaFinishScamper.setVisibility(View.GONE);
+        textFinalTimeFit.setVisibility(View.GONE);
+        imageViewFinish.setVisibility(View.GONE);
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -137,13 +137,13 @@ public class ScamperActivity extends AppCompatActivity {
             }
         }
 
-        final FlipAnimation flipAnimation = new FlipAnimation(btnStart, btnFinish, textTimer, textDistance, pandaFinishScamper);
+        final FlipAnimation flipAnimation = new FlipAnimation(btnStart, btnFinish, textTimer, textFinalTimeFit, textDistance, imageViewFinish);
 
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (ContextCompat.checkSelfPermission(ScamperActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(ScamperActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(FitActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(FitActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         requestPermissions(
                                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                                 REQUEST_CODE
@@ -158,23 +158,25 @@ public class ScamperActivity extends AppCompatActivity {
                 }
 
                 if (chronometer == null) {
-                    chronometer = new CustomChronometer(ScamperActivity.this);
+                    chronometer = new CustomChronometer(FitActivity.this);
                     chronometerThread = new Thread(chronometer);
                     chronometerThread.start();
                     chronometer.startChronometer();
                 }
 
-                Intent intent = new Intent(ScamperActivity.this, RunService.class);
-                intent.putExtra(START_TIME, chronometer.getStartTime());
+                IntentBuilder intent = new IntentBuilder()
+                        .context(FitActivity.this)
+                        .service(RunService.class)
+                        .action(ACTION_START)
+                        .extra(START_TIME, chronometer.getStartTime());
+
                 if (getIntent().getExtras() != null) {
-                    intent.putExtra(KEY_TYPE_FIT_NOTIFICATION, getIntent().getExtras().getInt(KEY_TYPE_FIT));
+                    intent.extra(KEY_TYPE_FIT_NOTIFICATION, getIntent().getExtras().getInt(KEY_TYPE_FIT));
                 }
 
-                intent.setAction(ACTION_START);
-                startService(intent);
-
+                startService(intent.build());
                 textTimer.setPadding(ANOTHER_PADDING, TOP_PADDING, ANOTHER_PADDING, ANOTHER_PADDING);
-                linearLayoutRoot.startAnimation(flipAnimation);
+                relativeRootLayout.startAnimation(flipAnimation);
             }
         });
 
@@ -183,7 +185,7 @@ public class ScamperActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 flipAnimation.setReverse();
-                linearLayoutRoot.startAnimation(flipAnimation);
+                relativeRootLayout.startAnimation(flipAnimation);
 
                 if (chronometer != null) {
                     chronometer.stopChronometer();
@@ -193,13 +195,12 @@ public class ScamperActivity extends AppCompatActivity {
                 }
 
                 if (getSupportActionBar() != null) {
-                    getSupportActionBar().setTitle(
-                            String.format(getString(R.string.scamper_activity_toolbar_title), getTypeFit(typeFit, true, R.array.all_fitness_data_categories))
-                    );
+                    getSupportActionBar().setTitle(String.format(getString(R.string.scamper_activity_toolbar_title), getTypeFit(typeFit, true, R.array.all_fitness_data_categories)));
                 }
-
-                textTimer.setPadding(ANOTHER_PADDING, ANOTHER_PADDING, ANOTHER_PADDING, ANOTHER_PADDING);
-                stopService(new Intent(ScamperActivity.this, RunService.class));
+                stopService(new IntentBuilder()
+                        .context(FitActivity.this)
+                        .service(RunService.class)
+                        .build());
             }
         });
     }
@@ -210,6 +211,7 @@ public class ScamperActivity extends AppCompatActivity {
             @Override
             public void run() {
                 textTimer.setText(String.format(textNowTime, timeFromChronometer));
+                textFinalTimeFit.setText(String.format(textNowTime, timeFromChronometer));
             }
         });
     }
@@ -221,7 +223,9 @@ public class ScamperActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton(alertPositiveBtn, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        startActivity(new IntentBuilder()
+                                .action(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                                .build());
                     }
                 })
                 .setNegativeButton(alertNegativeBtn, null)
@@ -254,16 +258,6 @@ public class ScamperActivity extends AppCompatActivity {
 
 
     @Override
-    public void onBackPressed() {
-        if (btnFinish.getVisibility() == View.GONE && (btnStart.getVisibility() == View.GONE || btnStart.getVisibility() == View.VISIBLE)) {
-            super.onBackPressed();
-        } else {
-            Toast.makeText(getApplicationContext(), R.string.scamper_activity_snackbar_btn_finish_not_pressed, Toast.LENGTH_SHORT).show();
-            return;
-        }
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
         if (App.getInstance().getState() == null) {
@@ -274,7 +268,7 @@ public class ScamperActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        saveInstance();
+        saveState();
         LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastReceiverIdTrack);
     }
 
@@ -282,7 +276,7 @@ public class ScamperActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadInstance();
+        loadStance();
         LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastReceiverIdTrack, new IntentFilter(BROADCAST_FINISH_SERVICE));
     }
 
@@ -290,38 +284,47 @@ public class ScamperActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(VIEW_BTN_START, btnStart.getVisibility());
-        outState.putInt(VIEW_BTN_FINISH, btnFinish.getVisibility());
-        outState.putInt(VIEW_TEXT_TIMER, textTimer.getVisibility());
-        outState.putInt(VIEW_TEXT_DISTANCE, textDistance.getVisibility());
-        outState.putString(TOOLBAR_TEXT, toolbar.getTitle().toString());
-        outState.putString(DISTANCE_TEXT, textDistance.getText().toString());
-        outState.putString(TIME_SCAMPER_TEXT, textTimer.getText().toString());
-        outState.putInt(VIEW_IMAGE, pandaFinishScamper.getVisibility());
+        ParcelableFitActivityModel model = new ParcelableFitActivityModel();
+        model.setBtnStart(btnStart.getVisibility());
+        model.setBtnFinish(btnFinish.getVisibility());
+        model.setTextTimeFitVisibility(textFinalTimeFit.getVisibility());
+        model.setTextDistanceVisibility(textDistance.getVisibility());
+        model.setImageViewFinish(imageViewFinish.getVisibility());
+        model.setTextTimerVisibility(textTimer.getVisibility());
+        model.setTextTimeFitVisibility(textFinalTimeFit.getVisibility());
+        model.setToolbarText(toolbar.getTitle().toString());
+        model.setTextDistance(textDistance.getText().toString());
+        model.setTextTimer(textTimer.getText().toString());
+        model.setTextTimeFit(textFinalTimeFit.getText().toString());
+        outState.putParcelable(PARCELABLE_FIT_ACTIVITY_KEY, model);
     }
 
 
-    @SuppressWarnings("WrongConstant")
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        btnStart.setVisibility(savedInstanceState.getInt(VIEW_BTN_START));
-        btnFinish.setVisibility(savedInstanceState.getInt(VIEW_BTN_FINISH));
-        textTimer.setVisibility(savedInstanceState.getInt(VIEW_TEXT_TIMER));
-        textDistance.setVisibility(savedInstanceState.getInt(VIEW_TEXT_DISTANCE));
-        pandaFinishScamper.setVisibility(savedInstanceState.getInt(VIEW_IMAGE));
-        textDistance.setText(savedInstanceState.getString(DISTANCE_TEXT));
-        textTimer.setText(savedInstanceState.getString(TIME_SCAMPER_TEXT));
+        ParcelableFitActivityModel model = savedInstanceState.getParcelable(PARCELABLE_FIT_ACTIVITY_KEY);
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(savedInstanceState.getString(TOOLBAR_TEXT));
+        if (model != null) {
+            btnStart.setVisibility(model.getBtnStart());
+            btnFinish.setVisibility(model.getBtnFinish());
+            textTimer.setVisibility(model.getTextTimerVisibility());
+            textDistance.setVisibility(model.getTextDistanceVisibility());
+            imageViewFinish.setVisibility(model.getImageViewFinish());
+            textFinalTimeFit.setVisibility(model.getTextTimeFitVisibility());
+            textDistance.setText(model.getTextDistance());
+            textTimer.setText(model.getTextTimer());
+            textFinalTimeFit.setText(model.getTextTimeFit());
+
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(model.getToolbarText());
+            }
         }
     }
 
 
-    private void saveInstance() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
+    private void saveState() {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
 
         if (chronometer != null && chronometer.isRunning()) {
             editor.putBoolean(KEY_IS_CHRONOMETER_RUNNING, chronometer.isRunning());
@@ -334,7 +337,7 @@ public class ScamperActivity extends AppCompatActivity {
     }
 
 
-    private void loadInstance() {
+    private void loadStance() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         long lastStartTime = preferences.getLong(KEY_START_TIME, 0);
 
@@ -416,17 +419,17 @@ public class ScamperActivity extends AppCompatActivity {
             dbCursor.close();
 
             if (points.size() > 1) {
-                String trackToken = App.getInstance().getFirebaseDbReference().child(user.getUid()).push().getKey();
+                String trackToken = FirebaseDatabase.getInstance().getReference().child(CHILD_TRACKS).child(user.getUid()).push().getKey();
                 writeTokenToDb(trackToken, idTrack);
                 SaveModel saveModel = new SaveModel(beginsAt, time, distance, trackToken, typeFit, points);
 
-                App.getInstance().getFirebaseDbReference().child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {
+                FirebaseDatabase.getInstance().getReference().child(CHILD_TRACKS).child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                         if (databaseError != null) {
-                            Snackbar.make(linearLayoutRoot, getString(R.string.scamper_activity_track_save_error) + databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(relativeRootLayout, getString(R.string.scamper_activity_track_save_error) + databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
                         } else {
-                            Snackbar.make(linearLayoutRoot, R.string.scamper_activity_track_save_success, Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(relativeRootLayout, R.string.scamper_activity_track_save_success, Snackbar.LENGTH_LONG).show();
                         }
                     }
                 });

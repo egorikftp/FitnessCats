@@ -23,13 +23,17 @@ public class ConverterTime {
     }
 
 
-    public static String ConvertTimeAllFitnessData(long timeInMillis, long beginsAt) {
-        Date date = new Date(timeInMillis * 1000L);
+    public static String ConvertTimeAllFitnessData(long beginsAt, long timeFit) {
+        Date date = new Date(beginsAt * 1000L);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_TIME, Locale.getDefault());
         simpleDateFormat.setTimeZone(TimeZone.getDefault());
         String startTime = simpleDateFormat.format(date);
 
-        String endTime = simpleDateFormat.format(new Date((timeInMillis + beginsAt / 1000L) * 1000L));
+        if(timeFit == 0){
+            return startTime + " - ?";
+        }
+
+        String endTime = simpleDateFormat.format(new Date((beginsAt + timeFit / 1000L) * 1000L));
         return startTime + " - " + endTime;
     }
 

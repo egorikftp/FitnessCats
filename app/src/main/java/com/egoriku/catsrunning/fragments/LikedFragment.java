@@ -1,6 +1,5 @@
 package com.egoriku.catsrunning.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -23,23 +22,25 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
+import com.egoriku.catsrunning.activities.FitActivity;
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.LikedFragmentAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.ILikedClickListener;
 import com.egoriku.catsrunning.loaders.AsyncTaskLoaderLikedTracks;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
+import com.egoriku.catsrunning.utils.IntentBuilder;
 
 import java.util.List;
 
 import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
 import static com.egoriku.catsrunning.models.Constants.Tags.TAG_LIKED_FRAGMENT;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_DISTANCE;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_ID;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_LIKED;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_TIME_RUNNING;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_TOKEN;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_TYPE_FIT;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_DISTANCE;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_ID;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_LIKED;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_TIME_RUNNING;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_TOKEN;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_TYPE_FIT;
 
 public class LikedFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AllFitnessDataModel>> {
     private static final int UNICODE_SAD_CAT = 0x1F640;
@@ -107,14 +108,24 @@ public class LikedFragment extends Fragment implements LoaderManager.LoaderCallb
             likedFragmentAdapter.setOnItemClickListener(new ILikedClickListener() {
                 @Override
                 public void onItemClick(AllFitnessDataModel item, int position) {
-                    Intent intentTrackOnMaps = new Intent(getActivity(), TrackOnMapsActivity.class);
-                    intentTrackOnMaps.putExtra(KEY_ID, item.getId());
-                    intentTrackOnMaps.putExtra(KEY_DISTANCE, item.getDistance());
-                    intentTrackOnMaps.putExtra(KEY_TIME_RUNNING, item.getTime());
-                    intentTrackOnMaps.putExtra(KEY_TYPE_FIT, item.getTypeFit());
-                    intentTrackOnMaps.putExtra(KEY_LIKED, item.getLiked());
-                    intentTrackOnMaps.putExtra(KEY_TOKEN, item.getTrackToken());
-                    startActivity(intentTrackOnMaps);
+                    if (item.getTime() == 0) {
+                        startActivity(new IntentBuilder()
+                                .context(getActivity())
+                                .activity(FitActivity.class)
+                                .extra(KEY_TYPE_FIT, item.getTypeFit())
+                                .build());
+                    } else {
+                        startActivity(new IntentBuilder()
+                                .context(getActivity())
+                                .activity(TrackOnMapsActivity.class)
+                                .extra(KEY_ID, item.getId())
+                                .extra(KEY_DISTANCE, item.getDistance())
+                                .extra(KEY_TIME_RUNNING, item.getTime())
+                                .extra(KEY_LIKED, item.getLiked())
+                                .extra(KEY_TOKEN, item.getTrackToken())
+                                .extra(KEY_TYPE_FIT, item.getTypeFit())
+                                .build());
+                    }
                 }
 
                 @Override

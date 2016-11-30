@@ -7,7 +7,7 @@ public interface Constants {
     interface FormateDate {
         String FORMAT_DATE = "%02d:%02d:%02d";
         String FORMAT_TIME = "HH:mm";
-        String FORMAT_DATE_FULL = "dd.MM.yyyy HH:mm";
+        String FORMAT_DATE_FULL = "dd.MM.yyyy";
         String FORMAT_DATE_LOW = "d MMMM yyyy";
     }
 
@@ -139,16 +139,9 @@ public interface Constants {
     }
 
     interface ModelScamperActivity {
-        String VIEW_BTN_START = "VIEW_BTN_START";
-        String VIEW_BTN_FINISH = "VIEW_BTN_FINISH";
-        String VIEW_TEXT_TIMER = "VIEW_TEXT_TIMER";
-        String VIEW_TEXT_DISTANCE = "VIEW_TEXT_DISTANCE";
-        String VIEW_IMAGE = "VIEW_IMAGE";
-        String DISTANCE_TEXT = "DISTANCE_TEXT";
-        String TIME_SCAMPER_TEXT = "TIME_SCAMPER_TEXT";
+        String PARCELABLE_FIT_ACTIVITY_KEY = "PARCELABLE_FIT_ACTIVITY_KEY";
         String KEY_IS_CHRONOMETER_RUNNING = "KEY_IS_CHRONOMETER_RUNNING";
         String KEY_START_TIME = "KEY_START_TIME";
-        String TOOLBAR_TEXT = "TOOLBAR_TEXT";
         String EXTRA_ID_TRACK = "EXTRA_ID_TRACK";
     }
 
@@ -176,12 +169,17 @@ public interface Constants {
         String EXTRA_ID_TRACK = "EXTRA_ID_TRACK";
     }
 
-    interface TracksOnMApActivity{
+    interface TracksOnMapActivity {
         String KEY_ID = "KEY_ID";
         String KEY_DISTANCE = "KEY_DISTANCE";
         String KEY_TIME_RUNNING = "KEY_TIME_RUNNING";
         String KEY_LIKED = "KEY_LIKED";
         String KEY_TOKEN = "KEY_TOKEN";
         String KEY_TYPE_FIT = "KEY_TYPE_FIT";
+    }
+
+
+    interface Color{
+        String COLOR_NOW_FIT = "#CFDCE6";
     }
 }

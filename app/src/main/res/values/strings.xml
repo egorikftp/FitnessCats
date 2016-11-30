@@ -49,9 +49,9 @@
     <string name="notification_time_distance_format">%1$s, дистанция %2$s м</string>
 
     <!-- Текст AlertDialog при отсутствии GPS -->
-    <string name="scamper_activity_alert_message_no_gps">Ваш GPS выключен, хотите его включить?</string>
-    <string name="scamper_activity_alert_positive_btn">Да</string>
-    <string name="scamper_activity_alert_negative_btn">Нет</string>
+    <string name="fit_activity_alert_message_no_gps">Ваш GPS выключен, хотите его включить?</string>
+    <string name="fit_activity_alert_positive_btn">Да</string>
+    <string name="fit_activity_alert_negative_btn">Нет</string>
 
     <!-- Scamper Activity - Errors text -->
     <string name="scamper_activity_snackbar_btn_finish_not_pressed">Сначала надо нажать на \"Финиш\"</string>
@@ -65,7 +65,7 @@
     <string name="scamper_activity_track_save_success">Трек успешно сохранен</string>
     <string name="scamper_activity_track_save_error">Трек не сохранен</string>
     <string name="scamper_activity_toolbar_title">Статистика %s</string>
-    <string name="scamper_activity_now_time">Время: %s</string>
+    <string name="fit_activity_now_time">Время: %s</string>
 
 
 

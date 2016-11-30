@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.helpers.DbCursor;
 import com.egoriku.catsrunning.helpers.InquiryBuilder;
@@ -33,6 +32,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -40,16 +40,17 @@ import java.util.List;
 
 import static com.egoriku.catsrunning.helpers.DbActions.updateIsTrackDelete;
 import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
+import static com.egoriku.catsrunning.models.Constants.ConstantsFirebase.CHILD_TRACKS;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LAT;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LNG;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.TRACK_ID_EQ;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_POINT;
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.models.Constants.KeyReminder.KEY_ID;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_DISTANCE;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_LIKED;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_TIME_RUNNING;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMApActivity.KEY_TOKEN;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_DISTANCE;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_LIKED;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_TIME_RUNNING;
+import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_TOKEN;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -224,7 +225,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
                                         updateIsTrackDelete(getIntent().getExtras().getInt(KEY_ID));
 
                                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                        App.getInstance().getFirebaseDbReference().child(user.getUid()).child(getIntent().getExtras().getString(KEY_TOKEN)).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        FirebaseDatabase.getInstance().getReference().child(CHILD_TRACKS).child(user.getUid()).child(getIntent().getExtras().getString(KEY_TOKEN)).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
                                                 dataSnapshot.getRef().setValue(null);

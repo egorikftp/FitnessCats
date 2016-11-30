@@ -19,7 +19,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.activities.ScamperActivity;
+import com.egoriku.catsrunning.activities.FitActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
 
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
@@ -102,7 +102,7 @@ public class AllFitnessDataFragment extends Fragment {
         fabWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(KEY_TYPE_FIT, TYPE_FIT_WALK));
+                startActivity(new Intent(getActivity(), FitActivity.class).putExtra(KEY_TYPE_FIT, TYPE_FIT_WALK));
             }
         });
 
@@ -110,14 +110,14 @@ public class AllFitnessDataFragment extends Fragment {
         fabRun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(KEY_TYPE_FIT, TYPE_FIT_RUN));
+                startActivity(new Intent(getActivity(), FitActivity.class).putExtra(KEY_TYPE_FIT, TYPE_FIT_RUN));
             }
         });
 
         fabCycling.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ScamperActivity.class).putExtra(KEY_TYPE_FIT, TYPE_FIT_CYCLING));
+                startActivity(new Intent(getActivity(), FitActivity.class).putExtra(KEY_TYPE_FIT, TYPE_FIT_CYCLING));
             }
         });
 

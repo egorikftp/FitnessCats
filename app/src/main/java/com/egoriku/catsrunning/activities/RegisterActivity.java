@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.models.ParcelableRegisterActivityModel;
+import com.egoriku.catsrunning.utils.IntentBuilder;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -71,6 +72,7 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
     private String textLogin;
 
     private FirebaseAuth firebaseAuth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,21 +187,15 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
-                                                            dismissProgressDialog();
-                                                            App.getInstance().getState().setStartTaskAuthentification(false);
-                                                            startActivity(new Intent(RegisterActivity.this, TracksActivity.class));
-                                                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                                                            finish();
+                                                            completeRest();
                                                         } else {
-                                                            dismissProgressDialog();
-                                                            App.getInstance().getState().setStartTaskAuthentification(false);
+                                                            errorRest();
                                                             Snackbar.make(linearLayoutRegister, task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
                                                         }
                                                     }
                                                 });
                                     } else {
-                                        dismissProgressDialog();
-                                        App.getInstance().getState().setStartTaskAuthentification(false);
+                                        errorRest();
                                         Snackbar.make(linearLayoutRegister, task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
                                     }
                                 }
@@ -214,14 +210,9 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        dismissProgressDialog();
-                                        App.getInstance().getState().setStartTaskAuthentification(false);
-                                        startActivity(new Intent(RegisterActivity.this, TracksActivity.class));
-                                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                                        finish();
+                                       completeRest();
                                     } else {
-                                        dismissProgressDialog();
-                                        App.getInstance().getState().setStartTaskAuthentification(false);
+                                        errorRest();
                                         Snackbar.make(linearLayoutRegister, task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
                                     }
                                 }
@@ -229,6 +220,27 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
                 }
             }
         });
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (App.getInstance().getState() == null) {
+            App.getInstance().createState();
+        }
+
+        if (App.getInstance().getState().isStartTaskAuthentification()) {
+            showProgressDialog();
+        }
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        dismissProgressDialog();
     }
 
 
@@ -319,17 +331,6 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
     }
 
 
-    public boolean isNetworkAvailable(final Context context) {
-        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
-
-        if (connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected()) {
-            return true;
-        }
-        Snackbar.make(linearLayoutRegister, getString(R.string.no_ethernet_connection), Snackbar.LENGTH_SHORT).show();
-        return false;
-    }
-
-
     private void initializeGoogle() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -341,6 +342,17 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+    }
+
+
+    public boolean isNetworkAvailable(final Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+
+        if (connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected()) {
+            return true;
+        }
+        Snackbar.make(linearLayoutRegister, getString(R.string.no_ethernet_connection), Snackbar.LENGTH_SHORT).show();
+        return false;
     }
 
 
@@ -359,12 +371,12 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
             } else {
-                dismissProgressDialog();
-                App.getInstance().getState().setStartTaskAuthentification(false);
+                errorRest();
                 Snackbar.make(linearLayoutRegister, R.string.register_activity_snackbar_error_auth_google, Snackbar.LENGTH_SHORT).show();
             }
         }
     }
+
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
@@ -373,14 +385,9 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            dismissProgressDialog();
-                            App.getInstance().getState().setStartTaskAuthentification(false);
-                            startActivity(new Intent(RegisterActivity.this, TracksActivity.class));
-                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                            finish();
+                           completeRest();
                         } else {
                             dismissProgressDialog();
-                            App.getInstance().getState().setStartTaskAuthentification(false);
                             Snackbar.make(linearLayoutRegister, task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
                         }
                     }
@@ -390,40 +397,9 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
 
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (App.getInstance().getState() == null) {
-            App.getInstance().createState();
-        }
-
-        if (App.getInstance().getState().isStartTaskAuthentification()) {
-            showProgressDialog();
-        }
-    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        dismissProgressDialog();
-    }
-
-
-    @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(PARCELABLE_REGISTER,
-                new ParcelableRegisterActivityModel(
-                        inputLayoutEmail.getVisibility(),
-                        inputLayoutPassword.getVisibility(),
-                        inputLayoutDoublePassword.getVisibility(),
-                        inputLayoutName.getVisibility(),
-                        inputLayoutSurname.getVisibility(),
-                        signInGoogleBtn.getVisibility(),
-                        toolbar.getTitle().toString(),
-                        registerBtn.getText().toString(),
-                        loginBtn.getText().toString()
-                ));
+                new ParcelableRegisterActivityModel(inputLayoutEmail.getVisibility(), inputLayoutPassword.getVisibility(), inputLayoutDoublePassword.getVisibility(), inputLayoutName.getVisibility(), inputLayoutSurname.getVisibility(), signInGoogleBtn.getVisibility(), toolbar.getTitle().toString(), registerBtn.getText().toString(), loginBtn.getText().toString()));
         super.onSaveInstanceState(outState);
     }
 
@@ -451,4 +427,21 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Snackbar.make(linearLayoutRegister, getString(R.string.no_ethernet_connection), Snackbar.LENGTH_SHORT).show();
     }
+
+    private void errorRest() {
+        dismissProgressDialog();
+        App.getInstance().getState().setStartTaskAuthentification(false);
+    }
+
+
+    private void completeRest() {
+        errorRest();
+        startActivity(new IntentBuilder()
+                .context(RegisterActivity.this)
+                .activity(TracksActivity.class)
+                .build());
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        finish();
+    }
+
 }

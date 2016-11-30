@@ -37,7 +37,7 @@
                 android:resource="@xml/shortcuts" />
         </activity>
 
-        <activity android:name=".activities.ScamperActivity">
+        <activity android:name=".activities.FitActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.egoriku.catsrunning.activities.TracksActivity" />

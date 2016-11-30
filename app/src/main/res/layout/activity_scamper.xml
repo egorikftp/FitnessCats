@@ -1,53 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/scamper_activity_gradient"
-    android:orientation="vertical">
+    android:background="@drawable/scamper_activity_gradient">
 
     <include layout="@layout/toolbar_scamper_activity" />
 
-    <LinearLayout
-        android:id="@+id/activity_scamper_root_layout"
+    <RelativeLayout
+        android:id="@+id/fit_activity_root_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+        android:layout_height="match_parent">
 
         <Button
-            android:id="@+id/scamper_activity_btn_start"
+            android:id="@+id/fit_activity_btn_start"
             style="@style/BtnScamperActivityStyle"
+            android:layout_centerVertical="true"
             android:text="@string/scamper_activity_start" />
 
         <Button
-            android:id="@+id/scamper_activity_btn_finish"
+            android:id="@+id/fit_activity_btn_finish"
             style="@style/BtnScamperActivityStyle"
+            android:layout_centerVertical="true"
             android:text="@string/scamper_activity_finish" />
 
+        <TextView
+            android:id="@+id/fit_activity_text_now_time"
+            style="@style/TextScamperActivityStyle"
+            android:layout_below="@+id/fit_activity_btn_finish" />
+
         <ImageView
-            android:id="@+id/image_finish_scamper"
+            android:id="@+id/fit_activity_image_finish"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/ic_vec_cats_weary" />
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/app_name"
+            app:srcCompat="@drawable/ic_vec_cat_fly" />
 
         <TextView
-            android:id="@+id/scamper_activity_text_distance"
-            style="@style/TextScamperActivityStyle" />
+            android:id="@+id/fit_activity_text_time"
+            style="@style/TextScamperActivityStyle"
+            android:layout_below="@+id/fit_activity_image_finish" />
 
         <TextView
-            android:id="@+id/scamper_activity_text_timer"
-            style="@style/TextScamperActivityStyle" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-    </LinearLayout>
-</LinearLayout>
+            android:id="@+id/fit_activity_text_distance"
+            style="@style/TextScamperActivityStyle"
+            android:layout_below="@+id/fit_activity_text_time" />
+    </RelativeLayout>
+</RelativeLayout>

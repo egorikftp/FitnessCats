@@ -11,7 +11,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.activities.ScamperActivity;
+import com.egoriku.catsrunning.activities.FitActivity;
 
 import static com.egoriku.catsrunning.models.Constants.ANDROID_RESOURCE;
 import static com.egoriku.catsrunning.models.Constants.Extras.EXTRA_ID_REMINDER_KEY;
@@ -27,7 +27,7 @@ public class ReminderReceiver extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context,
                 extras.getInt(EXTRA_ID_REMINDER_KEY, 0),
-                new Intent(context, ScamperActivity.class).putExtra(KEY_TYPE_FIT, extras.getInt(TYPE_REMINDER_KEY)),
+                new Intent(context, FitActivity.class).putExtra(KEY_TYPE_FIT, extras.getInt(TYPE_REMINDER_KEY)),
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
 

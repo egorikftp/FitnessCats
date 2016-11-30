@@ -15,7 +15,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.activities.ScamperActivity;
+import com.egoriku.catsrunning.activities.FitActivity;
 import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.utils.ConverterTime;
 
@@ -225,7 +225,7 @@ public class RunService extends Service implements LocationListener {
                 .setContentIntent(PendingIntent.getActivity(
                         this,
                         0,
-                        new Intent(this, ScamperActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP).putExtra(KEY_TYPE_FIT, typeFit),
+                        new Intent(this, FitActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP).putExtra(KEY_TYPE_FIT, typeFit),
                         PendingIntent.FLAG_UPDATE_CURRENT
                 ))
                 .setContentTitle(String.format(getString(R.string.scamper_notification_title), getTypeFit(typeFit, true, R.array.type_reminder)))
