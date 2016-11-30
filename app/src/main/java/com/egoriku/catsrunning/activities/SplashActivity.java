@@ -1,5 +1,6 @@
 package com.egoriku.catsrunning.activities;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.animation.Animation;
@@ -36,9 +37,9 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 if (user != null) {
-                    startActivity(R.anim.slide_in_right, R.anim.slide_out_left);
+                    startActivity(R.anim.slide_in_right, R.anim.slide_out_left, TracksActivity.class);
                 } else {
-                    startActivity(R.anim.slide_in_left, R.anim.slide_out_righ);
+                    startActivity(R.anim.slide_in_left, R.anim.slide_out_righ, RegisterActivity.class);
                 }
             }
 
@@ -50,10 +51,10 @@ public class SplashActivity extends AppCompatActivity {
     }
 
 
-    private void startActivity(int enterAnim, int exitAnim) {
+    private void startActivity(int enterAnim, int exitAnim, Class<? extends Activity> activity) {
         startActivity(new IntentBuilder()
                 .context(SplashActivity.this)
-                .activity(TracksActivity.class)
+                .activity(activity)
                 .build());
         overridePendingTransition(enterAnim, exitAnim);
         finish();
