@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.helpers.DbCursor;
 import com.egoriku.catsrunning.helpers.InquiryBuilder;
@@ -52,6 +53,7 @@ import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_L
 import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_TIME_RUNNING;
 import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_TOKEN;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
+import static com.egoriku.catsrunning.utils.VectorToDrawable.createBitmapFromVector;
 
 public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final int paddingMap = 150;
@@ -134,12 +136,12 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
 
             for (int i = 0; i < coordinatesList.size(); i++) {
                 if (i == 0) {
-                    builder.include(createMarker(mMap, coordinatesList.get(i), startRunningHint, R.drawable.ic_location_on_map_start));
+                    builder.include(createMarker(mMap, coordinatesList.get(i), startRunningHint, R.drawable.ic_vec_location_start));
                     continue;
                 }
 
                 if (i == coordinatesList.size() - 1) {
-                    builder.include(createMarker(mMap, coordinatesList.get(coordinatesList.size() - 1), endRunningHint, R.drawable.ic_location_on_map_end));
+                    builder.include(createMarker(mMap, coordinatesList.get(coordinatesList.size() - 1), endRunningHint, R.drawable.ic_vec_location_end));
                     continue;
                 }
                 builder.include(coordinatesList.get(i));
@@ -161,8 +163,8 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
         Marker marker = map.addMarker(new MarkerOptions()
                 .position(latLng)
                 .title(title)
-                .icon(BitmapDescriptorFactory.fromResource(idIco))
-        );
+                .icon(BitmapDescriptorFactory.fromBitmap(createBitmapFromVector(App.getInstance().getResources(), idIco))
+                ));
         return marker.getPosition();
     }
 
@@ -172,6 +174,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
         getMenuInflater().inflate(R.menu.track_on_map_activity_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
