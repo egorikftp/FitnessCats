@@ -4,6 +4,7 @@ public class Point {
     private double lng;
     private double lat;
 
+
     public double getLng() {
         return lng;
     }

@@ -1,6 +1,6 @@
 package com.egoriku.catsrunning.models.Firebase;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class SaveModel {
     private long beginsAt;
@@ -8,12 +8,12 @@ public class SaveModel {
     private int distance;
     private String trackToken;
     private int typeFit;
-    private ArrayList<Point> points;
+    private List<Location> points;
 
     public SaveModel() {
     }
 
-    public SaveModel(long beginsAt, long time, int distance, String trackToken, int typeFit, ArrayList<Point> points) {
+    public SaveModel(long beginsAt, long time, int distance, String trackToken, int typeFit, List<Location> points) {
         this.beginsAt = beginsAt;
         this.time = time;
         this.distance = distance;
@@ -46,11 +46,11 @@ public class SaveModel {
         this.distance = distance;
     }
 
-    public ArrayList<Point> getPoints() {
+    public List<Location> getPoints() {
         return points;
     }
 
-    public void setPoints(ArrayList<Point> points) {
+    public void setPoints(List<Location> points) {
         this.points = points;
     }
 

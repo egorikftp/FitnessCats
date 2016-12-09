@@ -11,7 +11,7 @@
     <string name="type_walking">Прогулкa</string>
     <string name="type_running">Пробежкa</string>
     <string name="type_cycling">Велопрогулкa</string>
-    <string name="track_on_map_activity_track_delete">Трек удален</string>
+    <string name="track_on_map_activity_track_delete">Маршрут удален</string>
     <string name="track_on_map_activity_track_cancel_delete_success">Удаление отменено!</string>
     <string name="track_on_map_activity_cancel_delete">Отменить</string>
     <string name="track_fragment_toast_text_no_points">Точки отстутсвуют</string>
@@ -39,9 +39,7 @@
     <string name="fitness_data_fragment_alert_positive_btn">Удалить</string>
     <string name="fitness_data_fragment_alert_title">Удалить этот маршрут?</string>
     <string name="fragment_track_toolbar_title">Подробнее о треке</string>
-    <string name="liked_fragment_adapter_distance">Дистанция:</string>
     <string name="liked_fragment_adapter_distance_meter">%s м</string>
-    <string name="liked_fragment_adapter_time_running">Время пробежки:</string>
     <string name="liked_fragment_no_more_liked_tracks">У котиков нет любимых занятий</string>
     <string name="liked_fragment_snackbar_liked_empty">Хм, теперь тут пусто</string>
     <string name="navigation_drawer_close">\" \"</string>
@@ -72,16 +70,15 @@
     <string name="fit_activity_alert_message_no_gps">Ваш GPS выключен, хотите его включить?</string>
     <string name="fit_activity_alert_negative_btn">Нет</string>
     <string name="fit_activity_alert_positive_btn">Да</string>
-    <string name="scamper_activity_distance_meter">Ваш результат: %s м</string>
+    <string name="fit_activity_now_distance_meter">Текущий результат: %s м</string>
     <string name="scamper_activity_finish">ФИНИШ</string>
     <string name="scamper_activity_menu_action_delete">Удалить</string>
     <string name="fit_activity_now_time">Время: %s</string>
-    <string name="scamper_activity_snackbar_btn_finish_not_pressed">Сначала надо нажать на \"Финиш\"</string>
-    <string name="scamper_activity_snackbar_no_points">Увы, в треке нет точек</string>
+    <string name="fit_activity_snackbar_low_points">Увы, в маршруте мало точек</string>
     <string name="scamper_activity_start">СТАРТ</string>
     <string name="scamper_activity_toolbar_title">Статистика %s</string>
-    <string name="scamper_activity_track_save_error">Трек не сохранен</string>
-    <string name="scamper_activity_track_save_success">Трек успешно сохранен</string>
+    <string name="scamper_activity_track_save_error">Маршрут не сохранен</string>
+    <string name="scamper_activity_track_save_success">Маршрут успешно сохранен</string>
     <string name="scamper_notification_title">Ваша %s началась</string>
     <string name="tab_text_cycling">Велопрогулки</string>
     <string name="tab_text_running">Пробежки</string>
@@ -90,4 +87,6 @@
     <string name="track_fragment_distance">Дистанция:</string>
     <string name="adapter_fragment_liked_calories">Калории:</string>
     <string name="adapter_fragment_liked_distance">Дистанция:</string>
+    <string name="fit_activity_final_distance_meter">Финальный результат: %s м</string>
+    <string name="no_tracks_text">И почему мы не занимаемся?</string>
 </resources>

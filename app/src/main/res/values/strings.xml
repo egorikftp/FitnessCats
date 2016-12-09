@@ -1,153 +1,136 @@
 <resources>
     <string name="app_name">Fitness Cat\'s</string>
 
-    <!-- Экран входа. Подсказки для ввода -->
+    <!-- Activity Entrance/ Hint -->
     <string name="register_activity_hint_email">E-mail</string>
     <string name="register_activity_hint_password">Password</string>
-    <string name="register_activity_hint_double_password">Повторите пароль</string>
+    <string name="register_activity_hint_double_password">Confirm password</string>
     <string name="register_activity_hint_name">Name</string>
     <string name="register_activity_hint_surname">Surname</string>
     <string name="register_activity_snackbar_error_auth_google">Google Sign In failed</string>
 
-    <!-- Обработка ошибок после ввода данных для логина или регистации -->
-    <string name="empty_email">Введите e-mail</string>
-    <string name="empty_password">Введите пароль</string>
-    <string name="empty_double_password">Повторите пароль</string>
-    <string name="error_email">Возможно некорректный email</string>
-    <string name="password_dont_match">Пароли не совпадают</string>
-    <string name="no_ethernet_connection">Проверьте подключение к интернету</string>
-    <string name="empty_name">Введите имя</string>
-    <string name="empty_surname">Введите фамилию</string>
+    <!-- Error login/registration -->
+    <string name="empty_email">Enter e-mail</string>
+    <string name="empty_password">Enter password</string>
+    <string name="empty_double_password">Confirm password</string>
+    <string name="error_email">Possibly incorrect Email</string>
+    <string name="password_dont_match">Passwords don\'t match</string>
+    <string name="no_ethernet_connection">Check your internet connection</string>
+    <string name="empty_name">Enter name</string>
+    <string name="empty_surname">Enter surname</string>
 
-    <!-- Данные ProgressDialog -->
-    <string name="progress_dialog_register_title">Выполняется вход</string>
-    <string name="progress_dialog_register_message">Это займет буквально несколько секунд</string>
+    <!-- ProgressDialog -->
+    <string name="progress_dialog_register_title">Singing in to your account</string>
+    <string name="progress_dialog_register_message">It takes just a few seconds</string>
 
-    <!-- Данные Toolbar -->
-    <string name="register_activity_register_toolbar_title">Регистрация</string>
-    <string name="register_activity_login_toolbar_title">Войти</string>
-    <string name="fragment_track_toolbar_title">Подробнее о треке</string>
+    <!-- Toolbar -->
+    <string name="register_activity_register_toolbar_title">Register</string>
+    <string name="register_activity_login_toolbar_title">Entrance</string>
+    <string name="fragment_track_toolbar_title">More about the route</string>
 
-    <!-- Текст кнопок для логина/регистрации -->
+    <!-- Buttin login/register -->
     <string name="btn_text_registration">Sign up</string>
     <string name="btn_text_login">Sign in</string>
 
-    <!-- Текст для NavigationDrawer -->
-    <string name="navigation_drawer_main_activity">Список маршрутов</string>
-    <string name="navigation_drawer_reminders">Напоминания</string>
-    <string name="navigation_drawer_liked">Избранное</string>
-    <string name="navigation_drawer_statistic">Статистика [alpha]</string>
-    <string name="navigation_drawer_exit">Выход</string>
+    <!-- Navigation Drawer -->
+    <string name="navigation_drawer_main_activity">List of routes</string>
+    <string name="navigation_drawer_reminders">Reminders</string>
+    <string name="navigation_drawer_liked">Liked</string>
+    <string name="navigation_drawer_statistic">Statistic [alpha]</string>
+    <string name="navigation_drawer_exit">Exit</string>
     <string name="navigation_drawer_setting">Settings [alpha]</string>
 
-
-    <!-- Текст нотификации будильника -->
+    <!-- Alarm  -->
     <string name="alarm_notification_title">Fitness Cat\'s</string>
 
-    <!-- Текст нотификации сервиса -->
-    <string name="scamper_notification_title">Ваша %s началась</string>
-    <string name="notification_time_distance_format">%1$s, дистанция %2$s м</string>
+    <!-- Service Notification -->
+    <string name="scamper_notification_title">Your %s begun</string>
+    <string name="notification_time_distance_format">%1$s, distance %2$s m</string>
 
-    <!-- Текст AlertDialog при отсутствии GPS -->
-    <string name="fit_activity_alert_message_no_gps">Ваш GPS выключен, хотите его включить?</string>
-    <string name="fit_activity_alert_positive_btn">Да</string>
-    <string name="fit_activity_alert_negative_btn">Нет</string>
+    <!-- AlertDialog no GPS -->
+    <string name="fit_activity_alert_message_no_gps">Your GPS off, would you like turn on?</string>
+    <string name="fit_activity_alert_positive_btn">Yes</string>
+    <string name="fit_activity_alert_negative_btn">No</string>
 
-    <!-- Scamper Activity - Errors text -->
-    <string name="scamper_activity_snackbar_btn_finish_not_pressed">Сначала надо нажать на \"Финиш\"</string>
-    <string name="scamper_activity_snackbar_no_points">Увы, в треке нет точек</string>
+    <!-- Fit Activity - Errors text -->
+    <string name="fit_activity_snackbar_low_points">Alas, in the route small points</string>
 
-    <!-- Scamper Activity -->
-    <string name="scamper_activity_menu_action_delete">Удалить</string>
-    <string name="scamper_activity_distance_meter">Ваш результат: %s м</string>
-    <string name="scamper_activity_start">СТАРТ</string>
-    <string name="scamper_activity_finish">ФИНИШ</string>
-    <string name="scamper_activity_track_save_success">Трек успешно сохранен</string>
-    <string name="scamper_activity_track_save_error">Трек не сохранен</string>
-    <string name="scamper_activity_toolbar_title">Статистика %s</string>
-    <string name="fit_activity_now_time">Время: %s</string>
+    <!-- Fit Activity -->
+    <string name="scamper_activity_menu_action_delete">Remove</string>
+    <string name="fit_activity_now_distance_meter">Current result: %s m</string>
+    <string name="fit_activity_final_distance_meter">Final result: %s m</string>
+    <string name="scamper_activity_start">START</string>
+    <string name="scamper_activity_finish">FINISH</string>
+    <string name="scamper_activity_track_save_success">Route successfully saved</string>
+    <string name="scamper_activity_track_save_error">Route has\'t been saved</string>
+    <string name="scamper_activity_toolbar_title">Statistics %s</string>
+    <string name="fit_activity_now_time">Time: %s</string>
 
-
-
-    <!-- Адаптеры  -->
     <!-- Adapter Liked Fragment  -->
-    <string name="liked_fragment_adapter_distance_meter">%s м</string>
-    <string name="liked_fragment_adapter_time_running">Время пробежки:</string>
-    <string name="liked_fragment_adapter_distance">Дистанция:</string>
-
-
+    <string name="liked_fragment_adapter_distance_meter">%s m</string>
 
     <!-- Adapter Fragment Liked -->
     <string name="adapter_fragment_liked_calories">Calories:</string>
     <string name="adapter_fragment_liked_distance">Distance:</string>
 
-
-    <!-- Фрагменты  -->
     <!-- All Fitness Data Fragment -->
-    <string name="adapter_all_fitness_data_distance_meter">%s м</string>
-    <string name="adapter_all_fitness_data_calories">%s ккал</string>
+    <string name="adapter_all_fitness_data_distance_meter">%s m</string>
+    <string name="adapter_all_fitness_data_calories">%s kcal</string>
     <string name="adapter_all_fitness_data_distance">Distance:</string>
-    <string name="adapter_all_fitness_data_no_more_tracks">Похоже тут нет треков</string>
+    <string name="adapter_all_fitness_data_no_more_tracks">It seems there is no route</string>
     <string name="adapter_fragment_main_calories">Calories:</string>
 
-
     <!-- Track Fragment -->
-    <string name="track_fragment_distance">Дистанция:</string>
-    <string name="track_fragment_time_running">Время %s:</string>
+    <string name="track_fragment_distance">Distance:</string>
+    <string name="track_fragment_time_running">Time %s:</string>
     <string name="track_fragment_start_running_hint">START</string>
     <string name="track_fragment_end_running_hint">FINISH</string>
-    <string name="track_fragment_distance_meter">%s м</string>
-    <string name="track_fragment_toast_text_no_points">Точки отстутсвуют</string>
+    <string name="track_fragment_distance_meter">%s m</string>
+    <string name="track_fragment_toast_text_no_points">There are no points</string>
 
     <!-- Liked Fragment -->
-    <string name="liked_fragment_no_more_liked_tracks">У котиков нет любимых занятий</string>
-    <string name="liked_fragment_snackbar_liked_empty">Хм, теперь тут пусто</string>
+    <string name="liked_fragment_no_more_liked_tracks">Cats have no favorite workouts</string>
+    <string name="liked_fragment_snackbar_liked_empty">Hmm, there are empty now</string>
 
     <!-- Reminders Fragment -->
-    <string name="reminders_fragment_no_more_reminders">Я в форме - круг это форма %s</string>
-    <string name="reminders_fragment_snackbar_alarm_delete">Напоминание удалено</string>
+    <string name="reminders_fragment_no_more_reminders">I\'m in shape - a circle is the form %s</string>
+    <string name="reminders_fragment_snackbar_alarm_delete">Reminder removed</string>
     <string name="reminders_fragment_snackbar_revert">Cancel</string>
 
-
     <!-- Dialogs Add Reminder -->
-    <string name="add_reminder_part_one_dialog_title">Добавим напоминание</string>
-    <string name="add_reminder_part_one_dialog_negative_btn">Отмена</string>
-    <string name="add_reminder_part_one_dialog_positive_btn">Далее</string>
-    <string name="add_reminder_part_one_dialog_back_btn">Назад</string>
-    <string name="add_reminder_part_one_dialog_final_btn">Готово</string>
-    <string name="add_reminder_part_one_dialog_text_type">Выбери тип будущего занятия</string>
-    <string name="reminders_fragment_error_date">И зачем нам в прошлое?</string>
-    <string name="time_dialog_title">Установить новое время</string>
-    <string name="date_dialog_title">Установить новую дату</string>
-    <string name="date_dialog_negative_btn_text">Отмена</string>
-    <string name="date_dialog_positive_btn_text">Обновить</string>
-
+    <string name="add_reminder_part_one_dialog_title">Add reminder</string>
+    <string name="add_reminder_part_one_dialog_negative_btn">Cancel</string>
+    <string name="add_reminder_part_one_dialog_positive_btn">Onward</string>
+    <string name="add_reminder_part_one_dialog_back_btn">Back</string>
+    <string name="add_reminder_part_one_dialog_final_btn">Ready</string>
+    <string name="add_reminder_part_one_dialog_text_type">Select type of future workouts</string>
+    <string name="reminders_fragment_error_date">And why do we need the past?</string>
+    <string name="time_dialog_title">Set a new time</string>
+    <string name="date_dialog_title">Set a new date</string>
+    <string name="date_dialog_negative_btn_text">Cancel</string>
+    <string name="date_dialog_positive_btn_text">Update</string>
 
     <!-- Tabs -->
-    <string name="tab_text_cycling">Велопрогулки</string>
-    <string name="tab_text_walking">Прогулки</string>
-    <string name="tab_text_running">Пробежки</string>
-
+    <string name="tab_text_cycling">Cycling</string>
+    <string name="tab_text_walking">Walking</string>
+    <string name="tab_text_running">Scampers</string>
 
     <!-- Dialog Delete Track -->
-    <string name="fitness_data_fragment_alert_title">Удалить этот маршрут?</string>
+    <string name="fitness_data_fragment_alert_title">Remove this route?</string>
     <string name="fitness_data_fragment_alert_negative_btn">Cancel</string>
-    <string name="fitness_data_fragment_alert_positive_btn">Удалить</string>
+    <string name="fitness_data_fragment_alert_positive_btn">Remove</string>
 
 
     <string name="navigation_drawer_open">" "</string>
     <string name="navigation_drawer_close">" "</string>
 
+    <string name="type_cycling">Cycling</string>
+    <string name="type_walking">Walking</string>
+    <string name="type_running">Scampers</string>
 
-    <string name="type_cycling">Велопрогулкa</string>
-    <string name="type_walking">Прогулкa</string>
-    <string name="type_running">Пробежкa</string>
+    <string name="track_on_map_activity_track_delete">The route is removed</string>
+    <string name="track_on_map_activity_cancel_delete">Cancel</string>
+    <string name="track_on_map_activity_track_cancel_delete_success">Remove canceled</string>
 
-
-    <string name="track_on_map_activity_track_delete">Трек удален</string>
-    <string name="track_on_map_activity_cancel_delete">Отменить</string>
-    <string name="track_on_map_activity_track_cancel_delete_success">Удаление отменено!</string>
-
-
-    <string name="no_tracks_text">И почему мы не занимаемся?</string>
+    <string name="no_tracks_text">And why we don\'t do?</string>
 </resources>

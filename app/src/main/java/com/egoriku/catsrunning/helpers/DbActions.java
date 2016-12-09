@@ -15,11 +15,32 @@ import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
 
 public class DbActions {
+    public static void insertLocationDb(double longitude, double latitude) {
+        new WriteLocation(latitude, longitude).execute();
+    }
+
+    public static void insertDistanceTime(float nowDistance, long sinceTime) {
+        new WriteDistanceTimeTrack(nowDistance, sinceTime).execute();
+    }
+
+
+    public static void insertToId(int typeFit) {
+        new WriteToId(typeFit).execute();
+    }
+
+
     public static void deleteTrackDataById(long idTrack) {
-        new InquiryBuilder()
-                .tableDelete(TABLE_TRACKS)
-                .where(false, _ID_EQ, String.valueOf(idTrack))
-                .delete();
+        new DeleteById(idTrack).execute();
+    }
+
+
+    public static void writeTrackToken(String key, long idTrack) {
+        new WriteToken(key, idTrack).execute();
+    }
+
+
+    public static void writeDistance(int distance) {
+        new WriteDistance(distance).execute();
     }
 
 
@@ -41,7 +62,7 @@ public class DbActions {
 
 
     public static int writeReminderDb(long dateReminderUnix, int typeReminder) {
-        return (int)  new InquiryBuilder()
+        return (int) new InquiryBuilder()
                 .table(TABLE_REMINDER)
                 .set(DATE_REMINDER, dateReminderUnix)
                 .set(TYPE_REMINDER, typeReminder)

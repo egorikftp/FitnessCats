@@ -11,28 +11,18 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
-import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.utils.ConverterTime;
 
-import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_FINISH_SERVICE;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.BEGINS_AT;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.DISTANCE;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LAT;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LNG;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TIME;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TRACK_ID;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TYPE_FIT;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query._ID_EQ;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_POINT;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
+import static com.egoriku.catsrunning.helpers.DbActions.insertDistanceTime;
+import static com.egoriku.catsrunning.helpers.DbActions.insertLocationDb;
+import static com.egoriku.catsrunning.helpers.DbActions.insertToId;
+import static com.egoriku.catsrunning.helpers.DbActions.writeDistance;
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.models.Constants.KeyNotification.KEY_TYPE_FIT_NOTIFICATION;
-import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.EXTRA_ID_TRACK;
 import static com.egoriku.catsrunning.models.Constants.RunService.ACTION_START;
 import static com.egoriku.catsrunning.models.Constants.RunService.START_TIME;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
@@ -46,10 +36,6 @@ public class RunService extends Service implements LocationListener {
     private boolean isActive;
     private boolean isThreadRun;
     private int typeFit;
-
-    private long startTime;
-    private float nowDistance;
-    private long idTrack;
 
     private UpdateNotification updateNotification;
     private Thread updateThread;
@@ -75,7 +61,7 @@ public class RunService extends Service implements LocationListener {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction().equalsIgnoreCase(ACTION_START)) {
-            startTime = intent.getLongExtra(START_TIME, System.currentTimeMillis());
+            App.getInstance().getFitState().setStartTime(intent.getLongExtra(START_TIME, System.currentTimeMillis()));
             typeFit = intent.getIntExtra(KEY_TYPE_FIT_NOTIFICATION, 0);
             startNotification();
         } else {
@@ -85,25 +71,10 @@ public class RunService extends Service implements LocationListener {
 
         if (!isActive) {
             isActive = true;
-            getTrackIdStatement(startTime, typeFit);
-
-            locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    TIME_BETWEEN_UPDATES,
-                    UPDATE_DISTANCE_THRESHOLD_METERS,
-                    this
-            );
+            insertToId(typeFit);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIME_BETWEEN_UPDATES, UPDATE_DISTANCE_THRESHOLD_METERS, this);
         }
         return START_STICKY;
-    }
-
-
-    private void getTrackIdStatement(long startTime, int typeFit) {
-        idTrack = new InquiryBuilder()
-                .table(TABLE_TRACKS)
-                .set(BEGINS_AT, startTime / 1000)
-                .set(TYPE_FIT, typeFit)
-                .insertForId(App.getInstance().getDb());
     }
 
 
@@ -117,23 +88,14 @@ public class RunService extends Service implements LocationListener {
                         location.getLatitude(), location.getLongitude(),
                         results
                 );
-                nowDistance = nowDistance + results[0];
-                App.getInstance().getState().setNowDistance((int) nowDistance);
+                App.getInstance().getFitState().setNowDistance((int) ((int) App.getInstance().getFitState().getNowDistance() + results[0]));
             }
 
             oldLocation = location;
-            insertLocationToDb(location.getLongitude(), location.getLatitude());
+            writeDistance((int) App.getInstance().getFitState().getNowDistance());
+            App.getInstance().getFitState().addPoint(location.getLongitude(), location.getLatitude());
+            insertLocationDb(location.getLongitude(), location.getLatitude());
         }
-    }
-
-
-    private void insertLocationToDb(double longitude, double latitude) {
-        new InquiryBuilder()
-                .table(TABLE_POINT)
-                .set(LAT, latitude)
-                .set(LNG, longitude)
-                .set(TRACK_ID, idTrack)
-                .insert(App.getInstance().getDb());
     }
 
 
@@ -143,22 +105,9 @@ public class RunService extends Service implements LocationListener {
             isActive = false;
             locationManager.removeUpdates(this);
             stopForeground(true);
-            insertTrackData(nowDistance, App.getInstance().getState().getSinceTime());
-
-            LocalBroadcastManager.getInstance(
-                    App.getInstance()).sendBroadcast(new Intent(BROADCAST_FINISH_SERVICE).putExtra(EXTRA_ID_TRACK, idTrack));
+            insertDistanceTime(App.getInstance().getFitState().getNowDistance(), App.getInstance().getFitState().getSinceTime());
         }
         super.onDestroy();
-    }
-
-
-    private void insertTrackData(float nowDistance, long sinceTime) {
-        new InquiryBuilder()
-                .updateTable(TABLE_TRACKS)
-                .set(DISTANCE, nowDistance)
-                .set(TIME, sinceTime)
-                .updateWhere(_ID_EQ, String.valueOf(idTrack))
-                .update();
     }
 
 
@@ -219,7 +168,7 @@ public class RunService extends Service implements LocationListener {
     }
 
 
-    private void showNotification(String time, String distance) {
+    private void showNotification(String time, int distance) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(getNotificationIcon(typeFit))
                 .setContentIntent(PendingIntent.getActivity(
@@ -253,11 +202,6 @@ public class RunService extends Service implements LocationListener {
     }
 
 
-    public String getNowDistance() {
-        return String.valueOf((int) nowDistance);
-    }
-
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -284,9 +228,11 @@ public class RunService extends Service implements LocationListener {
         @Override
         public void run() {
             while (isThreadRun) {
-                long since = System.currentTimeMillis() - startTime;
-
-                showNotification(ConverterTime.ConvertTimeToString(since), getNowDistance());
+                long since = System.currentTimeMillis() - App.getInstance().getFitState().getStartTime();
+                showNotification(
+                        ConverterTime.ConvertTimeToString(since),
+                        (int) App.getInstance().getFitState().getNowDistance()
+                );
 
                 try {
                     Thread.sleep(1000);

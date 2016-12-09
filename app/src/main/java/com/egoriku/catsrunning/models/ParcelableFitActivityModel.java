@@ -16,6 +16,10 @@ public class ParcelableFitActivityModel implements Parcelable {
     private String textTimeFit;
     private boolean isChronometerRun;
     private long chromonometerStartTime;
+    private String textViewFinalTimeTxt;
+    private int textViewFinalTime;
+    private int textViewFinalDistance;
+    private String textViewFinalDistanceTxt;
 
 
     public ParcelableFitActivityModel() {
@@ -49,11 +53,47 @@ public class ParcelableFitActivityModel implements Parcelable {
         parcel.writeInt(textDistanceVisibility);
         parcel.writeInt(imageViewFinish);
         parcel.writeInt(textTimerVisibility);
+        parcel.writeInt(textViewFinalDistance);
+        parcel.writeInt(textViewFinalTime);
+        parcel.writeInt(textTimerVisibility);
         parcel.writeString(toolbarText);
         parcel.writeString(textDistance);
         parcel.writeString(textTimer);
+        parcel.writeString(textViewFinalDistanceTxt);
+        parcel.writeString(textViewFinalTimeTxt);
     }
 
+    public String getTextViewFinalTimeTxt() {
+        return textViewFinalTimeTxt;
+    }
+
+    public void setTextViewFinalTimeTxt(String textViewFinalTimeTxt) {
+        this.textViewFinalTimeTxt = textViewFinalTimeTxt;
+    }
+
+    public int getTextViewFinalTime() {
+        return textViewFinalTime;
+    }
+
+    public void setTextViewFinalTime(int textViewFinalTime) {
+        this.textViewFinalTime = textViewFinalTime;
+    }
+
+    public int getTextViewFinalDistance() {
+        return textViewFinalDistance;
+    }
+
+    public void setTextViewFinalDistance(int textViewFinalDistance) {
+        this.textViewFinalDistance = textViewFinalDistance;
+    }
+
+    public String getTextViewFinalDistanceTxt() {
+        return textViewFinalDistanceTxt;
+    }
+
+    public void setTextViewFinalDistanceTxt(String textViewFinalDistanceTxt) {
+        this.textViewFinalDistanceTxt = textViewFinalDistanceTxt;
+    }
 
     public long getChromonometerStartTime() {
         return chromonometerStartTime;
