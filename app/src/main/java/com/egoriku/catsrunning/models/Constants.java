@@ -18,7 +18,7 @@ public interface Constants {
             String TABLE_POINT = "Point";
             String TABLE_TRACKS = "Tracks";
             String TABLE_REMINDER = "Reminder";
-            String TABLE_USER = "USer";
+            String TABLE_USER = "User";
         }
 
         interface Columns {
@@ -57,6 +57,7 @@ public interface Constants {
             String SELECT_FROM = "SELECT FROM";
             String DELETE = "DELETE FROM";
             String WHERE = "WHERE";
+            String AS = " AS ";
             String FROM = "FROM";
             String JOIN = "JOIN";
             String ON = "ON";
