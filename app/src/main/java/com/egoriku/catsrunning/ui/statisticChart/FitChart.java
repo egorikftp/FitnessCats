@@ -88,7 +88,7 @@ public class FitChart extends View {
 
 
     //single value
-    public void setValue(float value) {
+    public void setValue(int value) {
         chartValues.clear();
         FitChartValue chartValue = new FitChartValue(value, valueStrokeColor);
         chartValue.setPaint(buildPaintForValue());

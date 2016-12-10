@@ -288,7 +288,11 @@ public class InquiryBuilder implements Cursor {
 
     private Cursor getQuery(String queryType, String[] params) {
         return App.getInstance().getDb().rawQuery(queryType + query.toString(), params);
+    }
 
+
+    public Cursor sum() {
+        return getQuery(SELECT, getParams());
     }
 
     public InquiryBuilder orderBy(String column) {
@@ -328,6 +332,7 @@ public class InquiryBuilder implements Cursor {
         App.getInstance().getDb().execSQL(DELETE + query.toString(), getParams());
         return null;
     }
+
 
 
     @Override
@@ -534,5 +539,6 @@ public class InquiryBuilder implements Cursor {
     public Bundle respond(Bundle extras) {
         return null;
     }
+
 }
 
