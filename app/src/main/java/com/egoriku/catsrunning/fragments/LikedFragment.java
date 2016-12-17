@@ -27,7 +27,7 @@ import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.LikedFragmentAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.ILikedClickListener;
-import com.egoriku.catsrunning.loaders.AsyncTaskLoaderLikedTracks;
+import com.egoriku.catsrunning.loaders.AsyncLikedTracksLoader;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
 import com.egoriku.catsrunning.utils.IntentBuilder;
 
@@ -186,7 +186,7 @@ public class LikedFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public Loader<List<AllFitnessDataModel>> onCreateLoader(int id, Bundle args) {
-        return new AsyncTaskLoaderLikedTracks(getContext());
+        return new AsyncLikedTracksLoader(getContext());
     }
 
 

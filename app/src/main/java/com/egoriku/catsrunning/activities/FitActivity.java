@@ -195,7 +195,7 @@ public class FitActivity extends AppCompatActivity {
             writeTrackToken(trackToken, App.getInstance().getFitState().getIdTrack());
 
             SaveModel saveModel = new SaveModel(
-                    App.getInstance().getFitState().getStartTime(),
+                    App.getInstance().getFitState().getStartTime()/1000L,
                     App.getInstance().getFitState().getSinceTime(),
                     (int) App.getInstance().getFitState().getNowDistance(),
                     trackToken,
@@ -270,14 +270,6 @@ public class FitActivity extends AppCompatActivity {
         return true;
     }
 
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (App.getInstance().getState() == null) {
-            App.getInstance().createState();
-        }
-    }
 
     @Override
     protected void onPause() {

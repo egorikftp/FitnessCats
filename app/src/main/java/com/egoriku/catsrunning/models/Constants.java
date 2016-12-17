@@ -39,6 +39,7 @@ public interface Constants {
         }
 
         interface Query {
+            String DISTANCE_COUNT = "distance_count";
             String BEGINS_AT_EQ = "beginsAt=";
             String TRACK_ID_EQ = "trackId=";
             String TYPE_FIT_EQ = "typeFit=";
@@ -53,15 +54,20 @@ public interface Constants {
             int IS_RING_TRUE = 1;
             int IS_RING_FALSE = 0;
 
+            String LEFT_BRACKET = "(";
+            String RIGHT_BRACKET = ")";
+            String MORE_THEN = ">";
+
             String SELECT = "SELECT";
             String SELECT_FROM = "SELECT FROM";
             String DELETE = "DELETE FROM";
             String WHERE = "WHERE";
             String AS = " AS ";
+            String SUM = "SUM";
             String FROM = "FROM";
             String JOIN = "JOIN";
             String ON = "ON";
-            String AND = "AND";
+            String AND = " AND ";
             String CREATE = "CREATE TABLE";
             String CREATE_INDEX = "CREATE INDEX";
             String DROP_INDEX = "DROP INDEX";
@@ -95,6 +101,7 @@ public interface Constants {
         String EXTRA_TEXT_TYPE_REMINDER_KEY = "EXTRA_TEXT_TYPE_REMINDER_KEY";
         String TYPE_REMINDER_KEY = "TYPE_REMINDER_KEY";
         String KEY_TYPE_FIT = "KEY_TYPE_FIT";
+        String KEY_BUNDLE_TIME_AMOUNT = "KEY_BUNDLE_TIME_AMOUNT";
     }
 
     interface Tags {
@@ -109,7 +116,6 @@ public interface Constants {
     interface Broadcast {
         String BROADCAST_SAVE_NEW_TRACKS = "BROADCAST_SAVE_NEW_TRACKS";
         String BROADCAST_ADD_NEW_REMINDER = "BROADCAST_ADD_NEW_REMINDER";
-        String BROADCAST_FINISH_SERVICE = "BROADCAST_FINISH_SERVICE";
         String BROADCAST_UPDATE_REMINDER_DATE = "BROADCAST_UPDATE_REMINDER_DATE";
         String BROADCAST_UPDATE_REMINDER_TIME = "BROADCAST_UPDATE_REMINDER_TIME";
     }
@@ -143,7 +149,6 @@ public interface Constants {
         String PARCELABLE_FIT_ACTIVITY_KEY = "PARCELABLE_FIT_ACTIVITY_KEY";
         String KEY_IS_CHRONOMETER_RUNNING = "KEY_IS_CHRONOMETER_RUNNING";
         String KEY_START_TIME = "KEY_START_TIME";
-        String EXTRA_ID_TRACK = "EXTRA_ID_TRACK";
     }
 
     interface CustomStringPicker {
@@ -167,7 +172,6 @@ public interface Constants {
     interface RunService {
         String START_TIME = "START_TIME";
         String ACTION_START = "START_NOTIFY_SERVICE";
-        String EXTRA_ID_TRACK = "EXTRA_ID_TRACK";
     }
 
     interface TracksOnMapActivity {
@@ -178,7 +182,6 @@ public interface Constants {
         String KEY_TOKEN = "KEY_TOKEN";
         String KEY_TYPE_FIT = "KEY_TYPE_FIT";
     }
-
 
     interface Color{
         String COLOR_NOW_FIT = "#CFDCE6";

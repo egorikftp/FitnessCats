@@ -82,7 +82,7 @@ public class FitChart extends View {
     }
 
 
-    public void setMaxValue(float value) {
+    public void setMaxValue(int value) {
         maxValue = value;
     }
 

@@ -53,4 +53,16 @@
     <dimen name="adapter_fragment_liked_padding_image_liked">10dp</dimen>
     <dimen name="liked_fragment_text_margin">15dp</dimen>
 
+    <dimen name="statistic_fragment_icon_width">20dp</dimen>
+    <dimen name="statistic_fragment_icon_height">20dp</dimen>
+    <dimen name="statistic_fragment_icon_margin">25dp</dimen>
+    <dimen name="statistic_fragment_icon_margin_top_first">20dp</dimen>
+    <dimen name="statistic_fragment_icon_margin_top_second">40dp</dimen>
+    <dimen name="statistic_fragment_fitchart_stroke_size">20dp</dimen>
+    <dimen name="statistic_fragment_text_size_cats">15sp</dimen>
+    <dimen name="statistic_fragment_text_all_distance_size">20sp</dimen>
+    <dimen name="statistic_fragment_max_width_text">140dp</dimen>
+
+    <dimen name="dropDownVerticalOffset">-52dp</dimen>
+
 </resources>

@@ -8,12 +8,12 @@ public class SaveModel {
     private int distance;
     private String trackToken;
     private int typeFit;
-    private List<Location> points;
+    private List<Point> points;
 
     public SaveModel() {
     }
 
-    public SaveModel(long beginsAt, long time, int distance, String trackToken, int typeFit, List<Location> points) {
+    public SaveModel(long beginsAt, long time, int distance, String trackToken, int typeFit, List<Point> points) {
         this.beginsAt = beginsAt;
         this.time = time;
         this.distance = distance;
@@ -46,11 +46,11 @@ public class SaveModel {
         this.distance = distance;
     }
 
-    public List<Location> getPoints() {
+    public List<Point> getPoints() {
         return points;
     }
 
-    public void setPoints(List<Location> points) {
+    public void setPoints(List<Point> points) {
         this.points = points;
     }
 
