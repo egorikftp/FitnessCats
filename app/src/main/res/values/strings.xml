@@ -133,9 +133,11 @@
     <string name="track_on_map_activity_track_cancel_delete_success">Remove canceled</string>
 
     <string name="no_tracks_text">And why we don\'t do?</string>
+
     <string name="statistic_fragment_bad_fit">We must more involved</string>
     <string name="statistic_fragment_result">%s m</string>
     <string name="statistic_fragment_good_fit">Cats satisfied!</string>
+    <string name="statistic_fragment_no_data">It seems that there is no data for a given period of time</string>
 
     <string name="spinner_week">Week</string>
     <string name="spinner_month">Month</string>
@@ -143,5 +145,4 @@
     <string name="spinner_year">Year</string>
     <string name="spinner_half_year">Half-Year</string>
     <string name="spinner_day">Day</string>
-    <string name="statisitic_fragment_no_data">Похоже, нет данных для данного промежутка времени</string>
 </resources>

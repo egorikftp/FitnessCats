@@ -98,4 +98,5 @@
     <string name="spinner_week">Неделя</string>
     <string name="spinner_year">Год</string>
     <string name="spinner_day">День</string>
+    <string name="statistic_fragment_no_data">Похоже, нет данных для данного промежутка времени</string>
 </resources>

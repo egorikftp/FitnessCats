@@ -84,7 +84,6 @@ public class StatisticFragment extends Fragment implements LoaderManager.LoaderC
         spinner = (Spinner) getActivity().findViewById(R.id.spinner_nav);
         rootLayout = (RelativeLayout) view.findViewById(R.id.statistic_fragment_root_no_data);
         rootFrame = (FrameLayout) view.findViewById(R.id.statistic_fragment_root_chart);
-        spinner.setVisibility(View.VISIBLE);
 
         addItemsToSpinner();
 
@@ -233,5 +232,12 @@ public class StatisticFragment extends Fragment implements LoaderManager.LoaderC
     public void onStop() {
         super.onStop();
         spinner.setVisibility(View.GONE);
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        spinner.setVisibility(View.VISIBLE);
     }
 }
