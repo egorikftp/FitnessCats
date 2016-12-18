@@ -14,12 +14,18 @@ import java.util.List;
 
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.BEGINS_AT;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.DISTANCE;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TIME;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.AND;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.AS;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.DISTANCE_COUNT;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_TRACK_DELETE_EQ;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_TRACK_DELETE_FALSE;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.LEFT_BRACKET;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.MORE_THEN;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.RIGHT_BRACKET;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.SUM;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.TYPE_FIT_EQ;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
+import static com.egoriku.catsrunning.models.Constants.Extras.KEY_BUNDLE_TIME_AMOUNT;
 
 public class AsyncStatisticLoader extends AsyncTaskLoader<List<StatisticModel>> {
     private List<StatisticModel> dataModelList;
@@ -28,7 +34,7 @@ public class AsyncStatisticLoader extends AsyncTaskLoader<List<StatisticModel>> 
     public AsyncStatisticLoader(Context context, Bundle bundle) {
         super(context);
         if (bundle != null) {
-            timeInterval = bundle.getLong("TIME_INTERVAL");
+            timeInterval = bundle.getLong(KEY_BUNDLE_TIME_AMOUNT);
         }
     }
 
@@ -49,22 +55,29 @@ public class AsyncStatisticLoader extends AsyncTaskLoader<List<StatisticModel>> 
     @Override
     public List<StatisticModel> loadInBackground() {
         dataModelList = new ArrayList<>();
+        for (int typeFit = 0; typeFit <= 2; typeFit++) {
+            getFitStatisticDb(typeFit);
+        }
+
+        return dataModelList;
+    }
+
+
+    private void getFitStatisticDb(int typeFit) {
+        int queryFit = typeFit + 1;
         Cursor cursor = new InquiryBuilder()
-                .get("SUM(" + DISTANCE + ")" + AS + DISTANCE, BEGINS_AT)
+                .get(SUM + LEFT_BRACKET + DISTANCE + RIGHT_BRACKET + AS + DISTANCE_COUNT)
                 .from(TABLE_TRACKS)
-                .where(true, IS_TRACK_DELETE_EQ + " " + IS_TRACK_DELETE_FALSE + " " + AND + " " + TIME + ">" + 1)
+                .where(true, IS_TRACK_DELETE_EQ + " " + IS_TRACK_DELETE_FALSE + AND + BEGINS_AT + MORE_THEN + timeInterval + AND + TYPE_FIT_EQ + queryFit)
                 .sum();
 
         DbCursor dbCursor = new DbCursor(cursor);
         if (dbCursor.isValid()) {
             do {
-                long time = dbCursor.getLong(BEGINS_AT);
-                dataModelList.add(new StatisticModel(dbCursor.getInt(DISTANCE)));
-
+                dataModelList.add(typeFit, new StatisticModel(dbCursor.getInt(DISTANCE_COUNT)));
             } while (cursor.moveToNext());
         }
         cursor.close();
-        return dataModelList;
     }
 
 

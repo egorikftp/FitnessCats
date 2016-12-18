@@ -1,14 +1,10 @@
 package com.egoriku.catsrunning.activities;
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,7 +13,6 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -27,16 +22,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.helpers.DbCursor;
-import com.egoriku.catsrunning.helpers.InquiryBuilder;
-import com.egoriku.catsrunning.models.Firebase.Point;
 import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.models.ParcelableFitActivityModel;
 import com.egoriku.catsrunning.services.RunService;
+import com.egoriku.catsrunning.utils.ConverterTime;
 import com.egoriku.catsrunning.utils.CustomChronometer;
 import com.egoriku.catsrunning.utils.FlipAnimation;
 import com.egoriku.catsrunning.utils.IntentBuilder;
@@ -46,26 +38,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
-
 import static com.egoriku.catsrunning.helpers.DbActions.deleteTrackDataById;
-import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_FINISH_SERVICE;
+import static com.egoriku.catsrunning.helpers.DbActions.writeTrackToken;
 import static com.egoriku.catsrunning.models.Constants.ConstantsFirebase.CHILD_TRACKS;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.BEGINS_AT;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.DISTANCE;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LAT;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LNG;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TIME;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TRACK_TOKEN;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TYPE_FIT;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns._ID;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.TRACK_ID_EQ;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query._ID_EQ;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_POINT;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.models.Constants.KeyNotification.KEY_TYPE_FIT_NOTIFICATION;
-import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.EXTRA_ID_TRACK;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.KEY_IS_CHRONOMETER_RUNNING;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.KEY_START_TIME;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.PARCELABLE_FIT_ACTIVITY_KEY;
@@ -77,21 +54,19 @@ public class FitActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 1;
     public static final int TOP_PADDING = 50;
     public static final int ANOTHER_PADDING = 0;
-    private ArrayList<Point> points;
 
-    private long idTrack;
     private int typeFit;
     private String alertMessage;
     private String alertPositiveBtn;
     private String alertNegativeBtn;
-    private String textNowTime;
 
     private Toolbar toolbar;
     private Button btnStart;
     private Button btnFinish;
-    private TextView textTimer;
-    private TextView textDistance;
-    private TextView textFinalTimeFit;
+    private TextView textViewNowDistance;
+    private TextView textViewNowTime;
+    private TextView textViewFinalTime;
+    private TextView textViewFinalDistance;
     private ImageView imageViewFinish;
     private RelativeLayout relativeRootLayout;
 
@@ -109,9 +84,10 @@ public class FitActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
         btnStart = (Button) findViewById(R.id.fit_activity_btn_start);
         btnFinish = (Button) findViewById(R.id.fit_activity_btn_finish);
-        textTimer = (TextView) findViewById(R.id.fit_activity_text_now_time);
-        textFinalTimeFit = (TextView) findViewById(R.id.fit_activity_text_time);
-        textDistance = (TextView) findViewById(R.id.fit_activity_text_distance);
+        textViewFinalTime = (TextView) findViewById(R.id.fit_activity_final_time);
+        textViewFinalDistance = (TextView) findViewById(R.id.fit_activity_final_distance);
+        textViewNowTime = (TextView) findViewById(R.id.fit_activity_now_time);
+        textViewNowDistance = (TextView) findViewById(R.id.fit_activity_now_distance);
         imageViewFinish = (ImageView) findViewById(R.id.fit_activity_image_finish);
         relativeRootLayout = (RelativeLayout) findViewById(R.id.fit_activity_root_layout);
         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -119,13 +95,13 @@ public class FitActivity extends AppCompatActivity {
         alertMessage = getString(R.string.fit_activity_alert_message_no_gps);
         alertPositiveBtn = getString(R.string.fit_activity_alert_positive_btn);
         alertNegativeBtn = getString(R.string.fit_activity_alert_negative_btn);
-        textNowTime = getString(R.string.fit_activity_now_time);
 
         btnFinish.setVisibility(View.GONE);
-        textTimer.setVisibility(View.GONE);
-        textDistance.setVisibility(View.GONE);
-        textFinalTimeFit.setVisibility(View.GONE);
+        textViewNowDistance.setVisibility(View.GONE);
+        textViewNowTime.setVisibility(View.GONE);
         imageViewFinish.setVisibility(View.GONE);
+        textViewFinalDistance.setVisibility(View.GONE);
+        textViewFinalTime.setVisibility(View.GONE);
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -137,7 +113,7 @@ public class FitActivity extends AppCompatActivity {
             }
         }
 
-        final FlipAnimation flipAnimation = new FlipAnimation(btnStart, btnFinish, textTimer, textFinalTimeFit, textDistance, imageViewFinish);
+        final FlipAnimation flipAnimation = new FlipAnimation(btnStart, btnFinish, textViewNowTime, textViewNowDistance, imageViewFinish, textViewFinalTime, textViewFinalDistance);
 
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,6 +133,8 @@ public class FitActivity extends AppCompatActivity {
                     return;
                 }
 
+                App.getInstance().createFitState();
+
                 if (chronometer == null) {
                     chronometer = new CustomChronometer(FitActivity.this);
                     chronometerThread = new Thread(chronometer);
@@ -175,7 +153,7 @@ public class FitActivity extends AppCompatActivity {
                 }
 
                 startService(intent.build());
-                textTimer.setPadding(ANOTHER_PADDING, TOP_PADDING, ANOTHER_PADDING, ANOTHER_PADDING);
+                textViewNowTime.setPadding(ANOTHER_PADDING, TOP_PADDING, ANOTHER_PADDING, ANOTHER_PADDING);
                 relativeRootLayout.startAnimation(flipAnimation);
             }
         });
@@ -184,6 +162,13 @@ public class FitActivity extends AppCompatActivity {
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                stopService(new IntentBuilder()
+                        .context(FitActivity.this)
+                        .service(RunService.class)
+                        .build());
+
+                textViewFinalTime.setText(String.format(getString(R.string.fit_activity_now_time), ConverterTime.ConvertTimeToString(App.getInstance().getFitState().getSinceTime())));
+                textViewFinalDistance.setText(String.format(getString(R.string.fit_activity_final_distance_meter), (int) App.getInstance().getFitState().getNowDistance()));
                 flipAnimation.setReverse();
                 relativeRootLayout.startAnimation(flipAnimation);
 
@@ -197,12 +182,41 @@ public class FitActivity extends AppCompatActivity {
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(String.format(getString(R.string.scamper_activity_toolbar_title), getTypeFit(typeFit, true, R.array.all_fitness_data_categories)));
                 }
-                stopService(new IntentBuilder()
-                        .context(FitActivity.this)
-                        .service(RunService.class)
-                        .build());
+
+                uploadTrackInFirebase();
             }
         });
+    }
+
+
+    private void uploadTrackInFirebase() {
+        if (App.getInstance().getFitState().getPoints().size() > 2) {
+            String trackToken = FirebaseDatabase.getInstance().getReference().child(CHILD_TRACKS).child(user.getUid()).push().getKey();
+            writeTrackToken(trackToken, App.getInstance().getFitState().getIdTrack());
+
+            SaveModel saveModel = new SaveModel(
+                    App.getInstance().getFitState().getStartTime()/1000L,
+                    App.getInstance().getFitState().getSinceTime(),
+                    (int) App.getInstance().getFitState().getNowDistance(),
+                    trackToken,
+                    typeFit,
+                    App.getInstance().getFitState().getPoints()
+            );
+
+            FirebaseDatabase.getInstance().getReference().child(CHILD_TRACKS).child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if (databaseError != null) {
+                        Snackbar.make(relativeRootLayout, getString(R.string.scamper_activity_track_save_error) + databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
+                    } else {
+                        Snackbar.make(relativeRootLayout, R.string.scamper_activity_track_save_success, Snackbar.LENGTH_LONG).show();
+                    }
+                }
+            });
+        } else {
+            Snackbar.make(relativeRootLayout, R.string.fit_activity_snackbar_low_points, Snackbar.LENGTH_LONG).show();
+            deleteTrackDataById(App.getInstance().getFitState().getIdTrack());
+        }
     }
 
 
@@ -210,8 +224,8 @@ public class FitActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                textTimer.setText(String.format(textNowTime, timeFromChronometer));
-                textFinalTimeFit.setText(String.format(textNowTime, timeFromChronometer));
+                textViewNowTime.setText(String.format(getString(R.string.fit_activity_now_time), timeFromChronometer));
+                textViewNowDistance.setText(String.format(getString(R.string.fit_activity_now_distance_meter), (int) App.getInstance().getFitState().getNowDistance()));
             }
         });
     }
@@ -258,18 +272,9 @@ public class FitActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        if (App.getInstance().getState() == null) {
-            App.getInstance().createState();
-        }
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         saveState();
-        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastReceiverIdTrack);
     }
 
 
@@ -277,7 +282,6 @@ public class FitActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadStance();
-        LocalBroadcastManager.getInstance(App.getInstance()).registerReceiver(broadcastReceiverIdTrack, new IntentFilter(BROADCAST_FINISH_SERVICE));
     }
 
 
@@ -287,15 +291,16 @@ public class FitActivity extends AppCompatActivity {
         ParcelableFitActivityModel model = new ParcelableFitActivityModel();
         model.setBtnStart(btnStart.getVisibility());
         model.setBtnFinish(btnFinish.getVisibility());
-        model.setTextTimeFitVisibility(textFinalTimeFit.getVisibility());
-        model.setTextDistanceVisibility(textDistance.getVisibility());
+        model.setTextTimeFitVisibility(textViewNowTime.getVisibility());
+        model.setTextDistanceVisibility(textViewNowDistance.getVisibility());
         model.setImageViewFinish(imageViewFinish.getVisibility());
-        model.setTextTimerVisibility(textTimer.getVisibility());
-        model.setTextTimeFitVisibility(textFinalTimeFit.getVisibility());
         model.setToolbarText(toolbar.getTitle().toString());
-        model.setTextDistance(textDistance.getText().toString());
-        model.setTextTimer(textTimer.getText().toString());
-        model.setTextTimeFit(textFinalTimeFit.getText().toString());
+        model.setTextDistance(textViewNowDistance.getText().toString());
+        model.setTextTimeFit(textViewNowTime.getText().toString());
+        model.setTextViewFinalDistanceTxt(textViewFinalDistance.getText().toString());
+        model.setTextViewFinalDistance(textViewFinalDistance.getVisibility());
+        model.setTextViewFinalTime(textViewFinalTime.getVisibility());
+        model.setTextViewFinalTimeTxt(textViewFinalTime.getText().toString());
         outState.putParcelable(PARCELABLE_FIT_ACTIVITY_KEY, model);
     }
 
@@ -308,13 +313,15 @@ public class FitActivity extends AppCompatActivity {
         if (model != null) {
             btnStart.setVisibility(model.getBtnStart());
             btnFinish.setVisibility(model.getBtnFinish());
-            textTimer.setVisibility(model.getTextTimerVisibility());
-            textDistance.setVisibility(model.getTextDistanceVisibility());
+            textViewNowDistance.setVisibility(model.getTextDistanceVisibility());
             imageViewFinish.setVisibility(model.getImageViewFinish());
-            textFinalTimeFit.setVisibility(model.getTextTimeFitVisibility());
-            textDistance.setText(model.getTextDistance());
-            textTimer.setText(model.getTextTimer());
-            textFinalTimeFit.setText(model.getTextTimeFit());
+            textViewNowTime.setVisibility(model.getTextTimeFitVisibility());
+            textViewNowDistance.setText(model.getTextDistance());
+            textViewNowTime.setText(model.getTextTimeFit());
+            textViewFinalTime.setVisibility(model.getTextViewFinalTime());
+            textViewFinalTime.setText(model.getTextViewFinalTimeTxt());
+            textViewFinalDistance.setVisibility(model.getTextViewFinalDistance());
+            textViewFinalDistance.setText(model.getTextViewFinalDistanceTxt());
 
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setTitle(model.getToolbarText());
@@ -355,88 +362,9 @@ public class FitActivity extends AppCompatActivity {
 
             btnStart.setVisibility(View.GONE);
             btnFinish.setVisibility(View.VISIBLE);
-            textTimer.setVisibility(View.VISIBLE);
-            textDistance.setVisibility(View.GONE);
-            textTimer.setPadding(ANOTHER_PADDING, TOP_PADDING, ANOTHER_PADDING, ANOTHER_PADDING);
+            textViewNowDistance.setVisibility(View.VISIBLE);
+            textViewNowTime.setVisibility(View.VISIBLE);
+            textViewNowTime.setPadding(ANOTHER_PADDING, TOP_PADDING, ANOTHER_PADDING, ANOTHER_PADDING);
         }
     }
-
-
-    private void writeTokenToDb(String key, long idTrack) {
-        new InquiryBuilder()
-                .updateTable(TABLE_TRACKS)
-                .set(TRACK_TOKEN, key)
-                .updateWhere(_ID_EQ, String.valueOf(idTrack))
-                .update();
-    }
-
-
-    private BroadcastReceiver broadcastReceiverIdTrack = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            idTrack = intent.getLongExtra(EXTRA_ID_TRACK, -1);
-            textDistance.setText(String.format(getString(R.string.scamper_activity_distance_meter), App.getInstance().getState().getNowDistance()));
-
-            points = new ArrayList<>();
-            long beginsAt = 0;
-            int distance = 0;
-            long time = 0;
-            int typeFit = 0;
-            //TODO move out from UI thread
-            Cursor cursorData = new InquiryBuilder()
-                    .get(BEGINS_AT, TIME, DISTANCE, TYPE_FIT)
-                    .from(TABLE_TRACKS)
-                    .where(false, _ID_EQ, String.valueOf(idTrack))
-                    .select();
-
-            DbCursor dbCursor = new DbCursor(cursorData);
-
-            if (dbCursor.isValid()) {
-                do {
-                    beginsAt = dbCursor.getInt(BEGINS_AT);
-                    distance = dbCursor.getInt(DISTANCE);
-                    time = dbCursor.getInt(TIME);
-                    typeFit = dbCursor.getInt(TYPE_FIT);
-                } while (cursorData.moveToNext());
-            }
-            dbCursor.close();
-
-            Cursor cursorPoints = new InquiryBuilder()
-                    .get(_ID, LNG, LAT)
-                    .from(TABLE_POINT)
-                    .where(false, TRACK_ID_EQ, String.valueOf(idTrack))
-                    .select();
-
-            DbCursor dbCursorPoints = new DbCursor(cursorPoints);
-            if (dbCursorPoints.isValid()) {
-                do {
-                    Point point = new Point();
-                    point.setLat(dbCursorPoints.getDouble(LAT));
-                    point.setLng(dbCursorPoints.getDouble(LNG));
-                    points.add(point);
-                } while (cursorPoints.moveToNext());
-            }
-            dbCursor.close();
-
-            if (points.size() > 1) {
-                String trackToken = FirebaseDatabase.getInstance().getReference().child(CHILD_TRACKS).child(user.getUid()).push().getKey();
-                writeTokenToDb(trackToken, idTrack);
-                SaveModel saveModel = new SaveModel(beginsAt, time, distance, trackToken, typeFit, points);
-
-                FirebaseDatabase.getInstance().getReference().child(CHILD_TRACKS).child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        if (databaseError != null) {
-                            Snackbar.make(relativeRootLayout, getString(R.string.scamper_activity_track_save_error) + databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
-                        } else {
-                            Snackbar.make(relativeRootLayout, R.string.scamper_activity_track_save_success, Snackbar.LENGTH_LONG).show();
-                        }
-                    }
-                });
-            } else {
-                Toast.makeText(getApplicationContext(), R.string.scamper_activity_snackbar_no_points, Toast.LENGTH_SHORT).show();
-                deleteTrackDataById(idTrack);
-            }
-        }
-    };
 }

@@ -10,6 +10,7 @@ import com.egoriku.catsrunning.models.AllFitnessDataModel;
 import com.egoriku.catsrunning.models.Firebase.Point;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -91,10 +92,10 @@ public class AsyncWrite {
 
 
     private static class WriteTaskPoints extends AsyncTask<Void, Void, Void> {
-        private ArrayList<Point> points = new ArrayList<>();
+        private List<Point> points = new ArrayList<>();
         private long idTrack;
 
-        private WriteTaskPoints(ArrayList<Point> points, long idTrack) {
+        private WriteTaskPoints(List<Point> points, long idTrack) {
             this.idTrack = idTrack;
             this.points = points;
         }

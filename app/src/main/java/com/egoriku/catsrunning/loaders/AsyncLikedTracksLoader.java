@@ -25,10 +25,10 @@ import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_TRA
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.LIKED_EQ;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
 
-public class AsyncTaskLoaderLikedTracks extends AsyncTaskLoader<List<AllFitnessDataModel>> {
+public class AsyncLikedTracksLoader extends AsyncTaskLoader<List<AllFitnessDataModel>> {
     private List<AllFitnessDataModel> likedTracksModels;
 
-    public AsyncTaskLoaderLikedTracks(Context context) {
+    public AsyncLikedTracksLoader(Context context) {
         super(context);
     }
 
@@ -52,7 +52,7 @@ public class AsyncTaskLoaderLikedTracks extends AsyncTaskLoader<List<AllFitnessD
         Cursor cursor = new InquiryBuilder()
                 .get(_ID, BEGINS_AT, TIME, DISTANCE, LIKED, TRACK_TOKEN, TYPE_FIT)
                 .from(TABLE_TRACKS)
-                .where(true, IS_TRACK_DELETE_EQ + " " + IS_TRACK_DELETE_FALSE + " " + AND + " " + LIKED_EQ + " " + String.valueOf(IS_LIKED))
+                .where(true, IS_TRACK_DELETE_EQ + " " + IS_TRACK_DELETE_FALSE + AND + LIKED_EQ + " " + String.valueOf(IS_LIKED))
                 .orderBy(BEGINS_AT)
                 .desc()
                 .select();

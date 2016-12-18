@@ -58,7 +58,7 @@ public class AsyncTracksLoader extends AsyncTaskLoader<List<AllFitnessDataModel>
         Cursor cursorTracks = new InquiryBuilder()
                 .get(_ID, BEGINS_AT, TIME, DISTANCE, LIKED, TRACK_TOKEN, TYPE_FIT)
                 .from(TABLE_TRACKS)
-                .where(true, IS_TRACK_DELETE_EQ + " " + IS_TRACK_DELETE_FALSE + " " + AND + " " + TYPE_FIT_EQ + typeReminder)
+                .where(true, IS_TRACK_DELETE_EQ + " " + IS_TRACK_DELETE_FALSE + AND + TYPE_FIT_EQ + typeReminder)
                 .orderBy(BEGINS_AT)
                 .desc()
                 .select();

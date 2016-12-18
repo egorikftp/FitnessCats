@@ -6,27 +6,30 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.widget.TextView;
 
 public class FlipAnimation extends Animation {
     private Camera camera;
     private View btnStart;
     private View btnFinish;
-    private View textTimer;
-    private View textFinalTimeFit;
-    private View textYouFinishRunning;
+    private View viewNowTime;
+    private View viewNowDistance;
     private View imageFinishScamper;
+    private View textViewFinalTime;
+    private View textViewFinalDistance;
     private float centerX;
     private float centerY;
     private boolean isReverse = false;
 
 
-    public FlipAnimation(View btnStart, View btnFinish, View textTimer, View textFinalTimeFit, View textYouFinishRunning, View imageFinishScamper){
+    public FlipAnimation(View btnStart, View btnFinish, View viewNowTime, View textNowDistance, View imageFinishScamper, TextView textViewFinalTime, TextView textViewFinalDistance) {
         this.btnStart = btnStart;
         this.btnFinish = btnFinish;
-        this.textTimer = textTimer;
-        this.textFinalTimeFit = textFinalTimeFit;
-        this.textYouFinishRunning = textYouFinishRunning;
+        this.viewNowTime = viewNowTime;
+        this.viewNowDistance = textNowDistance;
         this.imageFinishScamper = imageFinishScamper;
+        this.textViewFinalTime = textViewFinalTime;
+        this.textViewFinalDistance = textViewFinalDistance;
 
         setDuration(700);
         setFillAfter(false);
@@ -47,21 +50,22 @@ public class FlipAnimation extends Animation {
     protected void applyTransformation(float interpolatedTime, Transformation t) {
         float degrees = (float) (180.0 * Math.PI * interpolatedTime / Math.PI);
 
-        if(interpolatedTime >=0.5f){
-            degrees -=180.f;
+        if (interpolatedTime >= 0.5f) {
+            degrees -= 180.f;
             btnStart.setVisibility(View.GONE);
-            textFinalTimeFit.setVisibility(View.GONE);
-            textTimer.setVisibility(View.VISIBLE);
             btnFinish.setVisibility(View.VISIBLE);
+            viewNowTime.setVisibility(View.VISIBLE);
+            viewNowDistance.setVisibility(View.VISIBLE);
         }
 
-        if(isReverse){
-            degrees=-degrees;
+        if (isReverse) {
+            degrees = -degrees;
             btnFinish.setVisibility(View.GONE);
-            textYouFinishRunning.setVisibility(View.VISIBLE);
+            viewNowDistance.setVisibility(View.GONE);
+            viewNowTime.setVisibility(View.GONE);
             imageFinishScamper.setVisibility(View.VISIBLE);
-            textTimer.setVisibility(View.GONE);
-            textFinalTimeFit.setVisibility(View.VISIBLE);
+            textViewFinalTime.setVisibility(View.VISIBLE);
+            textViewFinalDistance.setVisibility(View.VISIBLE);
         }
 
         final Matrix matrix = t.getMatrix();
@@ -74,7 +78,7 @@ public class FlipAnimation extends Animation {
     }
 
 
-    public void setReverse(){
+    public void setReverse() {
         isReverse = true;
     }
 }

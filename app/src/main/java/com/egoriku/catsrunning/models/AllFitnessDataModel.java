@@ -1,7 +1,8 @@
 package com.egoriku.catsrunning.models;
 
 import com.egoriku.catsrunning.models.Firebase.Point;
-import java.util.ArrayList;
+
+import java.util.List;
 
 public class AllFitnessDataModel {
 
@@ -15,7 +16,7 @@ public class AllFitnessDataModel {
     private int liked;
     private int typeFit;
     private String trackToken;
-    private ArrayList<Point> points;
+    private List<Point> points;
 
     public long getBeginsAt() {
         return beginsAt;
@@ -57,11 +58,11 @@ public class AllFitnessDataModel {
         this.liked = liked;
     }
 
-    public ArrayList<Point> getPoints() {
+    public List<Point> getPoints() {
         return points;
     }
 
-    public void setPoints(ArrayList<Point> points) {
+    public void setPoints(List<Point> points) {
         this.points = points;
     }
 

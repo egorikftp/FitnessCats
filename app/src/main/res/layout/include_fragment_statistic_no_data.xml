@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/statistic_fragment_root_no_data"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:visibility="gone"
+    tools:showIn="@layout/fragment_statistic">
+
+    <TextView
+        android:id="@+id/statistic_fragment_txt_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:maxLines="3"
+        android:padding="20dp"
+        android:text="@string/statistic_fragment_no_data"
+        android:textSize="20sp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/statistic_fragment_txt_no_data"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@drawable/ic_vec_cat_no_statistic" />
+</RelativeLayout>

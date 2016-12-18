@@ -20,8 +20,13 @@
     <color name="color_background_nav_drawer">#2aaebfb2</color>
     <color name="color_vec_ic_reminders">#6F4052</color>
 
-    <color name="chart_value_1">#E69F70</color>
-    <color name="chart_value_2">#AEBFB2</color>
-    <color name="chart_value_3">#B85967</color>
+    <color name="chart_value_first_color">#B85967</color>
+    <color name="chart_value_second_color">#E69F70</color>
+    <color name="chart_value_third_color">#AEBFB2</color>
+    <color name="chart_value_empty_color">#FFF</color>
+
+
+    <color name="statistic_fragment_all_distance_color">#212121</color>
+    <color name="statistic_fragment_cats_talk_color">#757575</color>
 
 </resources>

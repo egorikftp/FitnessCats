@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.multidex.MultiDex;
 
 import com.egoriku.catsrunning.helpers.DbOpenHelper;
+import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.models.State;
 
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.SQL_VACUUM;
@@ -14,6 +15,7 @@ import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.SQL_VACUUM;
 public class App extends Application {
     public static App self;
     private State state;
+    private FitState fitState;
     private DbOpenHelper dbOpenHelper;
     private SQLiteDatabase db;
 
@@ -32,6 +34,14 @@ public class App extends Application {
         state = new State();
     }
 
+    public void createFitState() {
+        fitState = new FitState();
+    }
+
+
+    public FitState getFitState() {
+        return fitState;
+    }
 
     public State getState() {
         return state;
