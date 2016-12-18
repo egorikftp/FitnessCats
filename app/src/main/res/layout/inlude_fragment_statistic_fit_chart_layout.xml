@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/statistic_fragment_root_chart"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+    tools:showIn="@layout/fragment_statistic">
+
+    <ImageView
+        android:id="@+id/statistic_fragment_ic_walk"
+        style="@style/statistic_fragment_icon_style"
+        app:srcCompat="@drawable/ic_vec_directions_walk_reminders" />
+
+    <ImageView
+        android:id="@+id/statistic_fragment_ic_run"
+        style="@style/statistic_fragment_icon_style"
+        android:layout_marginTop="@dimen/statistic_fragment_icon_margin_top_first"
+        app:srcCompat="@drawable/ic_vec_directions_run_reminders" />
+
+    <ImageView
+        android:id="@+id/statistic_fragment_ic_cycling"
+        style="@style/statistic_fragment_icon_style"
+        android:layout_marginTop="@dimen/statistic_fragment_icon_margin_top_second"
+        app:srcCompat="@drawable/ic_vec_directions_bike_reminders" />
+
+    <com.egoriku.catsrunning.ui.statisticChart.FitChart
+        android:id="@+id/fit_chart"
+        style="@style/chart_style"
+        app:strokeSize="@dimen/statistic_fragment_fitchart_stroke_size" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/statistic_fragment_all_distance_view"
+            style="@style/statistic_fragment_text_view_style"
+            android:textColor="@color/statistic_fragment_all_distance_color"
+            android:textSize="@dimen/statistic_fragment_text_all_distance_size"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/statistic_fragment_fit_result_view"
+            style="@style/statistic_fragment_text_view_style"
+            android:layout_below="@id/statistic_fragment_all_distance_view"
+            android:gravity="center"
+            android:textColor="@color/statistic_fragment_cats_talk_color"
+            android:textSize="@dimen/statistic_fragment_text_size_cats" />
+    </RelativeLayout>
+</FrameLayout>

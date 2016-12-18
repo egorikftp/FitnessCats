@@ -20,7 +20,7 @@
     <string name="empty_surname">Enter surname</string>
 
     <!-- ProgressDialog -->
-    <string name="progress_dialog_register_title">Singing in to your account</string>
+    <string name="progress_dialog_register_title">Signing in to your account</string>
     <string name="progress_dialog_register_message">It takes just a few seconds</string>
 
     <!-- Toolbar -->
@@ -36,7 +36,7 @@
     <string name="navigation_drawer_main_activity">List of routes</string>
     <string name="navigation_drawer_reminders">Reminders</string>
     <string name="navigation_drawer_liked">Liked</string>
-    <string name="navigation_drawer_statistic">Statistic [alpha]</string>
+    <string name="navigation_drawer_statistic">Statistic</string>
     <string name="navigation_drawer_exit">Exit</string>
     <string name="navigation_drawer_setting">Settings [alpha]</string>
 
@@ -133,4 +133,16 @@
     <string name="track_on_map_activity_track_cancel_delete_success">Remove canceled</string>
 
     <string name="no_tracks_text">And why we don\'t do?</string>
+
+    <string name="statistic_fragment_bad_fit">We must more involved</string>
+    <string name="statistic_fragment_result">%s m</string>
+    <string name="statistic_fragment_good_fit">Cats satisfied!</string>
+    <string name="statistic_fragment_no_data">It seems that there is no data for a given period of time</string>
+
+    <string name="spinner_week">Week</string>
+    <string name="spinner_month">Month</string>
+    <string name="spinner_quarter">Quarter</string>
+    <string name="spinner_year">Year</string>
+    <string name="spinner_half_year">Half-Year</string>
+    <string name="spinner_day">Day</string>
 </resources>

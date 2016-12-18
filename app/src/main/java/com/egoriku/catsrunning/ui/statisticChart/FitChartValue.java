@@ -3,13 +3,13 @@ package com.egoriku.catsrunning.ui.statisticChart;
 import android.graphics.Paint;
 
 public class FitChartValue {
-    private final float value;
+    private final int value;
     private final int color;
     private Paint paint;
     private float startAngle;
     private float sweepAngle;
 
-    public FitChartValue(float value, int color) {
+    public FitChartValue(int value, int color) {
         this.value = value;
         this.color = color;
     }

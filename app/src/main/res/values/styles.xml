@@ -100,4 +100,19 @@
         <item name="android:layout_width">@dimen/chart_size</item>
         <item name="android:layout_height">@dimen/chart_size</item>
     </style>
+
+    <style name="statistic_fragment_icon_style">
+        <item name="android:visibility">invisible</item>
+        <item name="android:layout_width">@dimen/statistic_fragment_icon_width</item>
+        <item name="android:layout_height">@dimen/statistic_fragment_icon_height</item>
+        <item name="android:layout_gravity">center|top</item>
+        <item name="android:layout_marginRight">@dimen/statistic_fragment_icon_margin</item>
+    </style>
+
+    <style name="statistic_fragment_text_view_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:maxWidth">@dimen/statistic_fragment_max_width_text</item>
+    </style>
 </resources>

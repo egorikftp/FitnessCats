@@ -1,56 +1,10 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:background="@color/chart_value_empty_color"
+    android:gravity="center">
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <include layout="@layout/inlude_fragment_statistic_fit_chart_layout" />
 
-        <com.egoriku.catsrunning.ui.statisticChart.FitChart
-            android:id="@+id/fitChart"
-            style="@style/chart_style"
-            android:layout_gravity="center"
-            app:strokeSize="20dp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:maxWidth="200dp"
-                android:text="1.500 метров"
-                android:textColor="#212121"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:maxWidth="200dp"
-                android:text="Котики довольны!"
-                android:textColor="#757575"
-                android:textSize="15sp" />
-        </LinearLayout>
-    </FrameLayout>
-
-    <Button
-        android:id="@+id/add_create_statistic"
-        style="@style/Base.Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Построить статитику"
-        android:textAllCaps="false" />
-</LinearLayout>
+    <include layout="@layout/include_fragment_statistic_no_data" />
+</RelativeLayout>

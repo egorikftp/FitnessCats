@@ -15,6 +15,7 @@ import android.support.v4.app.NotificationCompat;
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
+import com.egoriku.catsrunning.models.Firebase.Point;
 import com.egoriku.catsrunning.utils.ConverterTime;
 
 import static com.egoriku.catsrunning.helpers.DbActions.insertDistanceTime;
@@ -93,7 +94,12 @@ public class RunService extends Service implements LocationListener {
 
             oldLocation = location;
             writeDistance((int) App.getInstance().getFitState().getNowDistance());
-            App.getInstance().getFitState().addPoint(location.getLongitude(), location.getLatitude());
+
+            Point point = new Point();
+            point.setLng(location.getLongitude());
+            point.setLat(location.getLatitude());
+            App.getInstance().getFitState().addPoint(point);
+
             insertLocationDb(location.getLongitude(), location.getLatitude());
         }
     }
