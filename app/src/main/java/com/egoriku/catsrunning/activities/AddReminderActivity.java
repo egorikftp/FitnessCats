@@ -18,6 +18,7 @@ import com.egoriku.catsrunning.ui.CustomStringPicker;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static com.egoriku.catsrunning.helpers.DbActions.writeReminderDb;
 import static com.egoriku.catsrunning.models.Constants.ModelReminder.KEY_CALENDAR;
@@ -134,12 +135,16 @@ public class AddReminderActivity extends AppCompatActivity {
                     }
 
                     btnNext.setClickable(false);
-                    setAlarm(
-                            writeReminderDb(allDateCalendar.getTimeInMillis() / 1000, stringPicker.getCurrent() + 1),
-                            getTypeFit(stringPicker.getCurrent() + 1, false, R.array.type_reminder),
-                            allDateCalendar.getTimeInMillis(),
-                            stringPicker.getCurrent() + 1
-                    );
+                    try {
+                        setAlarm(
+                                writeReminderDb(allDateCalendar.getTimeInMillis() / 1000, stringPicker.getCurrent() + 1),
+                                getTypeFit(stringPicker.getCurrent() + 1, false, R.array.type_reminder),
+                                allDateCalendar.getTimeInMillis(),
+                                stringPicker.getCurrent() + 1
+                        );
+                    } catch (ExecutionException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     finish();
                     return;
                 }

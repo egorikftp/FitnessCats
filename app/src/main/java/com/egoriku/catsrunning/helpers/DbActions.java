@@ -1,20 +1,23 @@
 package com.egoriku.catsrunning.helpers;
 
-import com.egoriku.catsrunning.App;
+import com.egoriku.catsrunning.helpers.dbActions.DeleteById;
+import com.egoriku.catsrunning.helpers.dbActions.DeleteReminder;
+import com.egoriku.catsrunning.helpers.dbActions.DeleteSingleTrack;
+import com.egoriku.catsrunning.helpers.dbActions.UpdateIsTrackDelete;
+import com.egoriku.catsrunning.helpers.dbActions.UpdateLikedState;
+import com.egoriku.catsrunning.helpers.dbActions.UpdateReminder;
+import com.egoriku.catsrunning.helpers.dbActions.UpdateReminderState;
+import com.egoriku.catsrunning.helpers.dbActions.WriteDistanceTimeTrack;
+import com.egoriku.catsrunning.helpers.dbActions.WriteDistanceTrack;
+import com.egoriku.catsrunning.helpers.dbActions.WriteForResultId;
+import com.egoriku.catsrunning.helpers.dbActions.WriteLocation;
+import com.egoriku.catsrunning.helpers.dbActions.WriteReminderForId;
+import com.egoriku.catsrunning.helpers.dbActions.WriteToken;
 
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.DATE_REMINDER;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.IS_RINGS;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.IS_TRACK_DELETE;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LIKED;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TYPE_REMINDER;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.BEGINS_AT_EQ;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_RING_TRUE;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_TRACK_DELETE_TRUE;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query._ID_EQ;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_REMINDER;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
+import java.util.concurrent.ExecutionException;
 
 public class DbActions {
+
     public static void insertLocationDb(double longitude, double latitude) {
         new WriteLocation(latitude, longitude).execute();
     }
@@ -25,7 +28,7 @@ public class DbActions {
 
 
     public static void insertToId(int typeFit) {
-        new WriteToId(typeFit).execute();
+        new WriteForResultId(typeFit).execute();
     }
 
 
@@ -40,70 +43,41 @@ public class DbActions {
 
 
     public static void writeDistance(int distance) {
-        new WriteDistance(distance).execute();
+        new WriteDistanceTrack(distance).execute();
     }
 
 
     public static void updateLikedDigit(int likedDigit, int position) {
-        new InquiryBuilder()
-                .updateTable(TABLE_TRACKS)
-                .set(LIKED, likedDigit)
-                .updateWhere(_ID_EQ, String.valueOf(position))
-                .update();
+        new UpdateLikedState(likedDigit, position).execute();
     }
 
 
     public static void deleteSyncTrackData(long beginsAt) {
-        new InquiryBuilder()
-                .tableDelete(TABLE_TRACKS)
-                .where(false, BEGINS_AT_EQ, String.valueOf(beginsAt))
-                .delete();
+        new DeleteSingleTrack(beginsAt).execute();
     }
 
 
-    public static int writeReminderDb(long dateReminderUnix, int typeReminder) {
-        return (int) new InquiryBuilder()
-                .table(TABLE_REMINDER)
-                .set(DATE_REMINDER, dateReminderUnix)
-                .set(TYPE_REMINDER, typeReminder)
-                .set(IS_RINGS, IS_RING_TRUE)
-                .insertForId(App.getInstance().getDb());
+    public static int writeReminderDb(long dateReminderUnix, int typeReminder) throws ExecutionException, InterruptedException {
+        return new WriteReminderForId(dateReminderUnix, typeReminder).execute().get();
     }
 
 
     public static void deleteReminderDb(int idReminder) {
-        new InquiryBuilder()
-                .tableDelete(TABLE_REMINDER)
-                .where(false, _ID_EQ, String.valueOf(idReminder))
-                .delete();
+        new DeleteReminder(idReminder).execute();
     }
 
 
     public static void updateReminder(long dateReminderUnix, int id) {
-        new InquiryBuilder()
-                .updateTable(TABLE_REMINDER)
-                .set(DATE_REMINDER, dateReminderUnix)
-                .set(IS_RINGS, IS_RING_TRUE)
-                .updateWhere(_ID_EQ, String.valueOf(id))
-                .update();
+        new UpdateReminder(dateReminderUnix, id).execute();
     }
 
 
     public static void updateAlarmCondition(int id, int isRing) {
-        new InquiryBuilder()
-                .updateTable(TABLE_REMINDER)
-                .set(IS_RINGS, isRing)
-                .updateWhere(_ID_EQ, String.valueOf(id))
-                .update();
+        new UpdateReminderState(id, isRing).execute();
     }
 
 
     public static void updateIsTrackDelete(int id) {
-        new InquiryBuilder()
-                .updateTable(TABLE_TRACKS)
-                .set(IS_TRACK_DELETE, IS_TRACK_DELETE_TRUE)
-                .updateWhere(_ID_EQ, String.valueOf(id))
-                .update();
+        new UpdateIsTrackDelete(id).execute();
     }
-
 }

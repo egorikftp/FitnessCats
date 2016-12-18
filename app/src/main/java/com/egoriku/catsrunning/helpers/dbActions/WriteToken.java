@@ -1,4 +1,7 @@
-package com.egoriku.catsrunning.helpers;
+package com.egoriku.catsrunning.helpers.dbActions;
+
+import com.egoriku.catsrunning.helpers.BaseAsyncWriter;
+import com.egoriku.catsrunning.helpers.InquiryBuilder;
 
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TRACK_TOKEN;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query._ID_EQ;

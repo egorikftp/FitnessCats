@@ -1,4 +1,4 @@
-package com.egoriku.catsrunning.helpers;
+package com.egoriku.catsrunning.helpers.dbActions;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -6,6 +6,7 @@ import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.egoriku.catsrunning.App;
+import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
 import com.egoriku.catsrunning.models.Firebase.Point;
 
@@ -27,7 +28,7 @@ import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TYPE
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_POINT;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
 
-public class AsyncWrite {
+public class AsyncWriteNewTracks {
     private static final int CORE_POOL_SIZE = 4;
     private static final int MAXIMUM_POOL_SIZE = 4;
     private static final int KEEP_ALIVE = 1;

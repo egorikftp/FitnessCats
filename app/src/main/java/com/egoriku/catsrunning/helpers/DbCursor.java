@@ -11,11 +11,7 @@ public class DbCursor {
     }
 
     public boolean isValid() {
-        if (cursor != null && cursor.moveToFirst()) {
-            return true;
-        } else {
-            return false;
-        }
+        return cursor != null && cursor.moveToFirst();
     }
 
     public String getString(String column) {

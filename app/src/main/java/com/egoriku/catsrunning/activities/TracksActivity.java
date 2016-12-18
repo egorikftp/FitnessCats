@@ -29,7 +29,7 @@ import com.egoriku.catsrunning.fragments.AllFitnessDataFragment;
 import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
-import com.egoriku.catsrunning.helpers.AsyncWrite;
+import com.egoriku.catsrunning.helpers.dbActions.AsyncWriteNewTracks;
 import com.egoriku.catsrunning.helpers.DbCursor;
 import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
@@ -127,7 +127,7 @@ public class TracksActivity extends AppCompatActivity {
                         getLocaleTracksBeginsAt();
                         for (int i = 0; i < allFitnessDataModels.size(); i++) {
                             if (!localeDbDate.contains(allFitnessDataModels.get(i).getBeginsAt())) {
-                                AsyncWrite.writeData(allFitnessDataModels.get(i), countTracks);
+                                AsyncWriteNewTracks.writeData(allFitnessDataModels.get(i), countTracks);
                             }
                             countTracks--;
                         }
