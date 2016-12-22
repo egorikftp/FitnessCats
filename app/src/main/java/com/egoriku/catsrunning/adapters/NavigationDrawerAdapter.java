@@ -15,20 +15,20 @@ import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.adapters.interfaces.OnItemSelecteListener;
 import com.egoriku.catsrunning.models.ItemNavigationDrawer;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static android.R.color.white;
 import static com.egoriku.catsrunning.utils.VectorToDrawable.getDrawable;
 
 
 public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDrawerAdapter.ViewHolder> {
-    private ArrayList<ItemNavigationDrawer> modelArray;
+    private List<ItemNavigationDrawer> modelArray;
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_MINY = 1;
     private OnItemSelecteListener onItemSelecteListener;
 
 
-    public NavigationDrawerAdapter(ArrayList<ItemNavigationDrawer> modelArray) {
+    public NavigationDrawerAdapter(List<ItemNavigationDrawer> modelArray) {
         this.modelArray = modelArray;
     }
 
@@ -92,7 +92,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    protected class ViewHolder extends RecyclerView.ViewHolder {
         private TextView textViewItem;
         private ImageView imageView;
         private ImageView imageLine;
