@@ -2,13 +2,12 @@ package com.egoriku.catsrunning.activities;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,26 +28,15 @@ import com.egoriku.catsrunning.fragments.AllFitnessDataFragment;
 import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
-import com.egoriku.catsrunning.helpers.DbCursor;
+import com.egoriku.catsrunning.helpers.FirebaseSync;
 import com.egoriku.catsrunning.helpers.InquiryBuilder;
-import com.egoriku.catsrunning.helpers.dbActions.AsyncWriteNewTracks;
-import com.egoriku.catsrunning.models.AllFitnessDataModel;
 import com.egoriku.catsrunning.models.ItemNavigationDrawer;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.egoriku.catsrunning.helpers.DbActions.deleteSyncTrackData;
-import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_SAVE_NEW_TRACKS;
-import static com.egoriku.catsrunning.models.Constants.ConstantsFirebase.CHILD_TRACKS;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.BEGINS_AT;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_POINT;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_REMINDER;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
@@ -60,27 +48,26 @@ import static com.egoriku.catsrunning.models.Constants.Tags.TAG_REMINDERS_FRAGME
 import static com.egoriku.catsrunning.models.Constants.Tags.TAG_STATISTIC_FRAGMENT;
 
 public class TracksActivity extends AppCompatActivity {
+    public static final long UPTIME_MILLIS = 1000L;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private RelativeLayout relativeLayoutSetting;
     private ActionBarDrawerToggle drawerToggle;
     private RecyclerView recyclerView;
-    private ArrayList<ItemNavigationDrawer> drawerArrayList;
+    private List<ItemNavigationDrawer> drawerArrayList;
 
     private String emailText;
     private String nameText;
-    private List<Long> localeDbDate;
 
     private NavigationDrawerAdapter adapter;
     private FirebaseUser user;
-    private long countTracks;
+    private FirebaseSync firebaseSync;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracks);
-        drawerArrayList = new ArrayList<>();
-
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
         drawerLayout = (DrawerLayout) findViewById(R.id.tracks_activity_drawer_layout);
         recyclerView = (RecyclerView) findViewById(R.id.tracks_activity_recycler_view_nav_drawer);
@@ -96,7 +83,6 @@ public class TracksActivity extends AppCompatActivity {
         }
 
         addDrawerItem();
-
         initRecyclerView();
 
         setSupportActionBar(toolbar);
@@ -107,66 +93,14 @@ public class TracksActivity extends AppCompatActivity {
             showFragment(AllFitnessDataFragment.newInstance(), TAG_MAIN_FRAGMENT, null, true);
         }
 
-        if (App.getInstance().getState() == null) {
-            App.getInstance().createState();
-        }
-
-        FirebaseDatabase.getInstance().getReference().child(CHILD_TRACKS).child(user.getUid()).addValueEventListener(new ValueEventListener() {
+        firebaseSync = FirebaseSync.getInstance();
+        handler = new Handler(getMainLooper());
+        handler.postAtTime(new Runnable() {
             @Override
-            public void onDataChange(final DataSnapshot dataSnapshot) {
-                new Thread() {
-                    @Override
-                    public void run() {
-                        List<AllFitnessDataModel> allFitnessDataModels = new ArrayList<>();
-                        countTracks = dataSnapshot.getChildrenCount();
-
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            allFitnessDataModels.add(snapshot.getValue(AllFitnessDataModel.class));
-                        }
-
-                        getLocaleTracksBeginsAt();
-                        for (int i = 0; i < allFitnessDataModels.size(); i++) {
-                            if (!localeDbDate.contains(allFitnessDataModels.get(i).getBeginsAt())) {
-                                AsyncWriteNewTracks.writeData(allFitnessDataModels.get(i), countTracks);
-                            }
-                            countTracks--;
-                        }
-                    }
-                }.start();
+            public void run() {
+                firebaseSync.startSync(user);
             }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        FirebaseDatabase.getInstance().getReference().child(CHILD_TRACKS).child(user.getUid()).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            }
-
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                deleteSyncTrackData(dataSnapshot.getValue(AllFitnessDataModel.class).getBeginsAt());
-                LocalBroadcastManager.getInstance(App.getInstance()).sendBroadcastSync(new Intent(BROADCAST_SAVE_NEW_TRACKS));
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        }, UPTIME_MILLIS);
 
         relativeLayoutSetting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,23 +109,6 @@ public class TracksActivity extends AppCompatActivity {
                 Toast.makeText(App.getInstance(), "Setting Click", Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-
-    private void getLocaleTracksBeginsAt() {
-        localeDbDate = new ArrayList<>();
-        Cursor cursor = new InquiryBuilder()
-                .get(BEGINS_AT)
-                .from(TABLE_TRACKS)
-                .select();
-
-        DbCursor dbCursor = new DbCursor(cursor);
-        if (dbCursor.isValid()) {
-            do {
-                localeDbDate.add(dbCursor.getLong(BEGINS_AT));
-            } while (cursor.moveToNext());
-        }
-        dbCursor.close();
     }
 
 
@@ -265,6 +182,7 @@ public class TracksActivity extends AppCompatActivity {
 
 
     private void addDrawerItem() {
+        drawerArrayList = new ArrayList<>();
         drawerArrayList.add(new ItemNavigationDrawer(nameText, emailText));
 
         drawerArrayList.add(new ItemNavigationDrawer(

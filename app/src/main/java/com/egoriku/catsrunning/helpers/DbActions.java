@@ -3,6 +3,7 @@ package com.egoriku.catsrunning.helpers;
 import com.egoriku.catsrunning.helpers.dbActions.DeleteById;
 import com.egoriku.catsrunning.helpers.dbActions.DeleteReminder;
 import com.egoriku.catsrunning.helpers.dbActions.DeleteSingleTrack;
+import com.egoriku.catsrunning.helpers.dbActions.GetListBeeginsAt;
 import com.egoriku.catsrunning.helpers.dbActions.UpdateIsTrackDelete;
 import com.egoriku.catsrunning.helpers.dbActions.UpdateLikedState;
 import com.egoriku.catsrunning.helpers.dbActions.UpdateReminder;
@@ -14,6 +15,7 @@ import com.egoriku.catsrunning.helpers.dbActions.WriteLocation;
 import com.egoriku.catsrunning.helpers.dbActions.WriteReminderForId;
 import com.egoriku.catsrunning.helpers.dbActions.WriteToken;
 
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 public class DbActions {
@@ -79,5 +81,10 @@ public class DbActions {
 
     public static void updateIsTrackDelete(int id) {
         new UpdateIsTrackDelete(id).execute();
+    }
+
+
+    public static Set<Long> getLocaleTracksBeginsAt() throws ExecutionException, InterruptedException {
+        return new GetListBeeginsAt().execute().get();
     }
 }
