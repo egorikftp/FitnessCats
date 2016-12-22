@@ -121,7 +121,6 @@ public class AllFitnessDataFragment extends Fragment {
             }
         });
 
-
         int[] imageResId = {
                 R.drawable.ic_vec_directions_walk_white_24dp,
                 R.drawable.ic_vec_directions_run_white_24dp,

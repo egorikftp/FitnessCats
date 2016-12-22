@@ -134,6 +134,7 @@ public class FitActivity extends AppCompatActivity {
                 }
 
                 App.getInstance().createFitState();
+                App.getInstance().getFitState().setFitRun(true);
 
                 if (chronometer == null) {
                     chronometer = new CustomChronometer(FitActivity.this);
@@ -182,7 +183,8 @@ public class FitActivity extends AppCompatActivity {
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(String.format(getString(R.string.scamper_activity_toolbar_title), getTypeFit(typeFit, true, R.array.all_fitness_data_categories)));
                 }
-
+                
+                App.getInstance().getFitState().setFitRun(true);
                 uploadTrackInFirebase();
             }
         });
@@ -195,7 +197,7 @@ public class FitActivity extends AppCompatActivity {
             writeTrackToken(trackToken, App.getInstance().getFitState().getIdTrack());
 
             SaveModel saveModel = new SaveModel(
-                    App.getInstance().getFitState().getStartTime()/1000L,
+                    App.getInstance().getFitState().getStartTime() / 1000L,
                     App.getInstance().getFitState().getSinceTime(),
                     (int) App.getInstance().getFitState().getNowDistance(),
                     trackToken,

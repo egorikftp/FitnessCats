@@ -29,9 +29,9 @@ import com.egoriku.catsrunning.fragments.AllFitnessDataFragment;
 import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
-import com.egoriku.catsrunning.helpers.dbActions.AsyncWriteNewTracks;
 import com.egoriku.catsrunning.helpers.DbCursor;
 import com.egoriku.catsrunning.helpers.InquiryBuilder;
+import com.egoriku.catsrunning.helpers.dbActions.AsyncWriteNewTracks;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
 import com.egoriku.catsrunning.models.ItemNavigationDrawer;
 import com.google.firebase.auth.FirebaseAuth;
@@ -348,12 +348,14 @@ public class TracksActivity extends AppCompatActivity {
         }
 
         if (tag.equals(TAG_EXIT_APP)) {
-            drawerLayout.closeDrawers();
-            clearUserData();
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
-            finish();
+            if (App.getInstance().getFitState() == null) {
+                clearUserData();
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
+                finish();
+            } else if (App.getInstance().getFitState().isFitRun())
+                Toast.makeText(TracksActivity.this, getString(R.string.tracks_activity_error_exit_account), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -362,7 +364,8 @@ public class TracksActivity extends AppCompatActivity {
         new InquiryBuilder().cleanTable(TABLE_USER);
         new InquiryBuilder().cleanTable(TABLE_TRACKS);
         new InquiryBuilder().cleanTable(TABLE_REMINDER);
-        new InquiryBuilder().cleanTable(TABLE_POINT);}
+        new InquiryBuilder().cleanTable(TABLE_POINT);
+    }
 
 
     public void tabTitle(String titleId) {

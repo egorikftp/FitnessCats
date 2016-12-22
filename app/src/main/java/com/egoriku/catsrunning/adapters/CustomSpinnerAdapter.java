@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.models.SpinnerIntervalModel;
+import com.egoriku.catsrunning.utils.CustomFont;
 
 import java.util.List;
 
@@ -52,6 +53,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<SpinnerIntervalModel> {
         }
 
         viewHolder.someInterval.setText(intervals.get(position).getNameInterval());
+        viewHolder.someInterval.setTypeface(CustomFont.getTypeFace());
         return viewGroup;
     }
 

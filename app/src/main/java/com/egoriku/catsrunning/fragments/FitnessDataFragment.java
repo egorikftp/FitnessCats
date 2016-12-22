@@ -30,6 +30,7 @@ import com.egoriku.catsrunning.adapters.FitnessDataAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.IOnItemHandlerListener;
 import com.egoriku.catsrunning.loaders.AsyncTracksLoader;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
+import com.egoriku.catsrunning.utils.CustomFont;
 import com.egoriku.catsrunning.utils.IntentBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -102,6 +103,7 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
         textViewNoTracks = (TextView) view.findViewById(R.id.fragment_fitness_data_text_no_tracks);
         imageViewNoTracks = (ImageView) view.findViewById(R.id.fragment_fitness_data_image_cats_no_track);
 
+        textViewNoTracks.setTypeface(CustomFont.getTypeFace());
         progressBar.setVisibility(View.VISIBLE);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

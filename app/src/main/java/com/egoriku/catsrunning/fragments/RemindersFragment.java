@@ -39,6 +39,7 @@ import com.egoriku.catsrunning.helpers.DbCursor;
 import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.models.ReminderModel;
 import com.egoriku.catsrunning.receivers.ReminderReceiver;
+import com.egoriku.catsrunning.utils.CustomFont;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -128,6 +129,8 @@ public class RemindersFragment extends Fragment {
                 startActivity(new Intent(getActivity(), AddReminderActivity.class));
             }
         });
+
+        noReminders.setTypeface(CustomFont.getTypeFace());
 
         recyclerView.setLayoutManager(new LinearLayoutManager(App.getInstance()));
         remindersAdapter = new RemindersAdapter();

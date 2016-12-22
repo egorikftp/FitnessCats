@@ -10,7 +10,16 @@ public class FitState {
     private int nowDistance;
     private long startTime;
     private long idTrack;
+    private boolean isFitRun;
     private List<Point> points = new ArrayList<>();
+
+    public boolean isFitRun() {
+        return isFitRun;
+    }
+
+    public void setFitRun(boolean fitRun) {
+        isFitRun = fitRun;
+    }
 
     public List<Point> getPoints() {
         return points;

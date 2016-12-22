@@ -29,6 +29,7 @@ import com.egoriku.catsrunning.adapters.LikedFragmentAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.ILikedClickListener;
 import com.egoriku.catsrunning.loaders.AsyncLikedTracksLoader;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
+import com.egoriku.catsrunning.utils.CustomFont;
 import com.egoriku.catsrunning.utils.IntentBuilder;
 
 import java.util.List;
@@ -87,6 +88,7 @@ public class LikedFragment extends Fragment implements LoaderManager.LoaderCallb
         recyclerView.hasFixedSize();
 
         noLikedTracksTextView.setText(null);
+        noLikedTracksTextView.setTypeface(CustomFont.getTypeFace());
         imageViewCat.setVisibility(View.GONE);
         return view;
     }

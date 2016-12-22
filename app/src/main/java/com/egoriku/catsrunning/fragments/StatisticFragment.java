@@ -26,6 +26,7 @@ import com.egoriku.catsrunning.models.SpinnerIntervalModel;
 import com.egoriku.catsrunning.models.StatisticModel;
 import com.egoriku.catsrunning.ui.statisticChart.FitChart;
 import com.egoriku.catsrunning.ui.statisticChart.FitChartValue;
+import com.egoriku.catsrunning.utils.CustomFont;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,6 +48,7 @@ public class StatisticFragment extends Fragment implements LoaderManager.LoaderC
     private FitChart fitChart;
     private TextView allDistanceView;
     private TextView fitResultView;
+    private TextView noDataView;
     private ImageView imageWalkView;
     private ImageView imageRunningView;
     private ImageView imageCyclingView;
@@ -78,6 +80,7 @@ public class StatisticFragment extends Fragment implements LoaderManager.LoaderC
         fitChart = (FitChart) view.findViewById(R.id.fit_chart);
         allDistanceView = (TextView) view.findViewById(R.id.statistic_fragment_all_distance_view);
         fitResultView = (TextView) view.findViewById(R.id.statistic_fragment_fit_result_view);
+        noDataView = (TextView) view.findViewById(R.id.statistic_fragment_txt_no_data);
         imageWalkView = (ImageView) view.findViewById(R.id.statistic_fragment_ic_walk);
         imageRunningView = (ImageView) view.findViewById(R.id.statistic_fragment_ic_run);
         imageCyclingView = (ImageView) view.findViewById(R.id.statistic_fragment_ic_cycling);
@@ -85,6 +88,7 @@ public class StatisticFragment extends Fragment implements LoaderManager.LoaderC
         rootLayout = (RelativeLayout) view.findViewById(R.id.statistic_fragment_root_no_data);
         rootFrame = (FrameLayout) view.findViewById(R.id.statistic_fragment_root_chart);
 
+        noDataView.setTypeface(CustomFont.getTypeFace());
         addItemsToSpinner();
 
         icons = new View[]{imageWalkView, imageRunningView, imageCyclingView};
