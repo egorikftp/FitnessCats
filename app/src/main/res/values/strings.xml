@@ -68,6 +68,7 @@
 
     <!-- Adapter Liked Fragment  -->
     <string name="liked_fragment_adapter_distance_meter">%s m</string>
+    <string name="liked_fragment_adapter_calories">%s kcal</string>
 
     <!-- Adapter Fragment Liked -->
     <string name="adapter_fragment_liked_calories">Calories:</string>
@@ -145,5 +146,15 @@
     <string name="spinner_year">Year</string>
     <string name="spinner_half_year">Half-Year</string>
     <string name="spinner_day">Day</string>
+
     <string name="tracks_activity_error_exit_account">Please, stop your fit service</string>
+    <string name="activity_add_user_info_success_btn">Ready</string>
+    <string name="activity_add_user_info_kg">kg</string>
+    <string name="activity_add_user_info_sm">sm</string>
+    <string name="activity_add_user_info_enter_you_weigth">Enter you weight</string>
+    <string name="activity_add_user_info_enter_you_growth">Enter you growth</string>
+    <string name="activity_add_user_info_empty">Please, Please complete all fields</string>
+    <string name="activity_add_user_info_error_save">Error occurred while saving data</string>
+    <string name="activity_add_user_info_not_digit">Fields contain invalid characters</string>
+    <string name="activity_add_user_info_cats_talk">Hey, fitness cats welcome you! To count your activity results correctly, fill in some information about you.</string>
 </resources>

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.BEGINS_AT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.CALORIES;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.DISTANCE;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LIKED;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TIME;
@@ -50,7 +51,7 @@ public class AsyncLikedTracksLoader extends AsyncTaskLoader<List<AllFitnessDataM
     public List<AllFitnessDataModel> loadInBackground() {
         likedTracksModels = new ArrayList<>();
         Cursor cursor = new InquiryBuilder()
-                .get(_ID, BEGINS_AT, TIME, DISTANCE, LIKED, TRACK_TOKEN, TYPE_FIT)
+                .get(_ID, BEGINS_AT, TIME, DISTANCE, LIKED, TRACK_TOKEN, TYPE_FIT, CALORIES)
                 .from(TABLE_TRACKS)
                 .where(true, IS_TRACK_DELETE_EQ + " " + IS_TRACK_DELETE_FALSE + AND + LIKED_EQ + " " + String.valueOf(IS_LIKED))
                 .orderBy(BEGINS_AT)
@@ -68,6 +69,7 @@ public class AsyncLikedTracksLoader extends AsyncTaskLoader<List<AllFitnessDataM
                 likedItem.setLiked(dbCursor.getInt(LIKED));
                 likedItem.setTrackToken(dbCursor.getString(TRACK_TOKEN));
                 likedItem.setTypeFit(dbCursor.getInt(TYPE_FIT));
+                likedItem.setCalories(dbCursor.getLong(CALORIES));
                 likedTracksModels.add(likedItem);
             } while (cursor.moveToNext());
         }

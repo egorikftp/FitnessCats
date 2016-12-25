@@ -48,7 +48,8 @@ public class LikedFragmentAdapter extends AbstractAdapter<AllFitnessDataModel> {
 
     @Override
     public void onBind(AbstractViewHolder holder, AllFitnessDataModel model, final int position, int viewType) {
-        final String format = holder.getString(R.string.liked_fragment_adapter_distance_meter);
+        final String formatDistance = holder.getString(R.string.liked_fragment_adapter_distance_meter);
+        final String formatCalories = holder.getString(R.string.liked_fragment_adapter_calories);
         final ImageView imageViewLiked = holder.<ImageView>get(R.id.adapter_fragment_liked_image_view_liked);
         final ImageView imageViewType = holder.<ImageView>get(R.id.adapter_fragment_liked_data_ic_type);
         final CardView cardView = holder.<CardView>get(R.id.adapter_fragment_liked_root_card_view);
@@ -65,7 +66,10 @@ public class LikedFragmentAdapter extends AbstractAdapter<AllFitnessDataModel> {
         textViewTime.setText(ConverterTime.ConvertTimeAllFitnessData(model.getBeginsAt(), model.getTime()));
 
         holder.<TextView>get(R.id.adapter_fragment_liked_distance_text_view)
-                .setText(String.format(format, modelList.get(position).getDistance()));
+                .setText(String.format(formatDistance, modelList.get(position).getDistance()));
+
+        holder.<TextView>get(R.id.adapter_fragment_liked_calories)
+                .setText(String.format(formatCalories, modelList.get(position).getCalories()));
 
         imageViewLiked.setOnClickListener(new View.OnClickListener() {
             @Override

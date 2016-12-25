@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark">
+
+    <com.egoriku.catsrunning.ui.CustomTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/activity_add_user_info_layout_margin_bottom"
+        android:layout_marginRight="@dimen/activity_add_user_info_layout_margin_bottom"
+        android:layout_marginLeft="@dimen/activity_add_user_info_layout_margin_bottom"
+        android:gravity="center"
+        android:text="@string/activity_add_user_info_cats_talk"
+        android:textSize="@dimen/activity_add_user_info_cats_talk_text_size" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/activity_add_user_info_kg_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/activity_add_user_info_layout_margin_bottom"
+        android:orientation="horizontal">
+
+        <com.egoriku.catsrunning.ui.CustomTextView
+            android:id="@+id/activity_add_user_info_growth_hint"
+            style="@style/activityAddUserInfoTextView"
+            android:text="@string/activity_add_user_info_enter_you_growth" />
+
+        <EditText
+            android:id="@+id/activity_add_user_info_growth"
+            style="@style/activityAddUserDataEditText" />
+
+        <com.egoriku.catsrunning.ui.CustomTextView
+            android:id="@+id/activity_add_user_info_growth_hint_sm"
+            style="@style/activityAddUserInfoTextView"
+            android:text="@string/activity_add_user_info_sm" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/activity_add_user_info_kg_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="@dimen/activity_add_user_info_layout_margin_bottom"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.egoriku.catsrunning.ui.CustomTextView
+            android:id="@+id/activity_add_user_info_weigth_hint"
+            style="@style/activityAddUserInfoTextView"
+            android:hint="@string/activity_add_user_info_enter_you_weigth" />
+
+        <EditText
+            android:id="@+id/activity_add_user_info_weigth"
+            style="@style/activityAddUserDataEditText" />
+
+        <com.egoriku.catsrunning.ui.CustomTextView
+            android:id="@+id/activity_add_user_info_weigth_hint_kg"
+            style="@style/activityAddUserInfoTextView"
+            android:text="@string/activity_add_user_info_kg" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/activity_add_user_info_btn_ready"
+        style="@style/Base.Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/activity_add_user_info_kg_layout"
+        android:layout_centerHorizontal="true"
+        android:text="@string/activity_add_user_info_success_btn"
+        android:textAllCaps="false"
+        android:textStyle="bold" />
+</RelativeLayout>

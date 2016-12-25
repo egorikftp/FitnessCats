@@ -8,6 +8,7 @@ import com.egoriku.catsrunning.helpers.dbActions.UpdateIsTrackDelete;
 import com.egoriku.catsrunning.helpers.dbActions.UpdateLikedState;
 import com.egoriku.catsrunning.helpers.dbActions.UpdateReminder;
 import com.egoriku.catsrunning.helpers.dbActions.UpdateReminderState;
+import com.egoriku.catsrunning.helpers.dbActions.UpdateCaloriesTrack;
 import com.egoriku.catsrunning.helpers.dbActions.WriteDistanceTimeTrack;
 import com.egoriku.catsrunning.helpers.dbActions.WriteDistanceTrack;
 import com.egoriku.catsrunning.helpers.dbActions.WriteForResultId;
@@ -86,5 +87,9 @@ public class DbActions {
 
     public static Set<Long> getLocaleTracksBeginsAt() throws ExecutionException, InterruptedException {
         return new GetListBeeginsAt().execute().get();
+    }
+
+    public static void writeCalories(long calories){
+        new UpdateCaloriesTrack(calories).execute();
     }
 }

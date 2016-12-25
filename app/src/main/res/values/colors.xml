@@ -25,6 +25,7 @@
     <color name="chart_value_third_color">#AEBFB2</color>
     <color name="chart_value_empty_color">#FFF</color>
 
+    <color name="color_with_alpha">#00ddffff</color>
 
     <color name="statistic_fragment_all_distance_color">#212121</color>
     <color name="statistic_fragment_cats_talk_color">#757575</color>

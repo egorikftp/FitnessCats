@@ -63,11 +63,17 @@ public class FitnessDataAdapter extends AbstractAdapter<AllFitnessDataModel> {
         textViewDate.setText(ConverterTime.convertUnixDateWithoutHours(allFitnessDataModel.getBeginsAt()));
         textViewTime.setText(ConverterTime.ConvertTimeAllFitnessData(allFitnessDataModel.getBeginsAt(), allFitnessDataModel.getTime()));
 
-        holder.<TextView>get(R.id.adapter_all_fitness_data_distance_text_view).setText(String.format(holder.<String>getString(R.string.adapter_all_fitness_data_distance_meter), allFitnessDataModel.getDistance()));
+        holder.<TextView>get(R.id.adapter_all_fitness_data_distance_text_view).setText(
+                String.format(
+                        holder.<String>getString(R.string.adapter_all_fitness_data_distance_meter),
+                        allFitnessDataModel.getDistance())
+        );
 
-        holder.<TextView>get(R.id.adapter_all_fitness_data_calories_text_view);
-
-        holder.<String>getString(R.string.adapter_all_fitness_data_calories);
+        holder.<TextView>get(R.id.adapter_all_fitness_data_calories_text_view).setText(
+                String.format(
+                        holder.<String>getString(R.string.adapter_all_fitness_data_calories),
+                        allFitnessDataModel.getCalories())
+        );
 
         switch (allFitnessDataModel.getLiked()) {
             case 0:

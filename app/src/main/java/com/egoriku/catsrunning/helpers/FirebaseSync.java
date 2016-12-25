@@ -35,68 +35,73 @@ public class FirebaseSync {
         return firebaseSync;
     }
 
+    private ValueEventListener valueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(final DataSnapshot dataSnapshot) {
+            new Thread() {
+                @Override
+                public void run() {
+                    List<AllFitnessDataModel> allFitnessDataModels = new ArrayList<>();
+                    countTracks = dataSnapshot.getChildrenCount();
+
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        allFitnessDataModels.add(snapshot.getValue(AllFitnessDataModel.class));
+                    }
+
+                    try {
+                        localeDbDate = new ArrayList<>(getLocaleTracksBeginsAt());
+                    } catch (ExecutionException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    for (int i = 0; i < allFitnessDataModels.size(); i++) {
+                        if (!localeDbDate.contains(allFitnessDataModels.get(i).getBeginsAt())) {
+                            AsyncWriteNewTracks.writeData(allFitnessDataModels.get(i), countTracks);
+                        }
+                        countTracks--;
+                    }
+                }
+            }.start();
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+
+
+    private ChildEventListener childEventListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+            deleteSyncTrackData(dataSnapshot.getValue(AllFitnessDataModel.class).getBeginsAt());
+            LocalBroadcastManager.getInstance(App.getInstance()).sendBroadcastSync(new Intent(BROADCAST_SAVE_NEW_TRACKS));
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+
+
     public void startSync(FirebaseUser user) {
-        firebaseDatabase.getReference().child(CHILD_TRACKS).child(user.getUid())
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(final DataSnapshot dataSnapshot) {
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                List<AllFitnessDataModel> allFitnessDataModels = new ArrayList<>();
-                                countTracks = dataSnapshot.getChildrenCount();
-
-                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                    allFitnessDataModels.add(snapshot.getValue(AllFitnessDataModel.class));
-                                }
-
-                                try {
-                                    localeDbDate = new ArrayList<>(getLocaleTracksBeginsAt());
-                                } catch (ExecutionException | InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-
-                                for (int i = 0; i < allFitnessDataModels.size(); i++) {
-                                    if (!localeDbDate.contains(allFitnessDataModels.get(i).getBeginsAt())) {
-                                        AsyncWriteNewTracks.writeData(allFitnessDataModels.get(i), countTracks);
-                                    }
-                                    countTracks--;
-                                }
-                            }
-                        }.start();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-        firebaseDatabase.getReference().child(CHILD_TRACKS).child(user.getUid()).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            }
-
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                deleteSyncTrackData(dataSnapshot.getValue(AllFitnessDataModel.class).getBeginsAt());
-                LocalBroadcastManager.getInstance(App.getInstance()).sendBroadcastSync(new Intent(BROADCAST_SAVE_NEW_TRACKS));
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        firebaseDatabase.getReference().child(CHILD_TRACKS).child(user.getUid()).addValueEventListener(valueEventListener);
+        firebaseDatabase.getReference().child(CHILD_TRACKS).child(user.getUid()).addChildEventListener(childEventListener);
     }
 }
