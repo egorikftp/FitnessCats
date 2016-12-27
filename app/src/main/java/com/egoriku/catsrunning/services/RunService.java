@@ -111,6 +111,7 @@ public class RunService extends Service implements LocationListener {
             isActive = false;
             locationManager.removeUpdates(this);
             stopForeground(true);
+            App.getInstance().getFitState().setFitRun(false);
             insertDistanceTime(App.getInstance().getFitState().getNowDistance(), App.getInstance().getFitState().getSinceTime());
         }
         super.onDestroy();

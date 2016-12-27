@@ -267,14 +267,20 @@ public class TracksActivity extends AppCompatActivity {
 
         if (tag.equals(TAG_EXIT_APP)) {
             if (App.getInstance().getFitState() == null) {
-                clearUserData();
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
-                finish();
+                exitFromAccount();
+            } else if (App.getInstance().getFitState() != null && !App.getInstance().getFitState().isFitRun()) {
+                exitFromAccount();
             } else if (App.getInstance().getFitState().isFitRun())
                 Toast.makeText(TracksActivity.this, getString(R.string.tracks_activity_error_exit_account), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void exitFromAccount() {
+        clearUserData();
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
+        finish();
     }
 
 
