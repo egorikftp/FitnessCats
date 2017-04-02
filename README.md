@@ -2,7 +2,7 @@
 Create fitness app, using Firebase DataBase.
 
 
-Contact: https://telegram.me/egorikftp
+Contact: https://telegram.me/egoriku
 
 Hello. We are Fitness Cats :smiley_cat:
 
