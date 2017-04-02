@@ -12,6 +12,42 @@ public class FitState {
     private long idTrack;
     private boolean isFitRun;
     private List<Point> points = new ArrayList<>();
+    private long timeBetweenLocations;
+    private long weight;
+    private double calories;
+    private int typeFit;
+
+    public int getTypeFit() {
+        return typeFit;
+    }
+
+    public void setTypeFit(int typeFit) {
+        this.typeFit = typeFit;
+    }
+
+    public double getCalories() {
+        return calories;
+    }
+
+    public void setCalories(double calories) {
+        this.calories = calories;
+    }
+
+    public long getWeight() {
+        return weight;
+    }
+
+    public void setWeight(long weight) {
+        this.weight = weight;
+    }
+
+    public long getTimeBetweenLocations() {
+        return timeBetweenLocations;
+    }
+
+    public void setTimeBetweenLocations(long timeBetweenLocations) {
+        this.timeBetweenLocations = timeBetweenLocations;
+    }
 
     public boolean isFitRun() {
         return isFitRun;

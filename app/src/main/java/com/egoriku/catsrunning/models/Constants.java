@@ -32,6 +32,7 @@ public interface Constants {
             String TRACK_TOKEN = "trackToken";
             String TYPE_FIT = "typeFit";
             String TRACK_ID = "trackId";
+            String CALORIES = "calories";
             String DATE_REMINDER = "dateReminder";
             String TYPE_REMINDER = "typeReminder";
             String IS_RINGS = "isRings";
@@ -88,6 +89,7 @@ public interface Constants {
 
     interface ConstantsFirebase {
         String CHILD_TRACKS = "tracks";
+        String USER_INFO = "user_info";
     }
 
     interface TypeFit {
@@ -185,5 +187,12 @@ public interface Constants {
 
     interface Color{
         String COLOR_NOW_FIT = "#CFDCE6";
+    }
+
+    interface UserInfoSharedPreference{
+        String KEY_WEIGHT = "KEY_WEIGHT";
+        String KEY_GROWTH = "KEY_GROWTH";
+        int DEFAULT_WEIGHT = 50;
+        int DEFAULT_GROWTH = 150;
     }
 }

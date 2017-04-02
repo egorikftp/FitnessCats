@@ -15,20 +15,22 @@ import android.support.v4.app.NotificationCompat;
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
+import com.egoriku.catsrunning.helpers.DbActions;
 import com.egoriku.catsrunning.models.Firebase.Point;
 import com.egoriku.catsrunning.utils.ConverterTime;
+
+import java.util.Calendar;
 
 import static com.egoriku.catsrunning.helpers.DbActions.insertDistanceTime;
 import static com.egoriku.catsrunning.helpers.DbActions.insertLocationDb;
 import static com.egoriku.catsrunning.helpers.DbActions.insertToId;
 import static com.egoriku.catsrunning.helpers.DbActions.writeDistance;
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
-import static com.egoriku.catsrunning.models.Constants.KeyNotification.KEY_TYPE_FIT_NOTIFICATION;
 import static com.egoriku.catsrunning.models.Constants.RunService.ACTION_START;
 import static com.egoriku.catsrunning.models.Constants.RunService.START_TIME;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
-public class RunService extends Service implements LocationListener {
+public class FitService extends Service implements LocationListener {
     private static final int NOTIFICATION_ID = 1;
     private static final long TIME_BETWEEN_UPDATES = 1000;
     private static final float UPDATE_DISTANCE_THRESHOLD_METERS = 5.0f;
@@ -36,7 +38,6 @@ public class RunService extends Service implements LocationListener {
 
     private boolean isActive;
     private boolean isThreadRun;
-    private int typeFit;
 
     private UpdateNotification updateNotification;
     private Thread updateThread;
@@ -63,7 +64,7 @@ public class RunService extends Service implements LocationListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction().equalsIgnoreCase(ACTION_START)) {
             App.getInstance().getFitState().setStartTime(intent.getLongExtra(START_TIME, System.currentTimeMillis()));
-            typeFit = intent.getIntExtra(KEY_TYPE_FIT_NOTIFICATION, 0);
+            App.getInstance().getFitState().setTimeBetweenLocations(Calendar.getInstance().getTimeInMillis() / 1000);
             startNotification();
         } else {
             stopNotification();
@@ -72,7 +73,7 @@ public class RunService extends Service implements LocationListener {
 
         if (!isActive) {
             isActive = true;
-            insertToId(typeFit);
+            insertToId(App.getInstance().getFitState().getTypeFit());
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIME_BETWEEN_UPDATES, UPDATE_DISTANCE_THRESHOLD_METERS, this);
         }
         return START_STICKY;
@@ -89,19 +90,58 @@ public class RunService extends Service implements LocationListener {
                         location.getLatitude(), location.getLongitude(),
                         results
                 );
+
+                if (App.getInstance().getFitState().getTypeFit() == 1) {
+                    caloriesWalk(results[0]);
+                }
+
+                if (App.getInstance().getFitState().getTypeFit() == 2) {
+                    caloriesRunning(results[0]);
+                }
+
                 App.getInstance().getFitState().setNowDistance((int) ((int) App.getInstance().getFitState().getNowDistance() + results[0]));
             }
 
             oldLocation = location;
             writeDistance((int) App.getInstance().getFitState().getNowDistance());
-
-            Point point = new Point();
-            point.setLng(location.getLongitude());
-            point.setLat(location.getLatitude());
-            App.getInstance().getFitState().addPoint(point);
-
+            App.getInstance().getFitState().addPoint(new Point(location.getLongitude(), location.getLatitude()));
             insertLocationDb(location.getLongitude(), location.getLatitude());
         }
+    }
+
+
+    private void caloriesWalk(float result) {
+        long timeBetweenLocations = Calendar.getInstance().getTimeInMillis() / 1000 - App.getInstance().getFitState().getTimeBetweenLocations();
+        float speed = result / timeBetweenLocations;
+        double nowCalories = (((0.007 * Math.pow(2 * speed, 2) + 21) * App.getInstance().getFitState().getWeight()) / 1000) * (timeBetweenLocations * 0.0167);
+
+        App.getInstance().getFitState().setCalories(App.getInstance().getFitState().getCalories() + round(nowCalories, 2));
+        App.getInstance().getFitState().setTimeBetweenLocations(Calendar.getInstance().getTimeInMillis() / 1000);
+        DbActions.writeCalories(App.getInstance().getFitState().getCalories());
+    }
+
+
+    private void caloriesRunning(float result) {
+        long timeBetweenLocations = Calendar.getInstance().getTimeInMillis() / 1000 - App.getInstance().getFitState().getTimeBetweenLocations();
+        float speed = result / timeBetweenLocations;
+
+        double nowCalories = (((18 * Math.pow(2 * speed, 2) + 21) * App.getInstance().getFitState().getWeight()) / 1000) * (timeBetweenLocations * 0.0167);
+
+        App.getInstance().getFitState().setCalories(App.getInstance().getFitState().getCalories() + round(nowCalories, 2));
+        App.getInstance().getFitState().setTimeBetweenLocations(Calendar.getInstance().getTimeInMillis() / 1000);
+        DbActions.writeCalories(App.getInstance().getFitState().getCalories());
+    }
+
+
+    public double round(double value, int places) {
+        if (places < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
     }
 
 
@@ -176,18 +216,18 @@ public class RunService extends Service implements LocationListener {
 
 
     private void showNotification(String time, int distance) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(getNotificationIcon(typeFit))
-                .setContentIntent(PendingIntent.getActivity(
-                        this,
-                        0,
-                        new Intent(this, FitActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP).putExtra(KEY_TYPE_FIT, typeFit),
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                ))
-                .setContentTitle(String.format(getString(R.string.scamper_notification_title), getTypeFit(typeFit, true, R.array.type_reminder)))
-                .setContentText(String.format(getString(R.string.notification_time_distance_format), time, distance))
-                .setAutoCancel(false)
-                .setOngoing(true);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setSmallIcon(getNotificationIcon(App.getInstance().getFitState().getTypeFit()));
+        builder.setContentIntent(PendingIntent.getActivity(
+                this,
+                0,
+                new Intent(this, FitActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP).putExtra(KEY_TYPE_FIT, App.getInstance().getFitState().getTypeFit()),
+                PendingIntent.FLAG_UPDATE_CURRENT
+        ));
+        builder.setContentTitle(String.format(getString(R.string.scamper_notification_title), getTypeFit(App.getInstance().getFitState().getTypeFit(), true, R.array.type_reminder)));
+        builder.setContentText(String.format(getString(R.string.notification_time_distance_format), time, distance));
+        builder.setAutoCancel(false);
+        builder.setOngoing(true);
         startForeground(NOTIFICATION_ID, builder.build());
     }
 

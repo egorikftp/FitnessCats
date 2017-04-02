@@ -27,11 +27,12 @@ import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.models.ParcelableFitActivityModel;
-import com.egoriku.catsrunning.services.RunService;
+import com.egoriku.catsrunning.services.FitService;
 import com.egoriku.catsrunning.utils.ConverterTime;
 import com.egoriku.catsrunning.utils.CustomChronometer;
 import com.egoriku.catsrunning.utils.FlipAnimation;
 import com.egoriku.catsrunning.utils.IntentBuilder;
+import com.egoriku.catsrunning.utils.UserInfoPreferences;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
@@ -42,7 +43,6 @@ import static com.egoriku.catsrunning.helpers.DbActions.deleteTrackDataById;
 import static com.egoriku.catsrunning.helpers.DbActions.writeTrackToken;
 import static com.egoriku.catsrunning.models.Constants.ConstantsFirebase.CHILD_TRACKS;
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
-import static com.egoriku.catsrunning.models.Constants.KeyNotification.KEY_TYPE_FIT_NOTIFICATION;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.KEY_IS_CHRONOMETER_RUNNING;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.KEY_START_TIME;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.PARCELABLE_FIT_ACTIVITY_KEY;
@@ -135,6 +135,7 @@ public class FitActivity extends AppCompatActivity {
 
                 App.getInstance().createFitState();
                 App.getInstance().getFitState().setFitRun(true);
+                App.getInstance().getFitState().setWeight(new UserInfoPreferences(FitActivity.this).getWeight());
 
                 if (chronometer == null) {
                     chronometer = new CustomChronometer(FitActivity.this);
@@ -143,15 +144,15 @@ public class FitActivity extends AppCompatActivity {
                     chronometer.startChronometer();
                 }
 
+                if (getIntent().getExtras() != null) {
+                    App.getInstance().getFitState().setTypeFit(getIntent().getExtras().getInt(KEY_TYPE_FIT));
+                }
+
                 IntentBuilder intent = new IntentBuilder()
                         .context(FitActivity.this)
-                        .service(RunService.class)
+                        .service(FitService.class)
                         .action(ACTION_START)
                         .extra(START_TIME, chronometer.getStartTime());
-
-                if (getIntent().getExtras() != null) {
-                    intent.extra(KEY_TYPE_FIT_NOTIFICATION, getIntent().getExtras().getInt(KEY_TYPE_FIT));
-                }
 
                 startService(intent.build());
                 textViewNowTime.setPadding(ANOTHER_PADDING, TOP_PADDING, ANOTHER_PADDING, ANOTHER_PADDING);
@@ -159,13 +160,12 @@ public class FitActivity extends AppCompatActivity {
             }
         });
 
-
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 stopService(new IntentBuilder()
                         .context(FitActivity.this)
-                        .service(RunService.class)
+                        .service(FitService.class)
                         .build());
 
                 textViewFinalTime.setText(String.format(getString(R.string.fit_activity_now_time), ConverterTime.ConvertTimeToString(App.getInstance().getFitState().getSinceTime())));
@@ -183,7 +183,7 @@ public class FitActivity extends AppCompatActivity {
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(String.format(getString(R.string.scamper_activity_toolbar_title), getTypeFit(typeFit, true, R.array.all_fitness_data_categories)));
                 }
-                
+
                 App.getInstance().getFitState().setFitRun(true);
                 uploadTrackInFirebase();
             }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.BEGINS_AT;
+import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.CALORIES;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.DISTANCE;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LIKED;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TIME;
@@ -56,7 +57,7 @@ public class AsyncTracksLoader extends AsyncTaskLoader<List<AllFitnessDataModel>
     public List<AllFitnessDataModel> loadInBackground() {
         dataModelList = new ArrayList<>();
         Cursor cursorTracks = new InquiryBuilder()
-                .get(_ID, BEGINS_AT, TIME, DISTANCE, LIKED, TRACK_TOKEN, TYPE_FIT)
+                .get(_ID, BEGINS_AT, TIME, DISTANCE, LIKED, TRACK_TOKEN, TYPE_FIT, CALORIES)
                 .from(TABLE_TRACKS)
                 .where(true, IS_TRACK_DELETE_EQ + " " + IS_TRACK_DELETE_FALSE + AND + TYPE_FIT_EQ + typeReminder)
                 .orderBy(BEGINS_AT)
@@ -74,6 +75,7 @@ public class AsyncTracksLoader extends AsyncTaskLoader<List<AllFitnessDataModel>
                 listAdapter.setLiked(cursor.getInt(LIKED));
                 listAdapter.setTrackToken(cursor.getString(TRACK_TOKEN));
                 listAdapter.setTypeFit(cursor.getInt(TYPE_FIT));
+                listAdapter.setCalories(cursor.getDouble(CALORIES));
                 dataModelList.add(listAdapter);
             } while (cursorTracks.moveToNext());
         }

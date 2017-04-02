@@ -17,6 +17,15 @@ public class AllFitnessDataModel {
     private int typeFit;
     private String trackToken;
     private List<Point> points;
+    private double calories;
+
+    public double getCalories() {
+        return calories;
+    }
+
+    public void setCalories(double calories) {
+        this.calories = calories;
+    }
 
     public long getBeginsAt() {
         return beginsAt;

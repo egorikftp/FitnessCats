@@ -29,6 +29,7 @@ import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
 import com.egoriku.catsrunning.helpers.FirebaseSync;
+import com.egoriku.catsrunning.helpers.FirebaseUserInfoSync;
 import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.models.ItemNavigationDrawer;
 import com.google.firebase.auth.FirebaseAuth;
@@ -61,7 +62,6 @@ public class TracksActivity extends AppCompatActivity {
 
     private NavigationDrawerAdapter adapter;
     private FirebaseUser user;
-    private FirebaseSync firebaseSync;
     private Handler handler;
 
     @Override
@@ -73,14 +73,8 @@ public class TracksActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.tracks_activity_recycler_view_nav_drawer);
         relativeLayoutSetting = (RelativeLayout) findViewById(R.id.relative_layout_setting);
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            emailText = user.getEmail();
-            nameText = user.getDisplayName();
-        } else {
-            startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
-            finish();
-        }
+        checkUserLogin();
+        FirebaseUserInfoSync.getInstance().startSync(user, this);
 
         addDrawerItem();
         initRecyclerView();
@@ -93,12 +87,11 @@ public class TracksActivity extends AppCompatActivity {
             showFragment(AllFitnessDataFragment.newInstance(), TAG_MAIN_FRAGMENT, null, true);
         }
 
-        firebaseSync = FirebaseSync.getInstance();
         handler = new Handler(getMainLooper());
         handler.postAtTime(new Runnable() {
             @Override
             public void run() {
-                firebaseSync.startSync(user);
+                FirebaseSync.getInstance().startSync(user);
             }
         }, UPTIME_MILLIS);
 
@@ -106,9 +99,20 @@ public class TracksActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 drawerLayout.closeDrawers();
-                Toast.makeText(App.getInstance(), "Setting Click", Toast.LENGTH_LONG).show();
+                Toast.makeText(App.getInstance(), "Setting", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void checkUserLogin() {
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            emailText = user.getEmail();
+            nameText = user.getDisplayName();
+        } else {
+            startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
+            finish();
+        }
     }
 
 

@@ -49,7 +49,7 @@
         </activity>
 
         <service
-            android:name=".services.RunService"
+            android:name=".services.FitService"
             android:exported="false" />
 
         <receiver android:name=".receivers.ReminderReceiver" />
@@ -63,6 +63,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.egoriku.catsrunning.activities.TracksActivity" />
         </activity>
+
+        <activity android:name=".activities.AddUserInfoActivity"/>
     </application>
 
 </manifest>

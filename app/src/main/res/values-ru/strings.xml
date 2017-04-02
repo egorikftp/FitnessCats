@@ -100,4 +100,13 @@
     <string name="spinner_day">День</string>
     <string name="statistic_fragment_no_data">Похоже, нет данных для данного промежутка времени</string>
     <string name="tracks_activity_error_exit_account">Пожалуйста, остановите свое занятие</string>
+    <string name="activity_add_user_info_empty">Пожалуйста, заполните все поля</string>
+    <string name="activity_add_user_info_enter_you_growth">Введите ваш рост</string>
+    <string name="activity_add_user_info_enter_you_weigth">Введите ваш вес</string>
+    <string name="activity_add_user_info_kg">кг</string>
+    <string name="activity_add_user_info_sm">см</string>
+    <string name="activity_add_user_info_success_btn">Готово</string>
+    <string name="activity_add_user_info_error_save">При сохранении данных произошла ошибка</string>
+    <string name="activity_add_user_info_not_digit">Поля содержат недопустимые символы</string>
+    <string name="activity_add_user_info_cats_talk">Хэй, тебя приветствуют фитнес-котики.  Чтобы точно рассчитывать твои результаты занятий, заполни о себе некоторую информацию</string>
 </resources>
