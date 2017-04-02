@@ -51,7 +51,7 @@ android {
 }
 
 ext.ver = [
-        support: '25.0.1',
+        support: '25.1.0',
         gms    : '9.6.1',
         jUnit  : '4.12',
         multiDex  : '1.0.1'
