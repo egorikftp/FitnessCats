@@ -64,6 +64,7 @@ public class FitService extends Service implements LocationListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction().equalsIgnoreCase(ACTION_START)) {
             App.getInstance().getFitState().setStartTime(intent.getLongExtra(START_TIME, System.currentTimeMillis()));
+            App.getInstance().getFitState().setTimeBetweenLocations(Calendar.getInstance().getTimeInMillis() / 1000);
             startNotification();
         } else {
             stopNotification();
@@ -93,28 +94,54 @@ public class FitService extends Service implements LocationListener {
                 if (App.getInstance().getFitState().getTypeFit() == 1) {
                     caloriesWalk(results[0]);
                 }
+
+                if (App.getInstance().getFitState().getTypeFit() == 2) {
+                    caloriesRunning(results[0]);
+                }
+
                 App.getInstance().getFitState().setNowDistance((int) ((int) App.getInstance().getFitState().getNowDistance() + results[0]));
             }
 
             oldLocation = location;
             writeDistance((int) App.getInstance().getFitState().getNowDistance());
-
-            Point point = new Point();
-            point.setLng(location.getLongitude());
-            point.setLat(location.getLatitude());
-            App.getInstance().getFitState().addPoint(point);
-
+            App.getInstance().getFitState().addPoint(new Point(location.getLongitude(), location.getLatitude()));
             insertLocationDb(location.getLongitude(), location.getLatitude());
         }
     }
 
+
     private void caloriesWalk(float result) {
         long timeBetweenLocations = Calendar.getInstance().getTimeInMillis() / 1000 - App.getInstance().getFitState().getTimeBetweenLocations();
         float speed = result / timeBetweenLocations;
-        double calories = (((0.007 * Math.pow(2 * speed, 2) + 21) * App.getInstance().getFitState().getWeight()) / 1000) * timeBetweenLocations;
-        App.getInstance().getFitState().setCalories(App.getInstance().getFitState().getCalories() + (long) calories);
+        double nowCalories = (((0.007 * Math.pow(2 * speed, 2) + 21) * App.getInstance().getFitState().getWeight()) / 1000) * (timeBetweenLocations * 0.0167);
+
+        App.getInstance().getFitState().setCalories(App.getInstance().getFitState().getCalories() + round(nowCalories, 2));
         App.getInstance().getFitState().setTimeBetweenLocations(Calendar.getInstance().getTimeInMillis() / 1000);
         DbActions.writeCalories(App.getInstance().getFitState().getCalories());
+    }
+
+
+    private void caloriesRunning(float result) {
+        long timeBetweenLocations = Calendar.getInstance().getTimeInMillis() / 1000 - App.getInstance().getFitState().getTimeBetweenLocations();
+        float speed = result / timeBetweenLocations;
+
+        double nowCalories = (((18 * Math.pow(2 * speed, 2) + 21) * App.getInstance().getFitState().getWeight()) / 1000) * (timeBetweenLocations * 0.0167);
+
+        App.getInstance().getFitState().setCalories(App.getInstance().getFitState().getCalories() + round(nowCalories, 2));
+        App.getInstance().getFitState().setTimeBetweenLocations(Calendar.getInstance().getTimeInMillis() / 1000);
+        DbActions.writeCalories(App.getInstance().getFitState().getCalories());
+    }
+
+
+    public double round(double value, int places) {
+        if (places < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
     }
 
 

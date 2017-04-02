@@ -69,7 +69,7 @@ public class AsyncLikedTracksLoader extends AsyncTaskLoader<List<AllFitnessDataM
                 likedItem.setLiked(dbCursor.getInt(LIKED));
                 likedItem.setTrackToken(dbCursor.getString(TRACK_TOKEN));
                 likedItem.setTypeFit(dbCursor.getInt(TYPE_FIT));
-                likedItem.setCalories(dbCursor.getLong(CALORIES));
+                likedItem.setCalories(dbCursor.getDouble(CALORIES));
                 likedTracksModels.add(likedItem);
             } while (cursor.moveToNext());
         }

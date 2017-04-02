@@ -17,13 +17,13 @@ public class AllFitnessDataModel {
     private int typeFit;
     private String trackToken;
     private List<Point> points;
-    private long calories;
+    private double calories;
 
-    public long getCalories() {
+    public double getCalories() {
         return calories;
     }
 
-    public void setCalories(long calories) {
+    public void setCalories(double calories) {
         this.calories = calories;
     }
 

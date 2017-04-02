@@ -14,7 +14,7 @@ public class FitState {
     private List<Point> points = new ArrayList<>();
     private long timeBetweenLocations;
     private long weight;
-    private long calories;
+    private double calories;
     private int typeFit;
 
     public int getTypeFit() {
@@ -25,11 +25,11 @@ public class FitState {
         this.typeFit = typeFit;
     }
 
-    public long getCalories() {
+    public double getCalories() {
         return calories;
     }
 
-    public void setCalories(long calories) {
+    public void setCalories(double calories) {
         this.calories = calories;
     }
 

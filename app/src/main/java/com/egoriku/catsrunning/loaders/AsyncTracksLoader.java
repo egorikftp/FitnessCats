@@ -75,7 +75,7 @@ public class AsyncTracksLoader extends AsyncTaskLoader<List<AllFitnessDataModel>
                 listAdapter.setLiked(cursor.getInt(LIKED));
                 listAdapter.setTrackToken(cursor.getString(TRACK_TOKEN));
                 listAdapter.setTypeFit(cursor.getInt(TYPE_FIT));
-                listAdapter.setCalories(cursor.getLong(CALORIES));
+                listAdapter.setCalories(cursor.getDouble(CALORIES));
                 dataModelList.add(listAdapter);
             } while (cursorTracks.moveToNext());
         }

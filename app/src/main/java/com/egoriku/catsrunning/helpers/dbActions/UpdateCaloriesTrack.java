@@ -9,9 +9,9 @@ import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query._ID_EQ
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
 
 public class UpdateCaloriesTrack extends BaseAsyncWriter {
-    private long calories;
+    private double calories;
 
-    public UpdateCaloriesTrack(long calories) {
+    public UpdateCaloriesTrack(double calories) {
         this.calories = calories;
     }
 

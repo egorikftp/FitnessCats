@@ -89,7 +89,7 @@ public class DbActions {
         return new GetListBeeginsAt().execute().get();
     }
 
-    public static void writeCalories(long calories){
+    public static void writeCalories(double calories){
         new UpdateCaloriesTrack(calories).execute();
     }
 }
