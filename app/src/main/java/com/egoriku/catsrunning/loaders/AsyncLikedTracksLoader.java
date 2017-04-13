@@ -4,8 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.content.AsyncTaskLoader;
 
-import com.egoriku.catsrunning.helpers.DbCursor;
-import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
 
 import java.util.ArrayList;

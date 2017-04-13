@@ -35,8 +35,6 @@ import com.egoriku.catsrunning.adapters.RemindersAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.IRemindersClickListener;
 import com.egoriku.catsrunning.dialogs.UpdateDateReminderDialog;
 import com.egoriku.catsrunning.dialogs.UpdateTimeReminderDialog;
-import com.egoriku.catsrunning.helpers.DbCursor;
-import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.models.ReminderModel;
 import com.egoriku.catsrunning.receivers.ReminderReceiver;
 import com.egoriku.catsrunning.utils.CustomFont;

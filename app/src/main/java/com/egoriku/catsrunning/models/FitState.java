@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FitState {
+
+    private static FitState fitState;
+
     private long sinceTime;
     private int nowDistance;
     private long startTime;
@@ -16,6 +19,15 @@ public class FitState {
     private long weight;
     private double calories;
     private int typeFit;
+
+    public static FitState getInstance(){
+        if(fitState == null){
+            fitState = new FitState();
+        }
+
+        return fitState;
+    }
+
 
     public int getTypeFit() {
         return typeFit;

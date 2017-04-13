@@ -3,6 +3,7 @@ package com.egoriku.catsrunning.activities;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
@@ -23,10 +24,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.models.Firebase.SaveModel;
+import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.models.ParcelableFitActivityModel;
+import com.egoriku.catsrunning.models.TypeFit;
 import com.egoriku.catsrunning.services.FitService;
 import com.egoriku.catsrunning.utils.ConverterTime;
 import com.egoriku.catsrunning.utils.CustomChronometer;
@@ -51,10 +53,12 @@ import static com.egoriku.catsrunning.models.Constants.RunService.START_TIME;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class FitActivity extends AppCompatActivity {
+
     private static final int REQUEST_CODE = 1;
     public static final int TOP_PADDING = 50;
     public static final int ANOTHER_PADDING = 0;
 
+    @TypeFit
     private int typeFit;
     private String alertMessage;
     private String alertPositiveBtn;
@@ -75,11 +79,14 @@ public class FitActivity extends AppCompatActivity {
     private Thread chronometerThread;
     private FirebaseUser user;
 
+    private FitState fitState = FitState.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scamper);
+
         user = FirebaseAuth.getInstance().getCurrentUser();
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
         btnStart = (Button) findViewById(R.id.fit_activity_btn_start);
@@ -106,11 +113,11 @@ public class FitActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
-            if (getIntent().getExtras() != null) {
-                typeFit = getIntent().getExtras().getInt(KEY_TYPE_FIT);
-                getSupportActionBar().setTitle(getTypeFit(typeFit, false, R.array.type_reminder));
-            }
+        if (getIntent().getExtras() != null) {
+            typeFit = getIntent().getExtras().getInt(KEY_TYPE_FIT);
+            getSupportActionBar().setTitle(getTypeFit(typeFit, false, R.array.type_reminder));
         }
 
         final FlipAnimation flipAnimation = new FlipAnimation(btnStart, btnFinish, textViewNowTime, textViewNowDistance, imageViewFinish, textViewFinalTime, textViewFinalDistance);
@@ -133,9 +140,8 @@ public class FitActivity extends AppCompatActivity {
                     return;
                 }
 
-                App.getInstance().createFitState();
-                App.getInstance().getFitState().setFitRun(true);
-                App.getInstance().getFitState().setWeight(new UserInfoPreferences(FitActivity.this).getWeight());
+                fitState.setFitRun(true);
+                fitState.setWeight(new UserInfoPreferences(FitActivity.this).getWeight());
 
                 if (chronometer == null) {
                     chronometer = new CustomChronometer(FitActivity.this);
@@ -145,7 +151,7 @@ public class FitActivity extends AppCompatActivity {
                 }
 
                 if (getIntent().getExtras() != null) {
-                    App.getInstance().getFitState().setTypeFit(getIntent().getExtras().getInt(KEY_TYPE_FIT));
+                    fitState.setTypeFit(getIntent().getExtras().getInt(KEY_TYPE_FIT));
                 }
 
                 IntentBuilder intent = new IntentBuilder()
@@ -168,8 +174,8 @@ public class FitActivity extends AppCompatActivity {
                         .service(FitService.class)
                         .build());
 
-                textViewFinalTime.setText(String.format(getString(R.string.fit_activity_now_time), ConverterTime.ConvertTimeToString(App.getInstance().getFitState().getSinceTime())));
-                textViewFinalDistance.setText(String.format(getString(R.string.fit_activity_final_distance_meter), (int) App.getInstance().getFitState().getNowDistance()));
+                textViewFinalTime.setText(String.format(getString(R.string.fit_activity_now_time), ConverterTime.ConvertTimeToString(fitState.getSinceTime())));
+                textViewFinalDistance.setText(String.format(getString(R.string.fit_activity_final_distance_meter), (int) fitState.getNowDistance()));
                 flipAnimation.setReverse();
                 relativeRootLayout.startAnimation(flipAnimation);
 
@@ -184,25 +190,24 @@ public class FitActivity extends AppCompatActivity {
                     getSupportActionBar().setTitle(String.format(getString(R.string.scamper_activity_toolbar_title), getTypeFit(typeFit, true, R.array.all_fitness_data_categories)));
                 }
 
-                App.getInstance().getFitState().setFitRun(true);
+                fitState.setFitRun(true);
                 uploadTrackInFirebase();
             }
         });
     }
 
-
     private void uploadTrackInFirebase() {
-        if (App.getInstance().getFitState().getPoints().size() > 2) {
+        if (fitState.getPoints().size() > 2) {
             String trackToken = FirebaseDatabase.getInstance().getReference().child(CHILD_TRACKS).child(user.getUid()).push().getKey();
-            writeTrackToken(trackToken, App.getInstance().getFitState().getIdTrack());
+            writeTrackToken(trackToken, fitState.getIdTrack());
 
             SaveModel saveModel = new SaveModel(
-                    App.getInstance().getFitState().getStartTime() / 1000L,
-                    App.getInstance().getFitState().getSinceTime(),
-                    (int) App.getInstance().getFitState().getNowDistance(),
+                    fitState.getStartTime() / 1000L,
+                    fitState.getSinceTime(),
+                    (int) fitState.getNowDistance(),
                     trackToken,
                     typeFit,
-                    App.getInstance().getFitState().getPoints()
+                    fitState.getPoints()
             );
 
             FirebaseDatabase.getInstance().getReference().child(CHILD_TRACKS).child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {
@@ -217,7 +222,7 @@ public class FitActivity extends AppCompatActivity {
             });
         } else {
             Snackbar.make(relativeRootLayout, R.string.fit_activity_snackbar_low_points, Snackbar.LENGTH_LONG).show();
-            deleteTrackDataById(App.getInstance().getFitState().getIdTrack());
+            deleteTrackDataById(fitState.getIdTrack());
         }
     }
 
@@ -227,7 +232,7 @@ public class FitActivity extends AppCompatActivity {
             @Override
             public void run() {
                 textViewNowTime.setText(String.format(getString(R.string.fit_activity_now_time), timeFromChronometer));
-                textViewNowDistance.setText(String.format(getString(R.string.fit_activity_now_distance_meter), (int) App.getInstance().getFitState().getNowDistance()));
+                textViewNowDistance.setText(String.format(getString(R.string.fit_activity_now_distance_meter), (int) fitState.getNowDistance()));
             }
         });
     }
@@ -264,14 +269,11 @@ public class FitActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
         }
         return true;
     }
-
 
     @Override
     protected void onPause() {
@@ -279,13 +281,11 @@ public class FitActivity extends AppCompatActivity {
         saveState();
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
         loadStance();
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -305,7 +305,6 @@ public class FitActivity extends AppCompatActivity {
         model.setTextViewFinalTimeTxt(textViewFinalTime.getText().toString());
         outState.putParcelable(PARCELABLE_FIT_ACTIVITY_KEY, model);
     }
-
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -331,7 +330,6 @@ public class FitActivity extends AppCompatActivity {
         }
     }
 
-
     private void saveState() {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
 
@@ -344,7 +342,6 @@ public class FitActivity extends AppCompatActivity {
         }
         editor.apply();
     }
-
 
     private void loadStance() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -368,5 +365,11 @@ public class FitActivity extends AppCompatActivity {
             textViewNowTime.setVisibility(View.VISIBLE);
             textViewNowTime.setPadding(ANOTHER_PADDING, TOP_PADDING, ANOTHER_PADDING, ANOTHER_PADDING);
         }
+    }
+
+    public static void start(Context context, @TypeFit int typeFit){
+        Intent intent = new Intent(context, FitActivity.class);
+        intent.putExtra(KEY_TYPE_FIT, typeFit);
+        context.startActivity(intent);
     }
 }

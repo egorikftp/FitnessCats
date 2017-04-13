@@ -10,7 +10,7 @@ android {
         }
     }
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.2"
     dataBinding {
         enabled = true
     }
@@ -50,13 +50,6 @@ android {
     }
 }
 
-ext.ver = [
-        support: '25.1.0',
-        gms    : '9.6.1',
-        jUnit  : '4.12',
-        multiDex  : '1.0.1'
-]
-
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
@@ -66,10 +59,14 @@ dependencies {
     compile "com.android.support:support-v4:$ver.support"
     compile "com.android.support:recyclerview-v7:$ver.support"
     compile "com.android.support:cardview-v7:$ver.support"
+
     compile "com.google.firebase:firebase-database:$ver.gms"
     compile "com.google.firebase:firebase-auth:$ver.gms"
+    compile "com.google.firebase:firebase-core:$ver.gms"
+
     compile "com.google.android.gms:play-services-maps:$ver.gms"
     compile "com.google.android.gms:play-services-auth:$ver.gms"
+
     testCompile "junit:junit:$ver.jUnit"
     androidTestCompile "junit:junit:$ver.jUnit"
 }

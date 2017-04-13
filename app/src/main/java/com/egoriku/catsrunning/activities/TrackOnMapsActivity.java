@@ -14,8 +14,6 @@ import android.widget.Toast;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.helpers.DbCursor;
-import com.egoriku.catsrunning.helpers.InquiryBuilder;
 import com.egoriku.catsrunning.utils.ConverterTime;
 import com.egoriku.catsrunning.utils.VectorToDrawable;
 import com.google.android.gms.maps.CameraUpdateFactory;

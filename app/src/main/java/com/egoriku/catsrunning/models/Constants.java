@@ -92,12 +92,6 @@ public interface Constants {
         String USER_INFO = "user_info";
     }
 
-    interface TypeFit {
-        int TYPE_FIT_WALK = 1;
-        int TYPE_FIT_RUN = 2;
-        int TYPE_FIT_CYCLING = 3;
-    }
-
     interface Extras {
         String EXTRA_ID_REMINDER_KEY = "EXTRA_ID_REMINDER_KEY";
         String EXTRA_TEXT_TYPE_REMINDER_KEY = "EXTRA_TEXT_TYPE_REMINDER_KEY";

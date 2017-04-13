@@ -30,7 +30,7 @@ import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
 import com.egoriku.catsrunning.helpers.FirebaseSync;
 import com.egoriku.catsrunning.helpers.FirebaseUserInfoSync;
-import com.egoriku.catsrunning.helpers.InquiryBuilder;
+import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.models.ItemNavigationDrawer;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -38,10 +38,6 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_POINT;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_REMINDER;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_USER;
 import static com.egoriku.catsrunning.models.Constants.Tags.TAG_EXIT_APP;
 import static com.egoriku.catsrunning.models.Constants.Tags.TAG_LIKED_FRAGMENT;
 import static com.egoriku.catsrunning.models.Constants.Tags.TAG_MAIN_FRAGMENT;
@@ -63,6 +59,8 @@ public class TracksActivity extends AppCompatActivity {
     private NavigationDrawerAdapter adapter;
     private FirebaseUser user;
     private Handler handler;
+
+    private FitState fitState = FitState.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -249,9 +247,11 @@ public class TracksActivity extends AppCompatActivity {
 
 
     private void changeNavigationDrawerItem(String tag) {
-        if (tag.equals(TAG_MAIN_FRAGMENT)) {
-            showFragment(AllFitnessDataFragment.newInstance(), TAG_MAIN_FRAGMENT, null, true);
-            drawerLayout.closeDrawers();
+        switch (tag) {
+            case TAG_MAIN_FRAGMENT:
+                showFragment(AllFitnessDataFragment.newInstance(), TAG_MAIN_FRAGMENT, null, true);
+                drawerLayout.closeDrawers();
+                break;
         }
 
         if (tag.equals(TAG_REMINDERS_FRAGMENT)) {
@@ -270,31 +270,20 @@ public class TracksActivity extends AppCompatActivity {
         }
 
         if (tag.equals(TAG_EXIT_APP)) {
-            if (App.getInstance().getFitState() == null) {
-                exitFromAccount();
-            } else if (App.getInstance().getFitState() != null && !App.getInstance().getFitState().isFitRun()) {
-                exitFromAccount();
-            } else if (App.getInstance().getFitState().isFitRun())
+            if (fitState.isFitRun()) {
                 Toast.makeText(TracksActivity.this, getString(R.string.tracks_activity_error_exit_account), Toast.LENGTH_SHORT).show();
+            } else {
+                exitFromAccount();
+            }
         }
     }
 
     private void exitFromAccount() {
-        clearUserData();
         FirebaseAuth.getInstance().signOut();
         startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
         finish();
     }
-
-
-    private void clearUserData() {
-        new InquiryBuilder().cleanTable(TABLE_USER);
-        new InquiryBuilder().cleanTable(TABLE_TRACKS);
-        new InquiryBuilder().cleanTable(TABLE_REMINDER);
-        new InquiryBuilder().cleanTable(TABLE_POINT);
-    }
-
 
     public void tabTitle(String titleId) {
         if (getSupportActionBar() != null) {

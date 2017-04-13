@@ -2,8 +2,8 @@ package com.egoriku.catsrunning.utils;
 
 import android.content.Context;
 
-import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.activities.FitActivity;
+import com.egoriku.catsrunning.models.FitState;
 
 public class CustomChronometer implements Runnable {
     private Context context;
@@ -48,7 +48,7 @@ public class CustomChronometer implements Runnable {
     public void run() {
         while (isRunning) {
             long since = System.currentTimeMillis() - startTime;
-            App.getInstance().getFitState().setSinceTime(since);
+            FitState.getInstance().setSinceTime(since);
 
             ((FitActivity) context).updateTimer(ConverterTime.ConvertTimeToString(since));
 

@@ -1,7 +1,6 @@
 package com.egoriku.catsrunning.helpers.dbActions;
 
 import com.egoriku.catsrunning.helpers.BaseAsyncWriter;
-import com.egoriku.catsrunning.helpers.InquiryBuilder;
 
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.BEGINS_AT_EQ;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_TRACKS;

@@ -3,9 +3,6 @@ package com.egoriku.catsrunning.helpers.dbActions;
 import android.database.Cursor;
 import android.os.AsyncTask;
 
-import com.egoriku.catsrunning.helpers.DbCursor;
-import com.egoriku.catsrunning.helpers.InquiryBuilder;
-
 import java.util.HashSet;
 import java.util.Set;
 

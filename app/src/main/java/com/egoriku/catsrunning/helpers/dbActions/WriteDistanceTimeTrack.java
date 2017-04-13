@@ -2,7 +2,6 @@ package com.egoriku.catsrunning.helpers.dbActions;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.helpers.BaseAsyncWriter;
-import com.egoriku.catsrunning.helpers.InquiryBuilder;
 
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.DISTANCE;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TIME;

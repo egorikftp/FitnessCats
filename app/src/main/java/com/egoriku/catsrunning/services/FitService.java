@@ -12,11 +12,11 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
-import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
 import com.egoriku.catsrunning.helpers.DbActions;
 import com.egoriku.catsrunning.models.Firebase.Point;
+import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.utils.ConverterTime;
 
 import java.util.Calendar;
@@ -31,6 +31,9 @@ import static com.egoriku.catsrunning.models.Constants.RunService.START_TIME;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class FitService extends Service implements LocationListener {
+
+    private FitState fitState = FitState.getInstance();
+
     private static final int NOTIFICATION_ID = 1;
     private static final long TIME_BETWEEN_UPDATES = 1000;
     private static final float UPDATE_DISTANCE_THRESHOLD_METERS = 5.0f;
@@ -45,12 +48,12 @@ public class FitService extends Service implements LocationListener {
     private LocationManager locationManager;
     private Location oldLocation;
 
+
     private int[] imageResId = {
             R.drawable.ic_directions_walk_black_service,
             R.drawable.ic_directions_run_black_service,
             R.drawable.ic_directions_bike_black_service
     };
-
 
     @Override
     public void onCreate() {
@@ -59,12 +62,11 @@ public class FitService extends Service implements LocationListener {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction().equalsIgnoreCase(ACTION_START)) {
-            App.getInstance().getFitState().setStartTime(intent.getLongExtra(START_TIME, System.currentTimeMillis()));
-            App.getInstance().getFitState().setTimeBetweenLocations(Calendar.getInstance().getTimeInMillis() / 1000);
+            fitState.setStartTime(intent.getLongExtra(START_TIME, System.currentTimeMillis()));
+            fitState.setTimeBetweenLocations(Calendar.getInstance().getTimeInMillis() / 1000);
             startNotification();
         } else {
             stopNotification();
@@ -73,12 +75,11 @@ public class FitService extends Service implements LocationListener {
 
         if (!isActive) {
             isActive = true;
-            insertToId(App.getInstance().getFitState().getTypeFit());
+            insertToId(fitState.getTypeFit());
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIME_BETWEEN_UPDATES, UPDATE_DISTANCE_THRESHOLD_METERS, this);
         }
         return START_STICKY;
     }
-
 
     @Override
     public void onLocationChanged(Location location) {
@@ -91,47 +92,44 @@ public class FitService extends Service implements LocationListener {
                         results
                 );
 
-                if (App.getInstance().getFitState().getTypeFit() == 1) {
+                if (fitState.getTypeFit() == 1) {
                     caloriesWalk(results[0]);
                 }
 
-                if (App.getInstance().getFitState().getTypeFit() == 2) {
+                if (fitState.getTypeFit() == 2) {
                     caloriesRunning(results[0]);
                 }
 
-                App.getInstance().getFitState().setNowDistance((int) ((int) App.getInstance().getFitState().getNowDistance() + results[0]));
+                fitState.setNowDistance((int) ((int) fitState.getNowDistance() + results[0]));
             }
 
             oldLocation = location;
-            writeDistance((int) App.getInstance().getFitState().getNowDistance());
-            App.getInstance().getFitState().addPoint(new Point(location.getLongitude(), location.getLatitude()));
+            writeDistance((int) fitState.getNowDistance());
+            fitState.addPoint(new Point(location.getLongitude(), location.getLatitude()));
             insertLocationDb(location.getLongitude(), location.getLatitude());
         }
     }
 
-
     private void caloriesWalk(float result) {
-        long timeBetweenLocations = Calendar.getInstance().getTimeInMillis() / 1000 - App.getInstance().getFitState().getTimeBetweenLocations();
+        long timeBetweenLocations = Calendar.getInstance().getTimeInMillis() / 1000 - fitState.getTimeBetweenLocations();
         float speed = result / timeBetweenLocations;
-        double nowCalories = (((0.007 * Math.pow(2 * speed, 2) + 21) * App.getInstance().getFitState().getWeight()) / 1000) * (timeBetweenLocations * 0.0167);
+        double nowCalories = (((0.007 * Math.pow(2 * speed, 2) + 21) * fitState.getWeight()) / 1000) * (timeBetweenLocations * 0.0167);
 
-        App.getInstance().getFitState().setCalories(App.getInstance().getFitState().getCalories() + round(nowCalories, 2));
-        App.getInstance().getFitState().setTimeBetweenLocations(Calendar.getInstance().getTimeInMillis() / 1000);
-        DbActions.writeCalories(App.getInstance().getFitState().getCalories());
+        fitState.setCalories(fitState.getCalories() + round(nowCalories, 2));
+        fitState.setTimeBetweenLocations(Calendar.getInstance().getTimeInMillis() / 1000);
+        DbActions.writeCalories(fitState.getCalories());
     }
-
 
     private void caloriesRunning(float result) {
-        long timeBetweenLocations = Calendar.getInstance().getTimeInMillis() / 1000 - App.getInstance().getFitState().getTimeBetweenLocations();
+        long timeBetweenLocations = Calendar.getInstance().getTimeInMillis() / 1000 - fitState.getTimeBetweenLocations();
         float speed = result / timeBetweenLocations;
 
-        double nowCalories = (((18 * Math.pow(2 * speed, 2) + 21) * App.getInstance().getFitState().getWeight()) / 1000) * (timeBetweenLocations * 0.0167);
+        double nowCalories = (((18 * Math.pow(2 * speed, 2) + 21) * fitState.getWeight()) / 1000) * (timeBetweenLocations * 0.0167);
 
-        App.getInstance().getFitState().setCalories(App.getInstance().getFitState().getCalories() + round(nowCalories, 2));
-        App.getInstance().getFitState().setTimeBetweenLocations(Calendar.getInstance().getTimeInMillis() / 1000);
-        DbActions.writeCalories(App.getInstance().getFitState().getCalories());
+        fitState.setCalories(fitState.getCalories() + round(nowCalories, 2));
+        fitState.setTimeBetweenLocations(Calendar.getInstance().getTimeInMillis() / 1000);
+        DbActions.writeCalories(fitState.getCalories());
     }
-
 
     public double round(double value, int places) {
         if (places < 0) {
@@ -144,19 +142,17 @@ public class FitService extends Service implements LocationListener {
         return (double) tmp / factor;
     }
 
-
     @Override
     public void onDestroy() {
         if (isActive) {
             isActive = false;
             locationManager.removeUpdates(this);
             stopForeground(true);
-            App.getInstance().getFitState().setFitRun(false);
-            insertDistanceTime(App.getInstance().getFitState().getNowDistance(), App.getInstance().getFitState().getSinceTime());
+            fitState.setFitRun(false);
+            insertDistanceTime(fitState.getNowDistance(), fitState.getSinceTime());
         }
         super.onDestroy();
     }
-
 
     protected boolean isBetterLocation(Location location, Location currentBestLocation) {
         if (currentBestLocation == null) {
@@ -192,14 +188,12 @@ public class FitService extends Service implements LocationListener {
         return false;
     }
 
-
     private boolean isSameProvider(String provider, String providerBestLocation) {
         if (provider == null) {
             return providerBestLocation == null;
         }
         return provider.equals(providerBestLocation);
     }
-
 
     private void startNotification() {
         isThreadRun = true;
@@ -214,28 +208,25 @@ public class FitService extends Service implements LocationListener {
         }
     }
 
-
     private void showNotification(String time, int distance) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setSmallIcon(getNotificationIcon(App.getInstance().getFitState().getTypeFit()));
+        builder.setSmallIcon(getNotificationIcon(fitState.getTypeFit()));
         builder.setContentIntent(PendingIntent.getActivity(
                 this,
                 0,
-                new Intent(this, FitActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP).putExtra(KEY_TYPE_FIT, App.getInstance().getFitState().getTypeFit()),
+                new Intent(this, FitActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP).putExtra(KEY_TYPE_FIT, fitState.getTypeFit()),
                 PendingIntent.FLAG_UPDATE_CURRENT
         ));
-        builder.setContentTitle(String.format(getString(R.string.scamper_notification_title), getTypeFit(App.getInstance().getFitState().getTypeFit(), true, R.array.type_reminder)));
+        builder.setContentTitle(String.format(getString(R.string.scamper_notification_title), getTypeFit(fitState.getTypeFit(), true, R.array.type_reminder)));
         builder.setContentText(String.format(getString(R.string.notification_time_distance_format), time, distance));
         builder.setAutoCancel(false);
         builder.setOngoing(true);
         startForeground(NOTIFICATION_ID, builder.build());
     }
 
-
     private int getNotificationIcon(int typeFit) {
         return imageResId[typeFit - 1];
     }
-
 
     private void stopNotification() {
         isThreadRun = false;
@@ -247,7 +238,6 @@ public class FitService extends Service implements LocationListener {
         updateThread = null;
         updateNotification = null;
     }
-
 
     @Nullable
     @Override
@@ -271,14 +261,14 @@ public class FitService extends Service implements LocationListener {
     }
 
 
-    class UpdateNotification implements Runnable {
+    private class UpdateNotification implements Runnable {
         @Override
         public void run() {
             while (isThreadRun) {
-                long since = System.currentTimeMillis() - App.getInstance().getFitState().getStartTime();
+                long since = System.currentTimeMillis() - fitState.getStartTime();
                 showNotification(
                         ConverterTime.ConvertTimeToString(since),
-                        (int) App.getInstance().getFitState().getNowDistance()
+                        (int) fitState.getNowDistance()
                 );
 
                 try {

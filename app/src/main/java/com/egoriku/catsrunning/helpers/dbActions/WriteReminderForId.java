@@ -3,7 +3,6 @@ package com.egoriku.catsrunning.helpers.dbActions;
 import android.os.AsyncTask;
 
 import com.egoriku.catsrunning.App;
-import com.egoriku.catsrunning.helpers.InquiryBuilder;
 
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.DATE_REMINDER;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.IS_RINGS;
