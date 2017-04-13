@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -46,16 +45,10 @@ import static com.egoriku.catsrunning.helpers.DbActions.deleteReminderDb;
 import static com.egoriku.catsrunning.helpers.DbActions.updateAlarmCondition;
 import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_UPDATE_REMINDER_DATE;
 import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_UPDATE_REMINDER_TIME;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.DATE_REMINDER;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.IS_RINGS;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.TYPE_REMINDER;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns._ID;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_RING_FALSE;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_RING_TRUE;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_REMINDER;
 import static com.egoriku.catsrunning.models.Constants.Extras.EXTRA_ID_REMINDER_KEY;
 import static com.egoriku.catsrunning.models.Constants.Extras.EXTRA_TEXT_TYPE_REMINDER_KEY;
-import static com.egoriku.catsrunning.models.Constants.Tags.TAG_REMINDERS_FRAGMENT;
 import static com.egoriku.catsrunning.utils.AlarmsUtility.setAlarm;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
@@ -99,7 +92,7 @@ public class RemindersFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_reminders, TAG_REMINDERS_FRAGMENT);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_reminders, FragmentsTag.REMINDER);
     }
 
 
@@ -264,25 +257,13 @@ public class RemindersFragment extends Fragment {
 
     private void getRemindersFromDb() {
         reminderModel.clear();
-        Cursor cursorReminders = new InquiryBuilder()
-                .get(_ID, DATE_REMINDER, TYPE_REMINDER, IS_RINGS)
-                .from(TABLE_REMINDER)
-                .orderBy(DATE_REMINDER)
-                .select();
 
-        DbCursor dbCursor = new DbCursor(cursorReminders);
-        if (dbCursor.isValid()) {
-            do {
-                reminderModel.add(new ReminderModel(
+        /* reminderModel.add(new ReminderModel(
                                 dbCursor.getInt(_ID),
                                 dbCursor.getLong(DATE_REMINDER),
                                 dbCursor.getInt(TYPE_REMINDER),
                                 dbCursor.getInt(IS_RINGS)
-                        )
-                );
-            } while (cursorReminders.moveToNext());
-        }
-        dbCursor.close();
+                        )*/
     }
 
 
@@ -305,8 +286,7 @@ public class RemindersFragment extends Fragment {
     private String getEmojiByUnicode(int unicodeEmoji) {
         return new String(Character.toChars(unicodeEmoji));
     }
-
-
+    
     @Override
     public void onResume() {
         super.onResume();

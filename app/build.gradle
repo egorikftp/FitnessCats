@@ -69,6 +69,8 @@ dependencies {
 
     testCompile "junit:junit:$ver.jUnit"
     androidTestCompile "junit:junit:$ver.jUnit"
+
+    compile 'com.jakewharton.timber:timber:4.5.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

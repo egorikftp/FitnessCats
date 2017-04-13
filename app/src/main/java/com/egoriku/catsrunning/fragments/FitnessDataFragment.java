@@ -27,7 +27,6 @@ import com.egoriku.catsrunning.activities.FitActivity;
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.adapters.FitnessDataAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.IOnItemHandlerListener;
-import com.egoriku.catsrunning.loaders.AsyncTracksLoader;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
 import com.egoriku.catsrunning.utils.CustomFont;
 import com.egoriku.catsrunning.utils.IntentBuilder;

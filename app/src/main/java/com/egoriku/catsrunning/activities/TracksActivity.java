@@ -25,6 +25,7 @@ import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.adapters.NavigationDrawerAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.OnItemSelecteListener;
 import com.egoriku.catsrunning.fragments.AllFitnessDataFragment;
+import com.egoriku.catsrunning.fragments.FragmentsTag;
 import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
@@ -37,12 +38,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.egoriku.catsrunning.models.Constants.Tags.TAG_EXIT_APP;
-import static com.egoriku.catsrunning.models.Constants.Tags.TAG_LIKED_FRAGMENT;
-import static com.egoriku.catsrunning.models.Constants.Tags.TAG_MAIN_FRAGMENT;
-import static com.egoriku.catsrunning.models.Constants.Tags.TAG_REMINDERS_FRAGMENT;
-import static com.egoriku.catsrunning.models.Constants.Tags.TAG_STATISTIC_FRAGMENT;
 
 public class TracksActivity extends AppCompatActivity {
     public static final long UPTIME_MILLIS = 1000L;
@@ -82,7 +77,7 @@ public class TracksActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(drawerToggle);
 
         if (savedInstanceState == null) {
-            showFragment(AllFitnessDataFragment.newInstance(), TAG_MAIN_FRAGMENT, null, true);
+            showFragment(AllFitnessDataFragment.newInstance(), FragmentsTag.MAIN, null, true);
         }
 
         handler = new Handler(getMainLooper());
@@ -114,7 +109,7 @@ public class TracksActivity extends AppCompatActivity {
     }
 
 
-    private void showFragment(Fragment fragment, String tag, String clearToTag, boolean clearInclusive) {
+    private void showFragment(Fragment fragment, @FragmentsTag String tag, @FragmentsTag String clearToTag, boolean clearInclusive) {
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         if (clearToTag != null || clearInclusive) {
@@ -167,7 +162,7 @@ public class TracksActivity extends AppCompatActivity {
     }
 
 
-    public void onFragmentStart(int titleResId, String tag) {
+    public void onFragmentStart(int titleResId, @FragmentsTag String tag) {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(titleResId);
         }
@@ -190,7 +185,7 @@ public class TracksActivity extends AppCompatActivity {
         drawerArrayList.add(new ItemNavigationDrawer(
                 getString(R.string.navigation_drawer_main_activity),
                 R.drawable.ic_vec_near_me_black,
-                TAG_MAIN_FRAGMENT,
+                FragmentsTag.MAIN,
                 false,
                 false
         ));
@@ -198,7 +193,7 @@ public class TracksActivity extends AppCompatActivity {
         drawerArrayList.add(new ItemNavigationDrawer(
                 getString(R.string.navigation_drawer_reminders),
                 R.drawable.ic_vec_notifications_active_black,
-                TAG_REMINDERS_FRAGMENT,
+                FragmentsTag.REMINDER,
                 false,
                 false
         ));
@@ -206,7 +201,7 @@ public class TracksActivity extends AppCompatActivity {
         drawerArrayList.add(new ItemNavigationDrawer(
                 getString(R.string.navigation_drawer_liked),
                 R.drawable.ic_vec_star_black_nav_drawer,
-                TAG_LIKED_FRAGMENT,
+                FragmentsTag.LIKED,
                 false,
                 false
         ));
@@ -214,7 +209,7 @@ public class TracksActivity extends AppCompatActivity {
         drawerArrayList.add(new ItemNavigationDrawer(
                 getString(R.string.navigation_drawer_statistic),
                 R.drawable.ic_vec_equalizer_black,
-                TAG_STATISTIC_FRAGMENT,
+                FragmentsTag.STATISTIC,
                 false,
                 false
         ));
@@ -222,7 +217,7 @@ public class TracksActivity extends AppCompatActivity {
         drawerArrayList.add(new ItemNavigationDrawer(
                 getString(R.string.navigation_drawer_exit),
                 R.drawable.ic_vec_exit_to_app_black,
-                TAG_EXIT_APP,
+                FragmentsTag.EXIT,
                 false,
                 true
         ));
@@ -246,35 +241,31 @@ public class TracksActivity extends AppCompatActivity {
     }
 
 
-    private void changeNavigationDrawerItem(String tag) {
+    private void changeNavigationDrawerItem(@FragmentsTag String tag) {
         switch (tag) {
-            case TAG_MAIN_FRAGMENT:
-                showFragment(AllFitnessDataFragment.newInstance(), TAG_MAIN_FRAGMENT, null, true);
+            case FragmentsTag.MAIN:
+                showFragment(AllFitnessDataFragment.newInstance(), FragmentsTag.MAIN, null, true);
                 drawerLayout.closeDrawers();
                 break;
-        }
-
-        if (tag.equals(TAG_REMINDERS_FRAGMENT)) {
-            showFragment(RemindersFragment.newInstance(), TAG_REMINDERS_FRAGMENT, TAG_MAIN_FRAGMENT, false);
-            drawerLayout.closeDrawers();
-        }
-
-        if (tag.equals(TAG_LIKED_FRAGMENT)) {
-            showFragment(LikedFragment.newInstance(), TAG_LIKED_FRAGMENT, TAG_MAIN_FRAGMENT, false);
-            drawerLayout.closeDrawers();
-        }
-
-        if (tag.equals(TAG_STATISTIC_FRAGMENT)) {
-            showFragment(StatisticFragment.newInstance(), TAG_STATISTIC_FRAGMENT, TAG_MAIN_FRAGMENT, false);
-            drawerLayout.closeDrawers();
-        }
-
-        if (tag.equals(TAG_EXIT_APP)) {
-            if (fitState.isFitRun()) {
-                Toast.makeText(TracksActivity.this, getString(R.string.tracks_activity_error_exit_account), Toast.LENGTH_SHORT).show();
-            } else {
-                exitFromAccount();
-            }
+            case FragmentsTag.REMINDER:
+                showFragment(RemindersFragment.newInstance(), FragmentsTag.REMINDER, FragmentsTag.MAIN, false);
+                drawerLayout.closeDrawers();
+                break;
+            case FragmentsTag.LIKED:
+                showFragment(LikedFragment.newInstance(), FragmentsTag.LIKED, FragmentsTag.MAIN, false);
+                drawerLayout.closeDrawers();
+                break;
+            case FragmentsTag.STATISTIC:
+                showFragment(StatisticFragment.newInstance(), FragmentsTag.STATISTIC, FragmentsTag.MAIN, false);
+                drawerLayout.closeDrawers();
+                break;
+            case FragmentsTag.EXIT:
+                if (fitState.isFitRun()) {
+                    Toast.makeText(TracksActivity.this, getString(R.string.tracks_activity_error_exit_account), Toast.LENGTH_SHORT).show();
+                } else {
+                    exitFromAccount();
+                }
+                break;
         }
     }
 

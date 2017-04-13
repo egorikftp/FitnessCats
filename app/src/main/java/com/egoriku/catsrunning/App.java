@@ -6,6 +6,8 @@ import android.support.multidex.MultiDex;
 
 import com.egoriku.catsrunning.models.State;
 
+import timber.log.Timber;
+
 
 public class App extends Application {
     public static App app;
@@ -15,6 +17,10 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         app = this;
+
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
     }
 
 

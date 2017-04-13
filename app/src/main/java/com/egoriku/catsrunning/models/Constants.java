@@ -2,7 +2,6 @@ package com.egoriku.catsrunning.models;
 
 public interface Constants {
     String ANDROID_RESOURCE = "android.resource://";
-    String DB_NAME = "catsDB.db";
 
     interface FormateDate {
         String FORMAT_DATE = "%02d:%02d:%02d";
@@ -12,7 +11,6 @@ public interface Constants {
     }
 
     interface ConstantsSQL {
-        String SQL_VACUUM = "VACUUM";
 
         interface Tables {
             String TABLE_POINT = "Point";
@@ -101,11 +99,7 @@ public interface Constants {
     }
 
     interface Tags {
-        String TAG_LIKED_FRAGMENT = "TAG_LIKED_FRAGMENT";
-        String TAG_REMINDERS_FRAGMENT = "TAG_REMINDERS_FRAGMENT";
-        String TAG_MAIN_FRAGMENT = "TAG_MAIN_FRAGMENT";
-        String TAG_STATISTIC_FRAGMENT = "TAG_STATISTIC_FRAGMENT";
-        String TAG_EXIT_APP = "TAG_EXIT_APP";
+
         String ARG_SECTION_NUMBER = "ARG_SECTION_NUMBER";
     }
 

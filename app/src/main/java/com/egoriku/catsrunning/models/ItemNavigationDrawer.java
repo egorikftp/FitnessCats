@@ -1,9 +1,12 @@
 package com.egoriku.catsrunning.models;
 
 
+import com.egoriku.catsrunning.fragments.FragmentsTag;
+
 public class ItemNavigationDrawer {
     private String itemName;
     private int imgResId;
+    @FragmentsTag
     private String tagFragment;
     private boolean isSelected;
 
@@ -18,7 +21,7 @@ public class ItemNavigationDrawer {
     }
 
 
-    public ItemNavigationDrawer(String itemName, int imgResId, String tagFragment, boolean isSelected, boolean showLine) {
+    public ItemNavigationDrawer(String itemName, int imgResId, @FragmentsTag String tagFragment, boolean isSelected, boolean showLine) {
         this.itemName = itemName;
         this.imgResId = imgResId;
         this.tagFragment = tagFragment;

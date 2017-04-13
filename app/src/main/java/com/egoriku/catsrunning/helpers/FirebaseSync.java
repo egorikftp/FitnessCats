@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.egoriku.catsrunning.App;
-import com.egoriku.catsrunning.helpers.dbActions.AsyncWriteNewTracks;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;

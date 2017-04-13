@@ -1,6 +1,5 @@
 package com.egoriku.catsrunning.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -23,8 +22,6 @@ import com.egoriku.catsrunning.activities.FitActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.models.TypeFit;
 
-import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
-import static com.egoriku.catsrunning.models.Constants.Tags.TAG_MAIN_FRAGMENT;
 import static com.egoriku.catsrunning.utils.VectorToDrawable.getDrawable;
 
 public class AllFitnessDataFragment extends Fragment {
@@ -59,7 +56,7 @@ public class AllFitnessDataFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((TracksActivity) getActivity()).onFragmentStart(R.string.tab_text_walking, TAG_MAIN_FRAGMENT);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.tab_text_walking, FragmentsTag.MAIN);
     }
 
 

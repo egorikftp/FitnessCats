@@ -35,7 +35,6 @@ import com.egoriku.catsrunning.utils.IntentBuilder;
 import java.util.List;
 
 import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
-import static com.egoriku.catsrunning.models.Constants.Tags.TAG_LIKED_FRAGMENT;
 import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_DISTANCE;
 import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_ID;
 import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_LIKED;
@@ -68,7 +67,7 @@ public class LikedFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onStart() {
         super.onStart();
-        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_liked, TAG_LIKED_FRAGMENT);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_liked, FragmentsTag.LIKED);
     }
 
 

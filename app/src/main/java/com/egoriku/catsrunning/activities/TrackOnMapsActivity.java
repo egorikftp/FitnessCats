@@ -1,7 +1,6 @@
 package com.egoriku.catsrunning.activities;
 
 import android.annotation.SuppressLint;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -40,10 +39,6 @@ import java.util.List;
 import static com.egoriku.catsrunning.helpers.DbActions.updateIsTrackDelete;
 import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
 import static com.egoriku.catsrunning.models.Constants.ConstantsFirebase.CHILD_TRACKS;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LAT;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Columns.LNG;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.TRACK_ID_EQ;
-import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Tables.TABLE_POINT;
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.models.Constants.KeyReminder.KEY_ID;
 import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_DISTANCE;
@@ -91,19 +86,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
         coordinatesList = new ArrayList<>();
 
         if (getIntent().getExtras() != null) {
-            Cursor cursorPoints = new InquiryBuilder()
-                    .get(LNG, LAT)
-                    .from(TABLE_POINT)
-                    .where(false, TRACK_ID_EQ, String.valueOf(getIntent().getExtras().getInt(KEY_ID)))
-                    .select();
-            DbCursor dbCursor = new DbCursor(cursorPoints);
-
-            if (dbCursor.isValid()) {
-                do {
-                    coordinatesList.add(new LatLng(dbCursor.getDouble(LAT), dbCursor.getDouble(LNG)));
-                } while (cursorPoints.moveToNext());
-            }
-            dbCursor.close();
+            //  coordinatesList.add(new LatLng(dbCursor.getDouble(LAT), dbCursor.getDouble(LNG)));
 
             distanceText.setText(String.format(getString(R.string.track_fragment_distance_meter), getIntent().getExtras().getLong(KEY_DISTANCE)));
             typeFitText.setText(String.format(getString(R.string.track_fragment_time_running), getTypeFit(getIntent().getExtras().getInt(KEY_TYPE_FIT), true, R.array.all_fitness_data_categories)));
@@ -121,7 +104,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
         MapStyleOptions styleOptions = MapStyleOptions.loadRawResourceStyle(getApplicationContext(), R.raw.maps_style);
         mMap.setMapStyle(styleOptions);
 
-        if (coordinatesList.size() == 0) {
+        if (coordinatesList.isEmpty()) {
             Toast.makeText(getApplicationContext(), getString(R.string.track_fragment_toast_text_no_points), Toast.LENGTH_SHORT).show();
         } else {
             mMap.addPolyline(new PolylineOptions()

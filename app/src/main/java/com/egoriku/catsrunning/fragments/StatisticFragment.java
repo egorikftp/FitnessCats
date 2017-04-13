@@ -21,7 +21,6 @@ import android.widget.TextView;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.CustomSpinnerAdapter;
-import com.egoriku.catsrunning.loaders.AsyncStatisticLoader;
 import com.egoriku.catsrunning.models.SpinnerIntervalModel;
 import com.egoriku.catsrunning.models.StatisticModel;
 import com.egoriku.catsrunning.ui.statisticChart.FitChart;
@@ -34,9 +33,8 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_BUNDLE_TIME_AMOUNT;
-import static com.egoriku.catsrunning.models.Constants.Tags.TAG_STATISTIC_FRAGMENT;
 
-public class StatisticFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<StatisticModel>> {
+public class StatisticFragment extends Fragment {
     private static final int ID_LOADER = 1;
     public static final int FIT_COMPARE_DISTANCE = 1000;
     public static final int DURATION_HIDE = 500;
@@ -71,7 +69,7 @@ public class StatisticFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onStart() {
         super.onStart();
-        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_statistic, TAG_STATISTIC_FRAGMENT);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_statistic, FragmentsTag.STATISTIC);
     }
 
 
@@ -100,7 +98,6 @@ public class StatisticFragment extends Fragment implements LoaderManager.LoaderC
         Calendar calendar = Calendar.getInstance();
         Bundle bundle = new Bundle();
         bundle.putLong(KEY_BUNDLE_TIME_AMOUNT, (calendar.getTimeInMillis() - valueInterval) / 1000L);
-        getLoaderManager().restartLoader(ID_LOADER, bundle, this);
     }
 
 
@@ -133,12 +130,6 @@ public class StatisticFragment extends Fragment implements LoaderManager.LoaderC
         long currentMinutes = calendar.get(Calendar.MINUTE);
         long currentHours = calendar.get(Calendar.HOUR_OF_DAY);
         return currentHours * HOURS_IN_SEC + currentMinutes * MINUTES_IN_SEC;
-    }
-
-
-    @Override
-    public Loader<List<StatisticModel>> onCreateLoader(int id, Bundle args) {
-        return new AsyncStatisticLoader(getContext(), args);
     }
 
 
@@ -226,11 +217,6 @@ public class StatisticFragment extends Fragment implements LoaderManager.LoaderC
         }
         return maxValue;
     }
-
-    @Override
-    public void onLoaderReset(Loader<List<StatisticModel>> loader) {
-    }
-
 
     @Override
     public void onStop() {
