@@ -71,6 +71,7 @@ dependencies {
     androidTestCompile "junit:junit:$ver.jUnit"
 
     compile 'com.jakewharton.timber:timber:4.5.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

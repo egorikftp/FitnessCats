@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -33,13 +34,19 @@ import com.egoriku.catsrunning.helpers.FirebaseSync;
 import com.egoriku.catsrunning.helpers.FirebaseUserInfoSync;
 import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.models.ItemNavigationDrawer;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TracksActivity extends AppCompatActivity {
+public class TracksActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
     public static final long UPTIME_MILLIS = 1000L;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -108,7 +115,6 @@ public class TracksActivity extends AppCompatActivity {
         }
     }
 
-
     private void showFragment(Fragment fragment, @FragmentsTag String tag, @FragmentsTag String clearToTag, boolean clearInclusive) {
         FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -126,13 +132,11 @@ public class TracksActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         drawerToggle.syncState();
     }
-
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -140,12 +144,10 @@ public class TracksActivity extends AppCompatActivity {
         drawerToggle.onConfigurationChanged(newConfig);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
-
 
     @Override
     public void onBackPressed() {
@@ -161,7 +163,6 @@ public class TracksActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-
     public void onFragmentStart(int titleResId, @FragmentsTag String tag) {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(titleResId);
@@ -176,7 +177,6 @@ public class TracksActivity extends AppCompatActivity {
             drawerArrayList.get(i).setSelected(false);
         }
     }
-
 
     private void addDrawerItem() {
         drawerArrayList = new ArrayList<>();
@@ -223,7 +223,6 @@ public class TracksActivity extends AppCompatActivity {
         ));
     }
 
-
     private void initRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new NavigationDrawerAdapter(drawerArrayList);
@@ -239,7 +238,6 @@ public class TracksActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void changeNavigationDrawerItem(@FragmentsTag String tag) {
         switch (tag) {
@@ -271,6 +269,29 @@ public class TracksActivity extends AppCompatActivity {
 
     private void exitFromAccount() {
         FirebaseAuth.getInstance().signOut();
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .requestProfile()
+                .build();
+
+        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+        if (googleApiClient.isConnected()) {
+            Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(new ResultCallback<Status>() {
+                @Override
+                public void onResult(@NonNull Status status) {
+                    openRegisterActivity();
+                }
+            });
+        }
+    }
+
+    private void openRegisterActivity() {
         startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
         finish();
@@ -280,5 +301,10 @@ public class TracksActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(titleId);
         }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
