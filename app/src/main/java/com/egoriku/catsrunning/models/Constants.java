@@ -85,21 +85,16 @@ public interface Constants {
         }
     }
 
-    interface ConstantsFirebase {
-        String CHILD_TRACKS = "tracks";
-        String USER_INFO = "user_info";
-    }
-
     interface Extras {
         String EXTRA_ID_REMINDER_KEY = "EXTRA_ID_REMINDER_KEY";
         String EXTRA_TEXT_TYPE_REMINDER_KEY = "EXTRA_TEXT_TYPE_REMINDER_KEY";
         String TYPE_REMINDER_KEY = "TYPE_REMINDER_KEY";
         String KEY_TYPE_FIT = "KEY_TYPE_FIT";
         String KEY_BUNDLE_TIME_AMOUNT = "KEY_BUNDLE_TIME_AMOUNT";
+        String EXTRA_TRACK_ON_MAPS = "EXTRA_TRACK_ON_MAPS";
     }
 
     interface Tags {
-
         String ARG_SECTION_NUMBER = "ARG_SECTION_NUMBER";
     }
 
@@ -182,5 +177,11 @@ public interface Constants {
         String KEY_GROWTH = "KEY_GROWTH";
         int DEFAULT_WEIGHT = 50;
         int DEFAULT_GROWTH = 150;
+    }
+
+    interface FirebaseFields{
+        String TYPE_FIT = "typeFit";
+        String CHILD_TRACKS = "tracks";
+        String USER_INFO = "user_info";
     }
 }

@@ -6,8 +6,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,14 +25,12 @@ import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.LikedFragmentAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.ILikedClickListener;
-import com.egoriku.catsrunning.loaders.AsyncLikedTracksLoader;
 import com.egoriku.catsrunning.models.AllFitnessDataModel;
 import com.egoriku.catsrunning.utils.CustomFont;
 import com.egoriku.catsrunning.utils.IntentBuilder;
 
 import java.util.List;
 
-import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
 import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_DISTANCE;
 import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_ID;
 import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_LIKED;
@@ -42,7 +38,7 @@ import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_T
 import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_TOKEN;
 import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_TYPE_FIT;
 
-public class LikedFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AllFitnessDataModel>> {
+public class LikedFragment extends Fragment {
     private static final int UNICODE_SAD_CAT = 0x1F640;
     public static final int DURATION = 1000;
     public static final int ID_LOADER = 1;
@@ -132,7 +128,6 @@ public class LikedFragment extends Fragment implements LoaderManager.LoaderCallb
                 @Override
                 public void onLikedClick(AllFitnessDataModel item, int position) {
                     int likedDigit = 0;
-                    updateLikedDigit(likedDigit, data.get(position).getId());
                     data.remove(position);
                     likedFragmentAdapter.notifyItemRemoved(position);
                     likedFragmentAdapter.notifyItemRangeChanged(position, data.size());
@@ -172,33 +167,8 @@ public class LikedFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getLoaderManager().initLoader(ID_LOADER, null, this);
-    }
-
-
     public String getEmojiByUnicode(int unicode) {
         return new String(Character.toChars(unicode));
     }
 
-
-    @Override
-    public Loader<List<AllFitnessDataModel>> onCreateLoader(int id, Bundle args) {
-        return new AsyncLikedTracksLoader(getContext());
-    }
-
-
-    @Override
-    public void onLoadFinished(Loader<List<AllFitnessDataModel>> loader, List<AllFitnessDataModel> data) {
-        setUpAdapter(data);
-    }
-
-
-    @Override
-    public void onLoaderReset(Loader<List<AllFitnessDataModel>> loader) {
-
-    }
 }

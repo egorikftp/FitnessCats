@@ -1,15 +1,10 @@
 package com.egoriku.catsrunning.fragments;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,58 +16,46 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
-import com.egoriku.catsrunning.adapters.FitnessDataAdapter;
-import com.egoriku.catsrunning.adapters.interfaces.IOnItemHandlerListener;
-import com.egoriku.catsrunning.models.AllFitnessDataModel;
+import com.egoriku.catsrunning.adapters.FitnessDataHolder;
+import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.utils.CustomFont;
 import com.egoriku.catsrunning.utils.IntentBuilder;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.List;
-
-import static com.egoriku.catsrunning.helpers.DbActions.updateIsTrackDelete;
-import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
-import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_SAVE_NEW_TRACKS;
-import static com.egoriku.catsrunning.models.Constants.ConstantsFirebase.CHILD_TRACKS;
+import static com.egoriku.catsrunning.models.Constants.Extras.EXTRA_TRACK_ON_MAPS;
+import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
+import static com.egoriku.catsrunning.models.Constants.FirebaseFields.CHILD_TRACKS;
+import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TYPE_FIT;
 import static com.egoriku.catsrunning.models.Constants.Tags.ARG_SECTION_NUMBER;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_DISTANCE;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_ID;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_LIKED;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_TIME_RUNNING;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_TOKEN;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_TYPE_FIT;
 
-public class FitnessDataFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AllFitnessDataModel>> {
+public class FitnessDataFragment extends Fragment {
+
     private RecyclerView recyclerView;
     private TextView textViewNoTracks;
     private ImageView imageViewNoTracks;
     private ProgressBar progressBar;
 
-    private FitnessDataAdapter adapter;
-    private Loader<List<AllFitnessDataModel>> loader;
+    private FirebaseRecyclerAdapter adapter;
     private static IFABScroll ifabScroll;
 
+    private int typeFit;
 
-    private BroadcastReceiver broadcastNewTracksSave = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            reloadData();
-        }
-    };
-
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     public FitnessDataFragment() {
     }
-
 
     public static FitnessDataFragment newInstance(int sectionNumber, IFABScroll iFabScroll) {
         FitnessDataFragment fragment = new FitnessDataFragment();
@@ -83,20 +66,89 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
         return fragment;
     }
 
-
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_fitness_data, container, false);
+        final View view = inflater.inflate(R.layout.fragment_fitness_data, container, false);
+
+        typeFit = getArguments().getInt(ARG_SECTION_NUMBER);
+
         progressBar = (ProgressBar) view.findViewById(R.id.fragment_fitness_data_progress_bar);
         recyclerView = (RecyclerView) view.findViewById(R.id.fitness_data_fragment_recycler_view);
         textViewNoTracks = (TextView) view.findViewById(R.id.fragment_fitness_data_text_no_tracks);
         imageViewNoTracks = (ImageView) view.findViewById(R.id.fragment_fitness_data_image_cats_no_track);
 
         textViewNoTracks.setTypeface(CustomFont.getTypeFace());
-        progressBar.setVisibility(View.VISIBLE);
-        recyclerView.setNestedScrollingEnabled(false);
+        progressBar.setVisibility(View.GONE);
+
+        recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new FitnessDataAdapter();
+
+        Query query = databaseReference.child(CHILD_TRACKS).child(user.getUid()).orderByChild(TYPE_FIT).equalTo(typeFit);
+        adapter = new FirebaseRecyclerAdapter<SaveModel, FitnessDataHolder>(SaveModel.class, R.layout.adapter_fitness_data_fragment, FitnessDataHolder.class, query) {
+            @Override
+            protected void populateViewHolder(final FitnessDataHolder viewHolder, SaveModel model, int position) {
+                viewHolder.setData(model, getContext());
+            }
+
+            @Override
+            public FitnessDataHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                FitnessDataHolder holder = super.onCreateViewHolder(parent, viewType);
+
+                holder.setOnClickListener(new FitnessDataHolder.ClickListener() {
+                    @Override
+                    public void onClickItem(int position) {
+                        SaveModel saveModel = (SaveModel) adapter.getItem(position);
+
+                        if (saveModel.getTime() == 0) {
+                            startActivity(new IntentBuilder()
+                                    .context(getActivity())
+                                    .activity(FitActivity.class)
+                                    .extra(KEY_TYPE_FIT, saveModel.getTypeFit())
+                                    .build());
+                        } else {
+                            startActivity(new Intent(getActivity(), TrackOnMapsActivity.class)
+                                    .putExtra(EXTRA_TRACK_ON_MAPS, saveModel));
+
+                         /*   startActivity(new IntentBuilder()
+                                    .context(getActivity())
+                                    .activity(TrackOnMapsActivity.class)
+                                    .extra(KEY_DISTANCE, saveModel.getDistance())
+                                    .extra(KEY_TIME_RUNNING, saveModel.getTime())
+                                    .extra(KEY_LIKED, saveModel.isFavorite())
+                                    .extra(KEY_TOKEN, saveModel.getTrackToken())
+                                    .extra(KEY_TYPE_FIT, saveModel.getTypeFit())
+                                    .extra(EXTRA_TRACK_ON_MAPS, saveModel)
+                                    .build());*/
+                        }
+                    }
+
+                    @Override
+                    public void onFavoriteClick(int position) {
+                        SaveModel adapterItem = (SaveModel) adapter.getItem(position);
+                        adapterItem.setFavorite(!adapterItem.isFavorite());
+                        updateTrackFavorire(adapterItem);
+                    }
+
+                    @Override
+                    public void onLongClick(final int position) {
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle(R.string.fitness_data_fragment_alert_title)
+                                .setCancelable(true)
+                                .setNegativeButton(R.string.fitness_data_fragment_alert_negative_btn, null)
+                                .setPositiveButton(R.string.fitness_data_fragment_alert_positive_btn, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        removeTrackFromFirebase((SaveModel) adapter.getItem(position));
+
+                                    }
+                                })
+                                .show();
+                    }
+                });
+                return holder;
+            }
+        };
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -107,156 +159,55 @@ public class FitnessDataFragment extends Fragment implements LoaderManager.Loade
             }
         });
 
+        recyclerView.setAdapter(adapter);
         return view;
     }
 
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        loader = getLoaderManager().restartLoader(getArguments().getInt(ARG_SECTION_NUMBER), getArguments(), this);
-
-        LocalBroadcastManager.getInstance(App.getInstance())
-                .registerReceiver(broadcastNewTracksSave, new IntentFilter(BROADCAST_SAVE_NEW_TRACKS));
+    private void updateTrackFavorire(SaveModel adapterItem) {
+        if (user != null && adapterItem.getTrackToken() != null) {
+            databaseReference
+                    .child(CHILD_TRACKS)
+                    .child(user.getUid())
+                    .child(adapterItem.getTrackToken())
+                    .setValue(adapterItem, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            if (databaseError != null) {
+                                Toast.makeText(getContext(), databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+        }
     }
 
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastNewTracksSave);
-    }
-
-
-    private void setUpAdapter(final List<AllFitnessDataModel> dataModelList) {
-        progressBar.setVisibility(View.GONE);
-        if (dataModelList.size() == 0) {
+    private void setNoTracks(int count) {
+        if (count == 0) {
             textViewNoTracks.setVisibility(View.VISIBLE);
             imageViewNoTracks.setVisibility(View.VISIBLE);
-            setTextNoTracks(textViewNoTracks);
-            adapter.clear();
+            textViewNoTracks.setText(getString(R.string.no_tracks_text));
         } else {
             textViewNoTracks.setVisibility(View.GONE);
             imageViewNoTracks.setVisibility(View.GONE);
-            adapter.setData(dataModelList);
-            recyclerView.setAdapter(adapter);
         }
-
-        adapter.setOnItemListener(new IOnItemHandlerListener() {
-            @Override
-            public void onClickItem(AllFitnessDataModel item, int position) {
-                if (item.getTime() == 0) {
-                    startActivity(new IntentBuilder()
-                            .context(getActivity())
-                            .activity(FitActivity.class)
-                            .extra(KEY_TYPE_FIT, item.getTypeFit())
-                            .build());
-                } else {
-                    startActivity(new IntentBuilder()
-                            .context(getActivity())
-                            .activity(TrackOnMapsActivity.class)
-                            .extra(KEY_ID, item.getId())
-                            .extra(KEY_DISTANCE, item.getDistance())
-                            .extra(KEY_TIME_RUNNING, item.getTime())
-                            .extra(KEY_LIKED, item.getLiked())
-                            .extra(KEY_TOKEN, item.getTrackToken())
-                            .extra(KEY_TYPE_FIT, item.getTypeFit())
-                            .build());
-                }
-            }
-
-            @Override
-            public void onLikedClick(AllFitnessDataModel item, int position) {
-                int likedState = item.getLiked();
-
-                switch (likedState) {
-                    case 0:
-                        likedState = 1;
-                        updateLikedDigit(likedState, item.getId());
-                        dataModelList.get(position).setLiked(likedState);
-                        adapter.notifyItemChanged(position);
-                        break;
-
-                    case 1:
-                        likedState = 0;
-                        updateLikedDigit(likedState, item.getId());
-                        dataModelList.get(position).setLiked(likedState);
-                        adapter.notifyItemChanged(position);
-                        break;
-                }
-            }
-
-            @Override
-            public void onLongClick(final AllFitnessDataModel item, final int position) {
-                new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.fitness_data_fragment_alert_title)
-                        .setCancelable(true)
-                        .setNegativeButton(R.string.fitness_data_fragment_alert_negative_btn, null)
-                        .setPositiveButton(R.string.fitness_data_fragment_alert_positive_btn, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                updateIsTrackDelete(item.getId());
-
-                                if (item.getTime() != 0) {
-                                    deleteFromFirebaseDb(item);
-                                }
-
-                                dataModelList.remove(position);
-                                adapter.notifyItemRemoved(position);
-                                adapter.notifyItemRangeChanged(position, dataModelList.size());
-
-                                if (dataModelList.size() == 0) {
-                                    reloadData();
-                                }
-                            }
-                        })
-                        .show();
-            }
-        });
     }
 
-
-    private void deleteFromFirebaseDb(AllFitnessDataModel item) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private void removeTrackFromFirebase(SaveModel item) {
         if (item.getTrackToken() != null && user != null) {
-            FirebaseDatabase.getInstance().getReference().child(CHILD_TRACKS).child(user.getUid()).child(item.getTrackToken()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    dataSnapshot.getRef().setValue(null);
-                }
+            databaseReference
+                    .child(CHILD_TRACKS)
+                    .child(user.getUid())
+                    .child(item.getTrackToken())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            dataSnapshot.getRef().setValue(null);
+                        }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
-    }
-
-
-    private void setTextNoTracks(TextView textViewNoTracks) {
-        textViewNoTracks.setText(getString(R.string.no_tracks_text));
-    }
-
-
-    @Override
-    public Loader<List<AllFitnessDataModel>> onCreateLoader(int id, Bundle args) {
-        return new AsyncTracksLoader(getContext(), args);
-    }
-
-
-    @Override
-    public void onLoadFinished(Loader<List<AllFitnessDataModel>> loader, List<AllFitnessDataModel> data) {
-        setUpAdapter(data);
-    }
-
-
-    @Override
-    public void onLoaderReset(Loader loader) {
-    }
-
-
-    private void reloadData() {
-        loader.onContentChanged();
     }
 }

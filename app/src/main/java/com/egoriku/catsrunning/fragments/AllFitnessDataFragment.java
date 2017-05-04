@@ -2,7 +2,6 @@ package com.egoriku.catsrunning.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -41,7 +40,6 @@ public class AllFitnessDataFragment extends Fragment {
     private Animation fabCyclingHide;
     private Animation fabRunHide;
     private boolean fabStatus;
-    private AppBarLayout appBarLayout;
 
 
     public AllFitnessDataFragment() {
@@ -67,7 +65,6 @@ public class AllFitnessDataFragment extends Fragment {
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         viewPager = (ViewPager) view.findViewById(R.id.fragment_all_fitness_data_view_pager_container);
 
-        appBarLayout = (AppBarLayout) view.findViewById(R.id.appbar_layout);
         fabMain = (FloatingActionButton) view.findViewById(R.id.floating_button);
         fabWalk = (FloatingActionButton) view.findViewById(R.id.fab_walk);
         fabCycling = (FloatingActionButton) view.findViewById(R.id.fab_cycling);
@@ -124,6 +121,7 @@ public class AllFitnessDataFragment extends Fragment {
 
         initSparseTabs();
         sectionsPagerAdapter = new AllFitnessDataFragment.SectionsPagerAdapter(getChildFragmentManager());
+        viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(sectionsPagerAdapter);
 
         tabLayout.setupWithViewPager(viewPager);

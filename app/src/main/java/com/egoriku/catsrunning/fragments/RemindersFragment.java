@@ -41,8 +41,6 @@ import com.egoriku.catsrunning.utils.CustomFont;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import static com.egoriku.catsrunning.helpers.DbActions.deleteReminderDb;
-import static com.egoriku.catsrunning.helpers.DbActions.updateAlarmCondition;
 import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_UPDATE_REMINDER_DATE;
 import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_UPDATE_REMINDER_TIME;
 import static com.egoriku.catsrunning.models.Constants.ConstantsSQL.Query.IS_RING_FALSE;
@@ -150,7 +148,6 @@ public class RemindersFragment extends Fragment {
                 public void onDeleteReminderClick(final int id, final int position, final int typeFit) {
                     if (reminderModel.get(position).getDateReminder() < Calendar.getInstance().getTimeInMillis() / 1000L) {
                         cancelAlarm(id, getTypeFit(typeFit, true, R.array.type_reminder));
-                        deleteReminderDb(id);
                         remindersAdapter.deletePositionData(position);
 
                         if (reminderModel.size() == 0) {
@@ -175,12 +172,10 @@ public class RemindersFragment extends Fragment {
                 public void onSwitcherReminderClick(int id, long dateReminder, int typeReminder, int position, boolean isChecked) {
                     if (isChecked) {
                         setAlarm(id, getTypeFit(typeReminder, false, R.array.type_reminder), dateReminder, typeReminder);
-                        updateAlarmCondition(id, IS_RING_TRUE);
                         reminderModel.get(position).setIsRing(IS_RING_TRUE);
                         remindersAdapter.notifyItemChanged(position);
                     } else {
                         cancelAlarm(id, getTypeFit(typeReminder, false, R.array.type_reminder));
-                        updateAlarmCondition(id, IS_RING_FALSE);
                         reminderModel.get(position).setIsRing(IS_RING_FALSE);
                         remindersAdapter.notifyItemChanged(position);
                     }
@@ -243,7 +238,6 @@ public class RemindersFragment extends Fragment {
                         switch (event) {
                             case Snackbar.Callback.DISMISS_EVENT_TIMEOUT:
                                 cancelAlarm(idAlarm, getTypeFit(typeFit, true, R.array.type_reminder));
-                                deleteReminderDb(idAlarm);
 
                                 if (reminderModel.size() == 0) {
                                     showReminders();
@@ -286,7 +280,7 @@ public class RemindersFragment extends Fragment {
     private String getEmojiByUnicode(int unicodeEmoji) {
         return new String(Character.toChars(unicodeEmoji));
     }
-    
+
     @Override
     public void onResume() {
         super.onResume();

@@ -2,29 +2,23 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/adapter_fitness_data_fragment_root_cardview"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:foreground="?android:attr/selectableItemBackground"
-    card:cardCornerRadius="9dp"
-    card:cardUseCompatPadding="true"
-    card:contentPaddingBottom="8dp">
-
+    android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
+        android:id="@+id/adapter_fitness_data_fragment_root_cardview"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
+        android:foreground="?android:attr/selectableItemBackground"
         card:cardCornerRadius="8dp"
         card:cardElevation="4dp"
         card:cardUseCompatPadding="true"
         card:contentPaddingBottom="8dp"
-        card:layout_constraintHorizontal_bias="1.0"
+        card:layout_constraintHorizontal_bias="0.0"
         card:layout_constraintLeft_toLeftOf="parent"
         card:layout_constraintRight_toRightOf="parent"
-        card:layout_constraintTop_toTopOf="parent">
+        card:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="0dp">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -34,27 +28,33 @@
                 android:id="@+id/adapter_fragment_liked_calories"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="0dp"
                 android:text="@string/adapter_fragment_main_calories"
                 android:textAppearance="?android:textAppearance"
-                card:layout_constraintLeft_toLeftOf="@+id/adapter_all_fitness_data_ic_type"
                 tools:layout_conversion_absoluteHeight="16dp"
                 tools:layout_conversion_absoluteWidth="60dp"
                 tools:layout_conversion_absoluteX="11dp"
                 tools:layout_conversion_absoluteY="96dp"
-                tools:layout_editor_absoluteY="96dp" />
+                android:layout_marginLeft="8dp"
+                card:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginTop="8dp"
+                card:layout_constraintTop_toBottomOf="@+id/adapter_fragment_liked_distance" />
 
             <TextView
                 android:id="@+id/adapter_all_fitness_data_calories_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                card:layout_constraintBaseline_toBaselineOf="@+id/adapter_fragment_liked_calories"
                 tools:layout_conversion_absoluteHeight="16dp"
                 tools:layout_conversion_absoluteWidth="58dp"
                 tools:layout_conversion_absoluteX="83dp"
                 tools:layout_conversion_absoluteY="96dp"
-                tools:layout_editor_absoluteX="76dp"
-                tools:text="340 ккал" />
+                tools:text="340 ккал"
+                card:layout_constraintTop_toTopOf="@+id/adapter_fragment_liked_calories"
+                android:layout_marginTop="8dp"
+                card:layout_constraintBottom_toBottomOf="@+id/adapter_fragment_liked_calories"
+                android:layout_marginBottom="0dp"
+                card:layout_constraintVertical_bias="1.0"
+                card:layout_constraintLeft_toRightOf="@+id/adapter_fragment_liked_calories"
+                android:layout_marginLeft="8dp" />
 
             <TextView
                 android:id="@+id/adapter_all_fitness_data_distance_text_view"
@@ -66,22 +66,28 @@
                 tools:layout_conversion_absoluteWidth="46dp"
                 tools:layout_conversion_absoluteX="93dp"
                 tools:layout_conversion_absoluteY="60dp"
-                tools:layout_editor_absoluteX="95dp"
-                tools:layout_editor_absoluteY="67dp" />
+                card:layout_constraintBottom_toBottomOf="@+id/adapter_fragment_liked_distance"
+                android:layout_marginBottom="8dp"
+                card:layout_constraintTop_toTopOf="@+id/adapter_fragment_liked_distance"
+                android:layout_marginTop="0dp"
+                card:layout_constraintVertical_bias="0.0"
+                card:layout_constraintLeft_toRightOf="@+id/adapter_fragment_liked_distance"
+                android:layout_marginLeft="8dp" />
 
             <TextView
                 android:id="@+id/adapter_fragment_liked_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="0dp"
                 android:text="@string/adapter_all_fitness_data_distance"
                 android:textAppearance="?android:textAppearance"
-                card:layout_constraintLeft_toLeftOf="@+id/adapter_all_fitness_data_ic_type"
                 tools:layout_conversion_absoluteHeight="16dp"
                 tools:layout_conversion_absoluteWidth="76dp"
                 tools:layout_conversion_absoluteX="11dp"
                 tools:layout_conversion_absoluteY="67dp"
-                tools:layout_editor_absoluteY="67dp" />
+                card:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="70dp"
+                android:layout_marginLeft="8dp"
+                card:layout_constraintLeft_toLeftOf="parent" />
 
             <TextView
                 android:id="@+id/adapter_all_fitness_data_time_text_view"
@@ -103,8 +109,6 @@
                 android:id="@+id/adapter_all_fitness_data_date_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="0dp"
-                android:layout_marginRight="0dp"
                 android:layout_marginTop="8dp"
                 android:textAppearance="?android:textAppearance"
                 card:layout_constraintLeft_toLeftOf="parent"
@@ -120,6 +124,7 @@
                 android:id="@+id/adapter_all_fitness_data_image_liked"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -141,7 +146,6 @@
                 android:layout_marginTop="8dp"
                 card:layout_constraintLeft_toLeftOf="parent"
                 card:layout_constraintTop_toTopOf="parent"
-                tools:layout_constraintBottom_creator="1"
                 tools:layout_constraintLeft_creator="1"
                 tools:layout_constraintTop_creator="1"
                 tools:src="@drawable/ic_vec_directions_walk_40dp" />

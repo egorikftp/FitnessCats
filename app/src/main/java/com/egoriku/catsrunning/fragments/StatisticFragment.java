@@ -132,7 +132,6 @@ public class StatisticFragment extends Fragment {
     }
 
 
-    @Override
     public void onLoadFinished(Loader<List<StatisticModel>> loader, List<StatisticModel> data) {
         int maxValue = getMaxDistance(data);
         int allDistance = getCountDistance(data);

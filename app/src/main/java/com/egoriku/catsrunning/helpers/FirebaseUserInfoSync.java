@@ -15,7 +15,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.egoriku.catsrunning.models.Constants.ConstantsFirebase.USER_INFO;
+import static com.egoriku.catsrunning.models.Constants.FirebaseFields.USER_INFO;
+
 
 public class FirebaseUserInfoSync {
     private static FirebaseUserInfoSync firebaseUserInfoSync;

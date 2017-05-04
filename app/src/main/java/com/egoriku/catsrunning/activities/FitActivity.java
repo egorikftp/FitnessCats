@@ -41,10 +41,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import static com.egoriku.catsrunning.helpers.DbActions.deleteTrackDataById;
-import static com.egoriku.catsrunning.helpers.DbActions.writeTrackToken;
-import static com.egoriku.catsrunning.models.Constants.ConstantsFirebase.CHILD_TRACKS;
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
+import static com.egoriku.catsrunning.models.Constants.FirebaseFields.CHILD_TRACKS;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.KEY_IS_CHRONOMETER_RUNNING;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.KEY_START_TIME;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.PARCELABLE_FIT_ACTIVITY_KEY;
@@ -80,6 +78,7 @@ public class FitActivity extends AppCompatActivity {
     private FirebaseUser user;
 
     private FitState fitState = FitState.getInstance();
+    private DatabaseReference databaseReference;
 
 
     @Override
@@ -198,8 +197,8 @@ public class FitActivity extends AppCompatActivity {
 
     private void uploadTrackInFirebase() {
         if (fitState.getPoints().size() > 2) {
-            String trackToken = FirebaseDatabase.getInstance().getReference().child(CHILD_TRACKS).child(user.getUid()).push().getKey();
-            writeTrackToken(trackToken, fitState.getIdTrack());
+            databaseReference = FirebaseDatabase.getInstance().getReference();
+            String trackToken = databaseReference.child(CHILD_TRACKS).child(user.getUid()).push().getKey();
 
             SaveModel saveModel = new SaveModel(
                     fitState.getStartTime() / 1000L,
@@ -222,7 +221,6 @@ public class FitActivity extends AppCompatActivity {
             });
         } else {
             Snackbar.make(relativeRootLayout, R.string.fit_activity_snackbar_low_points, Snackbar.LENGTH_LONG).show();
-            deleteTrackDataById(fitState.getIdTrack());
         }
     }
 

@@ -2,7 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
-        config {
+        dev {
+            keyAlias 'Fitness'
+            keyPassword 'K4TNeYj2'
+            storeFile file('D:/Google Drive/Android Course/keystore.jks')
+            storePassword 'K4TNeYj2'
+        }
+
+        release{
             keyAlias 'Fitness'
             keyPassword 'K4TNeYj2'
             storeFile file('D:/Google Drive/Android Course/keystore.jks')
@@ -11,9 +18,7 @@ android {
     }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
-    dataBinding {
-        enabled = true
-    }
+
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
             output.outputFile = new File(
@@ -26,27 +31,27 @@ android {
         vectorDrawables.useSupportLibrary = true
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 6
-        versionName "0.06"
+        versionCode 7
+        versionName "0.07"
         multiDexEnabled true
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
+        debug{
+            minifyEnabled false
+            signingConfig signingConfigs.dev
+            debuggable true
+        }
+
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             debuggable true
-            signingConfig signingConfigs.config
+            signingConfig signingConfigs.release
         }
     }
     dexOptions {
         javaMaxHeapSize "4g"
-    }
-
-    tasks.whenTaskAdded { task ->
-        if (task.name.equals("lint")) {
-            task.enabled = false
-        }
     }
 }
 
@@ -72,6 +77,7 @@ dependencies {
 
     compile 'com.jakewharton.timber:timber:4.5.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.firebaseui:firebase-ui-database:1.2.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

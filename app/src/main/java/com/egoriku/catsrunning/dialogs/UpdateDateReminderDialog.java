@@ -17,7 +17,6 @@ import com.egoriku.catsrunning.R;
 
 import java.util.Calendar;
 
-import static com.egoriku.catsrunning.helpers.DbActions.updateReminder;
 import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_UPDATE_REMINDER_DATE;
 import static com.egoriku.catsrunning.models.Constants.KeyReminder.KEY_DATE_REMINDER;
 import static com.egoriku.catsrunning.models.Constants.KeyReminder.KEY_ID;
@@ -83,8 +82,6 @@ public class UpdateDateReminderDialog extends DialogFragment {
                 .setPositiveButton(dialogPositiveBtnText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        updateReminder(reminderDate.getTimeInMillis() / 1000, getArguments().getInt(KEY_ID));
-
                         setAlarm(
                                 getArguments().getInt(KEY_ID),
                                 getTypeFit(getArguments().getInt(KEY_TYPE_REMINDER), false, R.array.type_reminder),

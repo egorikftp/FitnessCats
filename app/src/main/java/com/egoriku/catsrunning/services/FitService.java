@@ -14,17 +14,12 @@ import android.support.v4.app.NotificationCompat;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
-import com.egoriku.catsrunning.helpers.DbActions;
 import com.egoriku.catsrunning.models.Firebase.Point;
 import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.utils.ConverterTime;
 
 import java.util.Calendar;
 
-import static com.egoriku.catsrunning.helpers.DbActions.insertDistanceTime;
-import static com.egoriku.catsrunning.helpers.DbActions.insertLocationDb;
-import static com.egoriku.catsrunning.helpers.DbActions.insertToId;
-import static com.egoriku.catsrunning.helpers.DbActions.writeDistance;
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.models.Constants.RunService.ACTION_START;
 import static com.egoriku.catsrunning.models.Constants.RunService.START_TIME;
@@ -75,7 +70,6 @@ public class FitService extends Service implements LocationListener {
 
         if (!isActive) {
             isActive = true;
-            insertToId(fitState.getTypeFit());
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIME_BETWEEN_UPDATES, UPDATE_DISTANCE_THRESHOLD_METERS, this);
         }
         return START_STICKY;
@@ -104,9 +98,7 @@ public class FitService extends Service implements LocationListener {
             }
 
             oldLocation = location;
-            writeDistance((int) fitState.getNowDistance());
             fitState.addPoint(new Point(location.getLongitude(), location.getLatitude()));
-            insertLocationDb(location.getLongitude(), location.getLatitude());
         }
     }
 
@@ -117,7 +109,6 @@ public class FitService extends Service implements LocationListener {
 
         fitState.setCalories(fitState.getCalories() + round(nowCalories, 2));
         fitState.setTimeBetweenLocations(Calendar.getInstance().getTimeInMillis() / 1000);
-        DbActions.writeCalories(fitState.getCalories());
     }
 
     private void caloriesRunning(float result) {
@@ -128,7 +119,6 @@ public class FitService extends Service implements LocationListener {
 
         fitState.setCalories(fitState.getCalories() + round(nowCalories, 2));
         fitState.setTimeBetweenLocations(Calendar.getInstance().getTimeInMillis() / 1000);
-        DbActions.writeCalories(fitState.getCalories());
     }
 
     public double round(double value, int places) {
@@ -149,7 +139,6 @@ public class FitService extends Service implements LocationListener {
             locationManager.removeUpdates(this);
             stopForeground(true);
             fitState.setFitRun(false);
-            insertDistanceTime(fitState.getNowDistance(), fitState.getSinceTime());
         }
         super.onDestroy();
     }

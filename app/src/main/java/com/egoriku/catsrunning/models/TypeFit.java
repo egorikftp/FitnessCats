@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.SOURCE)
-@IntDef({TypeFit.WALKING})
+@IntDef({TypeFit.WALKING, TypeFit.RUNNING, TypeFit.CYCLING})
 public @interface TypeFit {
     int WALKING = 1;
     int RUNNING = 2;

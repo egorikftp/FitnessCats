@@ -17,7 +17,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import static com.egoriku.catsrunning.models.Constants.ConstantsFirebase.USER_INFO;
+import static com.egoriku.catsrunning.models.Constants.FirebaseFields.USER_INFO;
 
 public class AddUserInfoActivity extends AppCompatActivity {
     private EditText growthView;

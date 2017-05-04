@@ -3,7 +3,6 @@ package com.egoriku.catsrunning.activities;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -30,8 +29,6 @@ import com.egoriku.catsrunning.fragments.FragmentsTag;
 import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
-import com.egoriku.catsrunning.helpers.FirebaseSync;
-import com.egoriku.catsrunning.helpers.FirebaseUserInfoSync;
 import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.models.ItemNavigationDrawer;
 import com.google.android.gms.auth.api.Auth;
@@ -46,8 +43,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TracksActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
-    public static final long UPTIME_MILLIS = 1000L;
+public class TracksActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private RelativeLayout relativeLayoutSetting;
@@ -59,9 +55,7 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
     private String nameText;
 
     private NavigationDrawerAdapter adapter;
-    private FirebaseUser user;
-    private Handler handler;
-
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private FitState fitState = FitState.getInstance();
 
     @Override
@@ -74,7 +68,7 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
         relativeLayoutSetting = (RelativeLayout) findViewById(R.id.relative_layout_setting);
 
         checkUserLogin();
-        FirebaseUserInfoSync.getInstance().startSync(user, this);
+        //FirebaseUserInfoSync.getInstance().startSync(user, this);
 
         addDrawerItem();
         initRecyclerView();
@@ -87,14 +81,6 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
             showFragment(AllFitnessDataFragment.newInstance(), FragmentsTag.MAIN, null, true);
         }
 
-        handler = new Handler(getMainLooper());
-        handler.postAtTime(new Runnable() {
-            @Override
-            public void run() {
-                FirebaseSync.getInstance().startSync(user);
-            }
-        }, UPTIME_MILLIS);
-
         relativeLayoutSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,7 +91,6 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
     }
 
     private void checkUserLogin() {
-        user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             emailText = user.getEmail();
             nameText = user.getDisplayName();
