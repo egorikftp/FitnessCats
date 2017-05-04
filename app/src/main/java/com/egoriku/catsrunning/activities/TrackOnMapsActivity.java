@@ -1,6 +1,8 @@
 package com.egoriku.catsrunning.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -237,13 +239,18 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(KEY_LIKED, isFavorite);
         super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_LIKED, isFavorite);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        isFavorite = savedInstanceState.getBoolean(KEY_LIKED);
         super.onRestoreInstanceState(savedInstanceState);
+        isFavorite = savedInstanceState.getBoolean(KEY_LIKED);
+    }
+
+    public static void start(Context context, SaveModel saveModel) {
+        context.startActivity(new Intent(context, TrackOnMapsActivity.class)
+                .putExtra(EXTRA_TRACK_ON_MAPS, saveModel));
     }
 }

@@ -1,7 +1,6 @@
 package com.egoriku.catsrunning.fragments;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -33,7 +32,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import static com.egoriku.catsrunning.models.Constants.Extras.EXTRA_TRACK_ON_MAPS;
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.CHILD_TRACKS;
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TYPE_FIT;
@@ -78,16 +76,35 @@ public class FitnessDataFragment extends Fragment {
         imageViewNoTracks = (ImageView) view.findViewById(R.id.fragment_fitness_data_image_cats_no_track);
 
         textViewNoTracks.setTypeface(CustomFont.getTypeFace());
-        progressBar.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
 
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        Query query = databaseReference.child(CHILD_TRACKS).child(user.getUid()).orderByChild(TYPE_FIT).equalTo(typeFit);
+        hideNoTracks();
+
+        Query query = databaseReference
+                .child(CHILD_TRACKS)
+                .child(user.getUid())
+                .orderByChild(TYPE_FIT)
+                .equalTo(typeFit);
+
         adapter = new FirebaseRecyclerAdapter<SaveModel, FitnessDataHolder>(SaveModel.class, R.layout.adapter_fitness_data_fragment, FitnessDataHolder.class, query) {
             @Override
             protected void populateViewHolder(final FitnessDataHolder viewHolder, SaveModel model, int position) {
+                progressBar.setVisibility(View.GONE);
                 viewHolder.setData(model, getContext());
+            }
+
+            @Override
+            public int getItemCount() {
+                int itemCount = super.getItemCount();
+                if (itemCount == 0) {
+                    showNoTracks();
+                }else {
+                    hideNoTracks();
+                }
+                return itemCount;
             }
 
             @Override
@@ -106,19 +123,7 @@ public class FitnessDataFragment extends Fragment {
                                     .extra(KEY_TYPE_FIT, saveModel.getTypeFit())
                                     .build());
                         } else {
-                            startActivity(new Intent(getActivity(), TrackOnMapsActivity.class)
-                                    .putExtra(EXTRA_TRACK_ON_MAPS, saveModel));
-
-                         /*   startActivity(new IntentBuilder()
-                                    .context(getActivity())
-                                    .activity(TrackOnMapsActivity.class)
-                                    .extra(KEY_DISTANCE, saveModel.getDistance())
-                                    .extra(KEY_TIME_RUNNING, saveModel.getTime())
-                                    .extra(KEY_LIKED, saveModel.isFavorite())
-                                    .extra(KEY_TOKEN, saveModel.getTrackToken())
-                                    .extra(KEY_TYPE_FIT, saveModel.getTypeFit())
-                                    .extra(EXTRA_TRACK_ON_MAPS, saveModel)
-                                    .build());*/
+                            TrackOnMapsActivity.start(getActivity(), saveModel);
                         }
                     }
 
@@ -180,15 +185,16 @@ public class FitnessDataFragment extends Fragment {
         }
     }
 
-    private void setNoTracks(int count) {
-        if (count == 0) {
-            textViewNoTracks.setVisibility(View.VISIBLE);
-            imageViewNoTracks.setVisibility(View.VISIBLE);
-            textViewNoTracks.setText(getString(R.string.no_tracks_text));
-        } else {
-            textViewNoTracks.setVisibility(View.GONE);
-            imageViewNoTracks.setVisibility(View.GONE);
-        }
+    private void showNoTracks() {
+        textViewNoTracks.setVisibility(View.VISIBLE);
+        imageViewNoTracks.setVisibility(View.VISIBLE);
+        textViewNoTracks.setText(getString(R.string.no_tracks_text));
+    }
+
+    private void hideNoTracks() {
+        progressBar.setVisibility(View.GONE);
+        textViewNoTracks.setVisibility(View.GONE);
+        imageViewNoTracks.setVisibility(View.GONE);
     }
 
     private void removeTrackFromFirebase(SaveModel item) {

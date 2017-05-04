@@ -101,10 +101,6 @@ public class FitnessDataHolder extends RecyclerView.ViewHolder {
         fitTimeText.setText(ConverterTime.ConvertTimeAllFitnessData(beginsAt, time));
     }
 
-    public void hide() {
-        itemView.setVisibility(View.GONE);
-    }
-
     public interface ClickListener {
         void onClickItem(int position);
 

@@ -121,6 +121,7 @@ public class AllFitnessDataFragment extends Fragment {
 
         initSparseTabs();
         sectionsPagerAdapter = new AllFitnessDataFragment.SectionsPagerAdapter(getChildFragmentManager());
+
         viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(sectionsPagerAdapter);
 
@@ -149,14 +150,12 @@ public class AllFitnessDataFragment extends Fragment {
         return view;
     }
 
-
     private void initSparseTabs() {
         sparseTabs = new SparseArray<>();
         sparseTabs.put(0, getString(R.string.tab_text_walking));
         sparseTabs.put(1, getString(R.string.tab_text_running));
         sparseTabs.put(2, getString(R.string.tab_text_cycling));
     }
-
 
     @Override
     public void onResume() {
@@ -172,7 +171,6 @@ public class AllFitnessDataFragment extends Fragment {
             changeFabState(true);
         }
     }
-
 
     private void changeFabState(boolean status) {
         FrameLayout.LayoutParams layoutParamsFabRun = (FrameLayout.LayoutParams) fabRun.getLayoutParams();
@@ -222,8 +220,7 @@ public class AllFitnessDataFragment extends Fragment {
         }
     }
 
-
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    private class SectionsPagerAdapter extends FragmentPagerAdapter {
         private SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }

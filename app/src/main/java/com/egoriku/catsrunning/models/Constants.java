@@ -184,4 +184,8 @@ public interface Constants {
         String CHILD_TRACKS = "tracks";
         String USER_INFO = "user_info";
     }
+
+    interface AllFitnessDataFragment{
+        String VIEW_PAGER_PAGE = "VIEW_PAGER_PAGE";
+    }
 }
