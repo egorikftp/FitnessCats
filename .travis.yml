@@ -12,7 +12,6 @@ android:
   - addon-google_apis-google-19
 before_install:
 - openssl aes-256-cbc -K $encrypted_961df9f75c92_key -iv $encrypted_961df9f75c92_iv
-  -in a.keystore.enc -out a.keystore -d
 - chmod +x gradlew
 cache:
   directories:
