@@ -1,0 +1,24 @@
+machine:
+  environment:
+    ANDROID_HOME: /home/ubuntu/android
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx1536M -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512M"'
+
+  java:
+      version: oraclejdk8
+
+general:
+  artifacts:
+    - /home/ubuntu/Fitness-Cats/app/build/outputs/apk/
+
+dependencies:
+  cache_directories:
+    - ~/.android
+    - ~/android
+  override:
+    - chmod +x gradlew
+    - (source scripts/environmentSetup.sh && getAndroidSDK)
+deployment:
+   beta:
+     branch: master
+     commands:
+           - cd scripts && ./build.sh

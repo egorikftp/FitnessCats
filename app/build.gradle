@@ -2,11 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
-        config {
-            keyAlias 'Fitness'
-            keyPassword 'K4TNeYj2'
-            storeFile file('D:/Google Drive/Android Course/keystore.jks')
-            storePassword 'K4TNeYj2'
+        release {
+            def signFile = project.rootProject.file('./keystore')
+            if (signFile.exists()) {
+                storeFile signFile
+                storePassword 'K4TNeYj2'
+                keyAlias 'Fitness'
+                keyPassword 'K4TNeYj2'
+            }
         }
     }
     compileSdkVersion 25
@@ -36,7 +39,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             debuggable true
-            signingConfig signingConfigs.config
+            signingConfig signingConfigs.release
         }
     }
     dexOptions {
@@ -51,10 +54,10 @@ android {
 }
 
 ext.ver = [
-        support: '25.1.0',
-        gms    : '9.6.1',
-        jUnit  : '4.12',
-        multiDex  : '1.0.1'
+        support : '25.1.0',
+        gms     : '9.6.1',
+        jUnit   : '4.12',
+        multiDex: '1.0.1'
 ]
 
 dependencies {
@@ -72,6 +75,10 @@ dependencies {
     compile "com.google.android.gms:play-services-auth:$ver.gms"
     testCompile "junit:junit:$ver.jUnit"
     androidTestCompile "junit:junit:$ver.jUnit"
+
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
 }
 
 apply plugin: 'com.google.gms.google-services'
