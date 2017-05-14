@@ -50,9 +50,10 @@ android {
         }
     }
 
-    tasks.whenTaskAdded { task ->
-        if (task.name.equals("lint")) {
-            task.enabled = false
+    android {
+        lintOptions {
+            checkReleaseBuilds false
+            abortOnError false
         }
     }
 }
