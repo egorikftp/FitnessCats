@@ -3,27 +3,23 @@ general:
         - /home/ubuntu/FitnessCats/app/build/outputs/apk/
 
 machine:
-    java:
-        version: oraclejdk8
     environment:
         ANDROID_HOME: /usr/local/android-sdk-linux
         GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
-
-checkout:
-  post:
-    - git submodule sync
-    - git submodule update --init
+    java:
+        version: oraclejdk8
 
 dependencies:
     pre:
-        - chmod +x gradlew
-    override:
         - echo y | android update sdk --no-ui --all --filter "platform-tools, tools"
         - echo y | android update sdk --no-ui --all --filter "android-25, build-tools-25.0.2"
         - echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"
         - echo y | android update sdk --no-ui --all --filter "extra-android-support"
+    override:
+        - chmod +x gradlew
         - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
 test:
     override:
-        - ./gradlew assemble
+        - (./gradlew assemble):
+                          timeout: 360
         - cp -r app/build/outputs $CIRCLE_ARTIFACTS
