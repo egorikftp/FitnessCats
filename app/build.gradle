@@ -12,21 +12,21 @@ android {
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.2"
 
     signingConfigs {
         release {
-            storeFile file("../keystores/release.keystore")
-            storePassword System.getenv("KEY_STORE_PASSWORD")
-            keyAlias System.getenv("KEY_ALIAS")
-            keyPassword System.getenv("KEY_PASSWORD")
+            storeFile file('keystores/release.keystore')
+            storePassword System.getenv('KEY_STORE_PASSWORD')
+            keyAlias System.getenv('KEY_ALIAS')
+            keyPassword System.getenv('KEY_PASSWORD')
         }
 
         debug {
-            storeFile rootProject.file("keystores/debug.keystore")
-            storePassword "androiddebug"
-            keyAlias "debugEgorikU"
-            keyPassword "androiddebug"
+            storeFile file('keystores/debug.keystore')
+            storePassword 'androiddebug'
+            keyAlias 'debugEgorikU'
+            keyPassword 'androiddebug'
         }
     }
 
@@ -87,7 +87,3 @@ dependencies {
 }
 
 apply plugin: 'com.google.gms.google-services'
-
-task printJavaHome{
-    println System.getenv("KEY_STORE_PASSWORD")
-}
