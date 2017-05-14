@@ -21,4 +21,5 @@ deployment:
    beta:
      branch: master
      commands:
-      - cd scripts && ./build.sh
+      - cd scripts
+      - sh ./build.sh
