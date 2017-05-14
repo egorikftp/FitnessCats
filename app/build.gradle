@@ -16,14 +16,14 @@ android {
 
     signingConfigs {
         release {
-            storeFile file('keystores/release.keystore')
+            storeFile file("keystore/release.keystore")
             storePassword System.getenv('KEY_STORE_PASSWORD')
             keyAlias System.getenv('KEY_ALIAS')
             keyPassword System.getenv('KEY_PASSWORD')
         }
 
         debug {
-            storeFile file('keystores/debug.keystore')
+            storeFile file("keystore/debug.keystore")
             storePassword 'androiddebug'
             keyAlias 'debugEgorikU'
             keyPassword 'androiddebug'
