@@ -1,25 +1,21 @@
-machine:
-  environment:
-    ANDROID_HOME: /home/ubuntu/android
-    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx1536M -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512M"'
-
-  java:
-      version: oraclejdk8
-
 general:
-  artifacts:
-    - /home/ubuntu/FitnessCats/app/build/outputs/apk/
+    artifacts:
+        - /home/ubuntu/AndroidCI/app/build/outputs/apk/
+
+machine:
+    environment:
+        ANDROID_HOME: /usr/local/android-sdk-linux
+
 
 dependencies:
-  cache_directories:
-    - ~/.android
-    - ~/android
-  override:
-    - chmod +x gradlew
-    - (source scripts/environmentSetup.sh && getAndroidSDK)
-deployment:
-   beta:
-     branch: master
-     commands:
-      - chmod +x scripts/build.sh
-      - scripts/build.sh
+    pre:
+        - echo y | android update sdk --no-ui --all --filter tools,platform-tools,extra-google-m2repository,extra-google-google_play_services,extra-android-support,android-25
+        - echo y | android update sdk --no-ui --all --filter build-tools-23.0.0
+    cache_directories:
+        - /usr/local/android-sdk-linux/tools
+        - /usr/local/android-sdk-linux/build-tools/25.0.0
+
+test:
+    override:
+        - ./gradlew assemble
+        - cp -r app/build/outputs $CIRCLE_ARTIFACTS
