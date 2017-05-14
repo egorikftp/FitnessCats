@@ -22,12 +22,12 @@ android {
             keyPassword System.getenv('KEY_PASSWORD')
         }
 
-        debug {
+       /* debug {
             storeFile file("keystore/debug.keystore")
             storePassword 'androiddebug'
             keyAlias 'debugEgorikU'
             keyPassword 'androiddebug'
-        }
+        }*/
     }
 
     buildTypes {
