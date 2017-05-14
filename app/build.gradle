@@ -16,18 +16,11 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("keystore/release.keystore")
+            storeFile project.rootProject.file('./release.keystore')
             storePassword System.getenv('KEY_STORE_PASSWORD')
             keyAlias System.getenv('KEY_ALIAS')
             keyPassword System.getenv('KEY_PASSWORD')
         }
-
-       /* debug {
-            storeFile file("keystore/debug.keystore")
-            storePassword 'androiddebug'
-            keyAlias 'debugEgorikU'
-            keyPassword 'androiddebug'
-        }*/
     }
 
     buildTypes {
@@ -38,11 +31,11 @@ android {
             signingConfig signingConfigs.release
         }
     }
-    /* applicationVariants.all { variant ->
-    variant.outputs.each { output ->
-    output.outputFile = new File(
-    output.outputFile.parent,
-    "${"Fitness Cats"}.${variant.name}_${variant.versionName}.apk")
+/* applicationVariants.all { variant ->
+variant.outputs.each { output ->
+output.outputFile = new File(
+output.outputFile.parent,
+"${"Fitness Cats"}.${variant.name}_${variant.versionName}.apk")
 }*/
 
     android {
