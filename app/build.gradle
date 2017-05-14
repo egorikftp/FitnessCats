@@ -3,28 +3,29 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         release {
-            def signFile = project.rootProject.file('./keystore')
-            if (signFile.exists()) {
-                storeFile signFile
-                storePassword 'K4TNeYj2'
-                keyAlias 'Fitness'
-                keyPassword 'K4TNeYj2'
-            }
+            storeFile file('keystores/release.keystore')
+            storePassword 'K4TNeYj2'
+            keyAlias 'Fitness'
+            keyPassword 'K4TNeYj2'
+        }
+
+        debug {
+            storeFile file('keystores/release.keystore')
+            storePassword 'K4TNeYj2'
+            keyAlias 'Fitness'
+            keyPassword 'K4TNeYj2'
         }
     }
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
-    dataBinding {
-        enabled = true
-    }
 
-   /* applicationVariants.all { variant ->
-        variant.outputs.each { output ->
-            output.outputFile = new File(
-                    output.outputFile.parent,
-                    "${"Fitness Cats"}.${variant.name}_${variant.versionName}.apk")
-        }
-    }*/
+    /* applicationVariants.all { variant ->
+         variant.outputs.each { output ->
+             output.outputFile = new File(
+                     output.outputFile.parent,
+                     "${"Fitness Cats"}.${variant.name}_${variant.versionName}.apk")
+         }
+     }*/
     defaultConfig {
         applicationId "com.egoriku.catsrunning"
         vectorDrawables.useSupportLibrary = true
@@ -39,17 +40,13 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            debuggable true
+            debuggable false
             signingConfig signingConfigs.release
         }
-    }
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
 
-    tasks.whenTaskAdded { task ->
-        if (task.name.equals("lint")) {
-            task.enabled = false
+        debug {
+            signingConfig signingConfigs.debug
+            debuggable true
         }
     }
 }
