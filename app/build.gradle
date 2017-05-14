@@ -37,11 +37,6 @@ android {
             debuggable false
             signingConfig signingConfigs.release
         }
-
-        dev {
-            signingConfig signingConfigs.debug
-            debuggable true
-        }
     }
     /* applicationVariants.all { variant ->
     variant.outputs.each { output ->
