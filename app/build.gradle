@@ -49,6 +49,12 @@ android {
             debuggable true
         }
     }
+
+    tasks.whenTaskAdded { task ->
+        if (task.name.equals("lint")) {
+            task.enabled = false
+        }
+    }
 }
 
 ext.ver = [
