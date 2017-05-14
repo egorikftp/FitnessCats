@@ -17,13 +17,14 @@ android {
     dataBinding {
         enabled = true
     }
-    applicationVariants.all { variant ->
+
+   /* applicationVariants.all { variant ->
         variant.outputs.each { output ->
             output.outputFile = new File(
                     output.outputFile.parent,
                     "${"Fitness Cats"}.${variant.name}_${variant.versionName}.apk")
         }
-    }
+    }*/
     defaultConfig {
         applicationId "com.egoriku.catsrunning"
         vectorDrawables.useSupportLibrary = true
