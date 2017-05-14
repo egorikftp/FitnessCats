@@ -216,4 +216,10 @@ public class FitnessDataFragment extends Fragment {
                     });
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        adapter.cleanup();
+    }
 }

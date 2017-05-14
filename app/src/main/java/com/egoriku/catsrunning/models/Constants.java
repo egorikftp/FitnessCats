@@ -181,11 +181,9 @@ public interface Constants {
 
     interface FirebaseFields{
         String TYPE_FIT = "typeFit";
+        String IS_FAVORIRE = "favorite";
+
         String CHILD_TRACKS = "tracks";
         String USER_INFO = "user_info";
-    }
-
-    interface AllFitnessDataFragment{
-        String VIEW_PAGER_PAGE = "VIEW_PAGER_PAGE";
     }
 }
