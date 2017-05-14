@@ -1,31 +1,6 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        release {
-            storeFile file('keystores/release.keystore')
-            storePassword 'K4TNeYj2'
-            keyAlias 'Fitness'
-            keyPassword 'K4TNeYj2'
-        }
-
-        debug {
-            storeFile file('keystores/release.keystore')
-            storePassword 'K4TNeYj2'
-            keyAlias 'Fitness'
-            keyPassword 'K4TNeYj2'
-        }
-    }
-    compileSdkVersion 25
-    buildToolsVersion "25.0.0"
-
-    /* applicationVariants.all { variant ->
-         variant.outputs.each { output ->
-             output.outputFile = new File(
-                     output.outputFile.parent,
-                     "${"Fitness Cats"}.${variant.name}_${variant.versionName}.apk")
-         }
-     }*/
     defaultConfig {
         applicationId "com.egoriku.catsrunning"
         vectorDrawables.useSupportLibrary = true
@@ -36,6 +11,25 @@ android {
         multiDexEnabled true
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
+    compileSdkVersion 25
+    buildToolsVersion "25.0.0"
+
+    signingConfigs {
+        release {
+            storeFile file("../keystores/release.keystore")
+            storePassword System.getenv("KEY_STORE_PASSWORD")
+            keyAlias System.getenv("KEY_ALIAS")
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+
+        debug {
+            storeFile rootProject.file("keystores/debug.keystore")
+            storePassword "androiddebug"
+            keyAlias "debugEgorikU"
+            keyPassword "androiddebug"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -49,6 +43,12 @@ android {
             debuggable true
         }
     }
+    /* applicationVariants.all { variant ->
+    variant.outputs.each { output ->
+    output.outputFile = new File(
+    output.outputFile.parent,
+    "${"Fitness Cats"}.${variant.name}_${variant.versionName}.apk")
+}*/
 
     android {
         lintOptions {
@@ -87,3 +87,7 @@ dependencies {
 }
 
 apply plugin: 'com.google.gms.google-services'
+
+task printJavaHome{
+    println System.getenv("KEY_STORE_PASSWORD")
+}
