@@ -2,11 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
-        config {
-            keyAlias 'Fitness'
-            keyPassword 'K4TNeYj2'
-            storeFile file('D:/Google Drive/Android Course/keystore.jks')
-            storePassword 'K4TNeYj2'
+        release {
+            def signFile = project.rootProject.file('./keystore')
+            if (signFile.exists()) {
+                storeFile signFile
+                storePassword 'K4TNeYj2'
+                keyAlias 'Fitness'
+                keyPassword 'K4TNeYj2'
+            }
         }
     }
     compileSdkVersion 25
@@ -36,7 +39,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             debuggable true
-            signingConfig signingConfigs.config
+            signingConfig signingConfigs.release
         }
     }
     dexOptions {

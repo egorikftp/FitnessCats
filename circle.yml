@@ -8,7 +8,7 @@ machine:
 
 general:
   artifacts:
-    - /home/ubuntu/FitnessCats/app/build/outputs/apk/
+    - /home/ubuntu/Fitness-Cats/app/build/outputs/apk/
 
 dependencies:
   cache_directories:
