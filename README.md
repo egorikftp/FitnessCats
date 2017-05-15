@@ -1,6 +1,5 @@
 # Fitness Cat's
-Create fitness app, using Firebase DataBase.
-
+[![CircleCI](https://circleci.com/gh/egorikftp/FitnessCats/tree/master.svg?style=svg)](https://circleci.com/gh/egorikftp/FitnessCats/tree/master)
 
 Contact: https://telegram.me/egoriku
 

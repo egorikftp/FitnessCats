@@ -1,31 +1,9 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        dev {
-            keyAlias 'Fitness'
-            keyPassword 'K4TNeYj2'
-            storeFile file('D:/Google Drive/Android Course/keystore.jks')
-            storePassword 'K4TNeYj2'
-        }
-
-        release {
-            keyAlias 'Fitness'
-            keyPassword 'K4TNeYj2'
-            storeFile file('D:/Google Drive/Android Course/keystore.jks')
-            storePassword 'K4TNeYj2'
-        }
-    }
-    compileSdkVersion 25
     buildToolsVersion "25.0.2"
+    compileSdkVersion 25
 
-    applicationVariants.all { variant ->
-        variant.outputs.each { output ->
-            output.outputFile = new File(
-                    output.outputFile.parent,
-                    "${"Fitness Cats"}.${variant.name}_${variant.versionName}.apk")
-        }
-    }
     defaultConfig {
         applicationId "com.egoriku.catsrunning"
         vectorDrawables.useSupportLibrary = true
@@ -36,22 +14,38 @@ android {
         multiDexEnabled true
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
-    buildTypes {
-        debug {
-            minifyEnabled false
-            signingConfig signingConfigs.dev
-            debuggable true
-        }
 
+    signingConfigs {
+        release {
+            storeFile file(System.getenv("KEYSTORE"))
+            storePassword System.getenv('KEY_STORE_PASSWORD')
+            keyAlias System.getenv('KEY_ALIAS')
+            keyPassword System.getenv('KEY_PASSWORD')
+        }
+    }
+
+    buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            debuggable true
+            debuggable false
             signingConfig signingConfigs.release
         }
     }
-    dexOptions {
-        javaMaxHeapSize "4g"
+
+    android {
+        lintOptions {
+            checkReleaseBuilds false
+            abortOnError false
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            output.outputFile = new File(
+                    output.outputFile.parent,
+                    "${"FitnessCats"}.${variant.name}_${variant.versionName}.apk")
+        }
     }
 }
 
@@ -75,25 +69,12 @@ dependencies {
     testCompile "junit:junit:$ver.jUnit"
     androidTestCompile "junit:junit:$ver.jUnit"
 
+    compile 'com.jakewharton.timber:timber:4.5.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.firebaseui:firebase-ui-database:0.6.2'
+
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
-    compile 'com.jakewharton.timber:timber:4.5.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.firebaseui:firebase-ui-database:1.2.0'
-}
-
-apply plugin: 'com.google.gms.google-services'
-
-sonarqube {
-    properties {
-        property "sonar.projectName", "FitnessCats"
-        property "sonar.projectKey", "com.egoriku"
-        property "sonar.sources","src/main"
-       // property "sonar.sources","src/main/java"
-        property "sonar.language","java"
-        property "sonar.sourceEncoding", "UTF-8"
-//        property "sonar.exclusions", "src/main/java/com/foo/Foo.java"
-    }
+    apply plugin: 'com.google.gms.google-services'
 }

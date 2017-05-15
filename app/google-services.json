@@ -15,19 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "1010245987617-s8gesgpk4cmgcr12t2g5c00dhbcbhbe6.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.egoriku.catsrunning",
-            "certificate_hash": "9a99977168f7e25d95791116371f404610056d93"
-          }
-        },
-        {
           "client_id": "1010245987617-0pt6ad63v7ig0st8boq0cmgvk03r1g2e.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.egoriku.catsrunning",
-            "certificate_hash": "f67f79cc31457c39b764e132de471ba846805b05"
+            "certificate_hash": "F67F79CC31457C39B764E132DE471BA846805B05"
           }
         },
         {
