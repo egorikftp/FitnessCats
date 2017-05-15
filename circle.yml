@@ -1,30 +1,17 @@
-version: 2
-jobs:
-  build:
+general:
+    artifacts:
+        - /home/ubuntu/FitnessCats/app/build/outputs/apk/
+
+machine:
     environment:
-      _JAVA_OPTIONS: "-Xmx1400m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2"
+        ANDROID_HOME: /usr/local/android-sdk-linux
 
-    steps:
-      - checkout
+dependencies:
+    override:
+        - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-25.0.2,android-25,extra-google-m2repository,extra-google-google_play_services,extra-android-support
+        - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
 
-      - restore_cache:
-          key: anysoftkeyboard-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}-{{ checksum "circle.yml" }}-{{ checksum "gradle.properties" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-
-      - run:
-          name: Setup environment
-          command: scripts/ci_setup.sh
-
-      - store_artifacts:
-          path: app/build/outputs/apk/
-          destination: apks/
-
-      - save_cache:
-          key: anysoftkeyboard-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}-{{ checksum "circle.yml" }}-{{ checksum "gradle.properties" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-          paths:
-            - "~/.gradle/wrapper/dists/gradle-3.5-all/"
-            - "~/.gradle/caches/modules-2/"
-            - "~/.gradle/caches/3.5/"
-            - "~/.gradle/caches/build-cache-1/"
-            - "./.gradle/buildOutputCleanup"
-            - "./.gradle/3.5/"
-            - "~/.m2"
+test:
+    override:
+        - (./gradlew assemble):
+            timeout: 360
