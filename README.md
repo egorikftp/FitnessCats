@@ -1,7 +1,9 @@
 # Fitness Cat's
-[![CircleCI](https://circleci.com/gh/egorikftp/FitnessCats/tree/master.svg?style=svg)](https://circleci.com/gh/egorikftp/FitnessCats/tree/master)
+Master [![CircleCI](https://circleci.com/gh/egorikftp/FitnessCats/tree/master.svg?style=svg)](https://circleci.com/gh/egorikftp/FitnessCats/tree/master)
 
-Contact: https://telegram.me/egoriku
+Dev [![CircleCI](https://circleci.com/gh/egorikftp/FitnessCats/tree/dev.svg?style=svg)](https://circleci.com/gh/egorikftp/FitnessCats/tree/dev)
+
+Contact: https://t.me/egoriku
 
 Hello. We are Fitness Cats :smiley_cat:
 
