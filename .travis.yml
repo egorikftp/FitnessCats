@@ -1,24 +1,17 @@
 language: android
 jdk: oraclejdk8
+before_install:
+ - chmod +x gradlew
+
 android:
   components:
-  - tools
-  - platform-tools
-  - build-tools-25.0.2
-  - android-25
-  - extra-google-google_play_services
-  - extra-google-m2repository
-  - extra-android-m2repository
-  - addon-google_apis-google-19
-before_install:
-- openssl aes-256-cbc -K $encrypted_961df9f75c92_key -iv $encrypted_961df9f75c92_iv
-- chmod +x gradlew
-cache:
-  directories:
-  - "$HOME/.gradle/caches/"
-  - "$HOME/.gradle/wrapper/"
-  - "$HOME/.android/build-cache"
-env:
-  global:
-  - secure: ppZH6Vp6p1Sj5W93dYEMm9B8MSNPg1QTwr/ZlndRWSwlBsUG0whZKYADGkF4gqaIhNRjVc9pEJfLu5kQctD0+a25kcgBXVV8h+tQ/DHs//UX3M1Uls8DuVufCsHP6WI4N8LtAceHYGMCiT8CCryDHNQbAClddGSWtjqI/bvPHfocyX0r4ucs4HHXXPJ6DN5f+Qwh9Jvqg1fOX29RhPWgdjouhqmgKQHnCXCIjUxUEH0s7p/HSoVuHCMDTOlFs4aKNiCXHq7wQ3WrroPDRjVL54R9djKjL0E6bN164WZUrDjl7trxBMPVA/TIJwSTmafZjJj0biJXouXPaMHxTj2Mp+nTLpPIqi5gCufc920r8ysjc/RQORo5/15nHZaCYYguFL0IP0cxHjcdoU8ttTUv05Q/mRw7d2rYDFf1BE0hW0ThSAwE9TNkMzYaxVxdnV1M8ZQ7/XEjbWH9iyvP7EMgDZGgpLH33qkFVgDZeJjkDSWSnnuzfpr+OxVR95LIJy3TEpygIjVC8LXQ/oP/QeCtFZy/rRevad8V+DdOVPdN1audJImfidkAUc52MZMpUOIu00ptovJpam7fA9E/K6R0Vy5ymOO5fVWFITkbqy3oAgiEAe8zkxEMxkCZvQrYP32yLOjGDjFQbGnojerbQZJ96vSBqXcHrxSVo6WpQJ7MDDQ=
-  - secure: MAE8ZxIRtMaUdxB7bsQ007Bjm6kyVnmDiHCOnFk/mdwc41kDkkhIF4Zt/J1CbPrXMxYpPxVlRJzQMMbAXkCqzmsdxzCSGYXZ8fiwrB6QAbPuIlVarcBGK+E1fWz0+gDsmnFHcamXpPXksjykatvZPZtaiQ3gw6HzegmmiUTEHtAArZSiShhtElHoGNEFNxfoeI++IjowArVfwLEkrKL8bTGyTjCzy+bcj2tqkwxlqmbxcek3ZoJs2V5GTciQ0ivMeRdJUSKkrtGcrXOFjVkZ4QguZhOwtJA711FZROsFa1XRiAAmFgGe1kifphE/TM9f/WaT2rLiOvLLVX6E9/VzoNk4twfG6UhIrvI1SnZjs6JYmieumF4hDFr59+mQuYmmax4xT5Pn/8uEqR4z3qF8r30oH13ffjOjwwW3b4cEdDd4ErJ61KS8cuViP+mONS/Q0DSxFTkJS+F2Hme8+3+KYOwJq1WqSHRnNGN4q0Jf1jHXGZdRaWIs6UXx6R+xIYNqr3p8TYi1UNP5F0Ibthr7hp4HVaXhGS8mxQj3oRgRU8lR1LfJgmTjWlcY+fEJm0b8GQ9OlK+47iWMoVlY8qkG4jKw1yVGjCdb0Yqp3lG8G6skUndgECKAELPVqOI6vn/NIZc5sV2MnEKPDvSk+CXg2dFsZ1ipCBCJL1O7XhPF2e0=
+    - tools
+    - platform-tools
+    - build-tools-25.0.2
+    - android-25
+    - extra-android-m2repository
+
+notifications:
+  email: false
+
+sudo: false
