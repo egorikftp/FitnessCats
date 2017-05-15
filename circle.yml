@@ -1,3 +1,6 @@
+general:
+    artifacts:
+        - /home/ubuntu/FitnessCats/app/build/outputs/apk/
 machine:
     environment:
         ANDROID_HOME: /usr/local/android-sdk-linux
@@ -14,3 +17,5 @@ test:
     override:
         - (./gradlew assemble):
             timeout: 360
+        - cp -r app/build/outputs $CIRCLE_ARTIFACTS
+
