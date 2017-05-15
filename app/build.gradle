@@ -43,7 +43,7 @@ android {
         variant.outputs.each { output ->
             output.outputFile = new File(
                     output.outputFile.parent,
-                    "${"Fitness Cats"}.${variant.name}_${variant.versionName}.apk")
+                    "${"FitnessCats"}.${variant.name}_${variant.versionName}.apk")
         }
     }
 }
