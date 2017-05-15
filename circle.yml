@@ -5,6 +5,7 @@ general:
 machine:
     environment:
         ANDROID_HOME: /usr/local/android-sdk-linux
+        KEYSTORE: ${HOME}/${CIRCLE_PROJECT_REPONAME}/release.keystore
 
 dependencies:
     override:
