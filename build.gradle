@@ -14,7 +14,7 @@ apply from: 'ci.gradle'
 
 allprojects {
     repositories {
-        mavenCentral()
+         jcenter()
     }
 }
 
