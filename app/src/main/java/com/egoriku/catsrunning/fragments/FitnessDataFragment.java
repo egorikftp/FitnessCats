@@ -2,7 +2,6 @@ package com.egoriku.catsrunning.fragments;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
@@ -21,6 +19,7 @@ import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.adapters.FitnessDataHolder;
 import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.utils.CustomFont;
+import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.egoriku.catsrunning.utils.IntentBuilder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,6 +30,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import timber.log.Timber;
 
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.CHILD_TRACKS;
@@ -76,12 +77,9 @@ public class FitnessDataFragment extends Fragment {
         imageViewNoTracks = (ImageView) view.findViewById(R.id.fragment_fitness_data_image_cats_no_track);
 
         textViewNoTracks.setTypeface(CustomFont.getTypeFace());
-        progressBar.setVisibility(View.VISIBLE);
-
-        recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         hideNoTracks();
+        showLoading(true);
 
         Query query = databaseReference
                 .child(CHILD_TRACKS)
@@ -92,23 +90,14 @@ public class FitnessDataFragment extends Fragment {
         adapter = new FirebaseRecyclerAdapter<SaveModel, FitnessDataHolder>(SaveModel.class, R.layout.adapter_fitness_data_fragment, FitnessDataHolder.class, query) {
             @Override
             protected void populateViewHolder(final FitnessDataHolder viewHolder, SaveModel model, int position) {
-                progressBar.setVisibility(View.GONE);
+                Timber.d("populateViewHolder");
+                showLoading(false);
                 viewHolder.setData(model, getContext());
             }
 
             @Override
-            public int getItemCount() {
-                int itemCount = super.getItemCount();
-                if (itemCount == 0) {
-                    showNoTracks();
-                }else {
-                    hideNoTracks();
-                }
-                return itemCount;
-            }
-
-            @Override
             public FitnessDataHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                Timber.d("onCreateViewHolder");
                 FitnessDataHolder holder = super.onCreateViewHolder(parent, viewType);
 
                 holder.setOnClickListener(new FitnessDataHolder.ClickListener() {
@@ -131,7 +120,7 @@ public class FitnessDataFragment extends Fragment {
                     public void onFavoriteClick(int position) {
                         SaveModel adapterItem = (SaveModel) adapter.getItem(position);
                         adapterItem.setFavorite(!adapterItem.isFavorite());
-                        updateTrackFavorire(adapterItem);
+                        FirebaseUtils.updateTrackFavorire(adapterItem, getContext());
                     }
 
                     @Override
@@ -143,7 +132,7 @@ public class FitnessDataFragment extends Fragment {
                                 .setPositiveButton(R.string.fitness_data_fragment_alert_positive_btn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        removeTrackFromFirebase((SaveModel) adapter.getItem(position));
+                                        FirebaseUtils.removeTrack((SaveModel) adapter.getItem(position), getContext());
 
                                     }
                                 })
@@ -153,6 +142,33 @@ public class FitnessDataFragment extends Fragment {
                 return holder;
             }
         };
+
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Timber.d("onDataChange");
+                if (adapter.getItemCount() == 0) {
+                    showNoTracks();
+                    showLoading(false);
+                } else {
+                    hideNoTracks();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Timber.d(databaseError.getMessage());
+            }
+        });
+
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                if (adapter.getItemCount() == 0) {
+                    showNoTracks();
+                }
+            }
+        });
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -168,53 +184,19 @@ public class FitnessDataFragment extends Fragment {
         return view;
     }
 
-    private void updateTrackFavorire(SaveModel adapterItem) {
-        if (user != null && adapterItem.getTrackToken() != null) {
-            databaseReference
-                    .child(CHILD_TRACKS)
-                    .child(user.getUid())
-                    .child(adapterItem.getTrackToken())
-                    .setValue(adapterItem, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                            if (databaseError != null) {
-                                Toast.makeText(getContext(), databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-        }
+    private void showLoading(boolean isShowLoading) {
+        progressBar.setVisibility(isShowLoading ? View.VISIBLE : View.GONE);
     }
 
     private void showNoTracks() {
         textViewNoTracks.setVisibility(View.VISIBLE);
         imageViewNoTracks.setVisibility(View.VISIBLE);
-        textViewNoTracks.setText(getString(R.string.no_tracks_text));
+        textViewNoTracks.setText(R.string.no_tracks_text);
     }
 
     private void hideNoTracks() {
-        progressBar.setVisibility(View.GONE);
         textViewNoTracks.setVisibility(View.GONE);
         imageViewNoTracks.setVisibility(View.GONE);
-    }
-
-    private void removeTrackFromFirebase(SaveModel item) {
-        if (item.getTrackToken() != null && user != null) {
-            databaseReference
-                    .child(CHILD_TRACKS)
-                    .child(user.getUid())
-                    .child(item.getTrackToken())
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            dataSnapshot.getRef().setValue(null);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        }
     }
 
     @Override

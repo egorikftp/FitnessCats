@@ -2,7 +2,6 @@ package com.egoriku.catsrunning.fragments;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
@@ -19,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
@@ -28,14 +26,17 @@ import com.egoriku.catsrunning.adapters.FitnessDataHolder;
 import com.egoriku.catsrunning.models.Constants;
 import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.utils.CustomFont;
+import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.egoriku.catsrunning.utils.IntentBuilder;
-import com.firebase.ui.database.ChangeEventListener;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import timber.log.Timber;
 
@@ -59,7 +60,6 @@ public class LikedFragment extends Fragment {
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-
     public LikedFragment() {
     }
 
@@ -73,7 +73,6 @@ public class LikedFragment extends Fragment {
         ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_liked, FragmentsTag.LIKED);
     }
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_liked, container, false);
@@ -84,11 +83,10 @@ public class LikedFragment extends Fragment {
         collapsingToolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.liked_fragment_collapsing_toolbar);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.liked_fragment_appbar);
 
-        progressBar.setVisibility(View.VISIBLE);
-        recyclerView.setLayoutManager(new LinearLayoutManager(App.getInstance()));
-        recyclerView.hasFixedSize();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         noLikedTracksTextView.setTypeface(CustomFont.getTypeFace());
+        setScrollingEnabled(true);
         hideNoTracks();
 
         Query query = databaseReference
@@ -97,33 +95,16 @@ public class LikedFragment extends Fragment {
                 .orderByChild(IS_FAVORIRE)
                 .equalTo(true);
 
-        adapter = new FirebaseRecyclerAdapter<SaveModel, FitnessDataHolder >(SaveModel.class, R.layout.adapter_fitness_data_fragment, FitnessDataHolder.class, query) {
+        adapter = new FirebaseRecyclerAdapter<SaveModel, FitnessDataHolder>(SaveModel.class, R.layout.adapter_fitness_data_fragment, FitnessDataHolder.class, query) {
             @Override
             protected void populateViewHolder(final FitnessDataHolder viewHolder, SaveModel model, int position) {
-                Timber.d("populate");
-                progressBar.setVisibility(View.GONE);
+                showLoading(false);
                 viewHolder.setData(model, getContext());
             }
 
             @Override
-            public int getItemCount() {
-                int itemCount = super.getItemCount();
-                Timber.d("getItemCount " + itemCount);
-               /* if (itemCount == 0) {
-                    showNoTracks();
-                }else {
-                    hideNoTracks();
-                }*/
-                return itemCount;
-            }
-
-            @Override
-            protected void onChildChanged(ChangeEventListener.EventType type, int index, int oldIndex) {
-                super.onChildChanged(type, index, oldIndex);
-            }
-
-            @Override
             public FitnessDataHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                showLoading(true);
                 FitnessDataHolder holder = super.onCreateViewHolder(parent, viewType);
 
                 holder.setOnClickListener(new FitnessDataHolder.ClickListener() {
@@ -146,7 +127,7 @@ public class LikedFragment extends Fragment {
                     public void onFavoriteClick(int position) {
                         SaveModel adapterItem = (SaveModel) adapter.getItem(position);
                         adapterItem.setFavorite(!adapterItem.isFavorite());
-                        //updateTrackFavorire(adapterItem);
+                        FirebaseUtils.updateTrackFavorire(adapterItem, getActivity());
                     }
 
                     @Override
@@ -158,8 +139,7 @@ public class LikedFragment extends Fragment {
                                 .setPositiveButton(R.string.fitness_data_fragment_alert_positive_btn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        //removeTrackFromFirebase((SaveModel) adapter.getItem(position));
-
+                                        FirebaseUtils.removeTrack((SaveModel) adapter.getItem(position), getContext());
                                     }
                                 })
                                 .show();
@@ -169,8 +149,38 @@ public class LikedFragment extends Fragment {
             }
         };
 
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                showLoading(false);
+                if (adapter.getItemCount() == 0) {
+                    showNoTracks();
+                } else {
+                    hideNoTracks();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Timber.d(databaseError.getMessage());
+            }
+        });
+
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                if (adapter.getItemCount() == 0) {
+                    showNoTracks();
+                }
+            }
+        });
+
         recyclerView.setAdapter(adapter);
         return view;
+    }
+
+    private void showLoading(boolean isShowLoading) {
+        progressBar.setVisibility(isShowLoading ? View.VISIBLE : View.GONE);
     }
 
     private void showNoTracks() {
@@ -181,7 +191,6 @@ public class LikedFragment extends Fragment {
     }
 
     private void hideNoTracks() {
-        setScrollingEnabled(true);
         imageViewCat.setVisibility(View.GONE);
         noLikedTracksTextView.setVisibility(View.GONE);
     }
@@ -197,7 +206,6 @@ public class LikedFragment extends Fragment {
         noLikedTracksTextView.setAnimation(movingText);
     }
 
-
     private void setScrollingEnabled(boolean isEnabled) {
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) collapsingToolbarLayout.getLayoutParams();
         if (isEnabled) {
@@ -205,7 +213,7 @@ public class LikedFragment extends Fragment {
             collapsingToolbarLayout.setVisibility(View.VISIBLE);
             appBarLayout.setExpanded(true, true);
         } else {
-            appBarLayout.setExpanded(false, false);
+            appBarLayout.setExpanded(false, true);
             params.setScrollFlags(0);
             collapsingToolbarLayout.setVisibility(View.GONE);
         }
