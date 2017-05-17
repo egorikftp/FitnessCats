@@ -3,7 +3,7 @@ package com.egoriku.catsrunning.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.Loader;
+import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,18 +20,29 @@ import android.widget.TextView;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.CustomSpinnerAdapter;
+import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.models.SpinnerIntervalModel;
-import com.egoriku.catsrunning.models.StatisticModel;
 import com.egoriku.catsrunning.ui.statisticChart.FitChart;
 import com.egoriku.catsrunning.ui.statisticChart.FitChartValue;
 import com.egoriku.catsrunning.utils.CustomFont;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static com.egoriku.catsrunning.models.Constants.Extras.KEY_BUNDLE_TIME_AMOUNT;
+import timber.log.Timber;
+
+import static com.egoriku.catsrunning.models.Constants.FirebaseFields.BEGINS_AT;
+import static com.egoriku.catsrunning.models.Constants.FirebaseFields.CHILD_TRACKS;
 
 public class StatisticFragment extends Fragment {
     private static final int ID_LOADER = 1;
@@ -53,12 +64,16 @@ public class StatisticFragment extends Fragment {
     private boolean isHide;
     private View[] icons;
 
-    int[] colorResId = {R.color.chart_value_first_color, R.color.chart_value_second_color, R.color.chart_value_third_color};
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private final Calendar calendar = Calendar.getInstance();
 
+
+    private Map<Integer, List<SaveModel>> statisticValues;
+
+    int[] colorResId = {R.color.chart_value_first_color, R.color.chart_value_second_color, R.color.chart_value_third_color};
 
     public StatisticFragment() {
     }
-
 
     public static StatisticFragment newInstance() {
         return new StatisticFragment();
@@ -71,9 +86,9 @@ public class StatisticFragment extends Fragment {
         ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_statistic, FragmentsTag.STATISTIC);
     }
 
-
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistic, container, false);
+
         fitChart = (FitChart) view.findViewById(R.id.fit_chart);
         allDistanceView = (TextView) view.findViewById(R.id.statistic_fragment_all_distance_view);
         fitResultView = (TextView) view.findViewById(R.id.statistic_fragment_fit_result_view);
@@ -92,15 +107,55 @@ public class StatisticFragment extends Fragment {
         return view;
     }
 
+    private void getTracksFromInterval(long valueInterval) {
+        long startDate = (calendar.getTimeInMillis() - valueInterval) / 1000L;
 
-    private void initLoader(long valueInterval) {
-        Calendar calendar = Calendar.getInstance();
-        Bundle bundle = new Bundle();
-        bundle.putLong(KEY_BUNDLE_TIME_AMOUNT, (calendar.getTimeInMillis() - valueInterval) / 1000L);
+        FirebaseDatabase.getInstance().getReference()
+                .child(CHILD_TRACKS)
+                .child(user.getUid())
+                .orderByChild(BEGINS_AT)
+                .startAt(startDate)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        statisticValues = new HashMap<>();
+
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            SaveModel saveModel = child.getValue(SaveModel.class);
+
+                            List<SaveModel> modelList = statisticValues.get(saveModel.getTypeFit());
+                            if (modelList == null) {
+                                modelList = new ArrayList<>();
+                            }
+
+                            modelList.add(saveModel);
+                            statisticValues.put(saveModel.getTypeFit(), modelList);
+                        }
+                        onLoadFinished();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Timber.d(databaseError.getMessage());
+                    }
+                });
     }
 
+    private void onLoadFinished() {
+        int maxValue = getMaxDistance();
+        int resultDistance = getCountDistance();
 
-    public void addItemsToSpinner() {
+        if (maxValue == 0 && resultDistance == 0) {
+            animateViewShow();
+            rootFrame.setVisibility(View.GONE);
+        } else {
+            animateViewHide();
+            rootFrame.setVisibility(View.VISIBLE);
+            setUpFitChart(maxValue, resultDistance);
+        }
+    }
+
+    private void addItemsToSpinner() {
         final List<SpinnerIntervalModel> intervals = new ArrayList<>();
         intervals.add(new SpinnerIntervalModel(getString(R.string.spinner_day), getCurrentDayTime()));
         intervals.add(new SpinnerIntervalModel(getString(R.string.spinner_week), DateUtils.WEEK_IN_MILLIS));
@@ -114,36 +169,21 @@ public class StatisticFragment extends Fragment {
 
             @Override
             public void onItemSelected(AdapterView<?> adapter, View v, int position, long id) {
-                initLoader(intervals.get(position).getValueInterval());
+                getTracksFromInterval(intervals.get(position).getValueInterval());
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
+                Timber.d("onNothingSelected");
             }
         });
     }
-
 
     private long getCurrentDayTime() {
         Calendar calendar = Calendar.getInstance();
         long currentMinutes = calendar.get(Calendar.MINUTE);
         long currentHours = calendar.get(Calendar.HOUR_OF_DAY);
         return currentHours * HOURS_IN_SEC + currentMinutes * MINUTES_IN_SEC;
-    }
-
-
-    public void onLoadFinished(Loader<List<StatisticModel>> loader, List<StatisticModel> data) {
-        int maxValue = getMaxDistance(data);
-        int allDistance = getCountDistance(data);
-
-        if (maxValue == 0 && allDistance == 0) {
-            animateViewShow();
-            rootFrame.setVisibility(View.GONE);
-        } else {
-            animateViewHide();
-            rootFrame.setVisibility(View.VISIBLE);
-            setUpFitChart(data, maxValue, allDistance);
-        }
     }
 
     private void animateViewShow() {
@@ -153,7 +193,6 @@ public class StatisticFragment extends Fragment {
         rootLayout.setAnimation(movingText);
         isHide = false;
     }
-
 
     private void animateViewHide() {
         if (!isHide) {
@@ -165,26 +204,33 @@ public class StatisticFragment extends Fragment {
         isHide = true;
     }
 
-
-    private void setUpFitChart(List<StatisticModel> data, int maxValue, int allDistance) {
+    private void setUpFitChart(int maxValue, int allDistance) {
         setUpTextView(allDistance);
 
         fitChart.setMinValue(0);
         fitChart.setMaxValue(maxValue * 2);
 
         Collection<FitChartValue> values = new ArrayList<>();
-        for (int i = 0; i <= 2; i++) {
-            if (!(data.get(i).getFitDistance() == 0)) {
-                values.add(new FitChartValue(data.get(i).getFitDistance(), getResources().getColor(colorResId[i])));
-                icons[i].setVisibility(View.VISIBLE);
-            } else {
-                values.add(new FitChartValue(data.get(i).getFitDistance(), getResources().getColor(R.color.chart_value_empty_color)));
-                icons[i].setVisibility(View.INVISIBLE);
+
+        int i = 0;
+        for (Map.Entry<Integer, List<SaveModel>> value : statisticValues.entrySet()) {
+            int distance = 0;
+            List<SaveModel> saveModels = value.getValue();
+
+            for (int j = 0; j < saveModels.size(); j++) {
+                distance += saveModels.get(j).getDistance();
             }
+            if (distance != 0) {
+                values.add(new FitChartValue(distance, ContextCompat.getColor(getContext(), colorResId[value.getKey()-1])));
+                icons[value.getKey()-1].setVisibility(View.VISIBLE);
+            } else {
+                values.add(new FitChartValue(distance, ContextCompat.getColor(getContext(), R.color.chart_value_empty_color)));
+                icons[value.getKey()-1].setVisibility(View.INVISIBLE);
+            }
+            i++;
         }
         fitChart.setValues(values);
     }
-
 
     private void setUpTextView(int allDistance) {
         allDistanceView.setText(String.format(getString(R.string.statistic_fragment_result), allDistance));
@@ -196,21 +242,24 @@ public class StatisticFragment extends Fragment {
         }
     }
 
-
-    private int getCountDistance(List<StatisticModel> data) {
+    private int getCountDistance() {
         int allDistance = 0;
-        for (StatisticModel model : data) {
-            allDistance += model.getFitDistance();
+        for (Map.Entry<Integer, List<SaveModel>> value : statisticValues.entrySet()) {
+            for (int i = 0; i < value.getValue().size(); i++) {
+                allDistance += value.getValue().get(i).getDistance();
+            }
         }
         return allDistance;
     }
 
-
-    private int getMaxDistance(List<StatisticModel> data) {
+    private int getMaxDistance() {
         int maxValue = 0;
-        for (StatisticModel statisticModel : data) {
-            if (statisticModel.getFitDistance() > maxValue) {
-                maxValue = statisticModel.getFitDistance();
+        for (Map.Entry<Integer, List<SaveModel>> value : statisticValues.entrySet()) {
+            for (int i = 0; i < value.getValue().size(); i++) {
+                int distance = value.getValue().get(i).getDistance();
+                if (distance > maxValue) {
+                    maxValue = distance;
+                }
             }
         }
         return maxValue;
@@ -221,7 +270,6 @@ public class StatisticFragment extends Fragment {
         super.onStop();
         spinner.setVisibility(View.GONE);
     }
-
 
     @Override
     public void onResume() {

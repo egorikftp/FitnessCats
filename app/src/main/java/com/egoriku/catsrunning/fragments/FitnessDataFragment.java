@@ -48,8 +48,6 @@ public class FitnessDataFragment extends Fragment {
     private FirebaseRecyclerAdapter adapter;
     private static IFABScroll ifabScroll;
 
-    private int typeFit;
-
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -67,9 +65,9 @@ public class FitnessDataFragment extends Fragment {
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_fitness_data, container, false);
+        View view = inflater.inflate(R.layout.fragment_fitness_data, container, false);
 
-        typeFit = getArguments().getInt(ARG_SECTION_NUMBER);
+        int typeFit = getArguments().getInt(ARG_SECTION_NUMBER);
 
         progressBar = (ProgressBar) view.findViewById(R.id.fragment_fitness_data_progress_bar);
         recyclerView = (RecyclerView) view.findViewById(R.id.fitness_data_fragment_recycler_view);
@@ -90,17 +88,16 @@ public class FitnessDataFragment extends Fragment {
         adapter = new FirebaseRecyclerAdapter<SaveModel, FitnessDataHolder>(SaveModel.class, R.layout.adapter_fitness_data_fragment, FitnessDataHolder.class, query) {
             @Override
             protected void populateViewHolder(final FitnessDataHolder viewHolder, SaveModel model, int position) {
-                Timber.d("populateViewHolder");
                 showLoading(false);
                 viewHolder.setData(model, getContext());
             }
 
             @Override
             public FitnessDataHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                Timber.d("onCreateViewHolder");
                 FitnessDataHolder holder = super.onCreateViewHolder(parent, viewType);
 
                 holder.setOnClickListener(new FitnessDataHolder.ClickListener() {
+
                     @Override
                     public void onClickItem(int position) {
                         SaveModel saveModel = (SaveModel) adapter.getItem(position);
@@ -146,7 +143,6 @@ public class FitnessDataFragment extends Fragment {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Timber.d("onDataChange");
                 if (adapter.getItemCount() == 0) {
                     showNoTracks();
                     showLoading(false);

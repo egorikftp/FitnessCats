@@ -23,7 +23,6 @@ public interface Constants {
             String _ID = "_id";
             String LNG = "longitude";
             String LAT = "latitude";
-            String BEGINS_AT = "beginsAt";
             String TIME = "time";
             String DISTANCE = "distance";
             String LIKED = "liked";
@@ -90,7 +89,6 @@ public interface Constants {
         String EXTRA_TEXT_TYPE_REMINDER_KEY = "EXTRA_TEXT_TYPE_REMINDER_KEY";
         String TYPE_REMINDER_KEY = "TYPE_REMINDER_KEY";
         String KEY_TYPE_FIT = "KEY_TYPE_FIT";
-        String KEY_BUNDLE_TIME_AMOUNT = "KEY_BUNDLE_TIME_AMOUNT";
         String EXTRA_TRACK_ON_MAPS = "EXTRA_TRACK_ON_MAPS";
     }
 
@@ -99,7 +97,6 @@ public interface Constants {
     }
 
     interface Broadcast {
-        String BROADCAST_SAVE_NEW_TRACKS = "BROADCAST_SAVE_NEW_TRACKS";
         String BROADCAST_ADD_NEW_REMINDER = "BROADCAST_ADD_NEW_REMINDER";
         String BROADCAST_UPDATE_REMINDER_DATE = "BROADCAST_UPDATE_REMINDER_DATE";
         String BROADCAST_UPDATE_REMINDER_TIME = "BROADCAST_UPDATE_REMINDER_TIME";
@@ -182,6 +179,7 @@ public interface Constants {
     interface FirebaseFields{
         String TYPE_FIT = "typeFit";
         String IS_FAVORIRE = "favorite";
+        String BEGINS_AT = "beginsAt";
 
         String CHILD_TRACKS = "tracks";
         String USER_INFO = "user_info";
