@@ -1,5 +1,6 @@
 package com.egoriku.catsrunning.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -179,6 +180,7 @@ public class StatisticFragment extends Fragment {
         });
     }
 
+    @SuppressLint("WrongConstant")
     private long getCurrentDayTime() {
         Calendar calendar = Calendar.getInstance();
         long currentMinutes = calendar.get(Calendar.MINUTE);

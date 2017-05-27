@@ -17,6 +17,9 @@ import static com.egoriku.catsrunning.models.Constants.FirebaseFields.CHILD_TRAC
 
 public class FirebaseUtils {
 
+    private FirebaseUtils() {
+    }
+
     private static final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private static final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 

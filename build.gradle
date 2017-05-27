@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.2'
+        classpath 'com.android.tools.build:gradle:3.0.0-alpha2'
         classpath 'com.google.gms:google-services:3.0.0'
     }
 }
@@ -14,17 +14,13 @@ apply from: 'ci.gradle'
 
 allprojects {
     repositories {
-         jcenter()
+        jcenter()
+        maven {
+            url "https://maven.google.com"
+        }
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
-ext.ver = [
-        support: '25.3.1',
-        gms    : '10.2.4',
-        jUnit  : '4.12',
-        multiDex  : '1.0.1'
-]
