@@ -76,6 +76,3 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-database:1.2.0'
     apply plugin: 'com.google.gms.google-services'
 }
-repositories {
-    maven { url 'https://maven.google.com' }
-}

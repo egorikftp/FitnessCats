@@ -2,6 +2,7 @@
 
 buildscript {
     repositories {
+        maven { url 'https://maven.google.com' }
         jcenter()
     }
     dependencies {
@@ -15,9 +16,7 @@ apply from: 'ci.gradle'
 allprojects {
     repositories {
         jcenter()
-        maven {
-            url "https://maven.google.com"
-        }
+        maven { url 'https://maven.google.com' }
     }
 }
 
