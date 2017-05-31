@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Fitness Cat\'s</string>
+    <string name="app_name">Фитнес клуб</string>
     <string name="adapter_all_fitness_data_calories">%s ккал</string>
     <string name="adapter_all_fitness_data_distance">Дистанция:</string>
     <string name="adapter_all_fitness_data_distance_meter">%s м</string>
@@ -37,18 +37,18 @@
     <string name="error_email">Возможно некорректный email</string>
     <string name="fitness_data_fragment_alert_negative_btn">Отмена</string>
     <string name="fitness_data_fragment_alert_positive_btn">Удалить</string>
-    <string name="fitness_data_fragment_alert_title">Удалить этот маршрут?</string>
-    <string name="fragment_track_toolbar_title">Подробнее о треке</string>
+    <string name="fitness_data_fragment_alert_title">Удалить это занятие?</string>
+    <string name="fragment_track_toolbar_title">Подробнее о занятии</string>
     <string name="liked_fragment_adapter_distance_meter">%s м</string>
     <string name="liked_fragment_no_more_liked_tracks">У котиков нет любимых занятий</string>
     <string name="liked_fragment_snackbar_liked_empty">Хм, теперь тут пусто</string>
     <string name="navigation_drawer_close">\" \"</string>
     <string name="navigation_drawer_exit">Выход</string>
     <string name="navigation_drawer_liked">Избранное</string>
-    <string name="navigation_drawer_main_activity">Список маршрутов</string>
+    <string name="navigation_drawer_main_activity">Список занятий</string>
     <string name="navigation_drawer_open">" "</string>
     <string name="navigation_drawer_reminders">Напоминания</string>
-    <string name="navigation_drawer_setting">Настройки [alpha]</string>
+    <string name="navigation_drawer_setting">Настройки</string>
     <string name="navigation_drawer_statistic">Статистика</string>
     <string name="no_ethernet_connection">Проверьте подключение к интернету</string>
     <string name="notification_time_distance_format">%1$s, дистанция %2$s м</string>
