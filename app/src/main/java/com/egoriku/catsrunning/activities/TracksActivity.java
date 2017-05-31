@@ -29,6 +29,7 @@ import com.egoriku.catsrunning.fragments.FragmentsTag;
 import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
+import com.egoriku.catsrunning.fragments.WhereIFragment;
 import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.models.ItemNavigationDrawer;
 import com.google.android.gms.auth.api.Auth;
@@ -192,7 +193,17 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
         ));
 
         drawerArrayList.add(new ItemNavigationDrawer(
+                getString(R.string.navigation_drawer_where_i),
+                R.drawable.ic_vec_person_pin_black,
+                FragmentsTag.WHERE_I,
+                false,
+                false
+        ));
+
+        drawerArrayList.add(new ItemNavigationDrawer(
                 getString(R.string.navigation_drawer_statistic),
+
+
                 R.drawable.ic_vec_equalizer_black,
                 FragmentsTag.STATISTIC,
                 false,
@@ -236,6 +247,10 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
                 break;
             case FragmentsTag.LIKED:
                 showFragment(LikedFragment.newInstance(), FragmentsTag.LIKED, FragmentsTag.MAIN, false);
+                drawerLayout.closeDrawers();
+                break;
+            case FragmentsTag.WHERE_I:
+                showFragment(WhereIFragment.newInstance(), FragmentsTag.WHERE_I, FragmentsTag.MAIN, false);
                 drawerLayout.closeDrawers();
                 break;
             case FragmentsTag.STATISTIC:
