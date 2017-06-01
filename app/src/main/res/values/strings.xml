@@ -38,7 +38,7 @@
     <string name="navigation_drawer_liked">Liked</string>
     <string name="navigation_drawer_statistic">Statistic</string>
     <string name="navigation_drawer_exit">Exit</string>
-    <string name="navigation_drawer_setting">Settings [alpha]</string>
+    <string name="navigation_drawer_setting">Settings</string>
 
     <!-- Alarm  -->
     <string name="alarm_notification_title">Fitness Cat\'s</string>

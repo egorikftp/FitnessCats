@@ -75,5 +75,9 @@ dependencies {
     compile 'com.jakewharton.timber:timber:4.5.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.firebaseui:firebase-ui-database:1.2.0'
+
+    compile('com.mikepenz:materialdrawer:5.9.2@aar') {
+        transitive = true
+    }
     apply plugin: 'com.google.gms.google-services'
 }
