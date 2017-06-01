@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
+import com.egoriku.catsrunning.models.Constants;
 import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.models.ParcelableFitActivityModel;
@@ -42,7 +43,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
-import static com.egoriku.catsrunning.models.Constants.FirebaseFields.CHILD_TRACKS;
+import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TRACKS;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.KEY_IS_CHRONOMETER_RUNNING;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.KEY_START_TIME;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.PARCELABLE_FIT_ACTIVITY_KEY;
@@ -140,7 +141,7 @@ public class FitActivity extends AppCompatActivity {
                 }
 
                 fitState.setFitRun(true);
-                fitState.setWeight(new UserInfoPreferences(FitActivity.this).getWeight());
+                fitState.setWeight(Constants.UserInfoSharedPreference.DEFAULT_WEIGHT);
 
                 if (chronometer == null) {
                     chronometer = new CustomChronometer(FitActivity.this);
@@ -198,7 +199,7 @@ public class FitActivity extends AppCompatActivity {
     private void uploadTrackInFirebase() {
         if (fitState.getPoints().size() > 2) {
             databaseReference = FirebaseDatabase.getInstance().getReference();
-            String trackToken = databaseReference.child(CHILD_TRACKS).child(user.getUid()).push().getKey();
+            String trackToken = databaseReference.child(TRACKS).child(user.getUid()).push().getKey();
 
             SaveModel saveModel = new SaveModel(
                     fitState.getStartTime() / 1000L,
@@ -209,7 +210,7 @@ public class FitActivity extends AppCompatActivity {
                     fitState.getPoints()
             );
 
-            FirebaseDatabase.getInstance().getReference().child(CHILD_TRACKS).child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {
+            FirebaseDatabase.getInstance().getReference().child(TRACKS).child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                     if (databaseError != null) {

@@ -48,10 +48,10 @@ android {
     }
 }
 ext.ver = [
-        support: '25.3.1',
-        gms    : '10.2.4',
-        jUnit  : '4.12',
-        multiDex  : '1.0.1'
+        support : '25.3.1',
+        gms     : '10.2.4',
+        jUnit   : '4.12',
+        multiDex: '1.0.1'
 ]
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -72,12 +72,13 @@ dependencies {
     compile "com.google.firebase:firebase-core:$ver.gms"
     compile "com.google.android.gms:play-services-maps:$ver.gms"
     compile "com.google.android.gms:play-services-auth:$ver.gms"
-    compile 'com.jakewharton.timber:timber:4.5.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.firebaseui:firebase-ui-database:1.2.0'
 
     compile('com.mikepenz:materialdrawer:5.9.2@aar') {
         transitive = true
     }
     apply plugin: 'com.google.gms.google-services'
+    compile 'com.jakewharton.timber:timber:4.5.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.firebaseui:firebase-ui-database:1.2.0'
+    compile 'com.android.support:support-v4:25.3.1'
 }

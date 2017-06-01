@@ -160,4 +160,7 @@
     <string name="navigation_drawer_where_i">Where I?</string>
     <string name="where_i_fragment_marker_title">You current location</string>
     <string name="where_i_fragment_marker_snippet">Let\'s start you fitness activity!</string>
+    <string name="growth">Growth</string>
+    <string name="the_weight">The weight</string>
+    <string name="age">Age</string>
 </resources>

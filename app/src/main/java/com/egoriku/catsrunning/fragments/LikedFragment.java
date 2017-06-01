@@ -33,15 +33,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import timber.log.Timber;
 
-import static com.egoriku.catsrunning.models.Constants.FirebaseFields.CHILD_TRACKS;
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.IS_FAVORIRE;
+import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TRACKS;
 
 public class LikedFragment extends Fragment {
 
@@ -57,7 +55,6 @@ public class LikedFragment extends Fragment {
 
     private FirebaseRecyclerAdapter adapter;
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     public LikedFragment() {
@@ -89,8 +86,8 @@ public class LikedFragment extends Fragment {
         setScrollingEnabled(true);
         hideNoTracks();
 
-        Query query = databaseReference
-                .child(CHILD_TRACKS)
+        Query query = FirebaseUtils.getDatabaseReference()
+                .child(TRACKS)
                 .child(user.getUid())
                 .orderByChild(IS_FAVORIRE)
                 .equalTo(true);
@@ -149,22 +146,24 @@ public class LikedFragment extends Fragment {
             }
         };
 
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                showLoading(false);
-                if (adapter.getItemCount() == 0) {
-                    showNoTracks();
-                } else {
-                    hideNoTracks();
-                }
-            }
+        FirebaseUtils
+                .getDatabaseReference()
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        showLoading(false);
+                        if (adapter.getItemCount() == 0) {
+                            showNoTracks();
+                        } else {
+                            hideNoTracks();
+                        }
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Timber.d(databaseError.getMessage());
-            }
-        });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Timber.d(databaseError.getMessage());
+                    }
+                });
 
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override

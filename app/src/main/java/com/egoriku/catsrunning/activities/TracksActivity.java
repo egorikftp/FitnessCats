@@ -23,9 +23,11 @@ import com.egoriku.catsrunning.fragments.AllFitnessDataFragment;
 import com.egoriku.catsrunning.fragments.FragmentsTag;
 import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
+import com.egoriku.catsrunning.fragments.SettingsFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
 import com.egoriku.catsrunning.fragments.WhereIFragment;
 import com.egoriku.catsrunning.models.FitState;
+import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -59,12 +61,17 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
     private FitState fitState = FitState.getInstance();
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUtils.updateUserInfo(this);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracks);
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
         checkUserLogin();
-        //FirebaseUserInfoSync.getInstance().startSync(user, this);
 
         initDrawer(savedInstanceState);
 
@@ -153,6 +160,7 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
                                 }
                                 break;
                             case FragmentsTag.SETTINGS:
+                                showFragment(SettingsFragment.newInstance(), FragmentsTag.SETTINGS, FragmentsTag.MAIN, false);
                                 break;
                         }
                         return false;

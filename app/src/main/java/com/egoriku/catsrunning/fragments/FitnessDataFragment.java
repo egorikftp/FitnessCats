@@ -26,15 +26,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import timber.log.Timber;
 
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
-import static com.egoriku.catsrunning.models.Constants.FirebaseFields.CHILD_TRACKS;
+import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TRACKS;
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TYPE_FIT;
 import static com.egoriku.catsrunning.models.Constants.Tags.ARG_SECTION_NUMBER;
 
@@ -48,7 +46,6 @@ public class FitnessDataFragment extends Fragment {
     private FirebaseRecyclerAdapter adapter;
     private static IFABScroll ifabScroll;
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     public FitnessDataFragment() {
@@ -79,8 +76,8 @@ public class FitnessDataFragment extends Fragment {
         hideNoTracks();
         showLoading(true);
 
-        Query query = databaseReference
-                .child(CHILD_TRACKS)
+        Query query = FirebaseUtils.getDatabaseReference()
+                .child(TRACKS)
                 .child(user.getUid())
                 .orderByChild(TYPE_FIT)
                 .equalTo(typeFit);
@@ -140,22 +137,24 @@ public class FitnessDataFragment extends Fragment {
             }
         };
 
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (adapter.getItemCount() == 0) {
-                    showNoTracks();
-                    showLoading(false);
-                } else {
-                    hideNoTracks();
-                }
-            }
+        FirebaseUtils
+                .getDatabaseReference()
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (adapter.getItemCount() == 0) {
+                            showNoTracks();
+                            showLoading(false);
+                        } else {
+                            hideNoTracks();
+                        }
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Timber.d(databaseError.getMessage());
-            }
-        });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Timber.d(databaseError.getMessage());
+                    }
+                });
 
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -198,6 +197,8 @@ public class FitnessDataFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        adapter.cleanup();
+        if (adapter != null) {
+            adapter.cleanup();
+        }
     }
 }

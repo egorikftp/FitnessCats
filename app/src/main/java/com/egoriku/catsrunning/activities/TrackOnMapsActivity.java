@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.egoriku.catsrunning.models.Constants.Extras.EXTRA_TRACK_ON_MAPS;
-import static com.egoriku.catsrunning.models.Constants.FirebaseFields.CHILD_TRACKS;
+import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TRACKS;
 import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_LIKED;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 import static com.egoriku.catsrunning.utils.VectorToDrawable.createBitmapFromVector;
@@ -203,7 +203,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
     private void updateTrackFavorire(SaveModel saveModel) {
         if (user != null) {
             databaseReference
-                    .child(CHILD_TRACKS)
+                    .child(TRACKS)
                     .child(user.getUid())
                     .child(trackToken)
                     .setValue(saveModel, new DatabaseReference.CompletionListener() {
@@ -220,7 +220,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
     private void removeTrack() {
         if (user != null && trackToken != null) {
             databaseReference
-                    .child(CHILD_TRACKS)
+                    .child(TRACKS)
                     .child(user.getUid())
                     .child(trackToken)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
