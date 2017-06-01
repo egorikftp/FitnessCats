@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="navigation_drawer_width">320dp</dimen>
-    <dimen name="adapter_naw_drawer_margin_item">24dp</dimen>
-    <dimen name="adapter_naw_drawer_margin_image">32dp</dimen>
-    <dimen name="navigation_drawer_header_margin">32dp</dimen>
-</resources>

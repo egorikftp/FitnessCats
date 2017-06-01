@@ -47,31 +47,22 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import static com.egoriku.catsrunning.fragments.FragmentsTag.MAIN;
 
 public class TracksActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+
+    private Drawer navigationDrawer;
     private Toolbar toolbar;
-    //private DrawerLayout drawerLayout;
-    //private RelativeLayout relativeLayoutSetting;
-    //  private ActionBarDrawerToggle drawerToggle;
-    // private List<ItemNavigationDrawer> drawerArrayList;
 
     private String userEmail;
     private String userName;
     private Uri userPhoto;
 
-    // private NavigationDrawerAdapter adapter;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private FitState fitState = FitState.getInstance();
-
-    private Drawer drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracks);
         toolbar = (Toolbar) findViewById(R.id.toolbar_app);
-        // drawerLayout = (DrawerLayout) findViewById(R.id.tracks_activity_drawer_layout);
-        //  recyclerView = (RecyclerView) findViewById(R.id.tracks_activity_recycler_view_nav_drawer);
-        // relativeLayoutSetting = (RelativeLayout) findViewById(R.id.relative_layout_setting);
-
         checkUserLogin();
         //FirebaseUserInfoSync.getInstance().startSync(user, this);
 
@@ -82,20 +73,9 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        // drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        // drawerLayout.addDrawerListener(drawerToggle);
-
         if (savedInstanceState == null) {
             showFragment(AllFitnessDataFragment.newInstance(), MAIN, null, true);
         }
-
-      /*  relativeLayoutSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                drawerLayout.closeDrawers();
-                Toast.makeText(App.getInstance(), "Setting", Toast.LENGTH_SHORT).show();
-            }
-        });*/
     }
 
     private void checkUserLogin() {
@@ -109,31 +89,8 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
         }
     }
 
-    private void showFragment(Fragment fragment, @FragmentsTag String tag, @FragmentsTag String clearToTag, boolean clearInclusive) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        if (clearToTag != null || clearInclusive) {
-            fragmentManager.popBackStack(
-                    clearToTag,
-                    clearInclusive ? FragmentManager.POP_BACK_STACK_INCLUSIVE : 0
-            );
-        }
-
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.tracks_activity_fragment_container, fragment, tag);
-        transaction.addToBackStack(tag);
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        transaction.commit();
-    }
-
-    public void onFragmentStart(int titleResId, @FragmentsTag String tag) {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(titleResId);
-        }
-    }
-
     private void initDrawer(Bundle savedInstanceState) {
-        drawer = new DrawerBuilder()
+        navigationDrawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withAccountHeader(getDrawerHeader())
@@ -172,7 +129,6 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         String tag = String.valueOf(drawerItem.getTag());
-
                         switch (tag) {
                             case FragmentsTag.MAIN:
                                 showFragment(AllFitnessDataFragment.newInstance(), FragmentsTag.MAIN, null, true);
@@ -232,6 +188,23 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
                 .build();
     }
 
+    private void showFragment(Fragment fragment, @FragmentsTag String tag, @FragmentsTag String clearToTag, boolean clearInclusive) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        if (clearToTag != null || clearInclusive) {
+            fragmentManager.popBackStack(
+                    clearToTag,
+                    clearInclusive ? FragmentManager.POP_BACK_STACK_INCLUSIVE : 0
+            );
+        }
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.tracks_activity_fragment_container, fragment, tag);
+        transaction.addToBackStack(tag);
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        transaction.commit();
+    }
+
     private void exitFromAccount() {
         FirebaseAuth.getInstance().signOut();
 
@@ -256,6 +229,12 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
         }
     }
 
+    public void onFragmentStart(int titleResId, @FragmentsTag String tag) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(titleResId);
+        }
+    }
+
     private void openRegisterActivity() {
         startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
@@ -276,34 +255,30 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        drawer.getActionBarDrawerToggle().syncState();
+        navigationDrawer.getActionBarDrawerToggle().syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        drawer.getActionBarDrawerToggle().onConfigurationChanged(newConfig);
+        navigationDrawer.getActionBarDrawerToggle().onConfigurationChanged(newConfig);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return drawer.getActionBarDrawerToggle().onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+        return navigationDrawer.getActionBarDrawerToggle().onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
-
 
     @Override
     public void onBackPressed() {
-        if (drawer != null && drawer.isDrawerOpen()) {
-            drawer.closeDrawer();
+        if (navigationDrawer != null && navigationDrawer.isDrawerOpen()) {
+            navigationDrawer.closeDrawer();
             return;
         }
         if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
             finish();
             return;
         }
-        drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
         super.onBackPressed();
     }
-
 }
