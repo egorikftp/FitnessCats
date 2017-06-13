@@ -138,6 +138,16 @@ public class SettingsFragment extends Fragment implements ValueEventListener {
     }
 
     private void changeEditMode() {
+        if (isEditMode) {
+            ((TracksActivity) getActivity()).animateToolbar(
+                    R.color.settings_toolbar_color2,
+                    R.color.settings_toolbar_color_dark2);
+        } else {
+            ((TracksActivity) getActivity()).animateToolbar(
+                    R.color.settings_toolbar_color,
+                    R.color.settings_toolbar_color_dark);
+        }
+
         age.setEnabled(isEditMode);
         growth.setEnabled(isEditMode);
         weight.setEnabled(isEditMode);

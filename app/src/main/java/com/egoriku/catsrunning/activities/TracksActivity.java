@@ -1,20 +1,26 @@
 package com.egoriku.catsrunning.activities;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -50,6 +56,7 @@ import static com.egoriku.catsrunning.fragments.FragmentsTag.MAIN;
 
 public class TracksActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
+    public static final String NAV_DRAWER_SELECTED_POSITION = "Nav_drawer_position";
     private Drawer navigationDrawer;
     private Toolbar toolbar;
 
@@ -135,6 +142,7 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        setDefaultToolbarColor();
                         String tag = String.valueOf(drawerItem.getTag());
                         switch (tag) {
                             case FragmentsTag.MAIN:
@@ -288,5 +296,53 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
             return;
         }
         super.onBackPressed();
+    }
+
+
+    public void animateToolbar(@ColorRes final int colorAccent, @ColorRes final int colorPrimaryDark) {
+        final int cx = toolbar.getWidth() / 2;
+        final int cy = toolbar.getHeight() / 2;
+        final float finalRadius = (float) Math.hypot(cx, cy);
+
+        toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    toolbar.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else {
+                    toolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    Animator circularReveal = ViewAnimationUtils.createCircularReveal(toolbar, cx, cy, 0, finalRadius);
+                    toolbar.setBackgroundColor(ContextCompat.getColor(TracksActivity.this, colorPrimaryDark));
+                    circularReveal.start();
+                    getWindow().setStatusBarColor(ContextCompat.getColor(TracksActivity.this, colorPrimaryDark));
+                    toolbar.setBackgroundColor(ContextCompat.getColor(TracksActivity.this, colorAccent));
+                } else {
+                    toolbar.setBackgroundColor(ContextCompat.getColor(TracksActivity.this, colorAccent));
+                }
+            }
+        });
+    }
+
+    private void setDefaultToolbarColor() {
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.settings_toolbar_color));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.settings_toolbar_color_dark));
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(NAV_DRAWER_SELECTED_POSITION, navigationDrawer.getCurrentSelectedPosition());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        navigationDrawer.setSelectionAtPosition(savedInstanceState.getInt(NAV_DRAWER_SELECTED_POSITION));
     }
 }
