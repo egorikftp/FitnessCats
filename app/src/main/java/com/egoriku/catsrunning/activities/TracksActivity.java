@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
@@ -52,6 +51,8 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
+import static android.os.Build.VERSION;
+import static android.os.Build.VERSION_CODES;
 import static com.egoriku.catsrunning.fragments.FragmentsTag.MAIN;
 
 public class TracksActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
@@ -298,7 +299,6 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
         super.onBackPressed();
     }
 
-
     public void animateToolbar(@ColorRes final int colorAccent, @ColorRes final int colorPrimaryDark) {
         final int cx = toolbar.getWidth() / 2;
         final int cy = toolbar.getHeight() / 2;
@@ -307,13 +307,13 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
         toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                if (VERSION.SDK_INT < VERSION_CODES.JELLY_BEAN) {
                     toolbar.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 } else {
                     toolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
 
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
                     Animator circularReveal = ViewAnimationUtils.createCircularReveal(toolbar, cx, cy, 0, finalRadius);
                     toolbar.setBackgroundColor(ContextCompat.getColor(TracksActivity.this, colorPrimaryDark));
                     circularReveal.start();
@@ -329,7 +329,7 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
     private void setDefaultToolbarColor() {
         toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.settings_toolbar_color));
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.settings_toolbar_color_dark));
         }
     }

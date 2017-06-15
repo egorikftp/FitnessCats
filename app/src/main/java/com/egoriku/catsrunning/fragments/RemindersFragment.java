@@ -40,6 +40,7 @@ import com.egoriku.catsrunning.utils.CustomFont;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_UPDATE_REMINDER_DATE;
 import static com.egoriku.catsrunning.models.Constants.Broadcast.BROADCAST_UPDATE_REMINDER_TIME;
@@ -52,9 +53,10 @@ import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class RemindersFragment extends Fragment {
     private static final int UNICODE_EMOJI = 0x1F638;
-    public static final int DURATION = 1500;
-    public static final int DURATION_TEXT = 1000;
-    public static final int ROTATION_DEGREES = 720;
+    private static final int DURATION = 1500;
+    private static final int DURATION_TEXT = 1000;
+    private static final int ROTATION_DEGREES = 720;
+
     private RecyclerView recyclerView;
     private FloatingActionButton floatingActionButton;
     private CollapsingToolbarLayout collapsingToolbarLayout;
@@ -62,7 +64,7 @@ public class RemindersFragment extends Fragment {
     private ImageView imageViewNoTracks;
     private TextView noReminders;
 
-    private ArrayList<ReminderModel> reminderModel;
+    private List<ReminderModel> reminders;
     private RemindersAdapter remindersAdapter;
 
     private BroadcastReceiver broadcastUpdateTime = new BroadcastReceiver() {
@@ -78,7 +80,6 @@ public class RemindersFragment extends Fragment {
         }
     };
 
-
     public RemindersFragment() {
     }
 
@@ -86,20 +87,17 @@ public class RemindersFragment extends Fragment {
         return new RemindersFragment();
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
         ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_reminders, FragmentsTag.REMINDER);
     }
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        reminderModel = new ArrayList<>();
+        reminders = new ArrayList<>();
     }
-
 
     @Nullable
     @Override
@@ -121,17 +119,16 @@ public class RemindersFragment extends Fragment {
 
         noReminders.setTypeface(CustomFont.getTypeFace());
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(App.getInstance()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         remindersAdapter = new RemindersAdapter();
         return view;
     }
-
 
     private void showReminders() {
         noReminders.setText(null);
         getRemindersFromDb();
 
-        if (reminderModel.size() == 0) {
+        if (reminders.isEmpty()) {
             setScrollingEnabled(false);
             imageViewNoTracks.setVisibility(View.VISIBLE);
             noReminders.setText(String.format((String) getResources().getText(R.string.reminders_fragment_no_more_reminders), getEmojiByUnicode(UNICODE_EMOJI)));
@@ -140,17 +137,17 @@ public class RemindersFragment extends Fragment {
             setScrollingEnabled(true);
             imageViewNoTracks.setVisibility(View.GONE);
 
-            remindersAdapter.setData(reminderModel);
+            remindersAdapter.setData(reminders);
             recyclerView.setAdapter(remindersAdapter);
 
             remindersAdapter.setOnItemClickListener(new IRemindersClickListener() {
                 @Override
                 public void onDeleteReminderClick(final int id, final int position, final int typeFit) {
-                    if (reminderModel.get(position).getDateReminder() < Calendar.getInstance().getTimeInMillis() / 1000L) {
+                    if (reminders.get(position).getDateReminder() < Calendar.getInstance().getTimeInMillis() / 1000L) {
                         cancelAlarm(id, getTypeFit(typeFit, true, R.array.type_reminder));
                         remindersAdapter.deletePositionData(position);
 
-                        if (reminderModel.size() == 0) {
+                        if (reminders.isEmpty()) {
                             showReminders();
                         }
                     } else {
@@ -172,18 +169,18 @@ public class RemindersFragment extends Fragment {
                 public void onSwitcherReminderClick(int id, long dateReminder, int typeReminder, int position, boolean isChecked) {
                     if (isChecked) {
                         setAlarm(id, getTypeFit(typeReminder, false, R.array.type_reminder), dateReminder, typeReminder);
-                        reminderModel.get(position).setIsRing(IS_RING_TRUE);
+                        reminders.get(position).setIsRing(IS_RING_TRUE);
                         remindersAdapter.notifyItemChanged(position);
                     } else {
                         cancelAlarm(id, getTypeFit(typeReminder, false, R.array.type_reminder));
-                        reminderModel.get(position).setIsRing(IS_RING_FALSE);
+                        reminders.get(position).setIsRing(IS_RING_FALSE);
                         remindersAdapter.notifyItemChanged(position);
                     }
                 }
             });
+
         }
     }
-
 
     private void animateView() {
         AnimationSet rollingIn = new AnimationSet(true);
@@ -202,7 +199,6 @@ public class RemindersFragment extends Fragment {
         noReminders.setAnimation(movingText);
     }
 
-
     private void setScrollingEnabled(boolean isEnabled) {
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) collapsingToolbarLayout.getLayoutParams();
         if (isEnabled) {
@@ -216,12 +212,11 @@ public class RemindersFragment extends Fragment {
         }
     }
 
-
     private void showSnackBar(final int position, final int typeFit, int resTitleId, int resActionId) {
-        final int idAlarm = reminderModel.get(position).getId();
-        final long dateAlarm = reminderModel.get(position).getDateReminder();
-        final int typeAlarm = reminderModel.get(position).getTypeReminder();
-        final int isRing = reminderModel.get(position).getIsRing();
+        final int idAlarm = reminders.get(position).getId();
+        final long dateAlarm = reminders.get(position).getDateReminder();
+        final int typeAlarm = reminders.get(position).getTypeReminder();
+        final int isRing = reminders.get(position).getIsRing();
         remindersAdapter.deletePositionData(position);
 
         Snackbar.make(recyclerView, resTitleId, Snackbar.LENGTH_SHORT)
@@ -232,14 +227,14 @@ public class RemindersFragment extends Fragment {
                         remindersAdapter.addData(position, reminderModelItem);
                     }
                 })
-                .setCallback(new Snackbar.Callback() {
+                .addCallback(new Snackbar.Callback() {
                     @Override
                     public void onDismissed(Snackbar snackbar, int event) {
                         switch (event) {
                             case Snackbar.Callback.DISMISS_EVENT_TIMEOUT:
                                 cancelAlarm(idAlarm, getTypeFit(typeFit, true, R.array.type_reminder));
 
-                                if (reminderModel.size() == 0) {
+                                if (reminders.isEmpty()) {
                                     showReminders();
                                 }
                                 break;
@@ -248,18 +243,16 @@ public class RemindersFragment extends Fragment {
                 }).show();
     }
 
-
     private void getRemindersFromDb() {
-        reminderModel.clear();
+        reminders.clear();
 
-        /* reminderModel.add(new ReminderModel(
+        /* reminders.add(new ReminderModel(
                                 dbCursor.getInt(_ID),
                                 dbCursor.getLong(DATE_REMINDER),
                                 dbCursor.getInt(TYPE_REMINDER),
                                 dbCursor.getInt(IS_RINGS)
                         )*/
     }
-
 
     private void cancelAlarm(int id, String textReminder) {
         AlarmManager alarmManager = (AlarmManager) App.getInstance().getSystemService(Context.ALARM_SERVICE);
@@ -276,7 +269,6 @@ public class RemindersFragment extends Fragment {
         alarmManager.cancel(pendingIntent);
     }
 
-
     private String getEmojiByUnicode(int unicodeEmoji) {
         return new String(Character.toChars(unicodeEmoji));
     }
@@ -292,7 +284,6 @@ public class RemindersFragment extends Fragment {
         LocalBroadcastManager.getInstance(App.getInstance())
                 .registerReceiver(broadcastUpdateDate, new IntentFilter(BROADCAST_UPDATE_REMINDER_DATE));
     }
-
 
     @Override
     public void onPause() {
