@@ -1,61 +1,43 @@
-package com.egoriku.catsrunning.models.Firebase;
+package com.egoriku.catsrunning.models.Firebase
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcel
+import android.os.Parcelable
 
-public class Point implements Parcelable {
-    private double lng;
-    private double lat;
+class Point : Parcelable {
+    var lng: Double = 0.toDouble()
+    var lat: Double = 0.toDouble()
 
-    public Point() {
+    constructor() {}
+
+    constructor(lng: Double, lat: Double) {
+        this.lng = lng
+        this.lat = lat
     }
 
-    public Point(double lng, double lat) {
-        this.lng = lng;
-        this.lat = lat;
+    override fun describeContents(): Int {
+        return 0
     }
 
-    public double getLng() {
-        return lng;
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeDouble(this.lng)
+        dest.writeDouble(this.lat)
     }
 
-    public void setLng(double lng) {
-        this.lng = lng;
+    protected constructor(`in`: Parcel) {
+        this.lng = `in`.readDouble()
+        this.lat = `in`.readDouble()
     }
 
-    public double getLat() {
-        return lat;
-    }
+    companion object {
 
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
+        val CREATOR: Parcelable.Creator<Point> = object : Parcelable.Creator<Point> {
+            override fun createFromParcel(source: Parcel): Point {
+                return Point(source)
+            }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeDouble(this.lng);
-        dest.writeDouble(this.lat);
-    }
-
-    protected Point(Parcel in) {
-        this.lng = in.readDouble();
-        this.lat = in.readDouble();
-    }
-
-    public static final Parcelable.Creator<Point> CREATOR = new Parcelable.Creator<Point>() {
-        @Override
-        public Point createFromParcel(Parcel source) {
-            return new Point(source);
+            override fun newArray(size: Int): Array<Point> {
+                return arrayOfNulls(size)
+            }
         }
-
-        @Override
-        public Point[] newArray(int size) {
-            return new Point[size];
-        }
-    };
+    }
 }

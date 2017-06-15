@@ -23,7 +23,6 @@ public class App extends Application {
         }
     }
 
-
     public void createState() {
         state = new State();
     }
@@ -35,7 +34,6 @@ public class App extends Application {
     public static App getInstance() {
         return app;
     }
-
 
     @Override
     protected void attachBaseContext(Context base) {
