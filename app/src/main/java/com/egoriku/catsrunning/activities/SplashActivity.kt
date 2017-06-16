@@ -8,6 +8,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.egoriku.catsrunning.BuildConfig
 import com.egoriku.catsrunning.R
+import com.egoriku.catsrunning.activities.SplashActivity.Constant.IS_ANIMATE
 import com.egoriku.catsrunning.util.SimpleAnimationListener
 import com.egoriku.catsrunning.util.snack
 import com.firebase.ui.auth.AuthUI
@@ -22,6 +23,10 @@ import java.util.*
 
 class SplashActivity : AppCompatActivity() {
 
+    object Constant {
+        const val IS_ANIMATE = "is_animate"
+    }
+
     private val RC_SIGN_IN = 4706
     private lateinit var animation: Animation
 
@@ -29,7 +34,12 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        animation = AnimationUtils.loadAnimation(this, R.anim.splash_screen_animation)
+        if (intent.extras == null || !intent.extras.getBoolean(IS_ANIMATE)) {
+            animation = AnimationUtils.loadAnimation(this, R.anim.splash_screen_empty_animation)
+        } else {
+            animation = AnimationUtils.loadAnimation(this, R.anim.splash_screen_rotate_animation)
+        }
+
         splash_app_logo.startAnimation(animation)
 
         animation.setAnimationListener(object : SimpleAnimationListener() {

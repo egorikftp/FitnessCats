@@ -26,7 +26,6 @@
         android:orientation="horizontal">
 
         <com.egoriku.catsrunning.ui.CustomTextView
-            android:id="@+id/activity_add_user_info_growth_hint"
             style="@style/activityAddUserInfoTextView"
             android:text="@string/activity_add_user_info_enter_you_growth" />
 
@@ -35,7 +34,6 @@
             style="@style/activityAddUserDataEditText" />
 
         <com.egoriku.catsrunning.ui.CustomTextView
-            android:id="@+id/activity_add_user_info_growth_hint_sm"
             style="@style/activityAddUserInfoTextView"
             android:text="@string/activity_add_user_info_sm" />
     </LinearLayout>
@@ -51,7 +49,6 @@
         android:orientation="horizontal">
 
         <com.egoriku.catsrunning.ui.CustomTextView
-            android:id="@+id/activity_add_user_info_weigth_hint"
             style="@style/activityAddUserInfoTextView"
             android:hint="@string/activity_add_user_info_enter_you_weigth" />
 
@@ -60,7 +57,6 @@
             style="@style/activityAddUserDataEditText" />
 
         <com.egoriku.catsrunning.ui.CustomTextView
-            android:id="@+id/activity_add_user_info_weigth_hint_kg"
             style="@style/activityAddUserInfoTextView"
             android:text="@string/activity_add_user_info_kg" />
     </LinearLayout>

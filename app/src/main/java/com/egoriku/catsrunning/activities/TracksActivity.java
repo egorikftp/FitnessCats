@@ -49,6 +49,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import static android.os.Build.VERSION;
 import static android.os.Build.VERSION_CODES;
+import static com.egoriku.catsrunning.activities.SplashActivity.Constant.IS_ANIMATE;
 import static com.egoriku.catsrunning.fragments.FragmentsTag.MAIN;
 
 public class TracksActivity extends AppCompatActivity {
@@ -95,7 +96,7 @@ public class TracksActivity extends AppCompatActivity {
             userName = user.getDisplayName();
             userPhoto = user.getPhotoUrl();
         } else {
-            openRegisterActivity();
+            openLoginActivity();
         }
     }
 
@@ -216,7 +217,7 @@ public class TracksActivity extends AppCompatActivity {
                 .signOut(this)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     public void onComplete(@NonNull Task<Void> task) {
-                        openRegisterActivity();
+                        openLoginActivity();
                     }
                 });
     }
@@ -227,8 +228,10 @@ public class TracksActivity extends AppCompatActivity {
         }
     }
 
-    private void openRegisterActivity() {
-        startActivity(new Intent(TracksActivity.this, SplashActivity.class));
+    private void openLoginActivity() {
+        Intent intent = new Intent(TracksActivity.this, SplashActivity.class);
+        intent.putExtra(IS_ANIMATE, true);
+        startActivity(intent);
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
         finish();
     }
