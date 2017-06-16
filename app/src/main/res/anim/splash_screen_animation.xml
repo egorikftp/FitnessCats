@@ -8,11 +8,11 @@
         android:pivotX="50%"
         android:pivotY="50%"
         android:startOffset="0"
-        android:toDegrees="35" />
+        android:toDegrees="25" />
 
     <rotate
         android:duration="500"
-        android:fromDegrees="35"
+        android:fromDegrees="25"
         android:pivotX="50%"
         android:pivotY="50%"
         android:startOffset="1000"
@@ -24,11 +24,11 @@
         android:pivotX="50%"
         android:pivotY="50%"
         android:startOffset="1500"
-        android:toDegrees="-35" />
+        android:toDegrees="-25" />
 
     <rotate
         android:duration="500"
-        android:fromDegrees="-35"
+        android:fromDegrees="-25"
         android:pivotX="50%"
         android:pivotY="50%"
         android:startOffset="2000"
