@@ -32,12 +32,9 @@ import com.egoriku.catsrunning.fragments.SettingsFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
 import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -54,7 +51,7 @@ import static android.os.Build.VERSION;
 import static android.os.Build.VERSION_CODES;
 import static com.egoriku.catsrunning.fragments.FragmentsTag.MAIN;
 
-public class TracksActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class TracksActivity extends AppCompatActivity {
 
     public static final String NAV_DRAWER_SELECTED_POSITION = "Nav_drawer_position";
     private Drawer navigationDrawer;
@@ -98,8 +95,7 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
             userName = user.getDisplayName();
             userPhoto = user.getPhotoUrl();
         } else {
-            startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
-            finish();
+            openRegisterActivity();
         }
     }
 
@@ -193,7 +189,7 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
                 .addProfiles(new ProfileDrawerItem()
                         .withName(userName)
                         .withEmail(userEmail)
-                        .withIcon(AppCompatResources.getDrawable(this, R.drawable.ic_vec_cats_weary)))
+                        .withIcon(AppCompatResources.getDrawable(this, R.drawable.ic_vec_cat_weary)))
                 .build();
     }
 
@@ -214,28 +210,15 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
         transaction.commit();
     }
 
+
     private void exitFromAccount() {
-        FirebaseAuth.getInstance().signOut();
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .requestProfile()
-                .build();
-
-        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
-        if (googleApiClient.isConnected()) {
-            Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(new ResultCallback<Status>() {
-                @Override
-                public void onResult(@NonNull Status status) {
-                    openRegisterActivity();
-                }
-            });
-        }
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    public void onComplete(@NonNull Task<Void> task) {
+                        openRegisterActivity();
+                    }
+                });
     }
 
     public void onFragmentStart(int titleResId, @FragmentsTag String tag) {
@@ -245,7 +228,7 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
     }
 
     private void openRegisterActivity() {
-        startActivity(new Intent(TracksActivity.this, RegisterActivity.class));
+        startActivity(new Intent(TracksActivity.this, SplashActivity.class));
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ);
         finish();
     }
@@ -254,11 +237,6 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(titleId);
         }
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 
     @Override
@@ -299,11 +277,7 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
         toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                if (VERSION.SDK_INT < VERSION_CODES.JELLY_BEAN) {
-                    toolbar.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                } else {
-                    toolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                }
+                toolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
                 if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
                     Animator circularReveal = ViewAnimationUtils.createCircularReveal(toolbar, cx, cy, 0, finalRadius);

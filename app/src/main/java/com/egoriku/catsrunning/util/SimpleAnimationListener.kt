@@ -1,8 +1,8 @@
-package util
+package com.egoriku.catsrunning.util
 
 import android.view.animation.Animation
 
-abstract class SimpleAnimationListener : Animation.AnimationListener{
+abstract class SimpleAnimationListener : Animation.AnimationListener {
 
     override fun onAnimationRepeat(animation: Animation?) {
     }

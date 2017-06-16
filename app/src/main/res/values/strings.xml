@@ -162,4 +162,11 @@
     <string name="growth">Growth</string>
     <string name="the_weight">The weight</string>
     <string name="age">Age</string>
+
+
+    <!-- Auth Activity -->
+    <string name="auth_cancel">Authentication canceled</string>
+    <string name="auth_no_internet_connection">Check internet connection</string>
+    <string name="auth_unknown_error">Unknown error</string>
+    <string name="auth_unknown_sign_in_response">Unknown Sign In response</string>
 </resources>

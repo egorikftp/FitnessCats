@@ -7,6 +7,19 @@
         <item name="colorAccent">#B85967</item>
     </style>
 
+    <style name="AppThemeWithToolbar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">#AEBFB2</item>
+        <item name="colorPrimaryDark">#75927C</item>
+        <item name="colorAccent">#B85967</item>
+    </style>
+
+    <style name="AuthTheme" parent="FirebaseUI">
+        <item name="colorPrimary">#AEBFB2</item>
+        <item name="colorPrimaryDark">#75927C</item>
+        <item name="colorAccent">#B85967</item>
+        <item name="colorControlNormal">#B85967</item>
+        <item name="colorControlActivated">#86b3bc</item>
+    </style>
 
     <!-- EditText Theme -->
     <style name="EditTextEntrance">

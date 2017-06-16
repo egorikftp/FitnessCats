@@ -30,5 +30,5 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:visibility="gone"
-        app:srcCompat="@drawable/ic_vec_cats_weary" />
+        app:srcCompat="@drawable/ic_vec_cat_weary" />
 </RelativeLayout>
