@@ -30,7 +30,6 @@ import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.SettingsFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
-import com.egoriku.catsrunning.fragments.WhereIFragment;
 import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.google.android.gms.auth.api.Auth;
@@ -123,10 +122,6 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
                                 .withIcon(AppCompatResources.getDrawable(this, R.drawable.ic_vec_favorite))
                                 .withTag(FragmentsTag.LIKED),
                         new PrimaryDrawerItem()
-                                .withName(R.string.navigation_drawer_where_i)
-                                .withIcon(AppCompatResources.getDrawable(this, R.drawable.ic_vec_pin_location))
-                                .withTag(FragmentsTag.WHERE_I),
-                        new PrimaryDrawerItem()
                                 .withName(R.string.navigation_drawer_statistic)
                                 .withIcon(AppCompatResources.getDrawable(this, R.drawable.ic_vec_statistic))
                                 .withTag(FragmentsTag.STATISTIC),
@@ -154,9 +149,6 @@ public class TracksActivity extends AppCompatActivity implements GoogleApiClient
                                 break;
                             case FragmentsTag.LIKED:
                                 showFragment(LikedFragment.newInstance(), FragmentsTag.LIKED, FragmentsTag.MAIN, false);
-                                break;
-                            case FragmentsTag.WHERE_I:
-                                showFragment(WhereIFragment.newInstance(), FragmentsTag.WHERE_I, FragmentsTag.MAIN, false);
                                 break;
                             case FragmentsTag.STATISTIC:
                                 showFragment(StatisticFragment.newInstance(), FragmentsTag.STATISTIC, FragmentsTag.MAIN, false);

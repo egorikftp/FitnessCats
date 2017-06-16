@@ -109,7 +109,6 @@
     <string name="activity_add_user_info_error_save">При сохранении данных произошла ошибка</string>
     <string name="activity_add_user_info_not_digit">Поля содержат недопустимые символы</string>
     <string name="activity_add_user_info_cats_talk">Хэй, тебя приветствуют фитнес-котики.  Чтобы точно рассчитывать твои результаты занятий, заполни о себе некоторую информацию</string>
-    <string name="navigation_drawer_where_i">Где я?</string>
     <string name="where_i_fragment_marker_title">Твое текущее местоположение</string>
     <string name="where_i_fragment_marker_snippet">Давай уже начнем заниматься!</string>
     <string name="growth">Рост</string>

@@ -157,7 +157,6 @@
     <string name="activity_add_user_info_error_save">Error occurred while saving data</string>
     <string name="activity_add_user_info_not_digit">Fields contain invalid characters</string>
     <string name="activity_add_user_info_cats_talk">Hey, fitness cats welcome you! To count your activity results correctly, fill in some information about you.</string>
-    <string name="navigation_drawer_where_i">Where I?</string>
     <string name="where_i_fragment_marker_title">You current location</string>
     <string name="where_i_fragment_marker_snippet">Let\'s start you fitness activity!</string>
     <string name="growth">Growth</string>
