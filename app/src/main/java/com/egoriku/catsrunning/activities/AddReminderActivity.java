@@ -18,9 +18,7 @@ import com.egoriku.catsrunning.ui.CustomStringPicker;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-import static com.egoriku.catsrunning.helpers.DbActions.writeReminderDb;
 import static com.egoriku.catsrunning.models.Constants.ModelReminder.KEY_CALENDAR;
 import static com.egoriku.catsrunning.models.Constants.ModelReminder.KEY_CONDITION;
 import static com.egoriku.catsrunning.models.Constants.ModelReminder.KEY_TOOLBAR;
@@ -29,8 +27,6 @@ import static com.egoriku.catsrunning.models.Constants.ModelReminder.KEY_VISIBLE
 import static com.egoriku.catsrunning.models.Constants.ModelReminder.KEY_VISIBLE_STRING_PICKER;
 import static com.egoriku.catsrunning.models.Constants.ModelReminder.KEY_VISIBLE_TEXT_VIEW;
 import static com.egoriku.catsrunning.models.Constants.ModelReminder.KEY_VISIBLE_TIME_PICKER;
-import static com.egoriku.catsrunning.utils.AlarmsUtility.setAlarm;
-import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 
 public class AddReminderActivity extends AppCompatActivity {
     private static final int UNICODE_EMOJI = 0x1F638;
@@ -135,7 +131,7 @@ public class AddReminderActivity extends AppCompatActivity {
                     }
 
                     btnNext.setClickable(false);
-                    try {
+                    /*try {
                         setAlarm(
                                 writeReminderDb(allDateCalendar.getTimeInMillis() / 1000, stringPicker.getCurrent() + 1),
                                 getTypeFit(stringPicker.getCurrent() + 1, false, R.array.type_reminder),
@@ -144,7 +140,7 @@ public class AddReminderActivity extends AppCompatActivity {
                         );
                     } catch (ExecutionException | InterruptedException e) {
                         e.printStackTrace();
-                    }
+                    }*/
                     finish();
                     return;
                 }

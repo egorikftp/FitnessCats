@@ -7,21 +7,21 @@ Contact: https://t.me/egoriku
 
 Hello. We are Fitness Cats :smiley_cat:
 
-![alt tag](https://lh3.googleusercontent.com/aO3p4IrOtIpaHkfOt4bNmizC6n6GmOI8eXPha_SE1V6R_ioxLUv0qReXom0ge1T4p1GjFNdsp_BxOVHHqucDX01ryodOLkgfKN_uX5eU_qsXhIWR76qr_egimgX90PXeYfwxvJ8=w400-h942-no) 
+![alt tag](https://lh3.googleusercontent.com/aO3p4IrOtIpaHkfOt4bNmizC6n6GmOI8eXPha_SE1V6R_ioxLUv0qReXom0ge1T4p1GjFNdsp_BxOVHHqucDX01ryodOLkgfKN_uX5eU_qsXhIWR76qr_egimgX90PXeYfwxvJ8=w400-h942-no)
 
 We like Android 7.1.1.
 
-![alt tag](https://lh3.googleusercontent.com/Wa5tHR-gMlgkdTL9X3GcA1wJpH36UGlHZ7yGNr8a4EwToKpZuYOH8EO6ZAB6e2Niz1P3kC5Ix3LRNeraMOybL88UKIjvp0uueCm9u_c850A2Tehth1txieudHl_2ceFLHMc_7ic=w400-h922-no) 
+![alt tag](https://lh3.googleusercontent.com/Wa5tHR-gMlgkdTL9X3GcA1wJpH36UGlHZ7yGNr8a4EwToKpZuYOH8EO6ZAB6e2Niz1P3kC5Ix3LRNeraMOybL88UKIjvp0uueCm9u_c850A2Tehth1txieudHl_2ceFLHMc_7ic=w400-h922-no)
 
 First af all, you need sign in or register
 
-![alt tag](https://lh3.googleusercontent.com/yVjubnVbmJADXnDAfL817yGLQTTvbsqumK_fNd_GUBM5JYgBGVmTpCbi5Jp7xGh4kWXj--_UujzMkeYHXLah-N3OVrSpnyYYTlQRNNMmMFlAUdOBFLEpipY030HOtwIBIoglWpM=w400-h922-no) 
+![alt tag](https://lh3.googleusercontent.com/yVjubnVbmJADXnDAfL817yGLQTTvbsqumK_fNd_GUBM5JYgBGVmTpCbi5Jp7xGh4kWXj--_UujzMkeYHXLah-N3OVrSpnyYYTlQRNNMmMFlAUdOBFLEpipY030HOtwIBIoglWpM=w400-h922-no)
 
 After you can see in Navigation Drawer all app categories
 
-![alt tag](https://lh3.googleusercontent.com/wOo2W2rDOz6u74vWFKIbW5l1NkjvaLMijlGQvVCvcRKcm8hbJumYGpXM_G4P0EuJYR3O-OIgxS02ryHfV6qIU5aiS6-oVPxm-tPvRz4DI8uOaGwhvo-yLYztVYICj9DuHD93Zhg=w400-h922-no) 
+![alt tag](https://lh3.googleusercontent.com/wOo2W2rDOz6u74vWFKIbW5l1NkjvaLMijlGQvVCvcRKcm8hbJumYGpXM_G4P0EuJYR3O-OIgxS02ryHfV6qIU5aiS6-oVPxm-tPvRz4DI8uOaGwhvo-yLYztVYICj9DuHD93Zhg=w400-h922-no)
 
-For counting calories you should add some information
+For counting caloriesText you should add some information
 
 ![alt tag](https://lh3.googleusercontent.com/FW7kcqoX2faq271KSIM27UB9aL4ao9LxJ1o3y40spVsjG5O9WsrmWbI7nE9o1a64zEwfqncP6aAnEJH981w4Oy5edqATB0gkE9fiCDOOwVbmZuYdtk3qDbW64nJXjo26F6nMHxU=w400-h922-no)
 

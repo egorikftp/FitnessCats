@@ -1,9 +1,7 @@
 package com.egoriku.catsrunning.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -21,12 +19,8 @@ import android.widget.FrameLayout;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
+import com.egoriku.catsrunning.models.TypeFit;
 
-import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
-import static com.egoriku.catsrunning.models.Constants.Tags.TAG_MAIN_FRAGMENT;
-import static com.egoriku.catsrunning.models.Constants.TypeFit.TYPE_FIT_CYCLING;
-import static com.egoriku.catsrunning.models.Constants.TypeFit.TYPE_FIT_RUN;
-import static com.egoriku.catsrunning.models.Constants.TypeFit.TYPE_FIT_WALK;
 import static com.egoriku.catsrunning.utils.VectorToDrawable.getDrawable;
 
 public class AllFitnessDataFragment extends Fragment {
@@ -46,7 +40,6 @@ public class AllFitnessDataFragment extends Fragment {
     private Animation fabCyclingHide;
     private Animation fabRunHide;
     private boolean fabStatus;
-    private AppBarLayout appBarLayout;
 
 
     public AllFitnessDataFragment() {
@@ -61,7 +54,7 @@ public class AllFitnessDataFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((TracksActivity) getActivity()).onFragmentStart(R.string.tab_text_walking, TAG_MAIN_FRAGMENT);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.tab_text_walking, FragmentsTag.MAIN);
     }
 
 
@@ -72,7 +65,6 @@ public class AllFitnessDataFragment extends Fragment {
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         viewPager = (ViewPager) view.findViewById(R.id.fragment_all_fitness_data_view_pager_container);
 
-        appBarLayout = (AppBarLayout) view.findViewById(R.id.appbar_layout);
         fabMain = (FloatingActionButton) view.findViewById(R.id.floating_button);
         fabWalk = (FloatingActionButton) view.findViewById(R.id.fab_walk);
         fabCycling = (FloatingActionButton) view.findViewById(R.id.fab_cycling);
@@ -102,7 +94,7 @@ public class AllFitnessDataFragment extends Fragment {
         fabWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), FitActivity.class).putExtra(KEY_TYPE_FIT, TYPE_FIT_WALK));
+                FitActivity.start(getActivity(), TypeFit.WALKING);
             }
         });
 
@@ -110,14 +102,14 @@ public class AllFitnessDataFragment extends Fragment {
         fabRun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), FitActivity.class).putExtra(KEY_TYPE_FIT, TYPE_FIT_RUN));
+                FitActivity.start(getActivity(), TypeFit.RUNNING);
             }
         });
 
         fabCycling.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), FitActivity.class).putExtra(KEY_TYPE_FIT, TYPE_FIT_CYCLING));
+                FitActivity.start(getActivity(), TypeFit.CYCLING);
             }
         });
 
@@ -129,6 +121,8 @@ public class AllFitnessDataFragment extends Fragment {
 
         initSparseTabs();
         sectionsPagerAdapter = new AllFitnessDataFragment.SectionsPagerAdapter(getChildFragmentManager());
+
+        viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(sectionsPagerAdapter);
 
         tabLayout.setupWithViewPager(viewPager);
@@ -156,14 +150,12 @@ public class AllFitnessDataFragment extends Fragment {
         return view;
     }
 
-
     private void initSparseTabs() {
         sparseTabs = new SparseArray<>();
         sparseTabs.put(0, getString(R.string.tab_text_walking));
         sparseTabs.put(1, getString(R.string.tab_text_running));
         sparseTabs.put(2, getString(R.string.tab_text_cycling));
     }
-
 
     @Override
     public void onResume() {
@@ -179,7 +171,6 @@ public class AllFitnessDataFragment extends Fragment {
             changeFabState(true);
         }
     }
-
 
     private void changeFabState(boolean status) {
         FrameLayout.LayoutParams layoutParamsFabRun = (FrameLayout.LayoutParams) fabRun.getLayoutParams();
@@ -229,8 +220,7 @@ public class AllFitnessDataFragment extends Fragment {
         }
     }
 
-
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    private class SectionsPagerAdapter extends FragmentPagerAdapter {
         private SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }

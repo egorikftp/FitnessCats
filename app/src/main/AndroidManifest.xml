@@ -21,7 +21,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activities.RegisterActivity" />
         <activity android:name=".activities.TracksActivity" />
-
         <activity
             android:name=".activities.SplashActivity"
             android:configChanges="orientation"
@@ -31,17 +30,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
-
         <activity android:name=".activities.FitActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.egoriku.catsrunning.activities.TracksActivity" />
         </activity>
-
         <activity android:name=".activities.AddReminderActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -63,8 +61,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.egoriku.catsrunning.activities.TracksActivity" />
         </activity>
-
-        <activity android:name=".activities.AddUserInfoActivity"/>
+        <activity android:name=".activities.AddUserInfoActivity" />
     </application>
 
 </manifest>

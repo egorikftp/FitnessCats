@@ -1,5 +1,7 @@
 package com.egoriku.catsrunning.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -9,15 +11,15 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.models.UserInfoModel;
+import com.egoriku.catsrunning.models.Firebase.UserInfo;
+import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.egoriku.catsrunning.utils.UserInfoPreferences;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import static com.egoriku.catsrunning.models.Constants.ConstantsFirebase.USER_INFO;
+import static com.egoriku.catsrunning.models.Constants.FirebaseFields.USER_INFO;
 
 public class AddUserInfoActivity extends AppCompatActivity {
     private EditText growthView;
@@ -41,12 +43,12 @@ public class AddUserInfoActivity extends AppCompatActivity {
                     return;
                 }
 
-                long growth;
-                long weight;
+                int growth;
+                int weight;
                 try {
-                    growth = Long.parseLong(growthView.getText().toString().trim());
-                    weight = Long.parseLong(weigthView.getText().toString().trim());
-                } catch (NumberFormatException ignored) {
+                    growth = Integer.parseInt(growthView.getText().toString().trim());
+                    weight = Integer.parseInt(weigthView.getText().toString().trim());
+                } catch (NumberFormatException e) {
                     Toast.makeText(AddUserInfoActivity.this, getString(R.string.activity_add_user_info_not_digit), Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -56,18 +58,20 @@ public class AddUserInfoActivity extends AppCompatActivity {
         });
     }
 
-    private void sendUserData(long growth, long weight) {
-        String trackToken = FirebaseDatabase.getInstance().getReference().child(USER_INFO).child(user.getUid()).push().getKey();
+    private void sendUserData(int growth, int weight) {
         new UserInfoPreferences(this).writeUserData(growth, weight);
 
-        UserInfoModel userInfoModel = new UserInfoModel(growth, weight);
-        FirebaseDatabase.getInstance().getReference().child(USER_INFO).child(user.getUid()).child(trackToken).setValue(userInfoModel, new DatabaseReference.CompletionListener() {
+        UserInfo userInfo = new UserInfo(growth, weight, 21);
+        FirebaseUtils.getDatabaseReference()
+                .child(USER_INFO)
+                .child(user.getUid())
+                .setValue(userInfo, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
                     Snackbar.make(btnReady, getString(R.string.activity_add_user_info_error_save) + databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
                 } else {
-                    AddUserInfoActivity.this.finish();
+                    finish();
                 }
             }
         });
@@ -84,5 +88,9 @@ public class AddUserInfoActivity extends AppCompatActivity {
             isError = true;
         }
         return isError;
+    }
+
+    public static void start(Context context) {
+        context.startActivity(new Intent(context, AddUserInfoActivity.class));
     }
 }

@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/fragment_track_padding_word"
             android:textAppearance="?android:textAppearanceMedium"
-            android:textColor="@color/color_ic_naw_drawer" />
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/track_on_maps_activity_time_running_text"

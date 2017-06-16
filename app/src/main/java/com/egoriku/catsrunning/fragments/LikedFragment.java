@@ -1,13 +1,11 @@
 package com.egoriku.catsrunning.fragments;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,59 +18,58 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
-import com.egoriku.catsrunning.adapters.LikedFragmentAdapter;
-import com.egoriku.catsrunning.adapters.interfaces.ILikedClickListener;
-import com.egoriku.catsrunning.loaders.AsyncLikedTracksLoader;
-import com.egoriku.catsrunning.models.AllFitnessDataModel;
+import com.egoriku.catsrunning.adapters.FitnessDataHolder;
+import com.egoriku.catsrunning.models.Constants;
+import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.utils.CustomFont;
+import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.egoriku.catsrunning.utils.IntentBuilder;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
-import java.util.List;
+import timber.log.Timber;
 
-import static com.egoriku.catsrunning.helpers.DbActions.updateLikedDigit;
-import static com.egoriku.catsrunning.models.Constants.Tags.TAG_LIKED_FRAGMENT;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_DISTANCE;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_ID;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_LIKED;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_TIME_RUNNING;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_TOKEN;
-import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_TYPE_FIT;
+import static com.egoriku.catsrunning.models.Constants.FirebaseFields.IS_FAVORIRE;
+import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TRACKS;
 
-public class LikedFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AllFitnessDataModel>> {
+public class LikedFragment extends Fragment {
+
     private static final int UNICODE_SAD_CAT = 0x1F640;
-    public static final int DURATION = 1000;
-    public static final int ID_LOADER = 1;
+    private static final int DURATION = 1000;
+
     private RecyclerView recyclerView;
     private TextView noLikedTracksTextView;
     private ImageView imageViewCat;
     private ProgressBar progressBar;
-    private LikedFragmentAdapter likedFragmentAdapter;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private AppBarLayout appBarLayout;
 
+    private FirebaseRecyclerAdapter adapter;
+
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     public LikedFragment() {
     }
-
 
     public static LikedFragment newInstance() {
         return new LikedFragment();
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
-        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_liked, TAG_LIKED_FRAGMENT);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_liked, FragmentsTag.LIKED);
     }
 
-
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_liked, container, false);
@@ -83,70 +80,119 @@ public class LikedFragment extends Fragment implements LoaderManager.LoaderCallb
         collapsingToolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.liked_fragment_collapsing_toolbar);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.liked_fragment_appbar);
 
-        likedFragmentAdapter = new LikedFragmentAdapter();
-        recyclerView.setLayoutManager(new LinearLayoutManager(App.getInstance()));
-        recyclerView.hasFixedSize();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        noLikedTracksTextView.setText(null);
         noLikedTracksTextView.setTypeface(CustomFont.getTypeFace());
-        imageViewCat.setVisibility(View.GONE);
+        setScrollingEnabled(true);
+        hideNoTracks();
+
+        Query query = FirebaseUtils.getDatabaseReference()
+                .child(TRACKS)
+                .child(user.getUid())
+                .orderByChild(IS_FAVORIRE)
+                .equalTo(true);
+
+        adapter = new FirebaseRecyclerAdapter<SaveModel, FitnessDataHolder>(SaveModel.class, R.layout.adapter_fitness_data_fragment, FitnessDataHolder.class, query) {
+            @Override
+            protected void populateViewHolder(final FitnessDataHolder viewHolder, SaveModel model, int position) {
+                showLoading(false);
+                viewHolder.setData(model, getContext());
+            }
+
+            @Override
+            public FitnessDataHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                showLoading(true);
+                FitnessDataHolder holder = super.onCreateViewHolder(parent, viewType);
+
+                holder.setOnClickListener(new FitnessDataHolder.ClickListener() {
+                    @Override
+                    public void onClickItem(int position) {
+                        SaveModel saveModel = (SaveModel) adapter.getItem(position);
+
+                        if (saveModel.getTime() == 0) {
+                            startActivity(new IntentBuilder()
+                                    .context(getActivity())
+                                    .activity(FitActivity.class)
+                                    .extra(Constants.Extras.KEY_TYPE_FIT, saveModel.getTypeFit())
+                                    .build());
+                        } else {
+                            TrackOnMapsActivity.start(getActivity(), saveModel);
+                        }
+                    }
+
+                    @Override
+                    public void onFavoriteClick(int position) {
+                        SaveModel adapterItem = (SaveModel) adapter.getItem(position);
+                        adapterItem.setFavorite(!adapterItem.isFavorite());
+                        FirebaseUtils.updateTrackFavorire(adapterItem, getActivity());
+                    }
+
+                    @Override
+                    public void onLongClick(final int position) {
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle(R.string.fitness_data_fragment_alert_title)
+                                .setCancelable(true)
+                                .setNegativeButton(R.string.fitness_data_fragment_alert_negative_btn, null)
+                                .setPositiveButton(R.string.fitness_data_fragment_alert_positive_btn, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        FirebaseUtils.removeTrack((SaveModel) adapter.getItem(position), getContext());
+                                    }
+                                })
+                                .show();
+                    }
+                });
+                return holder;
+            }
+        };
+
+        FirebaseUtils
+                .getDatabaseReference()
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        showLoading(false);
+                        if (adapter.getItemCount() == 0) {
+                            showNoTracks();
+                        } else {
+                            hideNoTracks();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Timber.d(databaseError.getMessage());
+                    }
+                });
+
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                if (adapter.getItemCount() == 0) {
+                    showNoTracks();
+                }
+            }
+        });
+
+        recyclerView.setAdapter(adapter);
         return view;
     }
 
-
-    private void setUpAdapter(final List<AllFitnessDataModel> data) {
-        progressBar.setVisibility(View.GONE);
-
-        if (data.size() == 0) {
-            setScrollingEnabled(false);
-            noLikedTracksTextView.setText(getString(R.string.liked_fragment_no_more_liked_tracks) + "" + getEmojiByUnicode(UNICODE_SAD_CAT));
-            animateView();
-        } else {
-            setScrollingEnabled(true);
-            imageViewCat.setVisibility(View.GONE);
-            likedFragmentAdapter.setData(data);
-            recyclerView.setAdapter(likedFragmentAdapter);
-
-            likedFragmentAdapter.setOnItemClickListener(new ILikedClickListener() {
-                @Override
-                public void onItemClick(AllFitnessDataModel item, int position) {
-                    if (item.getTime() == 0) {
-                        startActivity(new IntentBuilder()
-                                .context(getActivity())
-                                .activity(FitActivity.class)
-                                .extra(KEY_TYPE_FIT, item.getTypeFit())
-                                .build());
-                    } else {
-                        startActivity(new IntentBuilder()
-                                .context(getActivity())
-                                .activity(TrackOnMapsActivity.class)
-                                .extra(KEY_ID, item.getId())
-                                .extra(KEY_DISTANCE, item.getDistance())
-                                .extra(KEY_TIME_RUNNING, item.getTime())
-                                .extra(KEY_LIKED, item.getLiked())
-                                .extra(KEY_TOKEN, item.getTrackToken())
-                                .extra(KEY_TYPE_FIT, item.getTypeFit())
-                                .build());
-                    }
-                }
-
-                @Override
-                public void onLikedClick(AllFitnessDataModel item, int position) {
-                    int likedDigit = 0;
-                    updateLikedDigit(likedDigit, data.get(position).getId());
-                    data.remove(position);
-                    likedFragmentAdapter.notifyItemRemoved(position);
-                    likedFragmentAdapter.notifyItemRangeChanged(position, data.size());
-
-                    if (data.size() == 0) {
-                        Snackbar.make(recyclerView, R.string.liked_fragment_snackbar_liked_empty, Snackbar.LENGTH_LONG).show();
-                        setUpAdapter(data);
-                    }
-                }
-            });
-        }
+    private void showLoading(boolean isShowLoading) {
+        progressBar.setVisibility(isShowLoading ? View.VISIBLE : View.GONE);
     }
 
+    private void showNoTracks() {
+        setScrollingEnabled(false);
+        noLikedTracksTextView.setText(getString(R.string.liked_fragment_no_more_liked_tracks) + "" + getEmojiByUnicode(UNICODE_SAD_CAT));
+        noLikedTracksTextView.setVisibility(View.VISIBLE);
+        animateView();
+    }
+
+    private void hideNoTracks() {
+        imageViewCat.setVisibility(View.GONE);
+        noLikedTracksTextView.setVisibility(View.GONE);
+    }
 
     private void animateView() {
         Animation scale = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
@@ -159,7 +205,6 @@ public class LikedFragment extends Fragment implements LoaderManager.LoaderCallb
         noLikedTracksTextView.setAnimation(movingText);
     }
 
-
     private void setScrollingEnabled(boolean isEnabled) {
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) collapsingToolbarLayout.getLayoutParams();
         if (isEnabled) {
@@ -167,39 +212,19 @@ public class LikedFragment extends Fragment implements LoaderManager.LoaderCallb
             collapsingToolbarLayout.setVisibility(View.VISIBLE);
             appBarLayout.setExpanded(true, true);
         } else {
-            appBarLayout.setExpanded(false, false);
+            appBarLayout.setExpanded(false, true);
             params.setScrollFlags(0);
             collapsingToolbarLayout.setVisibility(View.GONE);
         }
     }
 
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getLoaderManager().initLoader(ID_LOADER, null, this);
-    }
-
-
     public String getEmojiByUnicode(int unicode) {
         return new String(Character.toChars(unicode));
     }
 
-
     @Override
-    public Loader<List<AllFitnessDataModel>> onCreateLoader(int id, Bundle args) {
-        return new AsyncLikedTracksLoader(getContext());
-    }
-
-
-    @Override
-    public void onLoadFinished(Loader<List<AllFitnessDataModel>> loader, List<AllFitnessDataModel> data) {
-        setUpAdapter(data);
-    }
-
-
-    @Override
-    public void onLoaderReset(Loader<List<AllFitnessDataModel>> loader) {
-
+    public void onDestroy() {
+        super.onDestroy();
+        adapter.cleanup();
     }
 }

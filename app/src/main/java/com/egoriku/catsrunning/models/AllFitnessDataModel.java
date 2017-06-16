@@ -14,6 +14,7 @@ public class AllFitnessDataModel {
     private long distance;
     private int id;
     private int liked;
+    @TypeFit
     private int typeFit;
     private String trackToken;
     private List<Point> points;

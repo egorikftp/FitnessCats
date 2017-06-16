@@ -2,7 +2,6 @@ package com.egoriku.catsrunning.models;
 
 public interface Constants {
     String ANDROID_RESOURCE = "android.resource://";
-    String DB_NAME = "catsDB.db";
 
     interface FormateDate {
         String FORMAT_DATE = "%02d:%02d:%02d";
@@ -12,7 +11,6 @@ public interface Constants {
     }
 
     interface ConstantsSQL {
-        String SQL_VACUUM = "VACUUM";
 
         interface Tables {
             String TABLE_POINT = "Point";
@@ -25,7 +23,6 @@ public interface Constants {
             String _ID = "_id";
             String LNG = "longitude";
             String LAT = "latitude";
-            String BEGINS_AT = "beginsAt";
             String TIME = "time";
             String DISTANCE = "distance";
             String LIKED = "liked";
@@ -87,36 +84,19 @@ public interface Constants {
         }
     }
 
-    interface ConstantsFirebase {
-        String CHILD_TRACKS = "tracks";
-        String USER_INFO = "user_info";
-    }
-
-    interface TypeFit {
-        int TYPE_FIT_WALK = 1;
-        int TYPE_FIT_RUN = 2;
-        int TYPE_FIT_CYCLING = 3;
-    }
-
     interface Extras {
         String EXTRA_ID_REMINDER_KEY = "EXTRA_ID_REMINDER_KEY";
         String EXTRA_TEXT_TYPE_REMINDER_KEY = "EXTRA_TEXT_TYPE_REMINDER_KEY";
         String TYPE_REMINDER_KEY = "TYPE_REMINDER_KEY";
         String KEY_TYPE_FIT = "KEY_TYPE_FIT";
-        String KEY_BUNDLE_TIME_AMOUNT = "KEY_BUNDLE_TIME_AMOUNT";
+        String EXTRA_TRACK_ON_MAPS = "EXTRA_TRACK_ON_MAPS";
     }
 
     interface Tags {
-        String TAG_LIKED_FRAGMENT = "TAG_LIKED_FRAGMENT";
-        String TAG_REMINDERS_FRAGMENT = "TAG_REMINDERS_FRAGMENT";
-        String TAG_MAIN_FRAGMENT = "TAG_MAIN_FRAGMENT";
-        String TAG_STATISTIC_FRAGMENT = "TAG_STATISTIC_FRAGMENT";
-        String TAG_EXIT_APP = "TAG_EXIT_APP";
         String ARG_SECTION_NUMBER = "ARG_SECTION_NUMBER";
     }
 
     interface Broadcast {
-        String BROADCAST_SAVE_NEW_TRACKS = "BROADCAST_SAVE_NEW_TRACKS";
         String BROADCAST_ADD_NEW_REMINDER = "BROADCAST_ADD_NEW_REMINDER";
         String BROADCAST_UPDATE_REMINDER_DATE = "BROADCAST_UPDATE_REMINDER_DATE";
         String BROADCAST_UPDATE_REMINDER_TIME = "BROADCAST_UPDATE_REMINDER_TIME";
@@ -194,5 +174,14 @@ public interface Constants {
         String KEY_GROWTH = "KEY_GROWTH";
         int DEFAULT_WEIGHT = 50;
         int DEFAULT_GROWTH = 150;
+    }
+
+    interface FirebaseFields{
+        String TYPE_FIT = "typeFit";
+        String IS_FAVORIRE = "favorite";
+        String BEGINS_AT = "beginsAt";
+
+        String TRACKS = "tracks";
+        String USER_INFO = "user_info";
     }
 }

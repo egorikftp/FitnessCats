@@ -19,3 +19,6 @@
 -keepclassmembers class com.egoriku.catsrunning.models.** {
   *;
  }
+-keepclassmembers class com.egoriku.catsrunning.adapters** {
+  *;
+ }
