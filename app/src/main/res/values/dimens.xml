@@ -24,7 +24,6 @@
 
     <dimen name="adapter_naw_drawer_margin_item">12dp</dimen>
     <dimen name="adapter_naw_drawer_margin_image">16dp</dimen>
-    <dimen name="navigation_drawer_width">280dp</dimen>
     <dimen name="navigation_drawer_header_margin">16dp</dimen>
 
 

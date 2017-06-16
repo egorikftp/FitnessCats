@@ -26,11 +26,11 @@ import com.egoriku.catsrunning.models.SpinnerIntervalModel;
 import com.egoriku.catsrunning.ui.statisticChart.FitChart;
 import com.egoriku.catsrunning.ui.statisticChart.FitChartValue;
 import com.egoriku.catsrunning.utils.CustomFont;
+import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ import java.util.Map;
 import timber.log.Timber;
 
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.BEGINS_AT;
-import static com.egoriku.catsrunning.models.Constants.FirebaseFields.CHILD_TRACKS;
+import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TRACKS;
 
 public class StatisticFragment extends Fragment {
     private static final int ID_LOADER = 1;
@@ -111,8 +111,8 @@ public class StatisticFragment extends Fragment {
     private void getTracksFromInterval(long valueInterval) {
         long startDate = (calendar.getTimeInMillis() - valueInterval) / 1000L;
 
-        FirebaseDatabase.getInstance().getReference()
-                .child(CHILD_TRACKS)
+        FirebaseUtils.getDatabaseReference()
+                .child(TRACKS)
                 .child(user.getUid())
                 .orderByChild(BEGINS_AT)
                 .startAt(startDate)
@@ -223,11 +223,11 @@ public class StatisticFragment extends Fragment {
                 distance += saveModels.get(j).getDistance();
             }
             if (distance != 0) {
-                values.add(new FitChartValue(distance, ContextCompat.getColor(getContext(), colorResId[value.getKey()-1])));
-                icons[value.getKey()-1].setVisibility(View.VISIBLE);
+                values.add(new FitChartValue(distance, ContextCompat.getColor(getContext(), colorResId[value.getKey() - 1])));
+                icons[value.getKey() - 1].setVisibility(View.VISIBLE);
             } else {
                 values.add(new FitChartValue(distance, ContextCompat.getColor(getContext(), R.color.chart_value_empty_color)));
-                icons[value.getKey()-1].setVisibility(View.INVISIBLE);
+                icons[value.getKey() - 1].setVisibility(View.INVISIBLE);
             }
             i++;
         }

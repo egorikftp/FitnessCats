@@ -181,7 +181,7 @@ public interface Constants {
         String IS_FAVORIRE = "favorite";
         String BEGINS_AT = "beginsAt";
 
-        String CHILD_TRACKS = "tracks";
+        String TRACKS = "tracks";
         String USER_INFO = "user_info";
     }
 }

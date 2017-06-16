@@ -3,6 +3,7 @@ package com.egoriku.catsrunning.models.Firebase;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+
 public class Point implements Parcelable {
     private double lng;
     private double lat;

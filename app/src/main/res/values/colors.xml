@@ -4,9 +4,8 @@
     <color name="colorPrimaryDark">#AEBFB2</color>
     <color name="colorAccent">#B85967</color>
 
-    <color name="color_text_already_have_account">#000</color>
-
-    <color name="color_ic_naw_drawer">#000</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFF</color>
 
     <color name="entrance_btn_text_color">#494343</color>
     <color name="scamper_activity_text_color">#000</color>
@@ -29,5 +28,14 @@
 
     <color name="statistic_fragment_all_distance_color">#212121</color>
     <color name="statistic_fragment_cats_talk_color">#757575</color>
+
+    <color name="material_drawer_selected_text">@color/accent</color>
+
+    <color name="settings_toolbar_color">#AEBFB2</color>
+    <color name="settings_toolbar_color_dark">#75927C</color>
+
+    <color name="settings_toolbar_color2">#B85967</color>
+    <color name="settings_toolbar_color_dark2">#B83549</color>
+
 
 </resources>
