@@ -26,7 +26,6 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.AddReminderActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
@@ -120,7 +119,7 @@ public class RemindersFragment extends Fragment {
         noReminders.setTypeface(CustomFont.getTypeFace());
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        remindersAdapter = new RemindersAdapter();
+        remindersAdapter = new RemindersAdapter(getContext());
         return view;
     }
 
@@ -255,12 +254,12 @@ public class RemindersFragment extends Fragment {
     }
 
     private void cancelAlarm(int id, String textReminder) {
-        AlarmManager alarmManager = (AlarmManager) App.getInstance().getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                App.getInstance(),
+                getContext(),
                 id,
-                new Intent(App.getInstance(), ReminderReceiver.class)
+                new Intent(getContext(), ReminderReceiver.class)
                         .putExtra(EXTRA_ID_REMINDER_KEY, id)
                         .putExtra(EXTRA_TEXT_TYPE_REMINDER_KEY, textReminder),
                 PendingIntent.FLAG_UPDATE_CURRENT
@@ -278,17 +277,17 @@ public class RemindersFragment extends Fragment {
         super.onResume();
         showReminders();
 
-        LocalBroadcastManager.getInstance(App.getInstance())
+        LocalBroadcastManager.getInstance(getContext())
                 .registerReceiver(broadcastUpdateTime, new IntentFilter(BROADCAST_UPDATE_REMINDER_TIME));
 
-        LocalBroadcastManager.getInstance(App.getInstance())
+        LocalBroadcastManager.getInstance(getContext())
                 .registerReceiver(broadcastUpdateDate, new IntentFilter(BROADCAST_UPDATE_REMINDER_DATE));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastUpdateTime);
-        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastUpdateDate);
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastUpdateTime);
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastUpdateDate);
     }
 }

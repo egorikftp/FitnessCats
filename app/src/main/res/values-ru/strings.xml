@@ -29,7 +29,6 @@
     <string name="fitness_data_fragment_alert_positive_btn">Удалить</string>
     <string name="fitness_data_fragment_alert_title">Удалить это занятие?</string>
     <string name="fragment_track_toolbar_title">Подробнее о занятии</string>
-    <string name="liked_fragment_adapter_distance_meter">%s м</string>
     <string name="liked_fragment_no_more_liked_tracks">У котиков нет любимых занятий</string>
     <string name="navigation_drawer_exit">Выход</string>
     <string name="navigation_drawer_liked">Избранное</string>
@@ -60,8 +59,6 @@
     <string name="tab_text_walking">Прогулки</string>
     <string name="time_dialog_title">Установить новое время</string>
     <string name="track_fragment_distance">Дистанция:</string>
-    <string name="adapter_fragment_liked_calories">Калории:</string>
-    <string name="adapter_fragment_liked_distance">Дистанция:</string>
     <string name="fit_activity_final_distance_meter">Финальный результат: %s м</string>
     <string name="no_tracks_text">И почему мы не занимаемся?</string>
     <string name="statistic_fragment_bad_fit">Надо больше заниматься</string>

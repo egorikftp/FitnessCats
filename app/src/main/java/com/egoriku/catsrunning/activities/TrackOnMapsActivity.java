@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,7 +18,6 @@ import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.utils.ConverterTime;
-import com.egoriku.catsrunning.utils.VectorToDrawable;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -43,6 +43,7 @@ import java.util.List;
 import static com.egoriku.catsrunning.models.Constants.Extras.EXTRA_TRACK_ON_MAPS;
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TRACKS;
 import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_LIKED;
+import static com.egoriku.catsrunning.util.DrawableKt.drawableCompat;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 import static com.egoriku.catsrunning.utils.VectorToDrawable.createBitmapFromVector;
 
@@ -144,11 +145,11 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
-    private LatLng createMarker(GoogleMap map, LatLng latLng, String title, int idIco) {
+    private LatLng createMarker(GoogleMap map, LatLng latLng, String title, @DrawableRes int idIco) {
         Marker marker = map.addMarker(new MarkerOptions()
                 .position(latLng)
                 .title(title)
-                .icon(BitmapDescriptorFactory.fromBitmap(createBitmapFromVector(App.getInstance().getResources(), idIco))));
+                .icon(BitmapDescriptorFactory.fromBitmap(createBitmapFromVector(App.appInstance.getResources(), idIco))));
         return marker.getPosition();
     }
 
@@ -161,7 +162,9 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem likedItem = menu.findItem(R.id.menu_tracks_on_map_activity_action_like);
-        likedItem.setIcon(isFavorite ? VectorToDrawable.getDrawable(R.drawable.ic_vec_star_white) : VectorToDrawable.getDrawable(R.drawable.ic_vec_star_border_white));
+        likedItem.setIcon(isFavorite ?
+                drawableCompat(this, R.drawable.ic_vec_star_white) :
+                drawableCompat(this, R.drawable.ic_vec_star_border_white));
         return true;
     }
 
@@ -210,7 +213,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null) {
-                                Toast.makeText(TrackOnMapsActivity.this, databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
+                                Toast.makeText(TrackOnMapsActivity.this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }
                     });

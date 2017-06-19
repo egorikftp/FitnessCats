@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.content.res.AppCompatResources;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +20,7 @@ import android.widget.FrameLayout;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
 import com.egoriku.catsrunning.activities.TracksActivity;
-import com.egoriku.catsrunning.models.TypeFit;
-
-import static com.egoriku.catsrunning.utils.VectorToDrawable.getDrawable;
+import com.egoriku.catsrunning.helpers.TypeFit;
 
 public class AllFitnessDataFragment extends Fragment {
     private SectionsPagerAdapter sectionsPagerAdapter;
@@ -124,7 +123,7 @@ public class AllFitnessDataFragment extends Fragment {
 
         tabLayout.setupWithViewPager(viewPager);
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            tabLayout.getTabAt(i).setIcon(getDrawable(imageResId[i]));
+            tabLayout.getTabAt(i).setIcon(AppCompatResources.getDrawable(getContext(), imageResId[i]));
         }
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

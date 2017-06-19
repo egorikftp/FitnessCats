@@ -89,7 +89,7 @@ public class UpdateDateReminderDialog extends DialogFragment {
                                 getArguments().getInt(KEY_TYPE_REMINDER)
                         );
 
-                        LocalBroadcastManager.getInstance(App.getInstance())
+                        LocalBroadcastManager.getInstance(App.appInstance)
                                 .sendBroadcastSync(new Intent(BROADCAST_UPDATE_REMINDER_DATE));
                     }
                 }).show();

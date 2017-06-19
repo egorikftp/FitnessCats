@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,6 +50,8 @@ import static android.os.Build.VERSION;
 import static android.os.Build.VERSION_CODES;
 import static com.egoriku.catsrunning.activities.SplashActivity.Constant.IS_ANIMATE;
 import static com.egoriku.catsrunning.fragments.FragmentsTag.MAIN;
+import static com.egoriku.catsrunning.util.DrawableKt.drawableCompat;
+import static com.egoriku.catsrunning.util.TimberLogKt.d;
 
 public class TracksActivity extends AppCompatActivity {
 
@@ -108,29 +109,29 @@ public class TracksActivity extends AppCompatActivity {
                 .addDrawerItems(
                         new PrimaryDrawerItem()
                                 .withName(R.string.navigation_drawer_main_activity)
-                                .withIcon(AppCompatResources.getDrawable(this, R.drawable.ic_vec_tracks))
+                                .withIcon(drawableCompat(this, R.drawable.ic_vec_tracks))
                                 .withTag(MAIN),
                         new PrimaryDrawerItem()
                                 .withName(R.string.navigation_drawer_reminders)
-                                .withIcon(AppCompatResources.getDrawable(this, R.drawable.ic_vec_notifications))
+                                .withIcon(drawableCompat(this, R.drawable.ic_vec_notifications))
                                 .withTag(FragmentsTag.REMINDER),
                         new PrimaryDrawerItem()
                                 .withName(R.string.navigation_drawer_liked)
-                                .withIcon(AppCompatResources.getDrawable(this, R.drawable.ic_vec_favorite))
+                                .withIcon(drawableCompat(this, R.drawable.ic_vec_favorite))
                                 .withTag(FragmentsTag.LIKED),
                         new PrimaryDrawerItem()
                                 .withName(R.string.navigation_drawer_statistic)
-                                .withIcon(AppCompatResources.getDrawable(this, R.drawable.ic_vec_statistic))
+                                .withIcon(drawableCompat(this, R.drawable.ic_vec_statistic))
                                 .withTag(FragmentsTag.STATISTIC),
                         new DividerDrawerItem(),
                         new SecondaryDrawerItem()
                                 .withName(R.string.navigation_drawer_exit)
-                                .withIcon(AppCompatResources.getDrawable(this, R.drawable.ic_vec_exit_from_app))
+                                .withIcon(drawableCompat(this, R.drawable.ic_vec_exit_from_app))
                                 .withTag(FragmentsTag.EXIT))
                 .addStickyDrawerItems(
                         new PrimaryDrawerItem()
                                 .withName(R.string.navigation_drawer_setting)
-                                .withIcon(AppCompatResources.getDrawable(this, R.drawable.ic_vec_settings))
+                                .withIcon(drawableCompat(this, R.drawable.ic_vec_settings))
                                 .withTag(FragmentsTag.SETTINGS))
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -164,21 +165,6 @@ public class TracksActivity extends AppCompatActivity {
                         return false;
                     }
                 })
-                .withOnDrawerListener(new Drawer.OnDrawerListener() {
-                    @Override
-                    public void onDrawerOpened(View drawerView) {
-                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                    }
-
-                    @Override
-                    public void onDrawerClosed(View drawerView) {
-                    }
-
-                    @Override
-                    public void onDrawerSlide(View drawerView, float slideOffset) {
-                    }
-                })
                 .withSavedInstance(savedInstanceState)
                 .build();
     }
@@ -190,11 +176,12 @@ public class TracksActivity extends AppCompatActivity {
                 .addProfiles(new ProfileDrawerItem()
                         .withName(userName)
                         .withEmail(userEmail)
-                        .withIcon(AppCompatResources.getDrawable(this, R.drawable.ic_vec_cat_weary)))
+                        .withIcon(drawableCompat(this, R.drawable.ic_vec_cat_weary)))
                 .build();
     }
 
     private void showFragment(Fragment fragment, @FragmentsTag String tag, @FragmentsTag String clearToTag, boolean clearInclusive) {
+        d(tag);
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         if (clearToTag != null || clearInclusive) {

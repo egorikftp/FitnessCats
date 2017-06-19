@@ -1,5 +1,6 @@
 package com.egoriku.catsrunning.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -10,12 +11,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
+import com.egoriku.catsrunning.helpers.TypeFit;
 import com.egoriku.catsrunning.models.Firebase.SaveModel;
-import com.egoriku.catsrunning.models.TypeFit;
 import com.egoriku.catsrunning.utils.ConverterTime;
 
 import static com.egoriku.catsrunning.models.Constants.Color.COLOR_NOW_FIT;
-import static com.egoriku.catsrunning.utils.VectorToDrawable.setImageAdapter;
+import static com.egoriku.catsrunning.util.DrawableKt.drawableCompat;
+import static com.egoriku.catsrunning.util.DrawableKt.drawableTypeFit;
 
 public class FitnessDataHolder extends RecyclerView.ViewHolder {
 
@@ -26,6 +28,7 @@ public class FitnessDataHolder extends RecyclerView.ViewHolder {
     private CardView cardView;
     private TextView caloriesText;
     private TextView distanceText;
+    private Context context;
 
     private ClickListener clickListener;
 
@@ -35,6 +38,8 @@ public class FitnessDataHolder extends RecyclerView.ViewHolder {
 
     public FitnessDataHolder(View itemView) {
         super(itemView);
+        context = itemView.getContext();
+
         favoriteImage = (ImageView) itemView.findViewById(R.id.adapter_all_fitness_data_image_liked);
         typeFitImage = (ImageView) itemView.findViewById(R.id.adapter_all_fitness_data_ic_type);
         fitDateText = (TextView) itemView.findViewById(R.id.adapter_all_fitness_data_date_text);
@@ -66,6 +71,7 @@ public class FitnessDataHolder extends RecyclerView.ViewHolder {
         });
     }
 
+    @SuppressLint("StringFormatMatches")
     public void setData(SaveModel data, Context context) {
         distanceText.setText(String.format(context.getString(R.string.adapter_all_fitness_data_distance_meter), data.getDistance()));
         caloriesText.setText(String.format(context.getString(R.string.adapter_all_fitness_data_calories), data.getCalories()));
@@ -73,23 +79,14 @@ public class FitnessDataHolder extends RecyclerView.ViewHolder {
 
         setFitTimeText(data.getBeginsAt(), data.getTime());
         setTypeFitImage(data.getTypeFit());
-        setImageAdapter(favoriteImage, data.isFavorite() ? R.drawable.ic_vec_star_black : R.drawable.ic_vec_star_border);
+
+        favoriteImage.setImageDrawable(data.isFavorite() ?
+                drawableCompat(context, R.drawable.ic_vec_star_black) :
+                drawableCompat(context, R.drawable.ic_vec_star_border));
     }
 
     private void setTypeFitImage(@TypeFit int typeFit) {
-        switch (typeFit) {
-            case TypeFit.WALKING:
-                setImageAdapter(typeFitImage, R.drawable.ic_vec_directions_walk_40dp);
-                break;
-
-            case TypeFit.RUNNING:
-                setImageAdapter(typeFitImage, R.drawable.ic_vec_directions_run_40dp);
-                break;
-
-            case TypeFit.CYCLING:
-                setImageAdapter(typeFitImage, R.drawable.ic_vec_directions_bike_40dp);
-                break;
-        }
+        typeFitImage.setImageDrawable(drawableTypeFit(context, typeFit));
     }
 
     private void setFitTimeText(long beginsAt, long time) {

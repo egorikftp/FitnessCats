@@ -1,4 +1,4 @@
-package com.egoriku.catsrunning.models;
+package com.egoriku.catsrunning.helpers;
 
 import android.support.annotation.IntDef;
 

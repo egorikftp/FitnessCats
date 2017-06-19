@@ -1,5 +1,6 @@
 package com.egoriku.catsrunning.models;
 
+import com.egoriku.catsrunning.helpers.TypeFit;
 import com.egoriku.catsrunning.models.Firebase.Point;
 
 import java.util.List;

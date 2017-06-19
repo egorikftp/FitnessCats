@@ -1,6 +1,7 @@
 package com.egoriku.catsrunning.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,11 +26,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
+import com.egoriku.catsrunning.helpers.TypeFit;
 import com.egoriku.catsrunning.models.Constants;
 import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.models.ParcelableFitActivityModel;
-import com.egoriku.catsrunning.models.TypeFit;
 import com.egoriku.catsrunning.services.FitService;
 import com.egoriku.catsrunning.utils.ConverterTime;
 import com.egoriku.catsrunning.utils.CustomChronometer;
@@ -166,6 +167,7 @@ public class FitActivity extends AppCompatActivity {
         });
 
         btnFinish.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("StringFormatMatches")
             @Override
             public void onClick(View view) {
                 stopService(new IntentBuilder()
@@ -365,7 +367,7 @@ public class FitActivity extends AppCompatActivity {
         }
     }
 
-    public static void start(Context context, @TypeFit int typeFit){
+    public static void start(Context context, @TypeFit int typeFit) {
         Intent intent = new Intent(context, FitActivity.class);
         intent.putExtra(KEY_TYPE_FIT, typeFit);
         context.startActivity(intent);

@@ -2,6 +2,7 @@ package com.egoriku.catsrunning.adapters;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +22,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.egoriku.catsrunning.utils.VectorToDrawable.setImageAdapter;
-import static com.egoriku.catsrunning.utils.VectorToDrawable.setImageButtonAdapter;
+import static com.egoriku.catsrunning.util.DrawableKt.drawableCompat;
+import static com.egoriku.catsrunning.util.DrawableKt.drawableTypeReminder;
 
 public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
 
@@ -31,10 +32,11 @@ public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
     private static final float ANIMATE_ALPHA_MORE = 1.0f;
     private List<ReminderModel> reminderModelList = new ArrayList<>();
     private IRemindersClickListener iRemindersClickListener;
+    private Context context;
 
-    public RemindersAdapter() {
+    public RemindersAdapter(Context context) {
+        this.context = context;
     }
-
 
     public void setOnItemClickListener(IRemindersClickListener iRemindersClickListener) {
         this.iRemindersClickListener = iRemindersClickListener;
@@ -123,10 +125,10 @@ public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
             public void onClick(View view) {
                 if (imageViewLine.getVisibility() == View.GONE) {
                     animateItemExpandMore(imageViewLine, imageViewDelete);
-                    setImageButtonAdapter(imageBtnExpand, R.drawable.ic_vec_expand_less_black);
+                    imageBtnExpand.setImageDrawable(drawableCompat(context, R.drawable.ic_vec_expand_less_black));
                 } else {
                     animateItemExpandLess(imageViewLine, imageViewDelete);
-                    setImageButtonAdapter(imageBtnExpand, R.drawable.ic_vec_expand_more_black);
+                    imageBtnExpand.setImageDrawable(drawableCompat(context, R.drawable.ic_vec_expand_more_black));
                 }
             }
         });
@@ -146,21 +148,9 @@ public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
             }
         });
 
-        switch (reminderModelList.get(position).getTypeReminder()) {
-            case 1:
-                setImageAdapter(imageViewLiked, R.drawable.ic_vec_directions_walk_reminders);
-                break;
+        imageViewLiked.setImageDrawable(drawableTypeReminder(context, reminderModelList.get(position).getTypeReminder()));
 
-            case 2:
-                setImageAdapter(imageViewLiked, R.drawable.ic_vec_directions_run_reminders);
-                break;
-
-            case 3:
-                setImageAdapter(imageViewLiked, R.drawable.ic_vec_directions_bike_reminders);
-                break;
-        }
-
-        switch (reminderModelList.get(position).getIsRing()){
+        switch (reminderModelList.get(position).getIsRing()) {
             case 0:
                 aSwitch.setChecked(false);
                 break;

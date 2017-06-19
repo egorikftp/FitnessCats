@@ -38,14 +38,6 @@
     <string name="scamper_activity_toolbar_title">Statistics %s</string>
     <string name="fit_activity_now_time">Time: %s</string>
 
-    <!-- Adapter Liked Fragment  -->
-    <string name="liked_fragment_adapter_distance_meter">%s m</string>
-    <string name="liked_fragment_adapter_calories">%s kcal</string>
-
-    <!-- Adapter Fragment Liked -->
-    <string name="adapter_fragment_liked_calories">Calories:</string>
-    <string name="adapter_fragment_liked_distance">Distance:</string>
-
     <!-- All Fitness Data Fragment -->
     <string name="adapter_all_fitness_data_distance_meter">%s m</string>
     <string name="adapter_all_fitness_data_calories">%s kcal</string>

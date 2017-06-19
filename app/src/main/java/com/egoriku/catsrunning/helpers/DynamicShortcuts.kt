@@ -13,7 +13,6 @@ import android.support.annotation.StringRes
 import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.activities.FitActivity
 import com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT
-import com.egoriku.catsrunning.models.TypeFit
 
 class DynamicShortcuts
 constructor(private val context: Context) {

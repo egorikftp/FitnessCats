@@ -11,7 +11,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.ui.CustomStringPicker;
 
@@ -126,7 +125,7 @@ public class AddReminderActivity extends AppCompatActivity {
 
                 if (condition == 3) {
                     if (allDateCalendar.getTimeInMillis() < Calendar.getInstance().getTimeInMillis()) {
-                        Toast.makeText(App.getInstance(), getString(R.string.reminders_fragment_error_date) + " " + getEmojiByUnicode(UNICODE_EMOJI), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddReminderActivity.this, getString(R.string.reminders_fragment_error_date) + " " + getEmojiByUnicode(UNICODE_EMOJI), Toast.LENGTH_SHORT).show();
                         return;
                     }
 

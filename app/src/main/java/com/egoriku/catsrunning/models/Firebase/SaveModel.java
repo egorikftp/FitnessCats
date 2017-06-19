@@ -3,7 +3,7 @@ package com.egoriku.catsrunning.models.Firebase;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.egoriku.catsrunning.models.TypeFit;
+import com.egoriku.catsrunning.helpers.TypeFit;
 
 import java.util.ArrayList;
 import java.util.List;

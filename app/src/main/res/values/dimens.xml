@@ -21,8 +21,6 @@
 
 
     <!-- Adapter Liked Fragment -->
-    <dimen name="adapter_fragment_liked_margin">6dp</dimen>
-    <dimen name="adapter_fragment_liked_padding_image_liked">10dp</dimen>
     <dimen name="liked_fragment_text_margin">15dp</dimen>
 
     <dimen name="statistic_fragment_icon_width">20dp</dimen>
