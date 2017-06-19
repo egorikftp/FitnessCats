@@ -222,7 +222,7 @@ public class TracksActivity extends AppCompatActivity {
                 });
     }
 
-    public void onFragmentStart(int titleResId, @FragmentsTag String tag) {
+    public void onFragmentStart(int titleResId) {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(titleResId);
         }

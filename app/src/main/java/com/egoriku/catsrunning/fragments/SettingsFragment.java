@@ -66,7 +66,7 @@ public class SettingsFragment extends Fragment implements ValueEventListener {
     @Override
     public void onStart() {
         super.onStart();
-        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_setting, FragmentsTag.SETTINGS);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_setting);
     }
 
     @Override

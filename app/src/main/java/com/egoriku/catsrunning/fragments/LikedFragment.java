@@ -67,7 +67,7 @@ public class LikedFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_liked, FragmentsTag.LIKED);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_liked);
     }
 
     @Override

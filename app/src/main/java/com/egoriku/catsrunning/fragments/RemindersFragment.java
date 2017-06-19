@@ -90,7 +90,7 @@ public class RemindersFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_reminders, FragmentsTag.REMINDER);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_reminders);
     }
 
     @Override

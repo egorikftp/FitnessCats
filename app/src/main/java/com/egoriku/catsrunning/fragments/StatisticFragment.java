@@ -84,7 +84,7 @@ public class StatisticFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_statistic, FragmentsTag.STATISTIC);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_statistic);
     }
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

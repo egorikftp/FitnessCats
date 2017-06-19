@@ -52,7 +52,7 @@ public class AllFitnessDataFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((TracksActivity) getActivity()).onFragmentStart(R.string.tab_text_walking, FragmentsTag.MAIN);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.tab_text_walking);
     }
 
     @Nullable

@@ -25,6 +25,7 @@ import static com.egoriku.catsrunning.utils.VectorToDrawable.setImageAdapter;
 import static com.egoriku.catsrunning.utils.VectorToDrawable.setImageButtonAdapter;
 
 public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
+
     public static final float ANIMATE_ALPHA = 0.0f;
     public static final int ANIMATE_DURATION = 300;
     private static final float ANIMATE_ALPHA_MORE = 1.0f;
