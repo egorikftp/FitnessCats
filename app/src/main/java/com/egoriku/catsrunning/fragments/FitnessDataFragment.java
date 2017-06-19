@@ -44,18 +44,15 @@ public class FitnessDataFragment extends Fragment {
     private ProgressBar progressBar;
 
     private FirebaseRecyclerAdapter adapter;
-    private static IFABScroll ifabScroll;
-
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     public FitnessDataFragment() {
     }
 
-    public static FitnessDataFragment newInstance(int sectionNumber, IFABScroll iFabScroll) {
+    public static FitnessDataFragment newInstance(int sectionNumber) {
         FitnessDataFragment fragment = new FitnessDataFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        ifabScroll = iFabScroll;
         fragment.setArguments(args);
         return fragment;
     }
@@ -161,16 +158,6 @@ public class FitnessDataFragment extends Fragment {
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 if (adapter.getItemCount() == 0) {
                     showNoTracks();
-                }
-            }
-        });
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (ifabScroll != null) {
-                    ifabScroll.onScrollChange();
                 }
             }
         });

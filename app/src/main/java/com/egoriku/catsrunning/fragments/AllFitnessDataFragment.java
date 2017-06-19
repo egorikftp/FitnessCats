@@ -45,18 +45,15 @@ public class AllFitnessDataFragment extends Fragment {
     public AllFitnessDataFragment() {
     }
 
-
     public static AllFitnessDataFragment newInstance() {
         return new AllFitnessDataFragment();
     }
-
 
     @Override
     public void onStart() {
         super.onStart();
         ((TracksActivity) getActivity()).onFragmentStart(R.string.tab_text_walking, FragmentsTag.MAIN);
     }
-
 
     @Nullable
     @Override
@@ -163,7 +160,6 @@ public class AllFitnessDataFragment extends Fragment {
         fabStatus = false;
     }
 
-
     @Override
     public void onPause() {
         super.onPause();
@@ -227,15 +223,7 @@ public class AllFitnessDataFragment extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
-            return FitnessDataFragment.newInstance(position + 1, new IFABScroll() {
-                @Override
-                public void onScrollChange() {
-                    if (fabStatus) {
-                        changeFabState(fabStatus);
-                        fabStatus = false;
-                    }
-                }
-            });
+            return FitnessDataFragment.newInstance(position + 1);
         }
 
         @Override

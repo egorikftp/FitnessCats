@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.content.res.AppCompatResources;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,10 +13,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.egoriku.catsrunning.DebugApplication;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.models.Firebase.UserInfo;
@@ -77,6 +80,16 @@ public class SettingsFragment extends Fragment implements ValueEventListener {
         age = (EditText) view.findViewById(R.id.settings_age);
         userName = (TextView) view.findViewById(R.id.settings_user_name);
         userEmail = (TextView) view.findViewById(R.id.settings_user_email);
+
+        final DebugApplication.TogglableHeapDumper heapDumper = ((DebugApplication) getActivity().getApplicationContext()).getDumper();
+        final Button leakCanary = (Button) view.findViewById(R.id.leak_canary);
+        leakCanary.setBackgroundColor(heapDumper.isEnabled() ? ContextCompat.getColor(getContext(), R.color.primary_dark) : ContextCompat.getColor(getContext(), R.color.accent));
+        leakCanary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                leakCanary.setBackgroundColor(heapDumper.toggle() ? ContextCompat.getColor(getContext(), R.color.primary_dark) : ContextCompat.getColor(getContext(), R.color.accent));
+            }
+        });
 
         if (user != null) {
             userName.setText(user.getDisplayName());
