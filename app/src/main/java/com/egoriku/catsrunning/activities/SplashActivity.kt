@@ -1,6 +1,7 @@
 package com.egoriku.catsrunning.activities
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
@@ -9,6 +10,7 @@ import android.view.animation.AnimationUtils
 import com.egoriku.catsrunning.BuildConfig
 import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.activities.SplashActivity.Constant.IS_ANIMATE
+import com.egoriku.catsrunning.helpers.DynamicShortcuts
 import com.egoriku.catsrunning.util.SimpleAnimationListener
 import com.egoriku.catsrunning.util.snack
 import com.firebase.ui.auth.AuthUI
@@ -45,10 +47,15 @@ class SplashActivity : AppCompatActivity() {
         animation.setAnimationListener(object : SimpleAnimationListener() {
             override fun onAnimationEnd(animation: Animation?) {
                 if (FirebaseAuth.getInstance().currentUser != null) {
+                    buildShortcuts()
                     startActivity<TracksActivity>()
                     finish()
                     animateTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                 } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+                        DynamicShortcuts(this@SplashActivity).clearShortcuts()
+                    }
+
                     startActivityForResult(
                             AuthUI.getInstance()
                                     .createSignInIntentBuilder()
@@ -68,6 +75,12 @@ class SplashActivity : AppCompatActivity() {
         })
     }
 
+    private fun buildShortcuts() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            DynamicShortcuts(this@SplashActivity).buildShortcuts()
+        }
+    }
+
     private fun animateTransition(enterAnim: Int, exitAnim: Int) {
         overridePendingTransition(enterAnim, exitAnim)
     }
@@ -78,6 +91,7 @@ class SplashActivity : AppCompatActivity() {
             val response = IdpResponse.fromResultIntent(data)
 
             if (resultCode == ResultCodes.OK) {
+                buildShortcuts()
                 startActivity<TracksActivity>()
                 finish()
                 return
@@ -105,5 +119,4 @@ class SplashActivity : AppCompatActivity() {
     private fun showMessage(@StringRes messageId: Int) {
         splash_screen_container.snack(messageId)
     }
-
 }
