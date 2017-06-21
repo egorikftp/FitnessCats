@@ -1,4 +1,4 @@
-package com.egoriku.catsrunning.ui.statisticChart;
+package com.egoriku.catsrunning.ui.customview.statisticChart;
 
 import android.graphics.Paint;
 

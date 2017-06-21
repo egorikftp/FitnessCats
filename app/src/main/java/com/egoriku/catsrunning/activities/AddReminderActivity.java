@@ -12,7 +12,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.ui.CustomStringPicker;
+import com.egoriku.catsrunning.ui.customview.CustomStringPicker;
 
 import java.util.Arrays;
 import java.util.Calendar;

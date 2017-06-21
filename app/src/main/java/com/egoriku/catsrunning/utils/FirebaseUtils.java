@@ -4,7 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.egoriku.catsrunning.activities.AddUserInfoActivity;
-import com.egoriku.catsrunning.models.Firebase.SaveModel;
+import com.egoriku.catsrunning.data.TracksModel;
 import com.egoriku.catsrunning.models.Firebase.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -13,8 +13,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import timber.log.Timber;
 
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TRACKS;
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.USER_INFO;
@@ -34,16 +32,15 @@ public class FirebaseUtils {
         }
 
         return firebaseDatabase.getReference();
-
     }
 
-    public static void updateTrackFavorire(SaveModel saveModel, final Context context) {
-        if (user != null && saveModel.getTrackToken() != null) {
+    public static void updateTrackFavorire(TracksModel tracksModel, final Context context) {
+        if (user != null && tracksModel.getTrackToken() != null) {
             getDatabaseReference()
                     .child(TRACKS)
                     .child(user.getUid())
-                    .child(saveModel.getTrackToken())
-                    .setValue(saveModel, new DatabaseReference.CompletionListener() {
+                    .child(tracksModel.getTrackToken())
+                    .setValue(tracksModel, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null) {
@@ -70,12 +67,12 @@ public class FirebaseUtils {
         }
     }
 
-    public static void removeTrack(SaveModel saveModel, final Context context) {
-        if (saveModel.getTrackToken() != null && user != null) {
+    public static void removeTrack(TracksModel tracksModel, final Context context) {
+        if (tracksModel.getTrackToken() != null && user != null) {
             getDatabaseReference()
                     .child(TRACKS)
                     .child(user.getUid())
-                    .child(saveModel.getTrackToken())
+                    .child(tracksModel.getTrackToken())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -91,7 +88,6 @@ public class FirebaseUtils {
     }
 
     public static void updateUserInfo(final Context context) {
-        Timber.d("ff");
         if (user != null) {
             getDatabaseReference()
                     .child(USER_INFO)
@@ -99,12 +95,9 @@ public class FirebaseUtils {
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            Timber.d("2");
                             if (!dataSnapshot.exists()) {
-                                Timber.d("3");
                                 AddUserInfoActivity.start(context);
                             } else {
-                                Timber.d("4");
                                 UserInfoPreferences userInfoPreferences = new UserInfoPreferences(context);
                                 UserInfo userInfo = dataSnapshot.getValue(UserInfo.class);
 

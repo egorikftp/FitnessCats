@@ -1,8 +1,8 @@
-package com.egoriku.catsrunning.util
+package com.egoriku.catsrunning.util.extensions
 
 import timber.log.Timber
 
-fun d(message: String, vararg args: Any) {
+inline fun d(message: String, vararg args: Any) {
     Timber.d(message, args)
 }
 

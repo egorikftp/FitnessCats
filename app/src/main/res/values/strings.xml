@@ -6,6 +6,7 @@
 
     <!-- Navigation Drawer -->
     <string name="navigation_drawer_main_activity">List of routes</string>
+    <string name="navigation_drawer_main_activity_new">List of routes [new]</string>
     <string name="navigation_drawer_reminders">Reminders</string>
     <string name="navigation_drawer_liked">Liked</string>
     <string name="navigation_drawer_statistic">Statistic</string>
@@ -39,8 +40,8 @@
     <string name="fit_activity_now_time">Time: %s</string>
 
     <!-- All Fitness Data Fragment -->
-    <string name="adapter_all_fitness_data_distance_meter">%s m</string>
-    <string name="adapter_all_fitness_data_calories">%s kcal</string>
+    <string name="distance_format">%s m</string>
+    <string name="calories_format">%s kcal</string>
     <string name="adapter_all_fitness_data_distance">Distance:</string>
     <string name="adapter_fragment_main_calories">Calories:</string>
 
@@ -124,4 +125,7 @@
     <string name="auth_no_internet_connection">Check internet connection</string>
     <string name="auth_unknown_error">Unknown error</string>
     <string name="auth_unknown_sign_in_response">Unknown Sign In response</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

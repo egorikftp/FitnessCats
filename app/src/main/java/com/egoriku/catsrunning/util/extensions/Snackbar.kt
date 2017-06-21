@@ -1,4 +1,4 @@
-package com.egoriku.catsrunning.util
+package com.egoriku.catsrunning.util.extensions
 
 import android.support.annotation.ColorInt
 import android.support.annotation.StringRes

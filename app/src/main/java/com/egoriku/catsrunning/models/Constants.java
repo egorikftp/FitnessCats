@@ -14,7 +14,7 @@ public interface Constants {
 
         interface Tables {
             String TABLE_POINT = "Point";
-            String TABLE_TRACKS = "Tracks";
+            String TABLE_TRACKS = "TracksModel";
             String TABLE_REMINDER = "Reminder";
             String TABLE_USER = "User";
         }

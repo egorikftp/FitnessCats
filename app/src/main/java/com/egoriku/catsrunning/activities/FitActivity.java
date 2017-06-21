@@ -26,9 +26,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
+import com.egoriku.catsrunning.data.TracksModel;
 import com.egoriku.catsrunning.helpers.TypeFit;
 import com.egoriku.catsrunning.models.Constants;
-import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.models.ParcelableFitActivityModel;
 import com.egoriku.catsrunning.services.FitService;
@@ -202,7 +202,7 @@ public class FitActivity extends AppCompatActivity {
             databaseReference = FirebaseDatabase.getInstance().getReference();
             String trackToken = databaseReference.child(TRACKS).child(user.getUid()).push().getKey();
 
-            SaveModel saveModel = new SaveModel(
+            TracksModel tracksModel = new TracksModel(
                     fitState.getStartTime() / 1000L,
                     fitState.getSinceTime(),
                     (int) fitState.getNowDistance(),
@@ -211,7 +211,7 @@ public class FitActivity extends AppCompatActivity {
                     fitState.getPoints()
             );
 
-            FirebaseDatabase.getInstance().getReference().child(TRACKS).child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {
+            FirebaseDatabase.getInstance().getReference().child(TRACKS).child(user.getUid()).child(trackToken).setValue(tracksModel, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                     if (databaseError != null) {

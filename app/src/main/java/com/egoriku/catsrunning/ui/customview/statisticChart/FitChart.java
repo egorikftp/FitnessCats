@@ -1,4 +1,4 @@
-package com.egoriku.catsrunning.ui.statisticChart;
+package com.egoriku.catsrunning.ui.customview.statisticChart;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;

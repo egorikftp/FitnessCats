@@ -1,7 +1,6 @@
 package com.egoriku.catsrunning.activities;
 
 import android.animation.Animator;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -19,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.egoriku.catsrunning.R;
@@ -29,6 +27,7 @@ import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.SettingsFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
+import com.egoriku.catsrunning.fragments.TracksFragment;
 import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.firebase.ui.auth.AuthUI;
@@ -50,8 +49,9 @@ import static android.os.Build.VERSION;
 import static android.os.Build.VERSION_CODES;
 import static com.egoriku.catsrunning.activities.SplashActivity.Constant.IS_ANIMATE;
 import static com.egoriku.catsrunning.fragments.FragmentsTag.MAIN;
+import static com.egoriku.catsrunning.fragments.FragmentsTag.NEW_MAIN;
 import static com.egoriku.catsrunning.util.DrawableKt.drawableCompat;
-import static com.egoriku.catsrunning.util.TimberLogKt.d;
+import static com.egoriku.catsrunning.util.extensions.TimberLogKt.d;
 
 public class TracksActivity extends AppCompatActivity {
 
@@ -87,7 +87,7 @@ public class TracksActivity extends AppCompatActivity {
         }
 
         if (savedInstanceState == null) {
-            showFragment(AllFitnessDataFragment.newInstance(), MAIN, null, true);
+            showFragment(TracksFragment.Companion.newInstance(), NEW_MAIN, null, true);
         }
     }
 
@@ -123,6 +123,10 @@ public class TracksActivity extends AppCompatActivity {
                                 .withName(R.string.navigation_drawer_statistic)
                                 .withIcon(drawableCompat(this, R.drawable.ic_vec_statistic))
                                 .withTag(FragmentsTag.STATISTIC),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.navigation_drawer_main_activity_new)
+                                .withIcon(drawableCompat(this, R.drawable.ic_vec_tracks))
+                                .withTag(NEW_MAIN),
                         new DividerDrawerItem(),
                         new SecondaryDrawerItem()
                                 .withName(R.string.navigation_drawer_exit)
@@ -161,6 +165,9 @@ public class TracksActivity extends AppCompatActivity {
                             case FragmentsTag.SETTINGS:
                                 showFragment(SettingsFragment.newInstance(), FragmentsTag.SETTINGS, FragmentsTag.MAIN, false);
                                 break;
+                            case FragmentsTag.NEW_MAIN:
+                                showFragment(TracksFragment.Companion.newInstance(), FragmentsTag.NEW_MAIN, FragmentsTag.MAIN, false);
+                                break;
                         }
                         return false;
                     }
@@ -197,7 +204,6 @@ public class TracksActivity extends AppCompatActivity {
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         transaction.commit();
     }
-
 
     private void exitFromAccount() {
         AuthUI.getInstance()

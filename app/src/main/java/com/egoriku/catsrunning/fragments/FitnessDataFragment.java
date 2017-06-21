@@ -17,7 +17,7 @@ import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.adapters.FitnessDataHolder;
-import com.egoriku.catsrunning.models.Firebase.SaveModel;
+import com.egoriku.catsrunning.data.TracksModel;
 import com.egoriku.catsrunning.utils.CustomFont;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.egoriku.catsrunning.utils.IntentBuilder;
@@ -79,9 +79,9 @@ public class FitnessDataFragment extends Fragment {
                 .orderByChild(TYPE_FIT)
                 .equalTo(typeFit);
 
-        adapter = new FirebaseRecyclerAdapter<SaveModel, FitnessDataHolder>(SaveModel.class, R.layout.adapter_fitness_data_fragment, FitnessDataHolder.class, query) {
+        adapter = new FirebaseRecyclerAdapter<TracksModel, FitnessDataHolder>(TracksModel.class, R.layout.adapter_fitness_data_fragment, FitnessDataHolder.class, query) {
             @Override
-            protected void populateViewHolder(final FitnessDataHolder viewHolder, SaveModel model, int position) {
+            protected void populateViewHolder(final FitnessDataHolder viewHolder, TracksModel model, int position) {
                 showLoading(false);
                 viewHolder.setData(model, getContext());
             }
@@ -94,22 +94,22 @@ public class FitnessDataFragment extends Fragment {
 
                     @Override
                     public void onClickItem(int position) {
-                        SaveModel saveModel = (SaveModel) adapter.getItem(position);
+                        TracksModel tracksModel = (TracksModel) adapter.getItem(position);
 
-                        if (saveModel.getTime() == 0) {
+                        if (tracksModel.getTime() == 0) {
                             startActivity(new IntentBuilder()
                                     .context(getActivity())
                                     .activity(FitActivity.class)
-                                    .extra(KEY_TYPE_FIT, saveModel.getTypeFit())
+                                    .extra(KEY_TYPE_FIT, tracksModel.getTypeFit())
                                     .build());
                         } else {
-                            TrackOnMapsActivity.start(getActivity(), saveModel);
+                            TrackOnMapsActivity.start(getActivity(), tracksModel);
                         }
                     }
 
                     @Override
                     public void onFavoriteClick(int position) {
-                        SaveModel adapterItem = (SaveModel) adapter.getItem(position);
+                        TracksModel adapterItem = (TracksModel) adapter.getItem(position);
                         adapterItem.setFavorite(!adapterItem.isFavorite());
                         FirebaseUtils.updateTrackFavorire(adapterItem, getContext());
                     }
@@ -123,7 +123,7 @@ public class FitnessDataFragment extends Fragment {
                                 .setPositiveButton(R.string.fitness_data_fragment_alert_positive_btn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        FirebaseUtils.removeTrack((SaveModel) adapter.getItem(position), getContext());
+                                        FirebaseUtils.removeTrack((TracksModel) adapter.getItem(position), getContext());
 
                                     }
                                 })

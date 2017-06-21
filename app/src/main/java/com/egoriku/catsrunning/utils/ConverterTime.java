@@ -29,7 +29,7 @@ public class ConverterTime {
         simpleDateFormat.setTimeZone(TimeZone.getDefault());
         String startTime = simpleDateFormat.format(date);
 
-        if(timeFit == 0){
+        if (timeFit == 0) {
             return startTime + " - ?";
         }
 

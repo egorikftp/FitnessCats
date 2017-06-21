@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.models.Firebase.SaveModel;
+import com.egoriku.catsrunning.data.TracksModel;
 import com.egoriku.catsrunning.utils.ConverterTime;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -60,7 +60,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
 
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-    private SaveModel saveModel;
+    private TracksModel tracksModel;
 
     @SuppressWarnings("ConstantConditions")
     @SuppressLint("StringFormatMatches")
@@ -87,17 +87,17 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            saveModel = (SaveModel) bundle.get(EXTRA_TRACK_ON_MAPS);
+            tracksModel = (TracksModel) bundle.get(EXTRA_TRACK_ON_MAPS);
 
-            for (int i = 0; i < saveModel.getPoints().size(); i++) {
-                coordinatesList.add(new LatLng(saveModel.getPoints().get(i).getLat(), saveModel.getPoints().get(i).getLng()));
+            for (int i = 0; i < tracksModel.getPoints().size(); i++) {
+                coordinatesList.add(new LatLng(tracksModel.getPoints().get(i).getLat(), tracksModel.getPoints().get(i).getLng()));
             }
 
-            distanceText.setText(String.format(getString(R.string.track_fragment_distance_meter), saveModel.getDistance()));
-            typeFitText.setText(String.format(getString(R.string.track_fragment_time_running), getTypeFit(saveModel.getTypeFit(), true, R.array.all_fitness_data_categories)));
-            timeRunningText.setText(ConverterTime.ConvertTimeToString(saveModel.getTime()));
-            isFavorite = saveModel.isFavorite();
-            trackToken = saveModel.getTrackToken();
+            distanceText.setText(String.format(getString(R.string.track_fragment_distance_meter), tracksModel.getDistance()));
+            typeFitText.setText(String.format(getString(R.string.track_fragment_time_running), getTypeFit(tracksModel.getTypeFit(), true, R.array.all_fitness_data_categories)));
+            timeRunningText.setText(ConverterTime.ConvertTimeToString(tracksModel.getTime()));
+            isFavorite = tracksModel.isFavorite();
+            trackToken = tracksModel.getTrackToken();
         }
 
         mapFragment.getMapAsync(this);
@@ -173,8 +173,8 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
         switch (item.getItemId()) {
             case R.id.menu_tracks_on_map_activity_action_like:
                 isFavorite = !isFavorite;
-                saveModel.setFavorite(isFavorite);
-                updateTrackFavorire(saveModel);
+                tracksModel.setFavorite(isFavorite);
+                updateTrackFavorire(tracksModel);
                 invalidateOptionsMenu();
                 return true;
 
@@ -203,13 +203,13 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
-    private void updateTrackFavorire(SaveModel saveModel) {
+    private void updateTrackFavorire(TracksModel tracksModel) {
         if (user != null) {
             databaseReference
                     .child(TRACKS)
                     .child(user.getUid())
                     .child(trackToken)
-                    .setValue(saveModel, new DatabaseReference.CompletionListener() {
+                    .setValue(tracksModel, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null) {
@@ -252,8 +252,8 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
         isFavorite = savedInstanceState.getBoolean(KEY_LIKED);
     }
 
-    public static void start(Context context, SaveModel saveModel) {
+    public static void start(Context context, TracksModel tracksModel) {
         context.startActivity(new Intent(context, TrackOnMapsActivity.class)
-                .putExtra(EXTRA_TRACK_ON_MAPS, saveModel));
+                .putExtra(EXTRA_TRACK_ON_MAPS, tracksModel));
     }
 }

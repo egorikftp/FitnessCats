@@ -21,10 +21,10 @@ import android.widget.TextView;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.CustomSpinnerAdapter;
-import com.egoriku.catsrunning.models.Firebase.SaveModel;
+import com.egoriku.catsrunning.data.TracksModel;
 import com.egoriku.catsrunning.models.SpinnerIntervalModel;
-import com.egoriku.catsrunning.ui.statisticChart.FitChart;
-import com.egoriku.catsrunning.ui.statisticChart.FitChartValue;
+import com.egoriku.catsrunning.ui.customview.statisticChart.FitChart;
+import com.egoriku.catsrunning.ui.customview.statisticChart.FitChartValue;
 import com.egoriku.catsrunning.utils.CustomFont;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -69,7 +69,7 @@ public class StatisticFragment extends Fragment {
     private final Calendar calendar = Calendar.getInstance();
 
 
-    private Map<Integer, List<SaveModel>> statisticValues;
+    private Map<Integer, List<TracksModel>> statisticValues;
 
     int[] colorResId = {R.color.chart_value_first_color, R.color.chart_value_second_color, R.color.chart_value_third_color};
 
@@ -122,15 +122,15 @@ public class StatisticFragment extends Fragment {
                         statisticValues = new HashMap<>();
 
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            SaveModel saveModel = child.getValue(SaveModel.class);
+                            TracksModel tracksModel = child.getValue(TracksModel.class);
 
-                            List<SaveModel> modelList = statisticValues.get(saveModel.getTypeFit());
+                            List<TracksModel> modelList = statisticValues.get(tracksModel.getTypeFit());
                             if (modelList == null) {
                                 modelList = new ArrayList<>();
                             }
 
-                            modelList.add(saveModel);
-                            statisticValues.put(saveModel.getTypeFit(), modelList);
+                            modelList.add(tracksModel);
+                            statisticValues.put(tracksModel.getTypeFit(), modelList);
                         }
                         onLoadFinished();
                     }
@@ -215,12 +215,12 @@ public class StatisticFragment extends Fragment {
         Collection<FitChartValue> values = new ArrayList<>();
 
         int i = 0;
-        for (Map.Entry<Integer, List<SaveModel>> value : statisticValues.entrySet()) {
+        for (Map.Entry<Integer, List<TracksModel>> value : statisticValues.entrySet()) {
             int distance = 0;
-            List<SaveModel> saveModels = value.getValue();
+            List<TracksModel> tracksModels = value.getValue();
 
-            for (int j = 0; j < saveModels.size(); j++) {
-                distance += saveModels.get(j).getDistance();
+            for (int j = 0; j < tracksModels.size(); j++) {
+                distance += tracksModels.get(j).getDistance();
             }
             if (distance != 0) {
                 values.add(new FitChartValue(distance, ContextCompat.getColor(getContext(), colorResId[value.getKey() - 1])));
@@ -246,7 +246,7 @@ public class StatisticFragment extends Fragment {
 
     private int getCountDistance() {
         int allDistance = 0;
-        for (Map.Entry<Integer, List<SaveModel>> value : statisticValues.entrySet()) {
+        for (Map.Entry<Integer, List<TracksModel>> value : statisticValues.entrySet()) {
             for (int i = 0; i < value.getValue().size(); i++) {
                 allDistance += value.getValue().get(i).getDistance();
             }
@@ -256,7 +256,7 @@ public class StatisticFragment extends Fragment {
 
     private int getMaxDistance() {
         int maxValue = 0;
-        for (Map.Entry<Integer, List<SaveModel>> value : statisticValues.entrySet()) {
+        for (Map.Entry<Integer, List<TracksModel>> value : statisticValues.entrySet()) {
             for (int i = 0; i < value.getValue().size(); i++) {
                 int distance = value.getValue().get(i).getDistance();
                 if (distance > maxValue) {

@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.helpers.TypeFit;
-import com.egoriku.catsrunning.models.Firebase.SaveModel;
+import com.egoriku.catsrunning.data.TracksModel;
 import com.egoriku.catsrunning.utils.ConverterTime;
 
 import static com.egoriku.catsrunning.models.Constants.Color.COLOR_NOW_FIT;
@@ -40,13 +40,13 @@ public class FitnessDataHolder extends RecyclerView.ViewHolder {
         super(itemView);
         context = itemView.getContext();
 
-        favoriteImage = (ImageView) itemView.findViewById(R.id.adapter_all_fitness_data_image_liked);
-        typeFitImage = (ImageView) itemView.findViewById(R.id.adapter_all_fitness_data_ic_type);
-        fitDateText = (TextView) itemView.findViewById(R.id.adapter_all_fitness_data_date_text);
-        fitTimeText = (TextView) itemView.findViewById(R.id.adapter_all_fitness_data_time_text_view);
+        favoriteImage = (ImageView) itemView.findViewById(R.id.liked_item);
+        typeFitImage = (ImageView) itemView.findViewById(R.id.ic_type_fit);
+        fitDateText = (TextView) itemView.findViewById(R.id.date_fit);
+        fitTimeText = (TextView) itemView.findViewById(R.id.time_fit);
         cardView = (CardView) itemView.findViewById(R.id.adapter_fitness_data_fragment_root_cardview);
-        caloriesText = (TextView) itemView.findViewById(R.id.adapter_all_fitness_data_calories_text_view);
-        distanceText = (TextView) itemView.findViewById(R.id.adapter_all_fitness_data_distance_text_view);
+        caloriesText = (TextView) itemView.findViewById(R.id.calories);
+        distanceText = (TextView) itemView.findViewById(R.id.distance);
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,9 +72,9 @@ public class FitnessDataHolder extends RecyclerView.ViewHolder {
     }
 
     @SuppressLint("StringFormatMatches")
-    public void setData(SaveModel data, Context context) {
-        distanceText.setText(String.format(context.getString(R.string.adapter_all_fitness_data_distance_meter), data.getDistance()));
-        caloriesText.setText(String.format(context.getString(R.string.adapter_all_fitness_data_calories), data.getCalories()));
+    public void setData(TracksModel data, Context context) {
+        distanceText.setText(String.format(context.getString(R.string.distance_format), data.getDistance()));
+        caloriesText.setText(String.format(context.getString(R.string.calories_format), data.getCalories()));
         fitDateText.setText(ConverterTime.convertUnixDateWithoutHours(data.getBeginsAt()));
 
         setFitTimeText(data.getBeginsAt(), data.getTime());

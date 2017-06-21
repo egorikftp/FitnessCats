@@ -12,7 +12,7 @@ import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.activities.SplashActivity.Constant.IS_ANIMATE
 import com.egoriku.catsrunning.helpers.DynamicShortcuts
 import com.egoriku.catsrunning.util.SimpleAnimationListener
-import com.egoriku.catsrunning.util.snack
+import com.egoriku.catsrunning.util.extensions.snack
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse

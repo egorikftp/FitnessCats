@@ -1,4 +1,4 @@
-package com.egoriku.catsrunning.ui;
+package com.egoriku.catsrunning.ui.customview;
 
 import android.content.Context;
 import android.util.AttributeSet;

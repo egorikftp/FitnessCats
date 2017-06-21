@@ -12,7 +12,7 @@ fun drawableCompat(context: Context, @DrawableRes resourceId: Int) = AppCompatRe
 fun drawableTypeFit(context: Context, @TypeFit typeFit: Int) = when (typeFit) {
     TypeFit.WALKING -> drawableCompat(context, R.drawable.ic_vec_directions_walk_40dp)
     TypeFit.RUNNING -> drawableCompat(context, R.drawable.ic_vec_directions_run_40dp)
-    TypeFit.CYCLING -> drawableCompat(context, R.drawable.ic_vec_directions_bike_40dp)
+    TypeFit.CYCLING -> drawableCompat(context, R.drawable.ic_vec_directions_cycling_40dp)
     else -> drawableCompat(context, R.drawable.ic_vec_black_cat)
 }
 

@@ -1,14 +1,16 @@
-package com.egoriku.catsrunning.models.Firebase;
+package com.egoriku.catsrunning.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.egoriku.catsrunning.helpers.TypeFit;
+import com.egoriku.catsrunning.models.Firebase.Point;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SaveModel implements Parcelable {
+public class TracksModel implements Parcelable {
+
     private long beginsAt;
     private long time;
     private int distance;
@@ -19,10 +21,10 @@ public class SaveModel implements Parcelable {
     private int typeFit;
     private List<Point> points;
 
-    public SaveModel() {
+    public TracksModel() {
     }
 
-    public SaveModel(long beginsAt, long time, int distance, String trackToken, int typeFit, List<Point> points) {
+    public TracksModel(long beginsAt, long time, int distance, String trackToken, int typeFit, List<Point> points) {
         this.beginsAt = beginsAt;
         this.time = time;
         this.distance = distance;
@@ -35,40 +37,20 @@ public class SaveModel implements Parcelable {
         return beginsAt;
     }
 
-    public void setBeginsAt(long beginsAt) {
-        this.beginsAt = beginsAt;
-    }
-
     public long getTime() {
         return time;
-    }
-
-    public void setTime(long time) {
-        this.time = time;
     }
 
     public int getDistance() {
         return distance;
     }
 
-    public void setDistance(int distance) {
-        this.distance = distance;
-    }
-
     public int getCalories() {
         return calories;
     }
 
-    public void setCalories(int calories) {
-        this.calories = calories;
-    }
-
     public String getTrackToken() {
         return trackToken;
-    }
-
-    public void setTrackToken(String trackToken) {
-        this.trackToken = trackToken;
     }
 
     public boolean isFavorite() {
@@ -83,21 +65,13 @@ public class SaveModel implements Parcelable {
         return typeFit;
     }
 
-    public void setTypeFit(int typeFit) {
-        this.typeFit = typeFit;
-    }
-
     public List<Point> getPoints() {
         return points;
     }
 
-    public void setPoints(List<Point> points) {
-        this.points = points;
-    }
-
     @Override
     public String toString() {
-        return "SaveModel{" +
+        return "TracksModel{" +
                 "beginsAt=" + beginsAt +
                 ", time=" + time +
                 ", distance=" + distance +
@@ -126,7 +100,7 @@ public class SaveModel implements Parcelable {
         dest.writeList(this.points);
     }
 
-    protected SaveModel(Parcel in) {
+    protected TracksModel(Parcel in) {
         this.beginsAt = in.readLong();
         this.time = in.readLong();
         this.distance = in.readInt();
@@ -138,15 +112,15 @@ public class SaveModel implements Parcelable {
         in.readList(this.points, Point.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<SaveModel> CREATOR = new Parcelable.Creator<SaveModel>() {
+    public static final Parcelable.Creator<TracksModel> CREATOR = new Parcelable.Creator<TracksModel>() {
         @Override
-        public SaveModel createFromParcel(Parcel source) {
-            return new SaveModel(source);
+        public TracksModel createFromParcel(Parcel source) {
+            return new TracksModel(source);
         }
 
         @Override
-        public SaveModel[] newArray(int size) {
-            return new SaveModel[size];
+        public TracksModel[] newArray(int size) {
+            return new TracksModel[size];
         }
     };
 }
