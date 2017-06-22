@@ -11,8 +11,8 @@ android {
         vectorDrawables.useSupportLibrary = true
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 8
-        versionName "0.09"
+        versionCode 10
+        versionName "0.10"
         multiDexEnabled true
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
@@ -79,7 +79,9 @@ dependencies {
     compile "com.google.android.gms:play-services-location:$ver.gms"
 
     compile "com.android.support:support-annotations:$ver.support"
+
     compile "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
+    compile "org.jetbrains.anko:anko-support-v4-commons:$anko_version"
 
     compile('com.mikepenz:materialdrawer:5.9.2@aar') {
         transitive = true
@@ -89,11 +91,11 @@ dependencies {
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
 
-    apply plugin: 'com.google.gms.google-services'
     compile 'com.jakewharton.timber:timber:4.5.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.firebaseui:firebase-ui-database:1.2.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile 'com.firebaseui:firebase-ui-auth:2.0.1'
+    apply plugin: 'com.google.gms.google-services'
 }
 

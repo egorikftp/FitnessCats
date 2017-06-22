@@ -1,10 +1,8 @@
 package com.egoriku.catsrunning.ui.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.animation.LinearOutSlowInInterpolator
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +22,8 @@ import com.egoriku.catsrunning.util.drawableCompat
 import com.egoriku.catsrunning.util.inflate
 import com.egoriku.catsrunning.utils.FirebaseUtils
 import kotlinx.android.synthetic.main.fragment_tracks.*
+import org.jetbrains.anko.support.v4.alert
+import org.jetbrains.anko.support.v4.startActivity
 
 class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListener {
 
@@ -70,26 +70,17 @@ class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListe
     }
 
     override fun onLongClick(item: TracksModel) {
-        AlertDialog.Builder(activity)
-                .setTitle(R.string.fitness_data_fragment_alert_title)
-                .setCancelable(true)
-                .setNegativeButton(R.string.fitness_data_fragment_alert_negative_btn, null)
-                .setPositiveButton(R.string.fitness_data_fragment_alert_positive_btn) {
-                    dialogInterface, i ->
-                    FirebaseUtils.removeTrack(item, context)
-                }
-                .show()
+        alert(R.string.fitness_data_fragment_alert_title) {
+            positiveButton(R.string.fitness_data_fragment_alert_positive_btn) { FirebaseUtils.removeTrack(item, context) }
+            negativeButton(R.string.fitness_data_fragment_alert_negative_btn) {}
+        }.show()
     }
 
     override fun onClickItem(item: TracksModel) {
         if (item.time == 0L) {
-            val intent = Intent(context, FitActivity::class.java)
-            intent.putExtra(Constants.Extras.KEY_TYPE_FIT, item.typeFit)
-            startActivity(intent)
+            startActivity<FitActivity>(Constants.Extras.KEY_TYPE_FIT to item.typeFit)
         } else {
-            val intent = Intent(context, TrackOnMapsActivity::class.java)
-            intent.putExtra(Constants.Extras.EXTRA_TRACK_ON_MAPS, item)
-            startActivity(intent)
+            startActivity<TrackOnMapsActivity>(Constants.Extras.EXTRA_TRACK_ON_MAPS to item)
         }
     }
 
@@ -115,11 +106,11 @@ class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListe
         tracksDataManager.addListener(this)
         tracksDataManager.loadTracks(TypeFit.WALKING)
 
-        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.action_walking -> consumeEvent(TypeFit.WALKING, item.itemId)
-                R.id.action_running -> consumeEvent(TypeFit.RUNNING, item.itemId)
-                R.id.action_cycling -> consumeEvent(TypeFit.CYCLING, item.itemId)
+        bottomNavigationView.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.action_walking -> consumeEvent(TypeFit.WALKING, it.itemId)
+                R.id.action_running -> consumeEvent(TypeFit.RUNNING, it.itemId)
+                R.id.action_cycling -> consumeEvent(TypeFit.CYCLING, it.itemId)
                 else -> false
             }
         }

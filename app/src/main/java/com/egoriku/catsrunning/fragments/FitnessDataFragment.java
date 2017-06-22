@@ -35,6 +35,7 @@ import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TRACKS;
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TYPE_FIT;
 import static com.egoriku.catsrunning.models.Constants.Tags.ARG_SECTION_NUMBER;
+import static org.jetbrains.anko.support.v4.SupportDialogsKt.alert;
 
 public class FitnessDataFragment extends Fragment {
 
