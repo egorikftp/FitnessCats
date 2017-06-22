@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.CustomSpinnerAdapter;
-import com.egoriku.catsrunning.data.TracksModel;
+import com.egoriku.catsrunning.data.commons.TracksModel;
 import com.egoriku.catsrunning.models.SpinnerIntervalModel;
 import com.egoriku.catsrunning.ui.customview.statisticChart.FitChart;
 import com.egoriku.catsrunning.ui.customview.statisticChart.FitChartValue;

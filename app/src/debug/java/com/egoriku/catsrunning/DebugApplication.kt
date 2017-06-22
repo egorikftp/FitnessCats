@@ -41,7 +41,7 @@ open class DebugApplication : MultiDexApplication() {
             return if (isEnabled) {
                 defaultDumper.dumpHeap()
             } else {
-                HeapDumper.RETRY_LATER
+                File("temp file")
             }
         }
     }

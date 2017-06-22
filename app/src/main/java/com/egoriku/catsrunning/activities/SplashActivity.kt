@@ -65,7 +65,6 @@ class SplashActivity : AppCompatActivity() {
                                                     AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build(),
                                                     AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
                                     .setTheme(R.style.AuthTheme)
-                                    .setIsSmartLockEnabled(!BuildConfig.DEBUG)
                                     .setLogo(R.drawable.ic_cats_no_track)
                                     .build(),
                             RC_SIGN_IN)

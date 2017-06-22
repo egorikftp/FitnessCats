@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.data.TracksModel;
+import com.egoriku.catsrunning.data.commons.TracksModel;
 import com.egoriku.catsrunning.utils.ConverterTime;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;

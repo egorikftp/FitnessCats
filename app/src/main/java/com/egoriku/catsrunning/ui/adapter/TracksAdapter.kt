@@ -3,7 +3,7 @@ package com.egoriku.catsrunning.ui.adapter
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.egoriku.catsrunning.R
-import com.egoriku.catsrunning.data.TracksModel
+import com.egoriku.catsrunning.data.commons.TracksModel
 import com.egoriku.catsrunning.util.drawableCompat
 import com.egoriku.catsrunning.util.drawableTypeFit
 import com.egoriku.catsrunning.util.inflate

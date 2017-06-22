@@ -26,7 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.data.TracksModel;
+import com.egoriku.catsrunning.data.commons.TracksModel;
 import com.egoriku.catsrunning.helpers.TypeFit;
 import com.egoriku.catsrunning.models.Constants;
 import com.egoriku.catsrunning.models.FitState;

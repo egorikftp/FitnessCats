@@ -21,13 +21,14 @@ import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import com.egoriku.catsrunning.R;
+import com.egoriku.catsrunning.data.TracksDataManager;
 import com.egoriku.catsrunning.fragments.AllFitnessDataFragment;
 import com.egoriku.catsrunning.fragments.FragmentsTag;
 import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.SettingsFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
-import com.egoriku.catsrunning.fragments.TracksFragment;
+import com.egoriku.catsrunning.ui.fragment.TracksFragment;
 import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.firebase.ui.auth.AuthUI;
@@ -88,6 +89,7 @@ public class TracksActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             showFragment(TracksFragment.Companion.newInstance(), NEW_MAIN, null, true);
+            navigationDrawer.setSelectionAtPosition(5);
         }
     }
 
@@ -206,6 +208,9 @@ public class TracksActivity extends AppCompatActivity {
     }
 
     private void exitFromAccount() {
+        TracksDataManager.Companion.getInstance().removeUIListener();
+        TracksDataManager.Companion.getInstance().clearData();
+        FirebaseAuth.getInstance().signOut();
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {

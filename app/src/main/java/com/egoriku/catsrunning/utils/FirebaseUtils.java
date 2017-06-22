@@ -4,7 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.egoriku.catsrunning.activities.AddUserInfoActivity;
-import com.egoriku.catsrunning.data.TracksModel;
+import com.egoriku.catsrunning.data.commons.TracksModel;
 import com.egoriku.catsrunning.models.Firebase.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,7 +23,7 @@ public class FirebaseUtils {
     }
 
     private static FirebaseDatabase firebaseDatabase;
-    private static final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private static FirebaseUser user;
 
     public static DatabaseReference getDatabaseReference() {
         if (firebaseDatabase == null) {
@@ -31,10 +31,15 @@ public class FirebaseUtils {
             firebaseDatabase.setPersistenceEnabled(true);
         }
 
+        user = FirebaseAuth.getInstance().getCurrentUser();
         return firebaseDatabase.getReference();
     }
 
-    public static void updateTrackFavorire(TracksModel tracksModel, final Context context) {
+    public static FirebaseUser getUser() {
+        return user;
+    }
+
+    public static void updateTrackFavorire(final TracksModel tracksModel, final Context context) {
         if (user != null && tracksModel.getTrackToken() != null) {
             getDatabaseReference()
                     .child(TRACKS)

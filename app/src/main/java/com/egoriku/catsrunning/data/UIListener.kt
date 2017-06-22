@@ -1,6 +1,6 @@
-package com.egoriku.catsrunning.ui.commons
+package com.egoriku.catsrunning.data
 
-import com.egoriku.catsrunning.data.TracksModel
+import com.egoriku.catsrunning.data.commons.TracksModel
 
 interface UIListener {
 

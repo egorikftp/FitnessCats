@@ -1,9 +1,10 @@
-package com.egoriku.catsrunning.fragments
+package com.egoriku.catsrunning.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.animation.LinearOutSlowInInterpolator
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -13,15 +14,16 @@ import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.activities.FitActivity
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity
 import com.egoriku.catsrunning.activities.TracksActivity
+import com.egoriku.catsrunning.data.TracksDataManager
+import com.egoriku.catsrunning.data.UIListener
+import com.egoriku.catsrunning.data.commons.TracksModel
 import com.egoriku.catsrunning.helpers.TypeFit
 import com.egoriku.catsrunning.models.Constants
-import com.egoriku.catsrunning.data.TracksModel
 import com.egoriku.catsrunning.ui.adapter.TracksAdapter
-import com.egoriku.catsrunning.ui.commons.TracksDataManager
-import com.egoriku.catsrunning.ui.commons.UIListener
+import com.egoriku.catsrunning.util.drawableCompat
 import com.egoriku.catsrunning.util.inflate
+import com.egoriku.catsrunning.utils.FirebaseUtils
 import kotlinx.android.synthetic.main.fragment_tracks.*
-
 
 class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListener {
 
@@ -37,17 +39,46 @@ class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListe
         }
     }
 
+    companion object {
+        fun newInstance(): TracksFragment {
+            return TracksFragment()
+        }
+    }
+
     override fun handleSuccess(data: List<TracksModel>) {
+        progressbar.visibility = View.GONE
         tracksAdapter.setItems(data)
+        tracks_recyclerview.visibility = View.VISIBLE
+        no_tracks.visibility = View.GONE
+        no_tracks_text.visibility = View.GONE
+
+        if (data.isEmpty()) {
+            no_tracks.visibility = View.VISIBLE
+            no_tracks.setImageDrawable(drawableCompat(activity, R.drawable.ic_vec_cats_no_track))
+            no_tracks_text.visibility = View.VISIBLE
+            tracks_recyclerview.visibility = View.INVISIBLE
+        }
     }
 
     override fun handleError() {
     }
 
     override fun onFavoriteClick(item: TracksModel) {
+        item.isFavorite = !item.isFavorite
+        FirebaseUtils.updateTrackFavorire(item, context)
+        tracksAdapter.notifyDataSetChanged()
     }
 
     override fun onLongClick(item: TracksModel) {
+        AlertDialog.Builder(activity)
+                .setTitle(R.string.fitness_data_fragment_alert_title)
+                .setCancelable(true)
+                .setNegativeButton(R.string.fitness_data_fragment_alert_negative_btn, null)
+                .setPositiveButton(R.string.fitness_data_fragment_alert_positive_btn) {
+                    dialogInterface, i ->
+                    FirebaseUtils.removeTrack(item, context)
+                }
+                .show()
     }
 
     override fun onClickItem(item: TracksModel) {
@@ -59,12 +90,6 @@ class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListe
             val intent = Intent(context, TrackOnMapsActivity::class.java)
             intent.putExtra(Constants.Extras.EXTRA_TRACK_ON_MAPS, item)
             startActivity(intent)
-        }
-    }
-
-    companion object {
-        fun newInstance(): TracksFragment {
-            return TracksFragment()
         }
     }
 
@@ -83,6 +108,8 @@ class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListe
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
         }
+
+        progressbar.visibility = View.VISIBLE
         initAdapter()
 
         tracksDataManager.addListener(this)

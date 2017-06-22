@@ -1,4 +1,4 @@
-package com.egoriku.catsrunning.data;
+package com.egoriku.catsrunning.data.commons;
 
 import android.os.Parcel;
 import android.os.Parcelable;
