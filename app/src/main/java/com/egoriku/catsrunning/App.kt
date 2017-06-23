@@ -1,13 +1,16 @@
 package com.egoriku.catsrunning
 
+import com.egoriku.catsrunning.util.extensions.DelegatesExt
+
 class App : DebugApplication() {
 
     companion object {
-        lateinit var appInstance: App
+        var instance: App by DelegatesExt.notNullSingleValue()
+            private set
     }
 
     override fun onCreate() {
         super.onCreate()
-        appInstance = this
+        instance = this
     }
 }

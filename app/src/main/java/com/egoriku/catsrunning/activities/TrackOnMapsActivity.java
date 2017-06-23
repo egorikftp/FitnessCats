@@ -149,7 +149,7 @@ public class TrackOnMapsActivity extends AppCompatActivity implements OnMapReady
         Marker marker = map.addMarker(new MarkerOptions()
                 .position(latLng)
                 .title(title)
-                .icon(BitmapDescriptorFactory.fromBitmap(createBitmapFromVector(App.appInstance.getResources(), idIco))));
+                .icon(BitmapDescriptorFactory.fromBitmap(createBitmapFromVector(getResources(), idIco))));
         return marker.getPosition();
     }
 

@@ -6,6 +6,6 @@ import com.egoriku.catsrunning.App;
 
 public class CustomFont {
     public static Typeface getTypeFace(){
-        return Typeface.createFromAsset(App.appInstance.getAssets(), "font/birusa.ttf");
+        return Typeface.createFromAsset(App.Companion.getInstance().getAssets(), "font/birusa.ttf");
     }
 }
