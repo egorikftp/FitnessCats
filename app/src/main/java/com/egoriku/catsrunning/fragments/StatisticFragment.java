@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.TracksActivity;
-import com.egoriku.catsrunning.adapters.CustomSpinnerAdapter;
+import com.egoriku.catsrunning.ui.adapter.SpinnerAdapter;
 import com.egoriku.catsrunning.data.commons.TracksModel;
 import com.egoriku.catsrunning.models.SpinnerIntervalModel;
 import com.egoriku.catsrunning.ui.customview.statisticChart.FitChart;
@@ -165,7 +165,7 @@ public class StatisticFragment extends Fragment {
         intervals.add(new SpinnerIntervalModel(getString(R.string.spinner_half_year), DateUtils.WEEK_IN_MILLIS * 24));
         intervals.add(new SpinnerIntervalModel(getString(R.string.spinner_year), DateUtils.YEAR_IN_MILLIS));
 
-        spinner.setAdapter(new CustomSpinnerAdapter(getContext(), intervals));
+        spinner.setAdapter(new SpinnerAdapter(getContext(), intervals));
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
