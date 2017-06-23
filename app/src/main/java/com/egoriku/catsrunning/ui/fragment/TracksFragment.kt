@@ -19,6 +19,8 @@ import com.egoriku.catsrunning.helpers.TypeFit
 import com.egoriku.catsrunning.models.Constants
 import com.egoriku.catsrunning.ui.adapter.TracksAdapter
 import com.egoriku.catsrunning.util.drawableCompat
+import com.egoriku.catsrunning.util.extensions.hide
+import com.egoriku.catsrunning.util.extensions.show
 import com.egoriku.catsrunning.util.inflate
 import com.egoriku.catsrunning.utils.FirebaseUtils
 import kotlinx.android.synthetic.main.fragment_tracks.*
@@ -46,17 +48,17 @@ class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListe
     }
 
     override fun handleSuccess(data: List<TracksModel>) {
-        progressbar.visibility = View.GONE
+        progressbar.hide()
+        tracks_recyclerview.show()
         tracksAdapter.setItems(data)
-        tracks_recyclerview.visibility = View.VISIBLE
-        no_tracks.visibility = View.GONE
-        no_tracks_text.visibility = View.GONE
+        no_tracks.hide()
+        no_tracks_text.hide()
 
         if (data.isEmpty()) {
-            no_tracks.visibility = View.VISIBLE
+            no_tracks.show()
             no_tracks.setImageDrawable(drawableCompat(activity, R.drawable.ic_vec_cats_no_track))
-            no_tracks_text.visibility = View.VISIBLE
-            tracks_recyclerview.visibility = View.INVISIBLE
+            no_tracks_text.show()
+            tracks_recyclerview.hide(gone = false)
         }
     }
 
@@ -100,7 +102,7 @@ class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListe
             layoutManager = LinearLayoutManager(context)
         }
 
-        progressbar.visibility = View.VISIBLE
+        progressbar.show()
         initAdapter()
 
         tracksDataManager.addListener(this)

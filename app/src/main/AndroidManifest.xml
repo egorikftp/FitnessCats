@@ -22,7 +22,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activities.TracksActivity" />
         <activity
-            android:name=".activities.SplashActivity"
+            android:name=".ui.activity.SplashActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
             <intent-filter>

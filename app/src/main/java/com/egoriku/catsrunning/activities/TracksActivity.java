@@ -28,8 +28,9 @@ import com.egoriku.catsrunning.fragments.LikedFragment;
 import com.egoriku.catsrunning.fragments.RemindersFragment;
 import com.egoriku.catsrunning.fragments.SettingsFragment;
 import com.egoriku.catsrunning.fragments.StatisticFragment;
-import com.egoriku.catsrunning.ui.fragment.TracksFragment;
 import com.egoriku.catsrunning.models.FitState;
+import com.egoriku.catsrunning.ui.activity.SplashActivity;
+import com.egoriku.catsrunning.ui.fragment.TracksFragment;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -48,9 +49,9 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import static android.os.Build.VERSION;
 import static android.os.Build.VERSION_CODES;
-import static com.egoriku.catsrunning.activities.SplashActivity.Constant.IS_ANIMATE;
 import static com.egoriku.catsrunning.fragments.FragmentsTag.MAIN;
 import static com.egoriku.catsrunning.fragments.FragmentsTag.NEW_MAIN;
+import static com.egoriku.catsrunning.ui.activity.SplashActivity.Constant.IS_ANIMATE;
 import static com.egoriku.catsrunning.util.DrawableKt.drawableCompat;
 import static com.egoriku.catsrunning.util.extensions.TimberLogKt.d;
 

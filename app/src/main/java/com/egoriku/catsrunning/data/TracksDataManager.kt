@@ -3,7 +3,6 @@ package com.egoriku.catsrunning.data
 import com.egoriku.catsrunning.data.commons.TracksModel
 import com.egoriku.catsrunning.helpers.TypeFit
 import com.egoriku.catsrunning.models.Constants
-import com.egoriku.catsrunning.util.extensions.d
 import com.egoriku.catsrunning.utils.FirebaseUtils
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot

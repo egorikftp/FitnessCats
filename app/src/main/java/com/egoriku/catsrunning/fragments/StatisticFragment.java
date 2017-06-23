@@ -20,9 +20,9 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.TracksActivity;
-import com.egoriku.catsrunning.ui.adapter.SpinnerAdapter;
 import com.egoriku.catsrunning.data.commons.TracksModel;
 import com.egoriku.catsrunning.models.SpinnerIntervalModel;
+import com.egoriku.catsrunning.ui.adapter.SpinnerAdapter;
 import com.egoriku.catsrunning.ui.customview.statisticChart.FitChart;
 import com.egoriku.catsrunning.ui.customview.statisticChart.FitChartValue;
 import com.egoriku.catsrunning.utils.CustomFont;
