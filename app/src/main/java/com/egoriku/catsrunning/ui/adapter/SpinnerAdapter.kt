@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.egoriku.catsrunning.R
-import com.egoriku.catsrunning.models.SpinnerIntervalModel
+import com.egoriku.catsrunning.data.commons.SpinnerIntervalModel
 import com.egoriku.catsrunning.util.inflateViewGroup
 import com.egoriku.catsrunning.utils.CustomFont
 import kotlinx.android.synthetic.main.item_spinner.view.*

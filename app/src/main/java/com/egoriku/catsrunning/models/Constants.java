@@ -13,7 +13,7 @@ public interface Constants {
     interface ConstantsSQL {
 
         interface Tables {
-            String TABLE_POINT = "Point";
+            String TABLE_POINT = "LatLng";
             String TABLE_TRACKS = "TracksModel";
             String TABLE_REMINDER = "Reminder";
             String TABLE_USER = "User";

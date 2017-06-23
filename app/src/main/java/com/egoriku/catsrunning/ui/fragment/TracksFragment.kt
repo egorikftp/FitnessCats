@@ -32,7 +32,7 @@ class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListe
     private lateinit var tracksAdapter: TracksAdapter
     private val tracksDataManager = TracksDataManager.instance
     private var anim: TranslateAnimation = TranslateAnimation(0f, 0f, 40f, 0f)
-    private val firebaseUtils = FirebaseUtils.getInstance()
+    private val firebaseUtils by lazy { FirebaseUtils.getInstance() }
 
     init {
         anim.apply {
@@ -43,7 +43,7 @@ class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListe
     }
 
     companion object {
-        fun newInstance(): TracksFragment {
+        fun instance(): TracksFragment {
             return TracksFragment()
         }
     }

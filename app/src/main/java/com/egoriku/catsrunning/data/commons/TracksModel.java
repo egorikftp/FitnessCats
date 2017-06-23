@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.egoriku.catsrunning.helpers.TypeFit;
-import com.egoriku.catsrunning.models.Firebase.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +18,12 @@ public class TracksModel implements Parcelable {
     private boolean isFavorite;
     @TypeFit
     private int typeFit;
-    private List<Point> points;
+    private List<LatLng> points;
 
     public TracksModel() {
     }
 
-    public TracksModel(long beginsAt, long time, int distance, String trackToken, int typeFit, List<Point> points) {
+    public TracksModel(long beginsAt, long time, int distance, String trackToken, int typeFit, List<LatLng> points) {
         this.beginsAt = beginsAt;
         this.time = time;
         this.distance = distance;
@@ -65,7 +64,7 @@ public class TracksModel implements Parcelable {
         return typeFit;
     }
 
-    public List<Point> getPoints() {
+    public List<LatLng> getPoints() {
         return points;
     }
 
@@ -109,7 +108,7 @@ public class TracksModel implements Parcelable {
         this.isFavorite = in.readByte() != 0;
         this.typeFit = in.readInt();
         this.points = new ArrayList<>();
-        in.readList(this.points, Point.class.getClassLoader());
+        in.readList(this.points, LatLng.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<TracksModel> CREATOR = new Parcelable.Creator<TracksModel>() {

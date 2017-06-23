@@ -66,7 +66,7 @@ class TracksActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (savedInstanceState == null) {
-            showFragment(TracksFragment.newInstance(), NEW_MAIN, null, true)
+            showFragment(TracksFragment.instance(), NEW_MAIN, null, true)
             navigationDrawer.setSelectionAtPosition(5)
         }
     }
@@ -118,7 +118,7 @@ class TracksActivity : AppCompatActivity() {
                                 .withName(R.string.navigation_drawer_setting)
                                 .withIcon(drawableCompat(this, R.drawable.ic_vec_settings))
                                 .withTag(FragmentsTag.SETTINGS))
-                .withOnDrawerItemClickListener { _, position, drawerItem ->
+                .withOnDrawerItemClickListener { _, _, drawerItem ->
                     setDefaultToolbarColor()
                     when (drawerItem.tag.toString()) {
                         FragmentsTag.MAIN -> showFragment(AllFitnessDataFragment.newInstance(), FragmentsTag.MAIN, null, true)
@@ -131,7 +131,7 @@ class TracksActivity : AppCompatActivity() {
                         }
 
                         FragmentsTag.SETTINGS -> showFragment(SettingsFragment.newInstance(), FragmentsTag.SETTINGS)
-                        FragmentsTag.NEW_MAIN -> showFragment(TracksFragment.newInstance(), FragmentsTag.NEW_MAIN)
+                        FragmentsTag.NEW_MAIN -> showFragment(TracksFragment.instance(), FragmentsTag.NEW_MAIN)
                     }
                     false
                 }

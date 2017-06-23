@@ -3,12 +3,11 @@
 package com.egoriku.catsrunning.util.extensions
 
 import android.view.View
-import android.view.View.*
 
 inline fun View.hide(gone: Boolean = true) {
-    visibility = if (gone) GONE else INVISIBLE
+    visibility = if (gone) View.GONE else View.INVISIBLE
 }
 
 inline fun View.show() {
-    visibility = VISIBLE
+    visibility = View.VISIBLE
 }

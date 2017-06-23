@@ -14,7 +14,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
-import com.egoriku.catsrunning.models.Firebase.Point;
+import com.egoriku.catsrunning.data.commons.LatLng;
 import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.utils.ConverterTime;
 
@@ -98,7 +98,7 @@ public class FitService extends Service implements LocationListener {
             }
 
             oldLocation = location;
-            fitState.addPoint(new Point(location.getLongitude(), location.getLatitude()));
+            fitState.addPoint(new LatLng(location.getLongitude(), location.getLatitude()));
         }
     }
 

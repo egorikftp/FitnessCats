@@ -198,7 +198,7 @@ public class FitActivity extends AppCompatActivity {
     }
 
     private void uploadTrackInFirebase() {
-        if (fitState.getPoints().size() > 2) {
+        if (fitState.getLatLngs().size() > 2) {
             databaseReference = FirebaseDatabase.getInstance().getReference();
             String trackToken = databaseReference.child(TRACKS).child(user.getUid()).push().getKey();
 
@@ -208,7 +208,7 @@ public class FitActivity extends AppCompatActivity {
                     (int) fitState.getNowDistance(),
                     trackToken,
                     typeFit,
-                    fitState.getPoints()
+                    fitState.getLatLngs()
             );
 
             FirebaseDatabase.getInstance().getReference().child(TRACKS).child(user.getUid()).child(trackToken).setValue(tracksModel, new DatabaseReference.CompletionListener() {

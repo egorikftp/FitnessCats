@@ -1,17 +1,16 @@
-package com.egoriku.catsrunning.models.Firebase;
+package com.egoriku.catsrunning.data.commons;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-
-public class Point implements Parcelable {
+public class LatLng implements Parcelable {
     private double lng;
     private double lat;
 
-    public Point() {
+    public LatLng() {
     }
 
-    public Point(double lng, double lat) {
+    public LatLng(double lng, double lat) {
         this.lng = lng;
         this.lat = lat;
     }
@@ -20,16 +19,8 @@ public class Point implements Parcelable {
         return lng;
     }
 
-    public void setLng(double lng) {
-        this.lng = lng;
-    }
-
     public double getLat() {
         return lat;
-    }
-
-    public void setLat(double lat) {
-        this.lat = lat;
     }
 
     @Override
@@ -43,20 +34,20 @@ public class Point implements Parcelable {
         dest.writeDouble(this.lat);
     }
 
-    protected Point(Parcel in) {
+    protected LatLng(Parcel in) {
         this.lng = in.readDouble();
         this.lat = in.readDouble();
     }
 
-    public static final Parcelable.Creator<Point> CREATOR = new Parcelable.Creator<Point>() {
+    public static final Parcelable.Creator<LatLng> CREATOR = new Parcelable.Creator<LatLng>() {
         @Override
-        public Point createFromParcel(Parcel source) {
-            return new Point(source);
+        public LatLng createFromParcel(Parcel source) {
+            return new LatLng(source);
         }
 
         @Override
-        public Point[] newArray(int size) {
-            return new Point[size];
+        public LatLng[] newArray(int size) {
+            return new LatLng[size];
         }
     };
 }

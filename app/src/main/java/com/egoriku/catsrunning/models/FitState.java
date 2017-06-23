@@ -1,6 +1,6 @@
 package com.egoriku.catsrunning.models;
 
-import com.egoriku.catsrunning.models.Firebase.Point;
+import com.egoriku.catsrunning.data.commons.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ public class FitState {
     private long startTime;
     private long idTrack;
     private boolean isFitRun;
-    private List<Point> points = new ArrayList<>();
+    private List<LatLng> latLngs = new ArrayList<>();
     private long timeBetweenLocations;
     private long weight;
     private double calories;
@@ -69,12 +69,12 @@ public class FitState {
         isFitRun = fitRun;
     }
 
-    public List<Point> getPoints() {
-        return points;
+    public List<LatLng> getLatLngs() {
+        return latLngs;
     }
 
-    public void addPoint(Point point) {
-        this.points.add(point);
+    public void addPoint(LatLng latLng) {
+        this.latLngs.add(latLng);
     }
 
     public long getIdTrack() {
