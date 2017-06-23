@@ -25,11 +25,9 @@ class TracksDataManager private constructor() : ChildEventListener {
     }
 
     override fun onChildMoved(p0: DataSnapshot?, p1: String?) {
-        d("onChildMoved")
     }
 
     override fun onChildChanged(dataSnapshot: DataSnapshot?, p1: String?) {
-        d("onChildChanged")
         val value = dataSnapshot?.toModelOfType<TracksModel>()
 
         for (i in tracks.indices) {
@@ -41,7 +39,6 @@ class TracksDataManager private constructor() : ChildEventListener {
     }
 
     override fun onChildAdded(dataSnapshot: DataSnapshot?, p1: String?) {
-        d("onChildAdded")
         val value = dataSnapshot?.toModelOfType<TracksModel>()
         if (value != null) {
             tracks.add(value)
@@ -50,7 +47,6 @@ class TracksDataManager private constructor() : ChildEventListener {
     }
 
     override fun onChildRemoved(dataSnapshot: DataSnapshot?) {
-        d("onChildRemoved")
         val value = dataSnapshot?.toModelOfType<TracksModel>()
         for (i in tracks.indices) {
             if (tracks[i].trackToken == value?.trackToken) {

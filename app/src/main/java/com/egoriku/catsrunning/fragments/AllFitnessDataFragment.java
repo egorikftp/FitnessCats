@@ -61,10 +61,10 @@ public class AllFitnessDataFragment extends Fragment {
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         viewPager = (ViewPager) view.findViewById(R.id.fragment_all_fitness_data_view_pager_container);
 
-        fabMain = (FloatingActionButton) view.findViewById(R.id.floating_button);
-        fabWalk = (FloatingActionButton) view.findViewById(R.id.fab_walk);
+        fabMain = (FloatingActionButton) view.findViewById(R.id.floating_butto);
+        fabWalk = (FloatingActionButton) view.findViewById(R.id.fab_walking);
         fabCycling = (FloatingActionButton) view.findViewById(R.id.fab_cycling);
-        fabRun = (FloatingActionButton) view.findViewById(R.id.fab_run);
+        fabRun = (FloatingActionButton) view.findViewById(R.id.fab_running);
 
         fabWalkShow = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_walk_show);
         fabWalkHide = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_walk_hide);

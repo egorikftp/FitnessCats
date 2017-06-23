@@ -45,13 +45,13 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floating_button"
+        android:id="@+id/floating_butto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:layout_behavior="com.egoriku.catsrunning.utils.FabFloatingOnScrollBehavior"
-        app:srcCompat="@drawable/ic_vec_pets_black_24dp" />
+        app:srcCompat="@drawable/ic_vec_pet_leg" />
 
     <include layout="@layout/fab_layout" />
 </android.support.design.widget.CoordinatorLayout>
