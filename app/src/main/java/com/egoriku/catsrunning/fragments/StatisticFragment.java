@@ -19,9 +19,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.data.commons.TracksModel;
 import com.egoriku.catsrunning.models.SpinnerIntervalModel;
+import com.egoriku.catsrunning.ui.activity.TracksActivity;
 import com.egoriku.catsrunning.ui.adapter.SpinnerAdapter;
 import com.egoriku.catsrunning.ui.customview.statisticChart.FitChart;
 import com.egoriku.catsrunning.ui.customview.statisticChart.FitChartValue;
@@ -111,7 +111,8 @@ public class StatisticFragment extends Fragment {
     private void getTracksFromInterval(long valueInterval) {
         long startDate = (calendar.getTimeInMillis() - valueInterval) / 1000L;
 
-        FirebaseUtils.getDatabaseReference()
+        FirebaseUtils.getInstance()
+                .getFirebaseDatabase()
                 .child(TRACKS)
                 .child(user.getUid())
                 .orderByChild(BEGINS_AT)
@@ -234,6 +235,7 @@ public class StatisticFragment extends Fragment {
         fitChart.setValues(values);
     }
 
+    @SuppressLint("StringFormatMatches")
     private void setUpTextView(int allDistance) {
         allDistanceView.setText(String.format(getString(R.string.statistic_fragment_result), allDistance));
 

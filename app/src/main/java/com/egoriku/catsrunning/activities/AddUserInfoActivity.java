@@ -62,7 +62,7 @@ public class AddUserInfoActivity extends AppCompatActivity {
         new UserInfoPreferences(this).writeUserData(growth, weight);
 
         UserInfo userInfo = new UserInfo(growth, weight, 21);
-        FirebaseUtils.getDatabaseReference()
+        FirebaseUtils.getInstance().getFirebaseDatabase()
                 .child(USER_INFO)
                 .child(user.getUid())
                 .setValue(userInfo, new DatabaseReference.CompletionListener() {

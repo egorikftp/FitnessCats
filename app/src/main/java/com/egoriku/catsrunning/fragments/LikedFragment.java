@@ -21,10 +21,10 @@ import android.widget.TextView;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
-import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.FitnessDataHolder;
 import com.egoriku.catsrunning.data.commons.TracksModel;
 import com.egoriku.catsrunning.models.Constants;
+import com.egoriku.catsrunning.ui.activity.TracksActivity;
 import com.egoriku.catsrunning.utils.CustomFont;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.egoriku.catsrunning.utils.IntentBuilder;
@@ -45,6 +45,7 @@ public class LikedFragment extends Fragment {
 
     private static final int UNICODE_SAD_CAT = 0x1F640;
     private static final int DURATION = 1000;
+    private final FirebaseUtils firebaseUtils = FirebaseUtils.getInstance();
 
     private RecyclerView recyclerView;
     private TextView noLikedTracksTextView;
@@ -86,7 +87,7 @@ public class LikedFragment extends Fragment {
         setScrollingEnabled(true);
         hideNoTracks();
 
-        Query query = FirebaseUtils.getDatabaseReference()
+        Query query = firebaseUtils.getFirebaseDatabase()
                 .child(TRACKS)
                 .child(user.getUid())
                 .orderByChild(IS_FAVORIRE)
@@ -124,7 +125,7 @@ public class LikedFragment extends Fragment {
                     public void onFavoriteClick(int position) {
                         TracksModel adapterItem = (TracksModel) adapter.getItem(position);
                         adapterItem.setFavorite(!adapterItem.isFavorite());
-                        FirebaseUtils.updateTrackFavorire(adapterItem, getActivity());
+                        firebaseUtils.updateTrackFavorire(adapterItem, getActivity());
                     }
 
                     @Override
@@ -136,7 +137,7 @@ public class LikedFragment extends Fragment {
                                 .setPositiveButton(R.string.fitness_data_fragment_alert_positive_btn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        FirebaseUtils.removeTrack((TracksModel) adapter.getItem(position), getContext());
+                                        firebaseUtils.removeTrack((TracksModel) adapter.getItem(position), getContext());
                                     }
                                 })
                                 .show();
@@ -146,8 +147,8 @@ public class LikedFragment extends Fragment {
             }
         };
 
-        FirebaseUtils
-                .getDatabaseReference()
+        firebaseUtils
+                .getFirebaseDatabase()
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

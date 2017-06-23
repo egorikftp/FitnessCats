@@ -19,8 +19,8 @@ import android.widget.FrameLayout;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
-import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.helpers.TypeFit;
+import com.egoriku.catsrunning.ui.activity.TracksActivity;
 
 public class AllFitnessDataFragment extends Fragment {
     private SectionsPagerAdapter sectionsPagerAdapter;

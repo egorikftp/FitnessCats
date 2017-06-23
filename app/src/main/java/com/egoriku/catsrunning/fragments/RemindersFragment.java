@@ -28,13 +28,13 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.AddReminderActivity;
-import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.RemindersAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.IRemindersClickListener;
 import com.egoriku.catsrunning.dialogs.UpdateDateReminderDialog;
 import com.egoriku.catsrunning.dialogs.UpdateTimeReminderDialog;
 import com.egoriku.catsrunning.models.ReminderModel;
 import com.egoriku.catsrunning.receivers.ReminderReceiver;
+import com.egoriku.catsrunning.ui.activity.TracksActivity;
 import com.egoriku.catsrunning.utils.CustomFont;
 
 import java.util.ArrayList;

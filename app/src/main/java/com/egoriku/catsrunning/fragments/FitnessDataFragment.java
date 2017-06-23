@@ -45,6 +45,7 @@ public class FitnessDataFragment extends Fragment {
 
     private FirebaseRecyclerAdapter adapter;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private FirebaseUtils firebaseUtils = FirebaseUtils.getInstance();
 
     public FitnessDataFragment() {
     }
@@ -73,7 +74,7 @@ public class FitnessDataFragment extends Fragment {
         hideNoTracks();
         showLoading(true);
 
-        Query query = FirebaseUtils.getDatabaseReference()
+        Query query = firebaseUtils.getFirebaseDatabase()
                 .child(TRACKS)
                 .child(user.getUid())
                 .orderByChild(TYPE_FIT)
@@ -111,7 +112,7 @@ public class FitnessDataFragment extends Fragment {
                     public void onFavoriteClick(int position) {
                         TracksModel adapterItem = (TracksModel) adapter.getItem(position);
                         adapterItem.setFavorite(!adapterItem.isFavorite());
-                        FirebaseUtils.updateTrackFavorire(adapterItem, getContext());
+                        firebaseUtils.updateTrackFavorire(adapterItem, getContext());
                     }
 
                     @Override
@@ -123,7 +124,7 @@ public class FitnessDataFragment extends Fragment {
                                 .setPositiveButton(R.string.fitness_data_fragment_alert_positive_btn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        FirebaseUtils.removeTrack((TracksModel) adapter.getItem(position), getContext());
+                                        firebaseUtils.removeTrack((TracksModel) adapter.getItem(position), getContext());
 
                                     }
                                 })
@@ -134,8 +135,8 @@ public class FitnessDataFragment extends Fragment {
             }
         };
 
-        FirebaseUtils
-                .getDatabaseReference()
+        firebaseUtils
+                .getFirebaseDatabase()
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

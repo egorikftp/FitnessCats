@@ -25,25 +25,31 @@ public class FirebaseUtils {
     private static FirebaseDatabase firebaseDatabase;
     private static FirebaseUser user;
 
-    public static DatabaseReference getDatabaseReference() {
-        if (firebaseDatabase == null) {
+    private static FirebaseUtils firebaseUtils = null;
+
+    public static FirebaseUtils getInstance() {
+        if (firebaseUtils == null) {
+            firebaseUtils = new FirebaseUtils();
             firebaseDatabase = FirebaseDatabase.getInstance();
             firebaseDatabase.setPersistenceEnabled(true);
         }
-
         user = FirebaseAuth.getInstance().getCurrentUser();
-        return firebaseDatabase.getReference();
+        return firebaseUtils;
     }
 
-    public static FirebaseUser getUser() {
+    public FirebaseUser getUser() {
         return user;
     }
 
-    public static void updateTrackFavorire(final TracksModel tracksModel, final Context context) {
-        if (user != null && tracksModel.getTrackToken() != null) {
-            getDatabaseReference()
+    public DatabaseReference getFirebaseDatabase() {
+        return firebaseDatabase.getReference();
+    }
+
+    public void updateTrackFavorire(final TracksModel tracksModel, final Context context) {
+        if (getUser() != null && tracksModel.getTrackToken() != null) {
+            getFirebaseDatabase()
                     .child(TRACKS)
-                    .child(user.getUid())
+                    .child(getUser().getUid())
                     .child(tracksModel.getTrackToken())
                     .setValue(tracksModel, new DatabaseReference.CompletionListener() {
                         @Override
@@ -56,11 +62,11 @@ public class FirebaseUtils {
         }
     }
 
-    public static void saveUserInfo(UserInfo userInfo, final Context context) {
-        if (user != null) {
-            getDatabaseReference()
+    public void saveUserInfo(UserInfo userInfo, final Context context) {
+        if (getUser() != null) {
+            getFirebaseDatabase()
                     .child(USER_INFO)
-                    .child(user.getUid())
+                    .child(getUser().getUid())
                     .setValue(userInfo, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -72,11 +78,11 @@ public class FirebaseUtils {
         }
     }
 
-    public static void removeTrack(TracksModel tracksModel, final Context context) {
-        if (tracksModel.getTrackToken() != null && user != null) {
-            getDatabaseReference()
+    public void removeTrack(TracksModel tracksModel, final Context context) {
+        if (tracksModel.getTrackToken() != null && getUser() != null) {
+            getFirebaseDatabase()
                     .child(TRACKS)
-                    .child(user.getUid())
+                    .child(getUser().getUid())
                     .child(tracksModel.getTrackToken())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -92,11 +98,11 @@ public class FirebaseUtils {
         }
     }
 
-    public static void updateUserInfo(final Context context) {
-        if (user != null) {
-            getDatabaseReference()
+    public void updateUserInfo(final Context context) {
+        if (getUser() != null) {
+            getFirebaseDatabase()
                     .child(USER_INFO)
-                    .child(user.getUid())
+                    .child(getUser().getUid())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {

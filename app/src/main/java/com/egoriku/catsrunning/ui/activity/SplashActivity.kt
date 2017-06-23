@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.egoriku.catsrunning.R
-import com.egoriku.catsrunning.activities.TracksActivity
 import com.egoriku.catsrunning.helpers.DynamicShortcuts
 import com.egoriku.catsrunning.ui.activity.SplashActivity.Constant.IS_ANIMATE
 import com.egoriku.catsrunning.util.SimpleAnimationListener

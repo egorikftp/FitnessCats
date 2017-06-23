@@ -14,10 +14,10 @@ class TracksDataManager private constructor() : ChildEventListener {
     private val tracks: MutableList<TracksModel> = mutableListOf()
     private var uiListener: UIListener? = null
     private var typeFit: Int = 0
-    private val databaseReference: DatabaseReference = FirebaseUtils
-            .getDatabaseReference()
+    private val firebaseUtils: FirebaseUtils = FirebaseUtils.getInstance()
+    private val databaseReference: DatabaseReference = firebaseUtils.firebaseDatabase
             .child(Constants.FirebaseFields.TRACKS)
-            .child(FirebaseUtils.getUser().uid)
+            .child(firebaseUtils.user.uid)
 
     override fun onCancelled(databaseError: DatabaseError?) {
         uiListener?.handleError()
@@ -69,6 +69,10 @@ class TracksDataManager private constructor() : ChildEventListener {
         databaseReference.removeEventListener(this)
     }
 
+    fun close(){
+        dataManager = null
+    }
+
     fun loadTracks(typeFit: Int) {
         if (tracks.isEmpty() && this.typeFit == 0) {
             this.typeFit = typeFit
@@ -79,6 +83,7 @@ class TracksDataManager private constructor() : ChildEventListener {
         }
     }
 
+    @Suppress("NOTHING_TO_INLINE")
     inline private fun notifySuccess(typeFit: Int) {
         when (typeFit) {
             TypeFit.WALKING -> uiListener?.handleSuccess(walkingData())

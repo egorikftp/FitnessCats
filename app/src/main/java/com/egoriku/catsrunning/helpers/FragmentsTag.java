@@ -1,4 +1,4 @@
-package com.egoriku.catsrunning.fragments;
+package com.egoriku.catsrunning.helpers;
 
 import android.support.annotation.StringDef;
 

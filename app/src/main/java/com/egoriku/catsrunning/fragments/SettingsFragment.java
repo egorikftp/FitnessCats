@@ -20,8 +20,8 @@ import android.widget.Toast;
 
 import com.egoriku.catsrunning.DebugApplication;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.models.Firebase.UserInfo;
+import com.egoriku.catsrunning.ui.activity.TracksActivity;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,6 +37,7 @@ import static com.egoriku.catsrunning.models.Constants.FirebaseFields.USER_INFO;
 public class SettingsFragment extends Fragment implements ValueEventListener {
 
     private static final String KEY_EDIT_MODE = "key_edit_mode";
+    private final FirebaseUtils firebaseUtils = FirebaseUtils.getInstance();
 
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private EditText growth;
@@ -96,7 +97,8 @@ public class SettingsFragment extends Fragment implements ValueEventListener {
             userEmail.setText(user.getEmail());
         }
 
-        FirebaseUtils.getDatabaseReference()
+        firebaseUtils
+                .getFirebaseDatabase()
                 .child(USER_INFO)
                 .child(user.getUid())
                 .addListenerForSingleValueEvent(this);
@@ -123,7 +125,7 @@ public class SettingsFragment extends Fragment implements ValueEventListener {
         switch (item.getItemId()) {
             case R.id.edit_user_info:
                 if (isEditMode) {
-                    FirebaseUtils.saveUserInfo(getUserInfo(), getContext());
+                    firebaseUtils.saveUserInfo(getUserInfo(), getContext());
                 }
                 isEditMode = !isEditMode;
                 invalidateOptionsMenu(getActivity());

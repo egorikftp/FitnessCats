@@ -11,12 +11,12 @@ import android.view.animation.TranslateAnimation
 import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.activities.FitActivity
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity
-import com.egoriku.catsrunning.activities.TracksActivity
 import com.egoriku.catsrunning.data.TracksDataManager
 import com.egoriku.catsrunning.data.UIListener
 import com.egoriku.catsrunning.data.commons.TracksModel
 import com.egoriku.catsrunning.helpers.TypeFit
 import com.egoriku.catsrunning.models.Constants
+import com.egoriku.catsrunning.ui.activity.TracksActivity
 import com.egoriku.catsrunning.ui.adapter.TracksAdapter
 import com.egoriku.catsrunning.util.drawableCompat
 import com.egoriku.catsrunning.util.extensions.hide
@@ -32,6 +32,7 @@ class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListe
     private lateinit var tracksAdapter: TracksAdapter
     private val tracksDataManager = TracksDataManager.instance
     private var anim: TranslateAnimation = TranslateAnimation(0f, 0f, 40f, 0f)
+    private val firebaseUtils = FirebaseUtils.getInstance()
 
     init {
         anim.apply {
@@ -67,13 +68,13 @@ class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListe
 
     override fun onFavoriteClick(item: TracksModel) {
         item.isFavorite = !item.isFavorite
-        FirebaseUtils.updateTrackFavorire(item, context)
+        firebaseUtils.updateTrackFavorire(item, context)
         tracksAdapter.notifyDataSetChanged()
     }
 
     override fun onLongClick(item: TracksModel) {
         alert(R.string.fitness_data_fragment_alert_title) {
-            positiveButton(R.string.fitness_data_fragment_alert_positive_btn) { FirebaseUtils.removeTrack(item, context) }
+            positiveButton(R.string.fitness_data_fragment_alert_positive_btn) { firebaseUtils.removeTrack(item, context) }
             negativeButton(R.string.fitness_data_fragment_alert_negative_btn) {}
         }.show()
     }
