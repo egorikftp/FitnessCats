@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.ViewAnimationUtils
 import android.view.ViewTreeObserver
-import android.widget.Toast
 import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.data.TracksDataManager
 import com.egoriku.catsrunning.fragments.*
@@ -38,11 +37,12 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem
 import kotlinx.android.synthetic.main.toolbar_scamper_activity.*
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
 
 class TracksActivity : AppCompatActivity() {
 
     companion object {
-        val NAV_DRAWER_SELECTED_POSITION = "Nav_drawer_position"
+       const val NAV_DRAWER_SELECTED_POSITION = "Nav_drawer_position"
     }
 
     private lateinit var navigationDrawer: Drawer
@@ -122,16 +122,16 @@ class TracksActivity : AppCompatActivity() {
                     setDefaultToolbarColor()
                     when (drawerItem.tag.toString()) {
                         FragmentsTag.MAIN -> showFragment(AllFitnessDataFragment.newInstance(), FragmentsTag.MAIN, null, true)
-                        FragmentsTag.REMINDER -> showFragment(RemindersFragment.newInstance(), FragmentsTag.REMINDER, FragmentsTag.MAIN, false)
-                        FragmentsTag.LIKED -> showFragment(LikedFragment.newInstance(), FragmentsTag.LIKED, FragmentsTag.MAIN, false)
-                        FragmentsTag.STATISTIC -> showFragment(StatisticFragment.newInstance(), FragmentsTag.STATISTIC, FragmentsTag.MAIN, false)
-                        FragmentsTag.EXIT -> if (FitState.getInstance().isFitRun) {
-                            Toast.makeText(this@TracksActivity, R.string.tracks_activity_error_exit_account, Toast.LENGTH_SHORT).show()
-                        } else {
-                            exitFromAccount()
+                        FragmentsTag.REMINDER -> showFragment(RemindersFragment.newInstance(), FragmentsTag.REMINDER)
+                        FragmentsTag.LIKED -> showFragment(LikedFragment.newInstance(), FragmentsTag.LIKED)
+                        FragmentsTag.STATISTIC -> showFragment(StatisticFragment.newInstance(), FragmentsTag.STATISTIC)
+                        FragmentsTag.EXIT -> when (FitState.getInstance().isFitRun) {
+                            true -> toast(R.string.tracks_activity_error_exit_account)
+                            false -> exitFromAccount()
                         }
-                        FragmentsTag.SETTINGS -> showFragment(SettingsFragment.newInstance(), FragmentsTag.SETTINGS, FragmentsTag.MAIN, false)
-                        FragmentsTag.NEW_MAIN -> showFragment(TracksFragment.newInstance(), FragmentsTag.NEW_MAIN, FragmentsTag.MAIN, false)
+
+                        FragmentsTag.SETTINGS -> showFragment(SettingsFragment.newInstance(), FragmentsTag.SETTINGS)
+                        FragmentsTag.NEW_MAIN -> showFragment(TracksFragment.newInstance(), FragmentsTag.NEW_MAIN)
                     }
                     false
                 }
@@ -149,7 +149,7 @@ class TracksActivity : AppCompatActivity() {
             .build()
 
     @SuppressLint("CommitTransaction")
-    private fun showFragment(fragment: Fragment, @FragmentsTag tag: String, @FragmentsTag clearToTag: String?, clearInclusive: Boolean) {
+    private fun showFragment(fragment: Fragment, @FragmentsTag tag: String, @FragmentsTag clearToTag: String? = FragmentsTag.MAIN, clearInclusive: Boolean = false) {
         val fragmentManager = supportFragmentManager
 
         if (clearToTag != null || clearInclusive) {
