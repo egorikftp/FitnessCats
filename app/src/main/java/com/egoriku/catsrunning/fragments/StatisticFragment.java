@@ -25,7 +25,6 @@ import com.egoriku.catsrunning.ui.activity.TracksActivity;
 import com.egoriku.catsrunning.ui.adapter.SpinnerAdapter;
 import com.egoriku.catsrunning.ui.customview.statisticChart.FitChart;
 import com.egoriku.catsrunning.ui.customview.statisticChart.FitChartValue;
-import com.egoriku.catsrunning.utils.CustomFont;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -101,7 +100,6 @@ public class StatisticFragment extends Fragment {
         rootLayout = (RelativeLayout) view.findViewById(R.id.statistic_fragment_root_no_data);
         rootFrame = (FrameLayout) view.findViewById(R.id.statistic_fragment_root_chart);
 
-        noDataView.setTypeface(CustomFont.getTypeFace());
         addItemsToSpinner();
 
         icons = new View[]{imageWalkView, imageRunningView, imageCyclingView};

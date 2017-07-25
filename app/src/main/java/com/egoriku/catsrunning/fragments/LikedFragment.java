@@ -25,7 +25,6 @@ import com.egoriku.catsrunning.adapters.FitnessDataHolder;
 import com.egoriku.catsrunning.data.commons.TracksModel;
 import com.egoriku.catsrunning.models.Constants;
 import com.egoriku.catsrunning.ui.activity.TracksActivity;
-import com.egoriku.catsrunning.utils.CustomFont;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.egoriku.catsrunning.utils.IntentBuilder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -83,7 +82,6 @@ public class LikedFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        noLikedTracksTextView.setTypeface(CustomFont.getTypeFace());
         setScrollingEnabled(true);
         hideNoTracks();
 
@@ -167,7 +165,7 @@ public class LikedFragment extends Fragment {
                 });
 
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
+
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 if (adapter.getItemCount() == 0) {
                     showNoTracks();

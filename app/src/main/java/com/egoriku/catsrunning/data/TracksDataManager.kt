@@ -69,7 +69,7 @@ class TracksDataManager private constructor() : ChildEventListener {
         databaseReference.removeEventListener(this)
     }
 
-    fun close(){
+    fun close() {
         dataManager = null
     }
 
@@ -92,9 +92,9 @@ class TracksDataManager private constructor() : ChildEventListener {
         }
     }
 
-    fun walkingData() = tracks.filter { it.typeFit == TypeFit.WALKING }
-    fun runningData() = tracks.filter { it.typeFit == TypeFit.RUNNING }
-    fun cyclingData() = tracks.filter { it.typeFit == TypeFit.CYCLING }
+    fun walkingData() = tracks.filter { it.typeFit == TypeFit.WALKING }.sortedByDescending { it.beginsAt }
+    fun runningData() = tracks.filter { it.typeFit == TypeFit.RUNNING }.sortedByDescending { it.beginsAt }
+    fun cyclingData() = tracks.filter { it.typeFit == TypeFit.CYCLING }.sortedByDescending { it.beginsAt }
 
     inline fun <reified T> DataSnapshot.toModelOfType() = getValue(T::class.java)
 

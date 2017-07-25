@@ -75,7 +75,7 @@ public class AddReminderActivity extends AppCompatActivity {
         listPicker = Arrays.asList(getResources().getStringArray(R.array.type_reminder));
         timePicker.setIs24HourView(true);
 
-        if (Build.VERSION.SDK_INT >= 15 && Build.VERSION.SDK_INT <= 19) {
+        if (Build.VERSION.SDK_INT <= 19) {
             datePicker.setCalendarViewShown(false);
         }
 

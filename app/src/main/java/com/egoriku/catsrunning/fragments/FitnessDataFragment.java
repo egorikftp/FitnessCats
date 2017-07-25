@@ -18,7 +18,6 @@ import com.egoriku.catsrunning.activities.FitActivity;
 import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.adapters.FitnessDataHolder;
 import com.egoriku.catsrunning.data.commons.TracksModel;
-import com.egoriku.catsrunning.utils.CustomFont;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.egoriku.catsrunning.utils.IntentBuilder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -69,7 +68,6 @@ public class FitnessDataFragment extends Fragment {
         textViewNoTracks = (TextView) view.findViewById(R.id.fragment_fitness_data_text_no_tracks);
         imageViewNoTracks = (ImageView) view.findViewById(R.id.fragment_fitness_data_image_cats_no_track);
 
-        textViewNoTracks.setTypeface(CustomFont.getTypeFace());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         hideNoTracks();
         showLoading(true);
@@ -155,7 +153,7 @@ public class FitnessDataFragment extends Fragment {
                 });
 
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
+
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 if (adapter.getItemCount() == 0) {
                     showNoTracks();

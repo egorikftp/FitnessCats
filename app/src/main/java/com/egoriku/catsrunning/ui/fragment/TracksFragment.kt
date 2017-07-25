@@ -14,6 +14,7 @@ import com.egoriku.catsrunning.activities.TrackOnMapsActivity
 import com.egoriku.catsrunning.data.TracksDataManager
 import com.egoriku.catsrunning.data.UIListener
 import com.egoriku.catsrunning.data.commons.TracksModel
+import com.egoriku.catsrunning.helpers.Events
 import com.egoriku.catsrunning.helpers.TypeFit
 import com.egoriku.catsrunning.models.Constants
 import com.egoriku.catsrunning.ui.activity.TracksActivity
@@ -23,16 +24,18 @@ import com.egoriku.catsrunning.util.extensions.hide
 import com.egoriku.catsrunning.util.extensions.show
 import com.egoriku.catsrunning.util.inflate
 import com.egoriku.catsrunning.utils.FirebaseUtils
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_tracks.*
 import org.jetbrains.anko.support.v4.alert
 import org.jetbrains.anko.support.v4.startActivity
 
-class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListener {
+class TracksFragment : Fragment(), UIListener {
 
-    private lateinit var tracksAdapter: TracksAdapter
+    private lateinit var adapter: TracksAdapter
     private val tracksDataManager = TracksDataManager.instance
     private var anim: TranslateAnimation = TranslateAnimation(0f, 0f, 40f, 0f)
     private val firebaseUtils by lazy { FirebaseUtils.getInstance() }
+    private lateinit var subscriber: Disposable
 
     init {
         anim.apply {
@@ -51,7 +54,7 @@ class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListe
     override fun handleSuccess(data: List<TracksModel>) {
         progressbar.hide()
         tracks_recyclerview.show()
-        tracksAdapter.setItems(data)
+        adapter.setItems(data)
         no_tracks.hide()
         no_tracks_text.hide()
 
@@ -64,27 +67,6 @@ class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListe
     }
 
     override fun handleError() {
-    }
-
-    override fun onFavoriteClick(item: TracksModel) {
-        item.isFavorite = !item.isFavorite
-        firebaseUtils.updateTrackFavorire(item, context)
-        tracksAdapter.notifyDataSetChanged()
-    }
-
-    override fun onLongClick(item: TracksModel) {
-        alert(R.string.fitness_data_fragment_alert_title) {
-            positiveButton(R.string.fitness_data_fragment_alert_positive_btn) { firebaseUtils.removeTrack(item, context) }
-            negativeButton(R.string.fitness_data_fragment_alert_negative_btn) {}
-        }.show()
-    }
-
-    override fun onClickItem(item: TracksModel) {
-        if (item.time == 0L) {
-            startActivity<FitActivity>(Constants.Extras.KEY_TYPE_FIT to item.typeFit)
-        } else {
-            startActivity<TrackOnMapsActivity>(Constants.Extras.EXTRA_TRACK_ON_MAPS to item)
-        }
     }
 
     override fun onStart() {
@@ -105,9 +87,10 @@ class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListe
 
         progressbar.show()
         initAdapter()
-
-        tracksDataManager.addListener(this)
-        tracksDataManager.loadTracks(TypeFit.WALKING)
+        tracksDataManager.apply {
+            addListener(this@TracksFragment)
+            loadTracks(TypeFit.WALKING)
+        }
 
         bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
@@ -119,6 +102,7 @@ class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListe
         }
     }
 
+    @Suppress("NOTHING_TO_INLINE")
     inline private fun consumeEvent(typeFit: Int, itemId: Int): Boolean {
         if (bottomNavigationView.selectedItemId != itemId) {
             tracks_recyclerview.animation = anim
@@ -130,13 +114,42 @@ class TracksFragment : Fragment(), TracksAdapter.onViewSelectedListener, UIListe
 
     private fun initAdapter() {
         if (tracks_recyclerview.adapter == null) {
-            tracksAdapter = TracksAdapter(this)
-            tracks_recyclerview.adapter = tracksAdapter
+            adapter = TracksAdapter()
+            tracks_recyclerview.adapter = adapter
+
+            subscriber = adapter.clickItem
+                    .subscribe({ (tracksModel, event) ->
+                        when (event) {
+                            Events.CLICK -> {
+                                if (tracksModel.time == 0L) {
+                                    startActivity<FitActivity>(Constants.Extras.KEY_TYPE_FIT to tracksModel.typeFit)
+                                } else {
+                                    startActivity<TrackOnMapsActivity>(Constants.Extras.EXTRA_TRACK_ON_MAPS to tracksModel)
+                                }
+                            }
+                            Events.LONG_CLICK -> {
+                                alert(R.string.fitness_data_fragment_alert_title) {
+                                    positiveButton(R.string.fitness_data_fragment_alert_positive_btn) { firebaseUtils.removeTrack(tracksModel, context) }
+                                    negativeButton(R.string.fitness_data_fragment_alert_negative_btn) {}
+                                }.show()
+                            }
+                            Events.LIKED_CLICK -> {
+                                tracksModel.isFavorite = !tracksModel.isFavorite
+                                firebaseUtils.updateTrackFavorire(tracksModel, context)
+                                adapter.notifyDataSetChanged()
+                            }
+                        }
+                    })
         }
     }
 
     override fun onStop() {
         super.onStop()
         tracksDataManager.removeUIListener()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        subscriber.dispose()
     }
 }

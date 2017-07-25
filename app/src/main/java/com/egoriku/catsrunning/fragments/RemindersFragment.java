@@ -35,7 +35,6 @@ import com.egoriku.catsrunning.dialogs.UpdateTimeReminderDialog;
 import com.egoriku.catsrunning.models.ReminderModel;
 import com.egoriku.catsrunning.receivers.ReminderReceiver;
 import com.egoriku.catsrunning.ui.activity.TracksActivity;
-import com.egoriku.catsrunning.utils.CustomFont;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -115,8 +114,6 @@ public class RemindersFragment extends Fragment {
                 startActivity(new Intent(getActivity(), AddReminderActivity.class));
             }
         });
-
-        noReminders.setTypeface(CustomFont.getTypeFace());
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         remindersAdapter = new RemindersAdapter(getContext());
@@ -249,7 +246,7 @@ public class RemindersFragment extends Fragment {
                                 dbCursor.getInt(_ID),
                                 dbCursor.getLong(DATE_REMINDER),
                                 dbCursor.getInt(TYPE_REMINDER),
-                                dbCursor.getInt(IS_RINGS)
+                                dbCursor.getInt(IS_RING)
                         )*/
     }
 

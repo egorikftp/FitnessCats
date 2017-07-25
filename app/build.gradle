@@ -3,14 +3,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    buildToolsVersion "25.0.3"
-    compileSdkVersion 25
+    buildToolsVersion "26.0.0"
+    compileSdkVersion 26
 
     defaultConfig {
         applicationId "com.egoriku.catsrunning"
         vectorDrawables.useSupportLibrary = true
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 10
         versionName "0.10"
         multiDexEnabled true
@@ -18,12 +18,12 @@ android {
     }
 
     signingConfigs {
-        release {
+        /* release {
             storeFile file(System.getenv("KEYSTORE"))
             storePassword System.getenv('KEY_STORE_PASSWORD')
             keyAlias System.getenv('KEY_ALIAS')
             keyPassword System.getenv('KEY_PASSWORD')
-        }
+        }*/
     }
 
     buildTypes {
@@ -31,7 +31,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             debuggable false
-            signingConfig signingConfigs.release
+            //  signingConfig signingConfigs.release
         }
     }
 
@@ -42,19 +42,23 @@ android {
         }
     }
 
-    applicationVariants.all { variant ->
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+    }
+
+   /* applicationVariants.all { variant ->
         variant.outputs.each { output ->
             output.outputFile = new File(
                     output.outputFile.parent,
                     "${"FitnessCats"}.${variant.name}_${variant.versionName}.apk")
         }
-    }
+    }*/
 }
 ext.ver = [
-        support : '25.3.1',
-        gms     : '11.0.1',
+        support : '26.0.0',
+        gms     : '11.0.2',
         jUnit   : '4.12',
-        multiDex: '1.0.1'
+        multiDex: '1.0.2'
 ]
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -65,11 +69,21 @@ dependencies {
     })
 
     compile "com.android.support:multidex:$ver.multiDex"
-    compile "com.android.support:appcompat-v7:$ver.appcompat"
-    compile "com.android.support:design:$ver.support"
-    compile "com.android.support:support-v4:$ver.support"
-    compile "com.android.support:recyclerview-v7:$ver.support"
-    compile "com.android.support:cardview-v7:$ver.support"
+    compile "com.android.support:appcompat-v7:$ver.appcompat",{
+        exclude group: 'com.android.support:customtabs:25.3.1'
+    }
+    compile "com.android.support:design:$ver.support",{
+        exclude group: 'com.android.support:customtabs:25.3.1'
+    }
+    compile "com.android.support:support-v4:$ver.support", {
+        exclude group: 'com.android.support:customtabs:25.3.1'
+    }
+    compile "com.android.support:recyclerview-v7:$ver.support", {
+        exclude group: 'com.android.support:customtabs:25.3.1'
+    }
+    compile "com.android.support:cardview-v7:$ver.support", {
+        exclude group: 'com.android.support:customtabs:25.3.1'
+    }
     compile "com.google.firebase:firebase-database:$ver.gms"
     compile "com.google.firebase:firebase-auth:$ver.gms"
     compile "com.google.firebase:firebase-core:$ver.gms"
@@ -82,6 +96,7 @@ dependencies {
 
     compile "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
     compile "org.jetbrains.anko:anko-support-v4-commons:$anko_version"
+    compile "org.jetbrains.anko:anko-sqlite:$anko_version"
 
     compile('com.mikepenz:materialdrawer:5.9.2@aar') {
         transitive = true
@@ -95,6 +110,10 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.firebaseui:firebase-ui-database:1.2.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    compile 'io.reactivex.rxjava2:rxkotlin:2.1.0'
+
+    compile 'com.airbnb.android:lottie:2.0.0'
     compile 'com.firebaseui:firebase-ui-auth:2.0.1'
     apply plugin: 'com.google.gms.google-services'
 }

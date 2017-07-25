@@ -1,6 +1,7 @@
 package com.egoriku.catsrunning.ui.adapter
 
 import android.content.Context
+import android.support.v4.content.res.ResourcesCompat
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -8,7 +9,6 @@ import android.widget.TextView
 import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.data.commons.SpinnerIntervalModel
 import com.egoriku.catsrunning.util.inflateViewGroup
-import com.egoriku.catsrunning.utils.CustomFont
 import kotlinx.android.synthetic.main.item_spinner.view.*
 
 class SpinnerAdapter(context: Context, private val items: List<SpinnerIntervalModel>)
@@ -36,7 +36,7 @@ class SpinnerAdapter(context: Context, private val items: List<SpinnerIntervalMo
         }
 
         viewHolder.someInterval.text = items[position].nameInterval
-        viewHolder.someInterval.typeface = CustomFont.getTypeFace()
+        viewHolder.someInterval.typeface = ResourcesCompat.getFont(parent.context, R.font.birusa)
         return viewGroup
     }
 

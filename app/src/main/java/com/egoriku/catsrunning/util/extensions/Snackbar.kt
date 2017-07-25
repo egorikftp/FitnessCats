@@ -12,7 +12,7 @@ inline fun View.snack(@StringRes messageId: Int, length: Int = Snackbar.LENGTH_L
 }
 
 fun View.snack(@StringRes messageId: Int, length: Int = Snackbar.LENGTH_LONG) {
-    val snack = Snackbar.make(this, messageId, length).show()
+    Snackbar.make(this, messageId, length).show()
 }
 
 fun Snackbar.action(@StringRes textResId: Int, @ColorInt color: Int? = null, listener: (View) -> Unit) {
