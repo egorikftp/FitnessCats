@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Фитнес клуб</string>
     <string name="calories_format">%s ккал</string>
-    <string name="adapter_all_fitness_data_distance">Дистанция:</string>
+    <string name="distance">Дистанция</string>
     <string name="distance_format">%s м</string>
-    <string name="adapter_fragment_main_calories">Калории:</string>
+    <string name="calories">Калории</string>
     <string name="add_reminder_part_one_dialog_back_btn">Назад</string>
     <string name="add_reminder_part_one_dialog_final_btn">Готово</string>
     <string name="type_walking">Прогулкa</string>
@@ -84,4 +83,6 @@
     <string name="growth">Рост</string>
     <string name="the_weight">Вес</string>
     <string name="age">Возраст</string>
+    <string name="time_fit">Время</string>
+    <string name="app_name">Fitness Cat\'s</string>
 </resources>

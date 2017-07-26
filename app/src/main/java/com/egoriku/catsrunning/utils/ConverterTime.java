@@ -14,7 +14,7 @@ public class ConverterTime {
     private static final long MILLIS_TO_MINUTES = 60000;
     private static final long MILLS_TO_HOURS = 3600000;
 
-
+    @Deprecated
     public static String ConvertTimeToString(long timeInMillis) {
         int seconds = (int) (timeInMillis / 1000) % 60;
         int minutes = (int) ((timeInMillis / (MILLIS_TO_MINUTES)) % 60);
@@ -37,6 +37,18 @@ public class ConverterTime {
         return startTime + " - " + endTime;
     }
 
+    public static String getTime(long timeInMillis) {
+        String time = "-";
+
+        if (timeInMillis == 0) {
+            return time;
+        } else {
+            int seconds = (int) (timeInMillis / 1000) % 60;
+            int minutes = (int) ((timeInMillis / (MILLIS_TO_MINUTES)) % 60);
+            int hours = (int) ((timeInMillis / (MILLS_TO_HOURS)) % 24);
+            return String.format(Locale.getDefault(), FORMAT_DATE, hours, minutes, seconds);
+        }
+    }
 
     public static String convertDateReminder(long someDate) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_DATE_LOW, Locale.getDefault());

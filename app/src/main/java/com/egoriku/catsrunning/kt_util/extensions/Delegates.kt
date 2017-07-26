@@ -1,4 +1,4 @@
-package com.egoriku.catsrunning.util.extensions
+package com.egoriku.catsrunning.kt_util.extensions
 
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty

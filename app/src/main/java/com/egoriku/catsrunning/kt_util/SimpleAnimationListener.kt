@@ -1,4 +1,4 @@
-package com.egoriku.catsrunning.util
+package com.egoriku.catsrunning.kt_util
 
 import android.view.animation.Animation
 

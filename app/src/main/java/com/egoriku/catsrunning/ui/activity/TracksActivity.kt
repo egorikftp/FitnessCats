@@ -22,9 +22,9 @@ import com.egoriku.catsrunning.helpers.FragmentsTag.MAIN
 import com.egoriku.catsrunning.helpers.FragmentsTag.NEW_MAIN
 import com.egoriku.catsrunning.models.FitState
 import com.egoriku.catsrunning.ui.fragment.TracksFragment
-import com.egoriku.catsrunning.util.drawableCompat
-import com.egoriku.catsrunning.util.extensions.fromApi
-import com.egoriku.catsrunning.util.extensions.toApi
+import com.egoriku.catsrunning.kt_util.drawableCompat
+import com.egoriku.catsrunning.kt_util.extensions.fromApi
+import com.egoriku.catsrunning.kt_util.extensions.toApi
 import com.egoriku.catsrunning.utils.FirebaseUtils
 import com.firebase.ui.auth.AuthUI
 import com.mikepenz.materialdrawer.AccountHeader

@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.egoriku.catsrunning.util.DrawableKt.drawableCompat;
-import static com.egoriku.catsrunning.util.DrawableKt.drawableTypeReminder;
+import static com.egoriku.catsrunning.kt_util.DrawableKt.drawableCompat;
+import static com.egoriku.catsrunning.kt_util.DrawableKt.drawableTypeReminder;
 
 public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
 

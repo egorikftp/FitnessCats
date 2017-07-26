@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#E69F70</color>
-    <color name="colorPrimaryDark">#AEBFB2</color>
+    <color name="colorPrimaryDark">#aebfb2</color>
     <color name="colorAccent">#B85967</color>
 
     <color name="black">#000000</color>
@@ -27,6 +27,8 @@
 
     <color name="settings_toolbar_color2">#B85967</color>
     <color name="settings_toolbar_color_dark2">#B83549</color>
+
+    <color name="grey">#aeaeae</color>
 
 
 </resources>

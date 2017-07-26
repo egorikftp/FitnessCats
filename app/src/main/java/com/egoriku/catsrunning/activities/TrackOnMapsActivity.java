@@ -42,7 +42,7 @@ import java.util.List;
 import static com.egoriku.catsrunning.models.Constants.Extras.EXTRA_TRACK_ON_MAPS;
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TRACKS;
 import static com.egoriku.catsrunning.models.Constants.TracksOnMapActivity.KEY_LIKED;
-import static com.egoriku.catsrunning.util.DrawableKt.drawableCompat;
+import static com.egoriku.catsrunning.kt_util.DrawableKt.drawableCompat;
 import static com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit;
 import static com.egoriku.catsrunning.utils.VectorToDrawable.createBitmapFromVector;
 

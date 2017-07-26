@@ -1,5 +1,6 @@
 package com.egoriku.catsrunning.ui.fragment
 
+import android.animation.Animator
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.animation.LinearOutSlowInInterpolator
@@ -19,10 +20,11 @@ import com.egoriku.catsrunning.helpers.TypeFit
 import com.egoriku.catsrunning.models.Constants
 import com.egoriku.catsrunning.ui.activity.TracksActivity
 import com.egoriku.catsrunning.ui.adapter.TracksAdapter
-import com.egoriku.catsrunning.util.drawableCompat
-import com.egoriku.catsrunning.util.extensions.hide
-import com.egoriku.catsrunning.util.extensions.show
-import com.egoriku.catsrunning.util.inflate
+import com.egoriku.catsrunning.kt_util.SimpleAnimatorListener
+import com.egoriku.catsrunning.kt_util.drawableCompat
+import com.egoriku.catsrunning.kt_util.extensions.hide
+import com.egoriku.catsrunning.kt_util.extensions.show
+import com.egoriku.catsrunning.kt_util.inflate
 import com.egoriku.catsrunning.utils.FirebaseUtils
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_tracks.*
@@ -35,7 +37,9 @@ class TracksFragment : Fragment(), UIListener {
     private val tracksDataManager = TracksDataManager.instance
     private var anim: TranslateAnimation = TranslateAnimation(0f, 0f, 40f, 0f)
     private val firebaseUtils by lazy { FirebaseUtils.getInstance() }
-    private lateinit var subscriber: Disposable
+
+    private lateinit var clickEventSubscriber: Disposable
+    private lateinit var likedClickSubscriber: Disposable
 
     init {
         anim.apply {
@@ -117,7 +121,7 @@ class TracksFragment : Fragment(), UIListener {
             adapter = TracksAdapter()
             tracks_recyclerview.adapter = adapter
 
-            subscriber = adapter.clickItem
+            clickEventSubscriber = adapter.clickItem
                     .subscribe({ (tracksModel, event) ->
                         when (event) {
                             Events.CLICK -> {
@@ -133,10 +137,26 @@ class TracksFragment : Fragment(), UIListener {
                                     negativeButton(R.string.fitness_data_fragment_alert_negative_btn) {}
                                 }.show()
                             }
+                        }
+                    })
+
+            likedClickSubscriber = adapter.likedClick
+                    .subscribe({ (view, event, tracksModel, position) ->
+                        when (event) {
                             Events.LIKED_CLICK -> {
                                 tracksModel.isFavorite = !tracksModel.isFavorite
                                 firebaseUtils.updateTrackFavorire(tracksModel, context)
-                                adapter.notifyDataSetChanged()
+
+                                view.addAnimatorListener(object : SimpleAnimatorListener() {
+
+                                    override fun onAnimationEnd(p0: Animator?) {
+                                        tracks_recyclerview.post({ adapter.notifyItemChanged(position) })
+                                    }
+
+                                    override fun onAnimationCancel(p0: Animator?) = if (tracksModel.isFavorite) view.progress = 1.0f else view.progress = 0.0f
+                                })
+
+                                if (tracksModel.isFavorite) view.playAnimation() else view.progress = 0.0f
                             }
                         }
                     })
@@ -150,6 +170,7 @@ class TracksFragment : Fragment(), UIListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        subscriber.dispose()
+        clickEventSubscriber.dispose()
+        likedClickSubscriber.dispose()
     }
 }

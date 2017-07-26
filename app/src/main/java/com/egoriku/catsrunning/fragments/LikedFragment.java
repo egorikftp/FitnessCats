@@ -91,7 +91,7 @@ public class LikedFragment extends Fragment {
                 .orderByChild(IS_FAVORIRE)
                 .equalTo(true);
 
-        adapter = new FirebaseRecyclerAdapter<TracksModel, FitnessDataHolder>(TracksModel.class, R.layout.adapter_fitness_data_fragment, FitnessDataHolder.class, query) {
+        adapter = new FirebaseRecyclerAdapter<TracksModel, FitnessDataHolder>(TracksModel.class, R.layout.item_tracks_adapter, FitnessDataHolder.class, query) {
             @Override
             protected void populateViewHolder(final FitnessDataHolder viewHolder, TracksModel model, int position) {
                 showLoading(false);

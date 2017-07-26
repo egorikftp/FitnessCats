@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark">
 
-    <com.egoriku.catsrunning.ui.customview.CustomTextView
+    <com.egoriku.catsrunning.ui.customview.CompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -25,7 +25,7 @@
         android:layout_marginBottom="@dimen/activity_add_user_info_layout_margin_bottom"
         android:orientation="horizontal">
 
-        <com.egoriku.catsrunning.ui.customview.CustomTextView
+        <com.egoriku.catsrunning.ui.customview.CompatTextView
             style="@style/activityAddUserInfoTextView"
             android:text="@string/activity_add_user_info_enter_you_growth" />
 
@@ -33,7 +33,7 @@
             android:id="@+id/activity_add_user_info_growth"
             style="@style/activityAddUserDataEditText" />
 
-        <com.egoriku.catsrunning.ui.customview.CustomTextView
+        <com.egoriku.catsrunning.ui.customview.CompatTextView
             style="@style/activityAddUserInfoTextView"
             android:text="@string/activity_add_user_info_sm" />
     </LinearLayout>
@@ -48,7 +48,7 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <com.egoriku.catsrunning.ui.customview.CustomTextView
+        <com.egoriku.catsrunning.ui.customview.CompatTextView
             style="@style/activityAddUserInfoTextView"
             android:hint="@string/activity_add_user_info_enter_you_weigth" />
 
@@ -56,7 +56,7 @@
             android:id="@+id/activity_add_user_info_weigth"
             style="@style/activityAddUserDataEditText" />
 
-        <com.egoriku.catsrunning.ui.customview.CustomTextView
+        <com.egoriku.catsrunning.ui.customview.CompatTextView
             style="@style/activityAddUserInfoTextView"
             android:text="@string/activity_add_user_info_kg" />
     </LinearLayout>
