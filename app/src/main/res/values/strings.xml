@@ -49,8 +49,8 @@
     <!-- Track Fragment -->
     <string name="track_fragment_distance">Distance:</string>
     <string name="track_fragment_time_running">Time %s:</string>
-    <string name="track_fragment_start_running_hint">START</string>
-    <string name="track_fragment_end_running_hint">FINISH</string>
+    <string name="track_fragment_start_running_hint">Start</string>
+    <string name="track_fragment_end_running_hint">Finish</string>
     <string name="track_fragment_distance_meter">%s m</string>
     <string name="track_fragment_toast_text_no_points">There are no points</string>
 

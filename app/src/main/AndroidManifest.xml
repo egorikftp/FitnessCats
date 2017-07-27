@@ -52,7 +52,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".activities.TrackOnMapsActivity">
+        <activity android:name=".ui.activity.TrackMapActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.egoriku.catsrunning.ui.activity.TracksActivity" />

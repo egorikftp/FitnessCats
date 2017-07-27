@@ -41,8 +41,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/no_tracks"
@@ -60,6 +59,8 @@
         app:layout_constraintTop_toTopOf="@+id/guideline6"
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintVertical_chainStyle="spread"
+        android:visibility="gone"
+        tools:visibility="invisible"
         tools:src="@drawable/ic_cats_no_track" />
 
     <android.support.constraint.Guideline
@@ -86,6 +87,8 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
+        android:visibility="gone"
+        tools:visibility="invisible"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toBottomOf="@+id/no_tracks" />
 

@@ -45,7 +45,7 @@ public class FirebaseUtils {
         return firebaseDatabase.getReference();
     }
 
-    public void updateTrackFavorire(final TracksModel tracksModel, final Context context) {
+    public void updateFavorite(final TracksModel tracksModel, final Context context) {
         if (getUser() != null && tracksModel.getTrackToken() != null) {
             getFirebaseDatabase()
                     .child(TRACKS)

@@ -1,11 +1,12 @@
 package com.egoriku.catsrunning.kt_util.extensions
 
+import android.content.Context
 import android.support.annotation.ColorInt
 import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
 import android.view.View
 
-inline fun View.snack(@StringRes messageId: Int, length: Int = Snackbar.LENGTH_LONG, f: Snackbar.() -> Unit) {
+fun View.snack(@StringRes messageId: Int, length: Int = Snackbar.LENGTH_LONG, f: Snackbar.() -> Unit) {
     val snack = Snackbar.make(this, messageId, length)
     snack.f()
     snack.show()
@@ -19,4 +20,3 @@ fun Snackbar.action(@StringRes textResId: Int, @ColorInt color: Int? = null, lis
     setAction(textResId, listener)
     color?.let { setActionTextColor(color) }
 }
-

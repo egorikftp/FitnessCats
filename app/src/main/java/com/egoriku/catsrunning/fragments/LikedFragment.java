@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
-import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
+import com.egoriku.catsrunning.ui.activity.TrackMapActivity;
 import com.egoriku.catsrunning.adapters.FitnessDataHolder;
 import com.egoriku.catsrunning.data.commons.TracksModel;
 import com.egoriku.catsrunning.models.Constants;
@@ -115,7 +115,7 @@ public class LikedFragment extends Fragment {
                                     .extra(Constants.Extras.KEY_TYPE_FIT, tracksModel.getTypeFit())
                                     .build());
                         } else {
-                            TrackOnMapsActivity.start(getActivity(), tracksModel);
+                            TrackMapActivity.Companion.start(getActivity(), tracksModel);
                         }
                     }
 
@@ -123,7 +123,7 @@ public class LikedFragment extends Fragment {
                     public void onFavoriteClick(int position) {
                         TracksModel adapterItem = (TracksModel) adapter.getItem(position);
                         adapterItem.setFavorite(!adapterItem.isFavorite());
-                        firebaseUtils.updateTrackFavorire(adapterItem, getActivity());
+                        firebaseUtils.updateFavorite(adapterItem, getActivity());
                     }
 
                     @Override

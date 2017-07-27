@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import android.view.animation.TranslateAnimation
 import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.activities.FitActivity
-import com.egoriku.catsrunning.activities.TrackOnMapsActivity
+import com.egoriku.catsrunning.ui.activity.TrackMapActivity
 import com.egoriku.catsrunning.data.TracksDataManager
 import com.egoriku.catsrunning.data.UIListener
 import com.egoriku.catsrunning.data.commons.TracksModel
@@ -128,7 +128,7 @@ class TracksFragment : Fragment(), UIListener {
                                 if (tracksModel.time == 0L) {
                                     startActivity<FitActivity>(Constants.Extras.KEY_TYPE_FIT to tracksModel.typeFit)
                                 } else {
-                                    startActivity<TrackOnMapsActivity>(Constants.Extras.EXTRA_TRACK_ON_MAPS to tracksModel)
+                                    startActivity<TrackMapActivity>(Constants.Extras.EXTRA_TRACK_ON_MAPS to tracksModel)
                                 }
                             }
                             Events.LONG_CLICK -> {
@@ -145,7 +145,7 @@ class TracksFragment : Fragment(), UIListener {
                         when (event) {
                             Events.LIKED_CLICK -> {
                                 tracksModel.isFavorite = !tracksModel.isFavorite
-                                firebaseUtils.updateTrackFavorire(tracksModel, context)
+                                firebaseUtils.updateFavorite(tracksModel, context)
 
                                 view.addAnimatorListener(object : SimpleAnimatorListener() {
 

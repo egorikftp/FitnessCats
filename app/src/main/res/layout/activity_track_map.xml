@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:id="@+id/activity_track_map_root"
     android:layout_height="match_parent">
 
     <include layout="@layout/toolbar" />
@@ -29,7 +30,7 @@
             android:textAppearance="?android:textAppearanceMedium" />
 
         <TextView
-            android:id="@+id/track_on_maps_activity_distance_text"
+            android:id="@+id/track_on_map_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:textAppearanceMedium" />
@@ -52,7 +53,7 @@
         android:padding="@dimen/track_on_map_activity_image_padding">
 
         <TextView
-            android:id="@+id/track_on_maps_activity_type_fit"
+            android:id="@+id/track_on_map_type_fit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/fragment_track_padding_word"
@@ -60,7 +61,7 @@
             android:textColor="@color/black" />
 
         <TextView
-            android:id="@+id/track_on_maps_activity_time_running_text"
+            android:id="@+id/track_on_map_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:textAppearanceLarge"
