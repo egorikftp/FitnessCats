@@ -50,8 +50,8 @@
             app:layout_constraintHorizontal_bias="0.4"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:srcCompat="@drawable/ic_vec_cat_fly"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_vec_cat_fly" />
 
         <TextView
             android:id="@+id/textView5"
@@ -143,6 +143,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="Leak Canary"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

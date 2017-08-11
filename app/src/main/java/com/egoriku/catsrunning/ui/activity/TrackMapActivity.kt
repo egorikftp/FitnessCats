@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.DrawableRes
 import android.support.design.widget.Snackbar
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -25,7 +26,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.activity_track_map.*
-import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.toast
 
 class TrackMapActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -79,13 +79,13 @@ class TrackMapActivity : AppCompatActivity(), OnMapReadyCallback {
         } else {
             googleMap.addPolyline(PolylineOptions()
                     .addAll(coordinatesList)
-                    .color(resources.getColor(R.color.colorAccent))
+                    .color(ContextCompat.getColor(this, R.color.colorAccent))
                     .width(10f)
             )
 
             val builder = LatLngBounds.Builder().apply {
-                createMarker(googleMap, coordinatesList.first(), startRunningHint, R.drawable.ic_vec_location_start)
-                createMarker(googleMap, coordinatesList.last(), endRunningHint, R.drawable.ic_vec_location_end)
+                include(createMarker(googleMap, coordinatesList.first(), startRunningHint, R.drawable.ic_vec_location_start))
+                include(createMarker(googleMap, coordinatesList.last(), endRunningHint, R.drawable.ic_vec_location_end))
 
                 for (i in 1..coordinatesList.size - 2) {
                     include(coordinatesList[i])
@@ -98,11 +98,11 @@ class TrackMapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun createMarker(map: GoogleMap, latLng: LatLng, title: String, @DrawableRes idIco: Int): LatLng {
-        val marker = map.addMarker(MarkerOptions()
+        return map.addMarker(MarkerOptions()
                 .position(latLng)
                 .title(title)
                 .icon(BitmapDescriptorFactory.fromBitmap(createBitmapFromVector(resources, idIco))))
-        return marker.position
+                .position
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -121,7 +121,6 @@ class TrackMapActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_tracks_on_map_activity_action_like -> {
-
                 tracksModel.isFavorite = !tracksModel.isFavorite
                 firebaseUtils.updateFavorite(tracksModel, this)
                 invalidateOptionsMenu()

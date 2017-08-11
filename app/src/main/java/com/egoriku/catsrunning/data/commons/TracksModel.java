@@ -10,6 +10,17 @@ import java.util.List;
 
 public class TracksModel implements Parcelable {
 
+    public static final Parcelable.Creator<TracksModel> CREATOR = new Parcelable.Creator<TracksModel>() {
+        @Override
+        public TracksModel createFromParcel(Parcel source) {
+            return new TracksModel(source);
+        }
+
+        @Override
+        public TracksModel[] newArray(int size) {
+            return new TracksModel[size];
+        }
+    };
     private long beginsAt;
     private long time;
     private int distance;
@@ -30,6 +41,18 @@ public class TracksModel implements Parcelable {
         this.points = points;
         this.trackToken = trackToken;
         this.typeFit = typeFit;
+    }
+
+    protected TracksModel(Parcel in) {
+        this.beginsAt = in.readLong();
+        this.time = in.readLong();
+        this.distance = in.readInt();
+        this.calories = in.readInt();
+        this.trackToken = in.readString();
+        this.isFavorite = in.readByte() != 0;
+        this.typeFit = in.readInt();
+        this.points = new ArrayList<>();
+        in.readList(this.points, LatLng.class.getClassLoader());
     }
 
     public long getBeginsAt() {
@@ -98,28 +121,4 @@ public class TracksModel implements Parcelable {
         dest.writeInt(this.typeFit);
         dest.writeList(this.points);
     }
-
-    protected TracksModel(Parcel in) {
-        this.beginsAt = in.readLong();
-        this.time = in.readLong();
-        this.distance = in.readInt();
-        this.calories = in.readInt();
-        this.trackToken = in.readString();
-        this.isFavorite = in.readByte() != 0;
-        this.typeFit = in.readInt();
-        this.points = new ArrayList<>();
-        in.readList(this.points, LatLng.class.getClassLoader());
-    }
-
-    public static final Parcelable.Creator<TracksModel> CREATOR = new Parcelable.Creator<TracksModel>() {
-        @Override
-        public TracksModel createFromParcel(Parcel source) {
-            return new TracksModel(source);
-        }
-
-        @Override
-        public TracksModel[] newArray(int size) {
-            return new TracksModel[size];
-        }
-    };
 }

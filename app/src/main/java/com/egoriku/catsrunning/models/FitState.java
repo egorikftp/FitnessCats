@@ -3,6 +3,7 @@ package com.egoriku.catsrunning.models;
 import com.egoriku.catsrunning.data.commons.LatLng;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class FitState {
@@ -20,14 +21,13 @@ public class FitState {
     private double calories;
     private int typeFit;
 
-    public static FitState getInstance(){
-        if(fitState == null){
+    public static FitState getInstance() {
+        if (fitState == null) {
             fitState = new FitState();
         }
 
         return fitState;
     }
-
 
     public int getTypeFit() {
         return typeFit;
@@ -77,14 +77,6 @@ public class FitState {
         this.latLngs.add(latLng);
     }
 
-    public long getIdTrack() {
-        return idTrack;
-    }
-
-    public void setIdTrack(long idTrack) {
-        this.idTrack = idTrack;
-    }
-
     public long getSinceTime() {
         return sinceTime;
     }
@@ -107,5 +99,17 @@ public class FitState {
 
     public void setStartTime(long startTime) {
         this.startTime = startTime;
+    }
+
+    public void clearFitData() {
+        sinceTime = 0;
+        nowDistance = 0;
+        startTime = 0;
+        idTrack = 0;
+        latLngs = Collections.emptyList();
+        timeBetweenLocations = 0;
+        weight = 0;
+        calories = 0;
+        typeFit = 1;
     }
 }

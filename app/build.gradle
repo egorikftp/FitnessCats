@@ -68,7 +68,9 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile "com.android.support:multidex:$ver.multiDex"
+    compile "com.android.support:multidex:$ver.multiDex",{
+        exclude group: 'com.android.support:customtabs:25.3.1'
+    }
     compile "com.android.support:appcompat-v7:$ver.appcompat",{
         exclude group: 'com.android.support:customtabs:25.3.1'
     }
@@ -102,9 +104,9 @@ dependencies {
         transitive = true
     }
 
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+  //  debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
+  //  releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+  //  testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
 
     compile 'com.jakewharton.timber:timber:4.5.1'
     compile 'com.android.support.constraint:constraint-layout:1.1.0-beta1'

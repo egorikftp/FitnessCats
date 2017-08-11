@@ -1,8 +1,12 @@
 package com.egoriku.catsrunning.utils;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.view.View;
 import android.widget.Toast;
 
+import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.AddUserInfoActivity;
 import com.egoriku.catsrunning.data.commons.TracksModel;
 import com.egoriku.catsrunning.models.Firebase.UserInfo;
@@ -72,6 +76,39 @@ public class FirebaseUtils {
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null) {
                                 Toast.makeText(context, databaseError.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+        }
+    }
+
+    public String getTrackToken() {
+        String trackToken = null;
+
+        if (getUser() != null) {
+            trackToken = getFirebaseDatabase()
+                    .child(TRACKS)
+                    .child(user.getUid())
+                    .push()
+                    .getKey();
+        }
+
+        return trackToken;
+    }
+
+    public void saveFit(@NonNull TracksModel tracksModel, @NonNull final View view) {
+        if (getUser() != null && tracksModel.getTrackToken() != null) {
+            getFirebaseDatabase()
+                    .child(TRACKS)
+                    .child(user.getUid())
+                    .child(tracksModel.getTrackToken())
+                    .setValue(tracksModel, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            if (databaseError != null) {
+                                Snackbar.make(view, R.string.scamper_activity_track_save_error + " " + databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
+                            } else {
+                                Snackbar.make(view, R.string.scamper_activity_track_save_success, Snackbar.LENGTH_LONG).show();
                             }
                         }
                     });

@@ -82,7 +82,7 @@ public class SettingsFragment extends Fragment implements ValueEventListener {
         userName = (TextView) view.findViewById(R.id.settings_user_name);
         userEmail = (TextView) view.findViewById(R.id.settings_user_email);
 
-        final DebugApplication.TogglableHeapDumper heapDumper = ((DebugApplication) getActivity().getApplicationContext()).getDumper();
+     /*   final DebugApplication.TogglableHeapDumper heapDumper = ((DebugApplication) getActivity().getApplicationContext()).getDumper();
         final Button leakCanary = (Button) view.findViewById(R.id.leak_canary);
         leakCanary.setBackgroundColor(heapDumper.isEnabled() ? ContextCompat.getColor(getContext(), R.color.primary_dark) : ContextCompat.getColor(getContext(), R.color.accent));
         leakCanary.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +91,7 @@ public class SettingsFragment extends Fragment implements ValueEventListener {
                 leakCanary.setBackgroundColor(heapDumper.toggle() ? ContextCompat.getColor(getContext(), R.color.primary_dark) : ContextCompat.getColor(getContext(), R.color.accent));
             }
         });
-
+*/
         if (user != null) {
             userName.setText(user.getDisplayName());
             userEmail.setText(user.getEmail());
