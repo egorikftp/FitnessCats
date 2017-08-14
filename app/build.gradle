@@ -3,14 +3,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    buildToolsVersion "26.0.0"
-    compileSdkVersion 26
+    buildToolsVersion buildTools
+    compileSdkVersion compileSDK
 
     defaultConfig {
         applicationId "com.egoriku.catsrunning"
         vectorDrawables.useSupportLibrary = true
-        minSdkVersion 16
-        targetSdkVersion 26
+        minSdkVersion minSDK
+        targetSdkVersion targetSDK
         versionCode 10
         versionName "0.10"
         multiDexEnabled true
@@ -52,70 +52,72 @@ android {
         }
     }
 }
-ext.ver = [
-        support : '26.0.0',
-        gms     : '11.0.4',
-        jUnit   : '4.12',
-        multiDex: '1.0.2'
-]
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile "junit:junit:$ver.jUnit"
-    androidTestCompile "junit:junit:$ver.jUnit"
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    testImplementation "junit:junit:$jUnit"
+    androidTestImplementation "junit:junit:$jUnit"
+    androidTestImplementation("com.android.support.test.espresso:espresso-core:$espressoCore", {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile "com.android.support:multidex:$ver.multiDex", {
-        exclude group: 'com.android.support:customtabs:25.3.1'
+    implementation "com.android.support:multidex:$multiDex", {
+        exclude group: "com.android.support:customtabs:$customTabs"
     }
-    compile "com.android.support:appcompat-v7:$ver.appcompat", {
-        exclude group: 'com.android.support:customtabs:25.3.1'
-    }
-    compile "com.android.support:design:$ver.support", {
-        exclude group: 'com.android.support:customtabs:25.3.1'
-    }
-    compile "com.android.support:support-v4:$ver.support", {
-        exclude group: 'com.android.support:customtabs:25.3.1'
-    }
-    compile "com.android.support:recyclerview-v7:$ver.support", {
-        exclude group: 'com.android.support:customtabs:25.3.1'
-    }
-    compile "com.android.support:cardview-v7:$ver.support", {
-        exclude group: 'com.android.support:customtabs:25.3.1'
-    }
-    compile "com.google.firebase:firebase-database:$ver.gms"
-    compile "com.google.firebase:firebase-auth:$ver.gms"
-    compile "com.google.firebase:firebase-core:$ver.gms"
 
-    compile "com.google.android.gms:play-services-maps:$ver.gms"
-    compile "com.google.android.gms:play-services-auth:$ver.gms"
-    compile "com.google.android.gms:play-services-location:$ver.gms"
+    implementation "com.android.support:appcompat-v7:$supportLibrary", {
+        exclude group: "com.android.support:customtabs:$customTabs"
+    }
 
-    compile "com.android.support:support-annotations:$ver.support"
+    implementation "com.android.support:design:$supportLibrary", {
+        exclude group: "com.android.support:customtabs:$customTabs"
+    }
 
-    compile "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
-    compile "org.jetbrains.anko:anko-support-v4-commons:$anko_version"
-    compile "org.jetbrains.anko:anko-sqlite:$anko_version"
+    implementation "com.android.support:support-v4:$supportLibrary", {
+        exclude group: "com.android.support:customtabs:$customTabs"
+    }
 
-    compile('com.mikepenz:materialdrawer:5.9.2@aar') {
+    implementation "com.android.support:recyclerview-v7:$supportLibrary", {
+        exclude group: "com.android.support:customtabs:$customTabs"
+    }
+
+    implementation "com.android.support:cardview-v7:$supportLibrary", {
+        exclude group: "com.android.support:customtabs:$customTabs"
+    }
+
+    implementation "com.google.firebase:firebase-database:$gms"
+    implementation "com.google.firebase:firebase-auth:$gms"
+    implementation "com.google.firebase:firebase-core:$gms"
+
+    implementation "com.google.android.gms:play-services-maps:$gms"
+    implementation "com.google.android.gms:play-services-auth:$gms"
+    implementation "com.google.android.gms:play-services-location:$gms"
+
+    implementation "com.android.support:support-annotations:$supportLibrary"
+
+    implementation "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
+    implementation "org.jetbrains.anko:anko-support-v4-commons:$anko_version"
+    implementation "org.jetbrains.anko:anko-sqlite:$anko_version"
+
+    implementation("com.mikepenz:materialdrawer:$materialDrawer") {
         transitive = true
     }
 
-    //  debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
-    //  releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
-    //  testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    implementation "com.jakewharton.timber:timber:$timber"
+    implementation "com.android.support.constraint:constraint-layout:$constraintLayout"
 
-    compile 'com.jakewharton.timber:timber:4.5.1'
-    compile 'com.android.support.constraint:constraint-layout:1.1.0-beta1'
-    compile 'com.firebaseui:firebase-ui-database:1.2.0'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxkotlin"
 
-    compile 'io.reactivex.rxjava2:rxkotlin:2.1.0'
+    implementation "com.airbnb.android:lottie:$lottie"
+    implementation "com.firebaseui:firebase-ui-auth:$firebaseAuth"
 
-    compile 'com.airbnb.android:lottie:2.0.0'
-    compile 'com.firebaseui:firebase-ui-auth:2.0.1'
-    apply plugin: 'com.google.gms.google-services'
+    //   Leak canary disabled now
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanary"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary"
+    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary"
 }
+
+apply plugin: 'com.google.gms.google-services'
 
