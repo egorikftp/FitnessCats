@@ -10,7 +10,7 @@ import android.view.animation.AnimationUtils
 import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.helpers.DynamicShortcuts
 import com.egoriku.catsrunning.ui.activity.SplashActivity.Constant.IS_ANIMATE
-import com.egoriku.catsrunning.kt_util.SimpleAnimationListener
+import com.egoriku.core_lib.SimpleAnimationListener
 import com.egoriku.catsrunning.kt_util.extensions.snack
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_splash.*
 import org.jetbrains.anko.startActivity
 import java.util.*
+
 
 class SplashActivity : AppCompatActivity() {
 

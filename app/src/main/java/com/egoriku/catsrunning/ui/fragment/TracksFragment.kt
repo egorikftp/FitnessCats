@@ -20,7 +20,7 @@ import com.egoriku.catsrunning.helpers.TypeFit
 import com.egoriku.catsrunning.models.Constants
 import com.egoriku.catsrunning.ui.activity.TracksActivity
 import com.egoriku.catsrunning.ui.adapter.TracksAdapter
-import com.egoriku.catsrunning.kt_util.SimpleAnimatorListener
+import com.egoriku.core_lib.SimpleAnimatorListener
 import com.egoriku.catsrunning.kt_util.drawableCompat
 import com.egoriku.catsrunning.kt_util.extensions.hide
 import com.egoriku.catsrunning.kt_util.extensions.show

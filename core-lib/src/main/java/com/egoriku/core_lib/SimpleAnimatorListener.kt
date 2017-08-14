@@ -1,4 +1,4 @@
-package com.egoriku.catsrunning.kt_util
+package com.egoriku.core_lib
 
 import android.animation.Animator
 

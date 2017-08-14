@@ -15,9 +15,9 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
-import com.egoriku.catsrunning.ui.activity.TrackMapActivity;
 import com.egoriku.catsrunning.adapters.FitnessDataHolder;
 import com.egoriku.catsrunning.data.commons.TracksModel;
+import com.egoriku.catsrunning.ui.activity.TrackMapActivity;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.egoriku.catsrunning.utils.IntentBuilder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;

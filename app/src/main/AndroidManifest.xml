@@ -16,8 +16,8 @@
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.activity.TracksActivity" />
@@ -58,6 +58,10 @@
                 android:value="com.egoriku.catsrunning.ui.activity.TracksActivity" />
         </activity>
         <activity android:name=".activities.AddUserInfoActivity" />
+
+        <meta-data
+            android:name="net.hockeyapp.android.appIdentifier"
+            android:value="@string/hockey_app_id" />
     </application>
 
 </manifest>

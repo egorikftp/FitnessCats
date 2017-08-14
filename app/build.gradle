@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+apply from: 'keys.gradle'
+
 android {
     buildToolsVersion buildTools
     compileSdkVersion compileSDK
@@ -27,7 +29,13 @@ android {
     }
 
     buildTypes {
+        debug{
+            resValue("string", "hockey_app_id", "\"$hockey_app_id_debug\"")
+        }
+
         release {
+            resValue("string", "hockey_app_id", "\"$hockey_app_id_release\"")
+
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             debuggable false
@@ -117,6 +125,12 @@ dependencies {
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanary"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary"
     testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary"
+
+    implementation "net.hockeyapp.android:HockeySDK:$HockeySDK"
+
+    //Deprecated. Remove after redesign
+    implementation 'com.firebaseui:firebase-ui-database:1.2.0'
+    compile project(path: ':core-lib')
 }
 
 apply plugin: 'com.google.gms.google-services'
