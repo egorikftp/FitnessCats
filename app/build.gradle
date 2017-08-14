@@ -4,6 +4,13 @@ apply plugin: 'kotlin-android-extensions'
 
 apply from: 'keys.gradle'
 
+def versionProp = loadProperties('version.properties')
+def version = versionProp['VERSION'] as int
+def sub_version = versionProp['SUB_VERSION'] as int
+def build_version = versionProp['BUILD_VERSION'] as int
+def verCode = version * 100000 + sub_version * 1000 + build_version
+def verName = "$version.$sub_version.$build_version"
+
 android {
     buildToolsVersion buildTools
     compileSdkVersion compileSDK
@@ -13,8 +20,8 @@ android {
         vectorDrawables.useSupportLibrary = true
         minSdkVersion minSDK
         targetSdkVersion targetSDK
-        versionCode 10
-        versionName "0.10"
+        versionCode verCode
+        versionName verName
         multiDexEnabled true
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
@@ -29,7 +36,7 @@ android {
     }
 
     buildTypes {
-        debug{
+        debug {
             resValue("string", "hockey_app_id", "\"$hockey_app_id_debug\"")
         }
 
@@ -52,6 +59,12 @@ android {
 
     packagingOptions {
         exclude 'META-INF/LICENSE'
+    }
+
+    gradle.taskGraph.whenReady { taskGraph ->
+        if (taskGraph.hasTask(assembleDebug) || taskGraph.hasTask(assembleRelease)) {
+            autoIncrementBuildVersionNumber()
+        }
     }
 
     applicationVariants.all { variant ->
@@ -135,3 +148,20 @@ dependencies {
 
 apply plugin: 'com.google.gms.google-services'
 
+Properties loadProperties(String path) {
+    def file = file(path)
+    if (file.canRead() && file.canWrite()) {
+        Properties properties = new Properties()
+        properties.load(new FileInputStream(file))
+        return properties
+    } else {
+        throw new GradleException("Could not read version.properties!")
+    }
+}
+
+def autoIncrementBuildVersionNumber() {
+    def prop = loadProperties('version.properties')
+    def newVersion = (prop['BUILD_VERSION'] as int) + 1
+    prop['BUILD_VERSION'] = newVersion as String
+    prop.store(file('version.properties').newWriter(), null)
+}
