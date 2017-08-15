@@ -38,10 +38,12 @@ android {
     buildTypes {
         debug {
             resValue("string", "hockey_app_id", "\"$hockey_app_id_debug\"")
+            buildConfigField("String", "BUILD_VERSION", "\"$verName\"")
         }
 
         release {
             resValue("string", "hockey_app_id", "\"$hockey_app_id_release\"")
+            buildConfigField("String", "BUILD_VERSION", "\"$verName\"")
 
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

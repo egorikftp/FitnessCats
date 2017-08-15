@@ -1,4 +1,4 @@
-package com.egoriku.core_lib
+package com.egoriku.core_lib.listeners
 
 import android.view.animation.Animation
 

@@ -5,6 +5,7 @@ import com.egoriku.catsrunning.kt_util.extensions.DelegatesExt
 class App : DebugApplication() {
 
     companion object {
+        @JvmStatic
         var instance: App by DelegatesExt.notNullSingleValue()
             private set
     }

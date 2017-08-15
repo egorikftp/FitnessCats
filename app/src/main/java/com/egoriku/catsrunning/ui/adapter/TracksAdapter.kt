@@ -6,8 +6,8 @@ import com.airbnb.lottie.LottieAnimationView
 import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.data.commons.TracksModel
 import com.egoriku.catsrunning.helpers.Events
-import com.egoriku.catsrunning.kt_util.drawableTypeFit
 import com.egoriku.catsrunning.kt_util.Quadruple
+import com.egoriku.catsrunning.kt_util.drawableTypeFit
 import com.egoriku.catsrunning.kt_util.inflate
 import com.egoriku.catsrunning.utils.ConverterTime
 import io.reactivex.subjects.PublishSubject

@@ -1,4 +1,4 @@
-package com.egoriku.core_lib
+package com.egoriku.core_lib.listeners
 
 import android.app.Activity
 import android.app.Application

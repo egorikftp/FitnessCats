@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.ui.customview.CustomStringPicker;
+import com.egoriku.core_lib.Constants;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -94,7 +95,7 @@ public class AddReminderActivity extends AppCompatActivity {
             }
         });
 
-        textViewType.setText(textType + " " + getEmojiByUnicode(UNICODE_EMOJI));
+        textViewType.setText(textType + Constants.getSPACE() + getEmojiByUnicode(UNICODE_EMOJI));
 
         stringPicker.setVisibility(View.VISIBLE);
         datePicker.setVisibility(View.GONE);
@@ -125,7 +126,7 @@ public class AddReminderActivity extends AppCompatActivity {
 
                 if (condition == 3) {
                     if (allDateCalendar.getTimeInMillis() < Calendar.getInstance().getTimeInMillis()) {
-                        Toast.makeText(AddReminderActivity.this, getString(R.string.reminders_fragment_error_date) + " " + getEmojiByUnicode(UNICODE_EMOJI), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddReminderActivity.this, getString(R.string.reminders_fragment_error_date) + Constants.getSPACE() + getEmojiByUnicode(UNICODE_EMOJI), Toast.LENGTH_SHORT).show();
                         return;
                     }
 

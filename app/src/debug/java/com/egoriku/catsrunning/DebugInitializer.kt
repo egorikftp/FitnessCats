@@ -5,7 +5,7 @@ import android.app.Application
 import android.os.Bundle
 
 import com.egoriku.catsrunning.ui.activity.TracksActivity
-import com.egoriku.core_lib.SimpleActivityLifecycleCallback
+import com.egoriku.core_lib.listeners.SimpleActivityLifecycleCallback
 
 import net.hockeyapp.android.CrashManager
 import net.hockeyapp.android.CrashManagerListener

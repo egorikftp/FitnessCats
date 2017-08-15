@@ -11,6 +11,7 @@
     <string name="navigation_drawer_liked">Liked</string>
     <string name="navigation_drawer_statistic">Statistic</string>
     <string name="navigation_drawer_exit">Exit</string>
+    <string name="build_version">Build version:</string>
     <string name="navigation_drawer_setting">Settings</string>
 
     <!-- Alarm  -->
@@ -126,5 +127,4 @@
     <string name="auth_no_internet_connection">Check internet connection</string>
     <string name="auth_unknown_error">Unknown error</string>
     <string name="auth_unknown_sign_in_response">Unknown Sign In response</string>
-
 </resources>

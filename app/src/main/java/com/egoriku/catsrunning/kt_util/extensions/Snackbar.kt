@@ -1,6 +1,5 @@
 package com.egoriku.catsrunning.kt_util.extensions
 
-import android.content.Context
 import android.support.annotation.ColorInt
 import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
