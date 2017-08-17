@@ -10,7 +10,7 @@ import static com.egoriku.catsrunning.models.Constants.FormateDate.FORMAT_DATE_F
 import static com.egoriku.catsrunning.models.Constants.FormateDate.FORMAT_DATE_LOW;
 import static com.egoriku.catsrunning.models.Constants.FormateDate.FORMAT_TIME;
 
-public class ConverterTime {
+public class TimeUtil {
     private static final long MILLIS_TO_MINUTES = 60000;
     private static final long MILLS_TO_HOURS = 3600000;
 

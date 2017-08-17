@@ -24,12 +24,16 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "com.android.support:appcompat-v7:$supportLibrary"
     testImplementation "junit:junit:$jUnit"
     androidTestImplementation "com.android.support.test:runner:$testRunner"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoCore"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-}
-repositories {
-    mavenCentral()
+
+    implementation "com.android.support:appcompat-v7:$supportLibrary", {
+        exclude group: "com.android.support:customtabs:$customTabs"
+    }
+
+    implementation "com.android.support:recyclerview-v7:$supportLibrary", {
+        exclude group: "com.android.support:customtabs:$customTabs"
+    }
 }

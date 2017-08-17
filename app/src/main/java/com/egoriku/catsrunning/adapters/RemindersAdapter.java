@@ -16,7 +16,8 @@ import android.widget.TextView;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.adapters.interfaces.IRemindersClickListener;
 import com.egoriku.catsrunning.models.ReminderModel;
-import com.egoriku.catsrunning.utils.ConverterTime;
+import com.egoriku.catsrunning.utils.TimeUtil;
+import com.egoriku.core_lib.AbstractAdapter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,21 +60,21 @@ public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
     @Override
     public void onBind(final AbstractViewHolder holder, final RemindersAdapter remindersAdapter, final int position, int viewType) {
         Calendar calendar = Calendar.getInstance();
-        final RelativeLayout relativeLayout = holder.<RelativeLayout>get(R.id.reminders_fragment_relative_layout);
-        final TextView textViewDate = holder.<TextView>get(R.id.reminders_fragment_date);
-        final TextView textViewTime = holder.<TextView>get(R.id.reminders_fragment_time);
-        final ImageView imageViewDelete = holder.<ImageView>get(R.id.reminders_fragment_delete_reminder);
-        final ImageButton imageBtnExpand = holder.<ImageButton>get(R.id.reminders_fragment_image_expand_info);
-        final ImageView imageViewLine = holder.<ImageView>get(R.id.reminders_fragment_static_line);
-        final ImageView imageViewLiked = holder.<ImageView>get(R.id.reminders_fragment_image_type_reminder);
-        final Switch aSwitch = holder.<Switch>get(R.id.reminder_fragment_switch);
+        final RelativeLayout relativeLayout = holder.get(R.id.reminders_fragment_relative_layout);
+        final TextView textViewDate = holder.get(R.id.reminders_fragment_date);
+        final TextView textViewTime = holder.get(R.id.reminders_fragment_time);
+        final ImageView imageViewDelete = holder.get(R.id.reminders_fragment_delete_reminder);
+        final ImageButton imageBtnExpand = holder.get(R.id.reminders_fragment_image_expand_info);
+        final ImageView imageViewLine = holder.get(R.id.reminders_fragment_static_line);
+        final ImageView imageViewLiked = holder.get(R.id.reminders_fragment_image_type_reminder);
+        final Switch aSwitch = holder.get(R.id.reminder_fragment_switch);
 
         if (calendar.getTimeInMillis() / 1000L > reminderModelList.get(position).getDateReminder()) {
             relativeLayout.setBackgroundColor(Color.LTGRAY);
         }
 
-        textViewDate.setText(ConverterTime.convertDateReminder(reminderModelList.get(position).getDateReminder()));
-        textViewTime.setText(ConverterTime.convertTimeReminder(reminderModelList.get(position).getDateReminder()));
+        textViewDate.setText(TimeUtil.convertDateReminder(reminderModelList.get(position).getDateReminder()));
+        textViewTime.setText(TimeUtil.convertTimeReminder(reminderModelList.get(position).getDateReminder()));
 
         imageViewDelete.setOnClickListener(new View.OnClickListener() {
             @Override

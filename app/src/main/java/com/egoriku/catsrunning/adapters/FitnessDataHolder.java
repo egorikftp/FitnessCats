@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.data.commons.TracksModel;
 import com.egoriku.catsrunning.helpers.TypeFit;
-import com.egoriku.catsrunning.utils.ConverterTime;
+import com.egoriku.catsrunning.utils.TimeUtil;
 
 import static com.egoriku.catsrunning.kt_util.DrawableKt.drawableCompat;
 import static com.egoriku.catsrunning.kt_util.DrawableKt.drawableTypeFit;
@@ -75,7 +75,7 @@ public class FitnessDataHolder extends RecyclerView.ViewHolder {
     public void setData(TracksModel data, Context context) {
         distanceText.setText(String.format(context.getString(R.string.distance_format), data.getDistance()));
         caloriesText.setText(String.format(context.getString(R.string.calories_format), data.getCalories()));
-        fitDateText.setText(ConverterTime.convertUnixDateWithoutHours(data.getBeginsAt()));
+        fitDateText.setText(TimeUtil.convertUnixDateWithoutHours(data.getBeginsAt()));
 
         setFitTimeText(data.getBeginsAt(), data.getTime());
         setTypeFitImage(data.getTypeFit());
@@ -95,7 +95,7 @@ public class FitnessDataHolder extends RecyclerView.ViewHolder {
             fitTimeText.setTypeface(null, Typeface.BOLD);
             cardView.setCardBackgroundColor(Color.parseColor(COLOR_NOW_FIT));
         }
-        fitTimeText.setText(ConverterTime.ConvertTimeAllFitnessData(beginsAt, time));
+        fitTimeText.setText(TimeUtil.ConvertTimeAllFitnessData(beginsAt, time));
     }
 
     public interface ClickListener {
