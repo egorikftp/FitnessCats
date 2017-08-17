@@ -13,7 +13,6 @@ public class FitState {
     private long sinceTime;
     private int nowDistance;
     private long startTime;
-    private long idTrack;
     private boolean isFitRun;
     private List<LatLng> latLngs = new ArrayList<>();
     private long timeBetweenLocations;
@@ -74,7 +73,7 @@ public class FitState {
     }
 
     public void addPoint(LatLng latLng) {
-        this.latLngs.add(latLng);
+        latLngs.add(latLng);
     }
 
     public long getSinceTime() {
@@ -105,8 +104,7 @@ public class FitState {
         sinceTime = 0;
         nowDistance = 0;
         startTime = 0;
-        idTrack = 0;
-        latLngs = Collections.emptyList();
+        latLngs = new ArrayList<>();
         timeBetweenLocations = 0;
         weight = 0;
         calories = 0;
