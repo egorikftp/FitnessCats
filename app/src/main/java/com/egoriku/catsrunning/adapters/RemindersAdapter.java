@@ -17,7 +17,8 @@ import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.adapters.interfaces.IRemindersClickListener;
 import com.egoriku.catsrunning.models.ReminderModel;
 import com.egoriku.catsrunning.utils.TimeUtil;
-import com.egoriku.core_lib.AbstractAdapter;
+import com.egoriku.core_lib.adapter.AbstractAdapter;
+import com.egoriku.core_lib.adapter.AbstractViewHolder;
 
 import java.util.ArrayList;
 import java.util.Calendar;
