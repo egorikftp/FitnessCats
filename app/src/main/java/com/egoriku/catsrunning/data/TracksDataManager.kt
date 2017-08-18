@@ -4,20 +4,23 @@ import com.egoriku.catsrunning.data.commons.TracksModel
 import com.egoriku.catsrunning.helpers.TypeFit
 import com.egoriku.catsrunning.models.Constants
 import com.egoriku.catsrunning.utils.FirebaseUtils
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
+import com.egoriku.core_lib.extensions.toModelOfType
+import com.google.firebase.database.*
 
-class TracksDataManager private constructor() : ChildEventListener {
+class TracksDataManager private constructor() : ChildEventListener, ValueEventListener {
 
     private val tracks: MutableList<TracksModel> = mutableListOf()
     private var uiListener: UIListener? = null
-    private var typeFit: Int = 0
+    @TypeFit
+    private var typeFit: Int = TypeFit.UNCERTAIN
     private val firebaseUtils: FirebaseUtils = FirebaseUtils.getInstance()
     private val databaseReference: DatabaseReference = firebaseUtils.firebaseDatabase
             .child(Constants.FirebaseFields.TRACKS)
             .child(firebaseUtils.user.uid)
+
+    override fun onDataChange(p0: DataSnapshot?) {
+        notifySuccess(typeFit)
+    }
 
     override fun onCancelled(databaseError: DatabaseError?) {
         uiListener?.handleError()
@@ -27,32 +30,32 @@ class TracksDataManager private constructor() : ChildEventListener {
     }
 
     override fun onChildChanged(dataSnapshot: DataSnapshot?, p1: String?) {
-        val value = dataSnapshot?.toModelOfType<TracksModel>()
-
-        for (i in tracks.indices) {
-            if (tracks[i].trackToken == value?.trackToken) {
-                tracks[i] = value as TracksModel
-                break
+        dataSnapshot?.toModelOfType<TracksModel>()?.let {
+            for (i in tracks.indices) {
+                if (tracks[i].trackToken == it.trackToken) {
+                    tracks[i] = it
+                    break
+                }
             }
         }
     }
 
     override fun onChildAdded(dataSnapshot: DataSnapshot?, p1: String?) {
-        val value = dataSnapshot?.toModelOfType<TracksModel>()
-        if (value != null) {
-            tracks.add(value)
-            notifySuccess(typeFit)
+        dataSnapshot?.toModelOfType<TracksModel>()?.let {
+            tracks.add(it)
         }
     }
 
     override fun onChildRemoved(dataSnapshot: DataSnapshot?) {
-        val value = dataSnapshot?.toModelOfType<TracksModel>()
-        for (i in tracks.indices) {
-            if (tracks[i].trackToken == value?.trackToken) {
-                tracks.removeAt(i)
-                break
+        dataSnapshot?.toModelOfType<TracksModel>()?.let {
+            for (i in tracks.indices) {
+                if (tracks[i].trackToken == it.trackToken) {
+                    tracks.removeAt(i)
+                    break
+                }
             }
         }
+
         notifySuccess(typeFit)
     }
 
@@ -60,13 +63,15 @@ class TracksDataManager private constructor() : ChildEventListener {
         uiListener = listener
     }
 
-    fun removeUIListener() {
-        uiListener = null
-    }
-
     fun clearData() {
         tracks.clear()
-        databaseReference.removeEventListener(this)
+        removeListeners()
+    }
+
+    fun removeListeners() {
+        databaseReference.removeEventListener(this as ChildEventListener)
+        databaseReference.removeEventListener(this as ValueEventListener)
+        uiListener = null
     }
 
     fun close() {
@@ -74,12 +79,12 @@ class TracksDataManager private constructor() : ChildEventListener {
     }
 
     fun loadTracks(typeFit: Int) {
-        if (tracks.isEmpty() && this.typeFit == 0) {
+        databaseReference.addListenerForSingleValueEvent(this)
+        if (tracks.isEmpty() && this.typeFit == TypeFit.UNCERTAIN) {
             this.typeFit = typeFit
             databaseReference.addChildEventListener(this)
         } else {
             this.typeFit = typeFit
-            notifySuccess(typeFit)
         }
     }
 
@@ -92,11 +97,9 @@ class TracksDataManager private constructor() : ChildEventListener {
         }
     }
 
-    fun walkingData() = tracks.filter { it.typeFit == TypeFit.WALKING }.sortedByDescending { it.beginsAt }
-    fun runningData() = tracks.filter { it.typeFit == TypeFit.RUNNING }.sortedByDescending { it.beginsAt }
-    fun cyclingData() = tracks.filter { it.typeFit == TypeFit.CYCLING }.sortedByDescending { it.beginsAt }
-
-    inline fun <reified T> DataSnapshot.toModelOfType() = getValue(T::class.java)
+    private fun walkingData() = tracks.filter { it.typeFit == TypeFit.WALKING }.sortedByDescending { it.beginsAt }
+    private fun runningData() = tracks.filter { it.typeFit == TypeFit.RUNNING }.sortedByDescending { it.beginsAt }
+    private fun cyclingData() = tracks.filter { it.typeFit == TypeFit.CYCLING }.sortedByDescending { it.beginsAt }
 
     companion object {
         private var dataManager: TracksDataManager? = null

@@ -42,4 +42,6 @@ dependencies {
     }
 
     implementation "com.jakewharton.timber:timber:$timber"
+
+    implementation "com.google.firebase:firebase-database:$gms"
 }

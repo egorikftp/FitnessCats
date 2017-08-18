@@ -9,7 +9,6 @@ import android.support.annotation.ColorRes
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.ViewAnimationUtils
@@ -25,6 +24,7 @@ import com.egoriku.catsrunning.models.FitState
 import com.egoriku.catsrunning.ui.fragment.TracksFragment
 import com.egoriku.catsrunning.utils.FirebaseUtils
 import com.egoriku.core_lib.Constants
+import com.egoriku.core_lib.extensions.colorCompat
 import com.egoriku.core_lib.extensions.drawableCompat
 import com.egoriku.core_lib.extensions.fromApi
 import com.egoriku.core_lib.extensions.toApi
@@ -172,7 +172,6 @@ class TracksActivity : AppCompatActivity() {
 
     private fun exitFromAccount() {
         TracksDataManager.instance.apply {
-            removeUIListener()
             clearData()
             close()
         }
@@ -223,9 +222,9 @@ class TracksActivity : AppCompatActivity() {
     }
 
     fun animateToolbar(@ColorRes colorAccent: Int, @ColorRes colorPrimaryDark: Int) {
-        val cx = toolbar_app.width / 2
-        val cy = toolbar_app.height / 2
-        val finalRadius = Math.hypot(cx.toDouble(), cy.toDouble()).toFloat()
+        val centerX = toolbar_app.width / 2
+        val centerY = toolbar_app.height / 2
+        val finalRadius = Math.hypot(centerX.toDouble(), centerY.toDouble()).toFloat()
 
         toolbar_app.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
 
@@ -234,15 +233,15 @@ class TracksActivity : AppCompatActivity() {
                 toolbar_app.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
                 fromApi(VERSION_CODES.LOLLIPOP) {
-                    val circularReveal = ViewAnimationUtils.createCircularReveal(toolbar_app, cx, cy, 0f, finalRadius)
-                    toolbar_app.setBackgroundColor(ContextCompat.getColor(this@TracksActivity, colorPrimaryDark))
+                    val circularReveal = ViewAnimationUtils.createCircularReveal(toolbar_app, centerX, centerY, 0f, finalRadius)
+                    toolbar_app.setBackgroundColor(colorCompat(this@TracksActivity, colorPrimaryDark))
                     circularReveal.start()
-                    window.statusBarColor = ContextCompat.getColor(this@TracksActivity, colorPrimaryDark)
-                    toolbar_app.setBackgroundColor(ContextCompat.getColor(this@TracksActivity, colorAccent))
+                    window.statusBarColor = colorCompat(this@TracksActivity, colorPrimaryDark)
+                    toolbar_app.setBackgroundColor(colorCompat(this@TracksActivity, colorAccent))
                 }
 
                 toApi(VERSION_CODES.LOLLIPOP) {
-                    toolbar_app.setBackgroundColor(ContextCompat.getColor(this@TracksActivity, colorAccent))
+                    toolbar_app.setBackgroundColor(colorCompat(this@TracksActivity, colorAccent))
                 }
             }
         })
@@ -250,9 +249,9 @@ class TracksActivity : AppCompatActivity() {
 
     @SuppressLint("NewApi")
     private fun setDefaultToolbarColor() {
-        toolbar_app.setBackgroundColor(ContextCompat.getColor(this, R.color.settings_toolbar_color))
+        toolbar_app.setBackgroundColor(colorCompat(this, R.color.settings_toolbar_color))
         fromApi(VERSION_CODES.LOLLIPOP) {
-            window.statusBarColor = ContextCompat.getColor(this, R.color.settings_toolbar_color_dark)
+            window.statusBarColor = colorCompat(this, R.color.settings_toolbar_color_dark)
         }
     }
 

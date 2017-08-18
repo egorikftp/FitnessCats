@@ -1,6 +1,5 @@
 package com.egoriku.catsrunning.ui.adapter
 
-import android.support.v7.util.DiffUtil
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -9,7 +8,6 @@ import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.data.commons.TracksModel
 import com.egoriku.catsrunning.extensions.drawableTypeFit
 import com.egoriku.catsrunning.helpers.Events
-import com.egoriku.catsrunning.utils.DiffCallback
 import com.egoriku.catsrunning.utils.TimeUtil
 import com.egoriku.core_lib.adapter.AbstractAdapter
 import com.egoriku.core_lib.adapter.AbstractViewHolder
@@ -71,11 +69,11 @@ class TracksAdapter : AbstractAdapter<TracksModel>() {
     override fun getItemCount() = items.size
 
     fun setItems(item: List<TracksModel>) {
-       // val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(DiffCallback(item, items))
+        // val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(DiffCallback(item, items))
 
         items.clear()
         items.addAll(item)
         notifyDataSetChanged()
-       // diffResult.dispatchUpdatesTo(this)
+        // diffResult.dispatchUpdatesTo(this)
     }
 }

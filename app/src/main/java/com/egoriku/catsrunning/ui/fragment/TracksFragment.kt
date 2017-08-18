@@ -21,10 +21,7 @@ import com.egoriku.catsrunning.ui.activity.TrackMapActivity
 import com.egoriku.catsrunning.ui.activity.TracksActivity
 import com.egoriku.catsrunning.ui.adapter.TracksAdapter
 import com.egoriku.catsrunning.utils.FirebaseUtils
-import com.egoriku.core_lib.extensions.drawableCompat
-import com.egoriku.core_lib.extensions.hide
-import com.egoriku.core_lib.extensions.inflate
-import com.egoriku.core_lib.extensions.show
+import com.egoriku.core_lib.extensions.*
 import com.egoriku.core_lib.listeners.SimpleAnimatorListener
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_tracks.*
@@ -56,6 +53,7 @@ class TracksFragment : Fragment(), UIListener {
     }
 
     override fun handleSuccess(data: List<TracksModel>) {
+        d("handleSuccess")
         progressbar.hide()
         tracks_recyclerview.show()
         adapter.setItems(data)
@@ -71,6 +69,10 @@ class TracksFragment : Fragment(), UIListener {
     }
 
     override fun handleError() {
+        no_tracks.show()
+        no_tracks.setImageDrawable(drawableCompat(activity, R.drawable.ic_vec_cats_no_track))
+        no_tracks_text.show()
+        tracks_recyclerview.hide(gone = false)
     }
 
     override fun onStart() {
@@ -165,7 +167,7 @@ class TracksFragment : Fragment(), UIListener {
 
     override fun onStop() {
         super.onStop()
-        tracksDataManager.removeUIListener()
+        tracksDataManager.removeListeners()
     }
 
     override fun onDestroy() {

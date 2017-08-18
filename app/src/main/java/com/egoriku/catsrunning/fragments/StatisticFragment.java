@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +42,7 @@ import timber.log.Timber;
 
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.BEGINS_AT;
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TRACKS;
+import static com.egoriku.core_lib.extensions.ColorKt.colorCompat;
 
 public class StatisticFragment extends Fragment {
     private static final int ID_LOADER = 1;
@@ -222,10 +222,10 @@ public class StatisticFragment extends Fragment {
                 distance += tracksModels.get(j).getDistance();
             }
             if (distance != 0) {
-                values.add(new FitChartValue(distance, ContextCompat.getColor(getContext(), colorResId[value.getKey() - 1])));
+                values.add(new FitChartValue(distance, colorCompat(getContext(), colorResId[value.getKey() - 1])));
                 icons[value.getKey() - 1].setVisibility(View.VISIBLE);
             } else {
-                values.add(new FitChartValue(distance, ContextCompat.getColor(getContext(), R.color.chart_value_empty_color)));
+                values.add(new FitChartValue(distance, colorCompat(getContext(), R.color.chart_value_empty_color)));
                 icons[value.getKey() - 1].setVisibility(View.INVISIBLE);
             }
             i++;
