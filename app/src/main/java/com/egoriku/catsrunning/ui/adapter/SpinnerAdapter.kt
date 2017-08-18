@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.data.commons.SpinnerIntervalModel
-import com.egoriku.catsrunning.kt_util.inflateViewGroup
+import com.egoriku.core_lib.extensions.inflateViewGroup
 import kotlinx.android.synthetic.main.item_spinner.view.*
 
 class SpinnerAdapter(context: Context, private val items: List<SpinnerIntervalModel>)

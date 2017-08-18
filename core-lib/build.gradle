@@ -36,4 +36,10 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$supportLibrary", {
         exclude group: "com.android.support:customtabs:$customTabs"
     }
+
+    implementation "com.android.support:design:$supportLibrary", {
+        exclude group: "com.android.support:customtabs:$customTabs"
+    }
+
+    implementation "com.jakewharton.timber:timber:$timber"
 }

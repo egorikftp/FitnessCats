@@ -1,4 +1,4 @@
-package com.egoriku.catsrunning.kt_util.extensions
+package com.egoriku.core_lib.extensions
 
 import android.os.Parcel
 import android.os.Parcelable

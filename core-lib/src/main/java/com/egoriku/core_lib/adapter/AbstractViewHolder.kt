@@ -6,7 +6,7 @@ import android.view.View
 import com.egoriku.core_lib.adapter.container.StringContainer
 import com.egoriku.core_lib.adapter.container.ViewContainer
 
-class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+open class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private var viewContainer = ViewContainer(itemView)
     private var stringContainer = StringContainer(itemView)

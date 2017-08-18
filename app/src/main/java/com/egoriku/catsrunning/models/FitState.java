@@ -3,7 +3,6 @@ package com.egoriku.catsrunning.models;
 import com.egoriku.catsrunning.data.commons.LatLng;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class FitState {

@@ -1,18 +1,17 @@
 package com.egoriku.catsrunning.ui.adapter
 
-import android.view.ViewGroup
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.airbnb.lottie.LottieAnimationView
 import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.data.commons.TracksModel
+import com.egoriku.catsrunning.extensions.drawableTypeFit
 import com.egoriku.catsrunning.helpers.Events
-import com.egoriku.catsrunning.kt_util.Quadruple
-import com.egoriku.catsrunning.kt_util.drawableTypeFit
-import com.egoriku.catsrunning.kt_util.inflate
 import com.egoriku.catsrunning.utils.TimeUtil
 import com.egoriku.core_lib.adapter.AbstractAdapter
 import com.egoriku.core_lib.adapter.AbstractViewHolder
+import com.egoriku.core_lib.extensions.Quadruple
 import io.reactivex.subjects.PublishSubject
 
 class TracksAdapter : AbstractAdapter<TracksModel>() {
@@ -26,7 +25,7 @@ class TracksAdapter : AbstractAdapter<TracksModel>() {
         private const val END_ANIMATION = 1.0f
     }
 
-    override fun onBind(holder: AbstractViewHolder, item: TracksModel, position: Int, viewType: Int) {
+    override fun onBindHolder(holder: AbstractViewHolder, item: TracksModel, position: Int, viewType: Int) {
         val animationView = holder.get<LottieAnimationView>(R.id.liked_item)
 
         if (item.isFavorite) {
@@ -59,8 +58,12 @@ class TracksAdapter : AbstractAdapter<TracksModel>() {
         return items[position]
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
-        return AbstractViewHolder(parent.inflate(R.layout.item_tracks_adapter))
+    override fun onCreateHolder(itemView: View, viewType: Int): AbstractViewHolder {
+        return AbstractViewHolder(itemView)
+    }
+
+    override fun getLayout(): Int {
+        return R.layout.item_tracks_adapter
     }
 
     override fun getItemCount() = items.size

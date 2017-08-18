@@ -21,13 +21,13 @@ import com.egoriku.catsrunning.fragments.*
 import com.egoriku.catsrunning.helpers.FragmentsTag
 import com.egoriku.catsrunning.helpers.FragmentsTag.MAIN
 import com.egoriku.catsrunning.helpers.FragmentsTag.NEW_MAIN
-import com.egoriku.catsrunning.kt_util.drawableCompat
-import com.egoriku.catsrunning.kt_util.extensions.fromApi
-import com.egoriku.catsrunning.kt_util.extensions.toApi
 import com.egoriku.catsrunning.models.FitState
 import com.egoriku.catsrunning.ui.fragment.TracksFragment
 import com.egoriku.catsrunning.utils.FirebaseUtils
 import com.egoriku.core_lib.Constants
+import com.egoriku.core_lib.extensions.drawableCompat
+import com.egoriku.core_lib.extensions.fromApi
+import com.egoriku.core_lib.extensions.toApi
 import com.firebase.ui.auth.AuthUI
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder

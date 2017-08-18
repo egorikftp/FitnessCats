@@ -1,10 +1,10 @@
-package com.egoriku.catsrunning.kt_util
+package com.egoriku.core_lib.extensions
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-fun ViewGroup.inflate(layoutId: Int, attachToRoot: Boolean = false): View {
+inline fun ViewGroup.inflate(layoutId: Int, attachToRoot: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutId, this, attachToRoot)
 }
 

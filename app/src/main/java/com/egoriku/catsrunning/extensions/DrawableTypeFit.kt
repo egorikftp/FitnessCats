@@ -1,13 +1,9 @@
-package com.egoriku.catsrunning.kt_util
+package com.egoriku.catsrunning.extensions
 
 import android.content.Context
-import android.support.annotation.DrawableRes
-import android.support.v7.content.res.AppCompatResources
 import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.helpers.TypeFit
-
-
-fun drawableCompat(context: Context, @DrawableRes resourceId: Int) = AppCompatResources.getDrawable(context, resourceId)
+import com.egoriku.core_lib.extensions.drawableCompat
 
 fun drawableTypeFit(context: Context, @TypeFit typeFit: Int) = when (typeFit) {
     TypeFit.WALKING -> drawableCompat(context, R.drawable.ic_vec_directions_walk_40dp)

@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.egoriku.catsrunning.kt_util.extensions
+package com.egoriku.core_lib.extensions
 
 import android.view.View
 

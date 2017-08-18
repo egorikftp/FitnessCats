@@ -1,6 +1,6 @@
 package com.egoriku.catsrunning
 
-import com.egoriku.catsrunning.kt_util.extensions.DelegatesExt
+import com.egoriku.core_lib.extensions.DelegatesExt
 
 class App : DebugApplication() {
 

@@ -1,9 +1,9 @@
-package com.egoriku.catsrunning.kt_util.extensions
+package com.egoriku.core_lib.extensions
 
 fun runAsync(action: () -> Unit) = Thread(Runnable(action)).start()
 
 fun runOnUiThread(action: () -> Unit) {
-    if (com.egoriku.catsrunning.kt_util.extensions.isMainLooperAlive()) {
+    if (isMainLooperAlive()) {
         action()
     } else {
         android.os.Handler(android.os.Looper.getMainLooper()).post(Runnable(action))

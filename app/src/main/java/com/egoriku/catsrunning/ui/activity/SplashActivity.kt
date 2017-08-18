@@ -9,7 +9,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.helpers.DynamicShortcuts
-import com.egoriku.catsrunning.kt_util.extensions.snack
+import com.egoriku.core_lib.extensions.snack
 import com.egoriku.core_lib.listeners.SimpleAnimationListener
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
