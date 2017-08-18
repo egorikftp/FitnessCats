@@ -1,6 +1,5 @@
 package com.egoriku.catsrunning.ui.fragment
 
-import android.animation.Animator
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.animation.LinearOutSlowInInterpolator
@@ -22,7 +21,6 @@ import com.egoriku.catsrunning.ui.activity.TracksActivity
 import com.egoriku.catsrunning.ui.adapter.TracksAdapter
 import com.egoriku.catsrunning.utils.FirebaseUtils
 import com.egoriku.core_lib.extensions.*
-import com.egoriku.core_lib.listeners.SimpleAnimatorListener
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_tracks.*
 import org.jetbrains.anko.support.v4.alert
@@ -40,7 +38,7 @@ class TracksFragment : Fragment(), UIListener {
 
     init {
         anim.apply {
-            duration = 200
+            duration = 400
             interpolator = LinearOutSlowInInterpolator()
             fillAfter = true
         }
@@ -149,16 +147,18 @@ class TracksFragment : Fragment(), UIListener {
                                 tracksModel.isFavorite = !tracksModel.isFavorite
                                 firebaseUtils.updateFavorite(tracksModel, context)
 
-                                view.addAnimatorListener(object : SimpleAnimatorListener() {
+                                tracks_recyclerview.post({ adapter.notifyItemChanged(position) })
 
-                                    override fun onAnimationEnd(p0: Animator?) {
-                                        tracks_recyclerview.post({ adapter.notifyItemChanged(position) })
-                                    }
+                                /*   view.addAnimatorListener(object : SimpleAnimatorListener() {
 
-                                    override fun onAnimationCancel(p0: Animator?) = if (tracksModel.isFavorite) view.progress = 1.0f else view.progress = 0.0f
-                                })
+                                       override fun onAnimationEnd(p0: Animator?) {
+                                           tracks_recyclerview.post({ adapter.notifyItemChanged(position) })
+                                       }
 
-                                if (tracksModel.isFavorite) view.playAnimation() else view.progress = 0.0f
+                                       override fun onAnimationCancel(p0: Animator?) = if (tracksModel.isFavorite) view.progress = 1.0f else view.progress = 0.0f
+                                   })
+
+                                   if (tracksModel.isFavorite) view.playAnimation() else view.progress = 0.0f*/
                             }
                         }
                     })
@@ -168,10 +168,6 @@ class TracksFragment : Fragment(), UIListener {
     override fun onStop() {
         super.onStop()
         tracksDataManager.removeListeners()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
         clickEventSubscriber.dispose()
         likedClickSubscriber.dispose()
     }

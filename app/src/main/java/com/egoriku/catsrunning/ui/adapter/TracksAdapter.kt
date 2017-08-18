@@ -3,10 +3,9 @@ package com.egoriku.catsrunning.ui.adapter
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.airbnb.lottie.LottieAnimationView
 import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.data.commons.TracksModel
-import com.egoriku.catsrunning.extensions.drawableTypeFit
+import com.egoriku.catsrunning.extensions.typeFitIcon
 import com.egoriku.catsrunning.helpers.Events
 import com.egoriku.catsrunning.utils.TimeUtil
 import com.egoriku.core_lib.adapter.AbstractAdapter
@@ -18,28 +17,22 @@ class TracksAdapter : AbstractAdapter<TracksModel>() {
 
     private var items: MutableList<TracksModel> = mutableListOf()
     val clickItem: PublishSubject<Pair<TracksModel, String>> = PublishSubject.create<Pair<TracksModel, @Events String>>()
-    val likedClick: PublishSubject<Quadruple<LottieAnimationView, String, TracksModel, Int>> = PublishSubject.create<Quadruple<LottieAnimationView, @Events String, TracksModel, Int>>()
-
-    companion object {
-        private const val START_ANIMATION = 0.0f
-        private const val END_ANIMATION = 1.0f
-    }
+    val likedClick: PublishSubject<Quadruple<ImageView, String, TracksModel, Int>> = PublishSubject.create<Quadruple<ImageView, @Events String, TracksModel, Int>>()
 
     override fun onBindHolder(holder: AbstractViewHolder, item: TracksModel, position: Int, viewType: Int) {
-        val animationView = holder.get<LottieAnimationView>(R.id.liked_item)
-
-        if (item.isFavorite) {
-            animationView.progress = END_ANIMATION
-        } else {
-            animationView.progress = START_ANIMATION
-        }
-
         holder.apply {
+            val liked = holder.get<ImageView>(R.id.liked_item)
             get<TextView>(R.id.distance).text = String.format(getString(R.string.distance_format), item.distance)
             get<TextView>(R.id.calories).text = String.format(getString(R.string.calories_format), item.calories)
             get<TextView>(R.id.time_fit).text = TimeUtil.getTime(item.time)
             get<TextView>(R.id.date_fit).text = TimeUtil.convertUnixDateWithoutHours(item.beginsAt)
-            get<ImageView>(R.id.ic_type_fit).setImageDrawable(drawableTypeFit(context, item.typeFit))
+            get<ImageView>(R.id.ic_type_fit).setImageDrawable(getDrawable(typeFitIcon(item.typeFit)))
+
+            if (item.isFavorite) {
+                liked.setImageDrawable(getDrawable(R.drawable.ic_vec_star_black))
+            } else {
+                liked.setImageDrawable(getDrawable(R.drawable.ic_vec_star_border))
+            }
 
             itemView.setOnClickListener { clickItem.onNext(Pair(item, Events.CLICK)) }
 
@@ -48,8 +41,8 @@ class TracksAdapter : AbstractAdapter<TracksModel>() {
                 true
             }
 
-            animationView.setOnClickListener {
-                likedClick.onNext(Quadruple(animationView, Events.LIKED_CLICK, item, position))
+            liked.setOnClickListener {
+                likedClick.onNext(Quadruple(liked, Events.LIKED_CLICK, item, position))
             }
         }
     }

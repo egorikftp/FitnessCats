@@ -79,12 +79,13 @@ class TracksDataManager private constructor() : ChildEventListener, ValueEventLi
     }
 
     fun loadTracks(typeFit: Int) {
-        databaseReference.addListenerForSingleValueEvent(this)
         if (tracks.isEmpty() && this.typeFit == TypeFit.UNCERTAIN) {
             this.typeFit = typeFit
             databaseReference.addChildEventListener(this)
+            databaseReference.addListenerForSingleValueEvent(this)
         } else {
             this.typeFit = typeFit
+            notifySuccess(this.typeFit)
         }
     }
 
@@ -112,5 +113,4 @@ class TracksDataManager private constructor() : ChildEventListener, ValueEventLi
                 return dataManager as TracksDataManager
             }
     }
-
 }

@@ -15,7 +15,7 @@ import com.egoriku.catsrunning.data.commons.TracksModel;
 import com.egoriku.catsrunning.helpers.TypeFit;
 import com.egoriku.catsrunning.utils.TimeUtil;
 
-import static com.egoriku.catsrunning.extensions.DrawableTypeFitKt.drawableTypeFit;
+import static com.egoriku.catsrunning.extensions.DrawableTypeFitKt.typeFitIcon;
 import static com.egoriku.catsrunning.models.Constants.Color.COLOR_NOW_FIT;
 import static com.egoriku.core_lib.extensions.DrawableKt.drawableCompat;
 
@@ -86,7 +86,7 @@ public class FitnessDataHolder extends RecyclerView.ViewHolder {
     }
 
     private void setTypeFitImage(@TypeFit int typeFit) {
-        typeFitImage.setImageDrawable(drawableTypeFit(context, typeFit));
+        typeFitImage.setImageDrawable(drawableCompat(context, typeFitIcon(typeFit)));
     }
 
     private void setFitTimeText(long beginsAt, long time) {
