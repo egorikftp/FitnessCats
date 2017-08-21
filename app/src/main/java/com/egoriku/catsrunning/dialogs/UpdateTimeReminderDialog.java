@@ -95,7 +95,7 @@ public class UpdateTimeReminderDialog extends DialogFragment {
                                 getArguments().getInt(KEY_TYPE_REMINDER)
                         );
 
-                        LocalBroadcastManager.getInstance(App.getInstance())
+                        LocalBroadcastManager.getInstance(App.Companion.getInstance())
                                 .sendBroadcastSync(new Intent(BROADCAST_UPDATE_REMINDER_TIME));
                     }
                 }).show();

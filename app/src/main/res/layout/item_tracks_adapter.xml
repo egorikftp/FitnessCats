@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/adapter_fitness_data_fragment_root_cardview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?android:attr/selectableItemBackground"
+    card:cardCornerRadius="8dp"
+    card:cardElevation="4dp"
+    card:cardUseCompatPadding="true"
+    card:contentPaddingBottom="8dp"
+    card:layout_constraintHorizontal_bias="0.0"
+    card:layout_constraintLeft_toLeftOf="parent"
+    card:layout_constraintRight_toRightOf="parent"
+    card:layout_constraintTop_toTopOf="parent"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="0dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.egoriku.catsrunning.ui.customview.CompatTextView
+            android:id="@+id/calories_static_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/calories"
+            android:textAlignment="center"
+            android:textAppearance="?android:textAppearance"
+            android:textColor="@color/accent"
+            android:textSize="18sp"
+            app:drawableTopCompat="@drawable/ic_vec_calories"
+            app:fontFamily="@font/catamaran_medium"
+            app:layout_constraintEnd_toStartOf="@+id/distance_static_text"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ic_type_fit"
+            tools:ignore="RtlCompat"
+            tools:layout_editor_absoluteX="14dp" />
+
+        <TextView
+            android:id="@+id/calories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:fontFamily="sans-serif"
+            app:layout_constraintEnd_toEndOf="@+id/calories_static_text"
+            app:layout_constraintStart_toStartOf="@+id/calories_static_text"
+            app:layout_constraintTop_toBottomOf="@+id/calories_static_text"
+            tools:text="340 ккал" />
+
+        <com.egoriku.catsrunning.ui.customview.CompatTextView
+            android:id="@+id/distance_static_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/distance"
+            android:textAlignment="center"
+            android:textAppearance="?android:textAppearance"
+            android:textColor="@color/accent"
+            android:textSize="18sp"
+            app:drawableTopCompat="@drawable/ic_vec_map_black"
+            app:fontFamily="@font/catamaran_medium"
+            app:layout_constraintEnd_toStartOf="@+id/time_static_text"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/calories_static_text"
+            app:layout_constraintTop_toBottomOf="@+id/ic_type_fit"
+            tools:layout_editor_absoluteX="147dp" />
+
+        <TextView
+            android:id="@+id/time_fit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="sans-serif"
+            app:layout_constraintEnd_toEndOf="@+id/time_static_text"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/time_static_text"
+            app:layout_constraintTop_toBottomOf="@+id/time_static_text"
+            tools:text="04:20" />
+
+        <TextView
+            android:id="@+id/date_fit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:textAppearance="?android:textAppearance"
+            app:layout_constraintBottom_toBottomOf="@+id/ic_type_fit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/ic_type_fit"
+            tools:text="20 марта" />
+
+        <ImageView
+            android:id="@+id/liked_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            tools:srcCompat="@drawable/ic_vec_star_border"
+            card:layout_constraintRight_toRightOf="parent"
+            card:layout_constraintTop_toTopOf="parent"
+            tools:layout_conversion_absoluteHeight="43dp"
+            tools:layout_conversion_absoluteWidth="43dp"
+            tools:layout_conversion_absoluteX="362dp"
+            tools:layout_conversion_absoluteY="5dp"
+            tools:layout_editor_absoluteX="363dp" />
+
+        <ImageView
+            android:id="@+id/ic_type_fit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            card:layout_constraintLeft_toLeftOf="parent"
+            card:layout_constraintTop_toTopOf="parent"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintTop_creator="1"
+            tools:src="@drawable/ic_vec_directions_walk_40dp" />
+
+        <com.egoriku.catsrunning.ui.customview.CompatTextView
+            android:id="@+id/time_static_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/time_fit"
+            android:textAlignment="center"
+            android:textColor="@color/accent"
+            android:textSize="18sp"
+            app:drawableTopCompat="@drawable/ic_vec_time"
+            app:fontFamily="@font/catamaran_medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/distance_static_text"
+            app:layout_constraintTop_toBottomOf="@+id/ic_type_fit"
+            tools:ignore="RtlCompat"
+            tools:layout_editor_absoluteX="288dp" />
+
+        <TextView
+            android:id="@+id/distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="@+id/distance_static_text"
+            app:layout_constraintStart_toStartOf="@+id/distance_static_text"
+            app:layout_constraintTop_toBottomOf="@+id/distance_static_text"
+            tools:text="2400 м" />
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

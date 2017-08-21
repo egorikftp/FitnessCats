@@ -1,11 +1,16 @@
 package com.egoriku.catsrunning.utils;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.view.View;
 import android.widget.Toast;
 
+import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.AddUserInfoActivity;
-import com.egoriku.catsrunning.models.Firebase.SaveModel;
+import com.egoriku.catsrunning.data.commons.TracksModel;
 import com.egoriku.catsrunning.models.Firebase.UserInfo;
+import com.egoriku.core_lib.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -13,8 +18,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import timber.log.Timber;
 
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TRACKS;
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.USER_INFO;
@@ -25,25 +28,35 @@ public class FirebaseUtils {
     }
 
     private static FirebaseDatabase firebaseDatabase;
-    private static final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private static FirebaseUser user;
 
-    public static DatabaseReference getDatabaseReference() {
-        if (firebaseDatabase == null) {
+    private static FirebaseUtils firebaseUtils = null;
+
+    public static FirebaseUtils getInstance() {
+        if (firebaseUtils == null) {
+            firebaseUtils = new FirebaseUtils();
             firebaseDatabase = FirebaseDatabase.getInstance();
             firebaseDatabase.setPersistenceEnabled(true);
         }
-
-        return firebaseDatabase.getReference();
-
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        return firebaseUtils;
     }
 
-    public static void updateTrackFavorire(SaveModel saveModel, final Context context) {
-        if (user != null && saveModel.getTrackToken() != null) {
-            getDatabaseReference()
+    public FirebaseUser getUser() {
+        return user;
+    }
+
+    public DatabaseReference getFirebaseDatabase() {
+        return firebaseDatabase.getReference();
+    }
+
+    public void updateFavorite(final TracksModel tracksModel, final Context context) {
+        if (getUser() != null && tracksModel.getTrackToken() != null) {
+            getFirebaseDatabase()
                     .child(TRACKS)
-                    .child(user.getUid())
-                    .child(saveModel.getTrackToken())
-                    .setValue(saveModel, new DatabaseReference.CompletionListener() {
+                    .child(getUser().getUid())
+                    .child(tracksModel.getTrackToken())
+                    .setValue(tracksModel, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null) {
@@ -54,11 +67,11 @@ public class FirebaseUtils {
         }
     }
 
-    public static void saveUserInfo(UserInfo userInfo, final Context context) {
-        if (user != null) {
-            getDatabaseReference()
+    public void saveUserInfo(UserInfo userInfo, final Context context) {
+        if (getUser() != null) {
+            getFirebaseDatabase()
                     .child(USER_INFO)
-                    .child(user.getUid())
+                    .child(getUser().getUid())
                     .setValue(userInfo, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -70,12 +83,45 @@ public class FirebaseUtils {
         }
     }
 
-    public static void removeTrack(SaveModel saveModel, final Context context) {
-        if (saveModel.getTrackToken() != null && user != null) {
-            getDatabaseReference()
+    public String getTrackToken() {
+        String trackToken = null;
+
+        if (getUser() != null) {
+            trackToken = getFirebaseDatabase()
                     .child(TRACKS)
                     .child(user.getUid())
-                    .child(saveModel.getTrackToken())
+                    .push()
+                    .getKey();
+        }
+
+        return trackToken;
+    }
+
+    public void saveFit(@NonNull TracksModel tracksModel, @NonNull final View view) {
+        if (getUser() != null && tracksModel.getTrackToken() != null) {
+            getFirebaseDatabase()
+                    .child(TRACKS)
+                    .child(user.getUid())
+                    .child(tracksModel.getTrackToken())
+                    .setValue(tracksModel, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            if (databaseError != null) {
+                                Snackbar.make(view, R.string.scamper_activity_track_save_error + Constants.getSPACE() + databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
+                            } else {
+                                Snackbar.make(view, R.string.scamper_activity_track_save_success, Snackbar.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+        }
+    }
+
+    public void removeTrack(TracksModel tracksModel, final Context context) {
+        if (tracksModel.getTrackToken() != null && getUser() != null) {
+            getFirebaseDatabase()
+                    .child(TRACKS)
+                    .child(getUser().getUid())
+                    .child(tracksModel.getTrackToken())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -90,21 +136,17 @@ public class FirebaseUtils {
         }
     }
 
-    public static void updateUserInfo(final Context context) {
-        Timber.d("ff");
-        if (user != null) {
-            getDatabaseReference()
+    public void updateUserInfo(final Context context) {
+        if (getUser() != null) {
+            getFirebaseDatabase()
                     .child(USER_INFO)
-                    .child(user.getUid())
+                    .child(getUser().getUid())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            Timber.d("2");
                             if (!dataSnapshot.exists()) {
-                                Timber.d("3");
                                 AddUserInfoActivity.start(context);
                             } else {
-                                Timber.d("4");
                                 UserInfoPreferences userInfoPreferences = new UserInfoPreferences(context);
                                 UserInfo userInfo = dataSnapshot.getValue(UserInfo.class);
 

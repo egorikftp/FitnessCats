@@ -11,9 +11,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.ui.CustomStringPicker;
+import com.egoriku.catsrunning.ui.customview.CustomStringPicker;
+import com.egoriku.core_lib.Constants;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -76,7 +76,7 @@ public class AddReminderActivity extends AppCompatActivity {
         listPicker = Arrays.asList(getResources().getStringArray(R.array.type_reminder));
         timePicker.setIs24HourView(true);
 
-        if (Build.VERSION.SDK_INT >= 15 && Build.VERSION.SDK_INT <= 19) {
+        if (Build.VERSION.SDK_INT <= 19) {
             datePicker.setCalendarViewShown(false);
         }
 
@@ -95,7 +95,7 @@ public class AddReminderActivity extends AppCompatActivity {
             }
         });
 
-        textViewType.setText(textType + " " + getEmojiByUnicode(UNICODE_EMOJI));
+        textViewType.setText(textType + Constants.getSPACE() + getEmojiByUnicode(UNICODE_EMOJI));
 
         stringPicker.setVisibility(View.VISIBLE);
         datePicker.setVisibility(View.GONE);
@@ -126,7 +126,7 @@ public class AddReminderActivity extends AppCompatActivity {
 
                 if (condition == 3) {
                     if (allDateCalendar.getTimeInMillis() < Calendar.getInstance().getTimeInMillis()) {
-                        Toast.makeText(App.getInstance(), getString(R.string.reminders_fragment_error_date) + " " + getEmojiByUnicode(UNICODE_EMOJI), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddReminderActivity.this, getString(R.string.reminders_fragment_error_date) + Constants.getSPACE() + getEmojiByUnicode(UNICODE_EMOJI), Toast.LENGTH_SHORT).show();
                         return;
                     }
 

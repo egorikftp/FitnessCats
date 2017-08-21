@@ -1,43 +1,17 @@
 <resources>
     <string name="app_name">Fitness Cat\'s</string>
 
-    <!-- Activity Entrance/ Hint -->
-    <string name="register_activity_hint_email">E-mail</string>
-    <string name="register_activity_hint_password">Password</string>
-    <string name="register_activity_hint_double_password">Confirm password</string>
-    <string name="register_activity_hint_name">Name</string>
-    <string name="register_activity_hint_surname">Surname</string>
-    <string name="register_activity_snackbar_error_auth_google">Google Sign In failed</string>
-
-    <!-- Error login/registration -->
-    <string name="empty_email">Enter e-mail</string>
-    <string name="empty_password">Enter password</string>
-    <string name="empty_double_password">Confirm password</string>
-    <string name="error_email">Possibly incorrect Email</string>
-    <string name="password_dont_match">Passwords don\'t match</string>
-    <string name="no_ethernet_connection">Check your internet connection</string>
-    <string name="empty_name">Enter name</string>
-    <string name="empty_surname">Enter surname</string>
-
-    <!-- ProgressDialog -->
-    <string name="progress_dialog_register_title">Signing in to your account</string>
-    <string name="progress_dialog_register_message">It takes just a few seconds</string>
-
     <!-- Toolbar -->
-    <string name="register_activity_register_toolbar_title">Register</string>
-    <string name="register_activity_login_toolbar_title">Entrance</string>
     <string name="fragment_track_toolbar_title">More about the route</string>
-
-    <!-- Buttin login/register -->
-    <string name="btn_text_registration">Sign up</string>
-    <string name="btn_text_login">Sign in</string>
 
     <!-- Navigation Drawer -->
     <string name="navigation_drawer_main_activity">List of routes</string>
+    <string name="navigation_drawer_main_activity_new">List of routes [new]</string>
     <string name="navigation_drawer_reminders">Reminders</string>
     <string name="navigation_drawer_liked">Liked</string>
     <string name="navigation_drawer_statistic">Statistic</string>
     <string name="navigation_drawer_exit">Exit</string>
+    <string name="build_version">Build version:</string>
     <string name="navigation_drawer_setting">Settings</string>
 
     <!-- Alarm  -->
@@ -66,32 +40,23 @@
     <string name="scamper_activity_toolbar_title">Statistics %s</string>
     <string name="fit_activity_now_time">Time: %s</string>
 
-    <!-- Adapter Liked Fragment  -->
-    <string name="liked_fragment_adapter_distance_meter">%s m</string>
-    <string name="liked_fragment_adapter_calories">%s kcal</string>
-
-    <!-- Adapter Fragment Liked -->
-    <string name="adapter_fragment_liked_calories">Calories:</string>
-    <string name="adapter_fragment_liked_distance">Distance:</string>
-
     <!-- All Fitness Data Fragment -->
-    <string name="adapter_all_fitness_data_distance_meter">%s m</string>
-    <string name="adapter_all_fitness_data_calories">%s kcal</string>
-    <string name="adapter_all_fitness_data_distance">Distance:</string>
-    <string name="adapter_all_fitness_data_no_more_tracks">It seems there is no route</string>
-    <string name="adapter_fragment_main_calories">Calories:</string>
+    <string name="distance_format">%s m</string>
+    <string name="calories_format">%s kcal</string>
+    <string name="distance">Distance</string>
+    <string name="calories">Calories</string>
+    <string name="time_fit">Time</string>
 
     <!-- Track Fragment -->
     <string name="track_fragment_distance">Distance:</string>
     <string name="track_fragment_time_running">Time %s:</string>
-    <string name="track_fragment_start_running_hint">START</string>
-    <string name="track_fragment_end_running_hint">FINISH</string>
+    <string name="track_fragment_start_running_hint">Start</string>
+    <string name="track_fragment_end_running_hint">Finish</string>
     <string name="track_fragment_distance_meter">%s m</string>
     <string name="track_fragment_toast_text_no_points">There are no points</string>
 
     <!-- Liked Fragment -->
     <string name="liked_fragment_no_more_liked_tracks">Cats have no favorite workouts</string>
-    <string name="liked_fragment_snackbar_liked_empty">Hmm, there are empty now</string>
 
     <!-- Reminders Fragment -->
     <string name="reminders_fragment_no_more_reminders">I\'m in shape - a circle is the form %s</string>
@@ -100,7 +65,6 @@
 
     <!-- Dialogs Add Reminder -->
     <string name="add_reminder_part_one_dialog_title">Add reminder</string>
-    <string name="add_reminder_part_one_dialog_negative_btn">Cancel</string>
     <string name="add_reminder_part_one_dialog_positive_btn">Onward</string>
     <string name="add_reminder_part_one_dialog_back_btn">Back</string>
     <string name="add_reminder_part_one_dialog_final_btn">Ready</string>
@@ -120,10 +84,6 @@
     <string name="fitness_data_fragment_alert_title">Remove this route?</string>
     <string name="fitness_data_fragment_alert_negative_btn">Cancel</string>
     <string name="fitness_data_fragment_alert_positive_btn">Remove</string>
-
-
-    <string name="navigation_drawer_open">" "</string>
-    <string name="navigation_drawer_close">" "</string>
 
     <string name="type_cycling">Cycling</string>
     <string name="type_walking">Walking</string>
@@ -157,9 +117,14 @@
     <string name="activity_add_user_info_error_save">Error occurred while saving data</string>
     <string name="activity_add_user_info_not_digit">Fields contain invalid characters</string>
     <string name="activity_add_user_info_cats_talk">Hey, fitness cats welcome you! To count your activity results correctly, fill in some information about you.</string>
-    <string name="where_i_fragment_marker_title">You current location</string>
-    <string name="where_i_fragment_marker_snippet">Let\'s start you fitness activity!</string>
     <string name="growth">Growth</string>
     <string name="the_weight">The weight</string>
     <string name="age">Age</string>
+
+
+    <!-- Auth Activity -->
+    <string name="auth_cancel">Authentication canceled</string>
+    <string name="auth_no_internet_connection">Check internet connection</string>
+    <string name="auth_unknown_error">Unknown error</string>
+    <string name="auth_unknown_sign_in_response">Unknown Sign In response</string>
 </resources>

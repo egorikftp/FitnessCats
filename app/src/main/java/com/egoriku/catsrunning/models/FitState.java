@@ -1,6 +1,6 @@
 package com.egoriku.catsrunning.models;
 
-import com.egoriku.catsrunning.models.Firebase.Point;
+import com.egoriku.catsrunning.data.commons.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,22 +12,20 @@ public class FitState {
     private long sinceTime;
     private int nowDistance;
     private long startTime;
-    private long idTrack;
     private boolean isFitRun;
-    private List<Point> points = new ArrayList<>();
+    private List<LatLng> latLngs = new ArrayList<>();
     private long timeBetweenLocations;
     private long weight;
     private double calories;
     private int typeFit;
 
-    public static FitState getInstance(){
-        if(fitState == null){
+    public static FitState getInstance() {
+        if (fitState == null) {
             fitState = new FitState();
         }
 
         return fitState;
     }
-
 
     public int getTypeFit() {
         return typeFit;
@@ -69,20 +67,12 @@ public class FitState {
         isFitRun = fitRun;
     }
 
-    public List<Point> getPoints() {
-        return points;
+    public List<LatLng> getLatLngs() {
+        return latLngs;
     }
 
-    public void addPoint(Point point) {
-        this.points.add(point);
-    }
-
-    public long getIdTrack() {
-        return idTrack;
-    }
-
-    public void setIdTrack(long idTrack) {
-        this.idTrack = idTrack;
+    public void addPoint(LatLng latLng) {
+        latLngs.add(latLng);
     }
 
     public long getSinceTime() {
@@ -107,5 +97,16 @@ public class FitState {
 
     public void setStartTime(long startTime) {
         this.startTime = startTime;
+    }
+
+    public void clearFitData() {
+        sinceTime = 0;
+        nowDistance = 0;
+        startTime = 0;
+        latLngs = new ArrayList<>();
+        timeBetweenLocations = 0;
+        weight = 0;
+        calories = 0;
+        typeFit = 1;
     }
 }

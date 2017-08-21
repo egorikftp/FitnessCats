@@ -15,10 +15,9 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
-import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
 import com.egoriku.catsrunning.adapters.FitnessDataHolder;
-import com.egoriku.catsrunning.models.Firebase.SaveModel;
-import com.egoriku.catsrunning.utils.CustomFont;
+import com.egoriku.catsrunning.data.commons.TracksModel;
+import com.egoriku.catsrunning.ui.activity.TrackMapActivity;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.egoriku.catsrunning.utils.IntentBuilder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -44,18 +43,16 @@ public class FitnessDataFragment extends Fragment {
     private ProgressBar progressBar;
 
     private FirebaseRecyclerAdapter adapter;
-    private static IFABScroll ifabScroll;
-
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private FirebaseUtils firebaseUtils = FirebaseUtils.getInstance();
 
     public FitnessDataFragment() {
     }
 
-    public static FitnessDataFragment newInstance(int sectionNumber, IFABScroll iFabScroll) {
+    public static FitnessDataFragment newInstance(int sectionNumber) {
         FitnessDataFragment fragment = new FitnessDataFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        ifabScroll = iFabScroll;
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,20 +68,19 @@ public class FitnessDataFragment extends Fragment {
         textViewNoTracks = (TextView) view.findViewById(R.id.fragment_fitness_data_text_no_tracks);
         imageViewNoTracks = (ImageView) view.findViewById(R.id.fragment_fitness_data_image_cats_no_track);
 
-        textViewNoTracks.setTypeface(CustomFont.getTypeFace());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         hideNoTracks();
         showLoading(true);
 
-        Query query = FirebaseUtils.getDatabaseReference()
+        Query query = firebaseUtils.getFirebaseDatabase()
                 .child(TRACKS)
                 .child(user.getUid())
                 .orderByChild(TYPE_FIT)
                 .equalTo(typeFit);
 
-        adapter = new FirebaseRecyclerAdapter<SaveModel, FitnessDataHolder>(SaveModel.class, R.layout.adapter_fitness_data_fragment, FitnessDataHolder.class, query) {
+        adapter = new FirebaseRecyclerAdapter<TracksModel, FitnessDataHolder>(TracksModel.class, R.layout.item_tracks_adapter, FitnessDataHolder.class, query) {
             @Override
-            protected void populateViewHolder(final FitnessDataHolder viewHolder, SaveModel model, int position) {
+            protected void populateViewHolder(final FitnessDataHolder viewHolder, TracksModel model, int position) {
                 showLoading(false);
                 viewHolder.setData(model, getContext());
             }
@@ -97,24 +93,24 @@ public class FitnessDataFragment extends Fragment {
 
                     @Override
                     public void onClickItem(int position) {
-                        SaveModel saveModel = (SaveModel) adapter.getItem(position);
+                        TracksModel tracksModel = (TracksModel) adapter.getItem(position);
 
-                        if (saveModel.getTime() == 0) {
+                        if (tracksModel.getTime() == 0) {
                             startActivity(new IntentBuilder()
                                     .context(getActivity())
                                     .activity(FitActivity.class)
-                                    .extra(KEY_TYPE_FIT, saveModel.getTypeFit())
+                                    .extra(KEY_TYPE_FIT, tracksModel.getTypeFit())
                                     .build());
                         } else {
-                            TrackOnMapsActivity.start(getActivity(), saveModel);
+                            TrackMapActivity.Companion.start(getActivity(), tracksModel);
                         }
                     }
 
                     @Override
                     public void onFavoriteClick(int position) {
-                        SaveModel adapterItem = (SaveModel) adapter.getItem(position);
+                        TracksModel adapterItem = (TracksModel) adapter.getItem(position);
                         adapterItem.setFavorite(!adapterItem.isFavorite());
-                        FirebaseUtils.updateTrackFavorire(adapterItem, getContext());
+                        firebaseUtils.updateFavorite(adapterItem, getContext());
                     }
 
                     @Override
@@ -126,7 +122,7 @@ public class FitnessDataFragment extends Fragment {
                                 .setPositiveButton(R.string.fitness_data_fragment_alert_positive_btn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        FirebaseUtils.removeTrack((SaveModel) adapter.getItem(position), getContext());
+                                        firebaseUtils.removeTrack((TracksModel) adapter.getItem(position), getContext());
 
                                     }
                                 })
@@ -137,8 +133,8 @@ public class FitnessDataFragment extends Fragment {
             }
         };
 
-        FirebaseUtils
-                .getDatabaseReference()
+        firebaseUtils
+                .getFirebaseDatabase()
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -157,20 +153,10 @@ public class FitnessDataFragment extends Fragment {
                 });
 
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
+
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 if (adapter.getItemCount() == 0) {
                     showNoTracks();
-                }
-            }
-        });
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (ifabScroll != null) {
-                    ifabScroll.onScrollChange();
                 }
             }
         });

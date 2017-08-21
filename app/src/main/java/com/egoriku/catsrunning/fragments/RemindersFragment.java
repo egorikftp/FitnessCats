@@ -26,17 +26,15 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.egoriku.catsrunning.App;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.AddReminderActivity;
-import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.RemindersAdapter;
 import com.egoriku.catsrunning.adapters.interfaces.IRemindersClickListener;
 import com.egoriku.catsrunning.dialogs.UpdateDateReminderDialog;
 import com.egoriku.catsrunning.dialogs.UpdateTimeReminderDialog;
 import com.egoriku.catsrunning.models.ReminderModel;
 import com.egoriku.catsrunning.receivers.ReminderReceiver;
-import com.egoriku.catsrunning.utils.CustomFont;
+import com.egoriku.catsrunning.ui.activity.TracksActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -90,7 +88,7 @@ public class RemindersFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_reminders, FragmentsTag.REMINDER);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_reminders);
     }
 
     @Override
@@ -117,10 +115,8 @@ public class RemindersFragment extends Fragment {
             }
         });
 
-        noReminders.setTypeface(CustomFont.getTypeFace());
-
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        remindersAdapter = new RemindersAdapter();
+        remindersAdapter = new RemindersAdapter(getContext());
         return view;
     }
 
@@ -250,17 +246,17 @@ public class RemindersFragment extends Fragment {
                                 dbCursor.getInt(_ID),
                                 dbCursor.getLong(DATE_REMINDER),
                                 dbCursor.getInt(TYPE_REMINDER),
-                                dbCursor.getInt(IS_RINGS)
+                                dbCursor.getInt(IS_RING)
                         )*/
     }
 
     private void cancelAlarm(int id, String textReminder) {
-        AlarmManager alarmManager = (AlarmManager) App.getInstance().getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                App.getInstance(),
+                getContext(),
                 id,
-                new Intent(App.getInstance(), ReminderReceiver.class)
+                new Intent(getContext(), ReminderReceiver.class)
                         .putExtra(EXTRA_ID_REMINDER_KEY, id)
                         .putExtra(EXTRA_TEXT_TYPE_REMINDER_KEY, textReminder),
                 PendingIntent.FLAG_UPDATE_CURRENT
@@ -278,17 +274,17 @@ public class RemindersFragment extends Fragment {
         super.onResume();
         showReminders();
 
-        LocalBroadcastManager.getInstance(App.getInstance())
+        LocalBroadcastManager.getInstance(getContext())
                 .registerReceiver(broadcastUpdateTime, new IntentFilter(BROADCAST_UPDATE_REMINDER_TIME));
 
-        LocalBroadcastManager.getInstance(App.getInstance())
+        LocalBroadcastManager.getInstance(getContext())
                 .registerReceiver(broadcastUpdateDate, new IntentFilter(BROADCAST_UPDATE_REMINDER_DATE));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastUpdateTime);
-        LocalBroadcastManager.getInstance(App.getInstance()).unregisterReceiver(broadcastUpdateDate);
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastUpdateTime);
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastUpdateDate);
     }
 }

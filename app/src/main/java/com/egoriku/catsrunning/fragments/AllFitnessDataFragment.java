@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.content.res.AppCompatResources;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +19,8 @@ import android.widget.FrameLayout;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
-import com.egoriku.catsrunning.activities.TracksActivity;
-import com.egoriku.catsrunning.models.TypeFit;
-
-import static com.egoriku.catsrunning.utils.VectorToDrawable.getDrawable;
+import com.egoriku.catsrunning.helpers.TypeFit;
+import com.egoriku.catsrunning.ui.activity.TracksActivity;
 
 public class AllFitnessDataFragment extends Fragment {
     private SectionsPagerAdapter sectionsPagerAdapter;
@@ -45,18 +44,15 @@ public class AllFitnessDataFragment extends Fragment {
     public AllFitnessDataFragment() {
     }
 
-
     public static AllFitnessDataFragment newInstance() {
         return new AllFitnessDataFragment();
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
-        ((TracksActivity) getActivity()).onFragmentStart(R.string.tab_text_walking, FragmentsTag.MAIN);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.tab_text_walking);
     }
-
 
     @Nullable
     @Override
@@ -65,10 +61,10 @@ public class AllFitnessDataFragment extends Fragment {
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         viewPager = (ViewPager) view.findViewById(R.id.fragment_all_fitness_data_view_pager_container);
 
-        fabMain = (FloatingActionButton) view.findViewById(R.id.floating_button);
-        fabWalk = (FloatingActionButton) view.findViewById(R.id.fab_walk);
+        fabMain = (FloatingActionButton) view.findViewById(R.id.floating_butto);
+        fabWalk = (FloatingActionButton) view.findViewById(R.id.fab_walking);
         fabCycling = (FloatingActionButton) view.findViewById(R.id.fab_cycling);
-        fabRun = (FloatingActionButton) view.findViewById(R.id.fab_run);
+        fabRun = (FloatingActionButton) view.findViewById(R.id.fab_running);
 
         fabWalkShow = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_walk_show);
         fabWalkHide = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_walk_hide);
@@ -127,7 +123,7 @@ public class AllFitnessDataFragment extends Fragment {
 
         tabLayout.setupWithViewPager(viewPager);
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            tabLayout.getTabAt(i).setIcon(getDrawable(imageResId[i]));
+            tabLayout.getTabAt(i).setIcon(AppCompatResources.getDrawable(getContext(), imageResId[i]));
         }
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -162,7 +158,6 @@ public class AllFitnessDataFragment extends Fragment {
         super.onResume();
         fabStatus = false;
     }
-
 
     @Override
     public void onPause() {
@@ -227,15 +222,7 @@ public class AllFitnessDataFragment extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
-            return FitnessDataFragment.newInstance(position + 1, new IFABScroll() {
-                @Override
-                public void onScrollChange() {
-                    if (fabStatus) {
-                        changeFabState(fabStatus);
-                        fabStatus = false;
-                    }
-                }
-            });
+            return FitnessDataFragment.newInstance(position + 1);
         }
 
         @Override

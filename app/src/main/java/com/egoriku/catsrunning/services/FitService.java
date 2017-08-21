@@ -1,5 +1,6 @@
 package com.egoriku.catsrunning.services;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -14,11 +15,13 @@ import android.support.v4.app.NotificationCompat;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
-import com.egoriku.catsrunning.models.Firebase.Point;
+import com.egoriku.catsrunning.data.commons.LatLng;
 import com.egoriku.catsrunning.models.FitState;
-import com.egoriku.catsrunning.utils.ConverterTime;
+import com.egoriku.catsrunning.utils.TimeUtil;
 
 import java.util.Calendar;
+
+import timber.log.Timber;
 
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.models.Constants.RunService.ACTION_START;
@@ -57,6 +60,7 @@ public class FitService extends Service implements LocationListener {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction().equalsIgnoreCase(ACTION_START)) {
@@ -98,7 +102,7 @@ public class FitService extends Service implements LocationListener {
             }
 
             oldLocation = location;
-            fitState.addPoint(new Point(location.getLongitude(), location.getLatitude()));
+            fitState.addPoint(new LatLng(location.getLongitude(), location.getLatitude()));
         }
     }
 
@@ -197,8 +201,9 @@ public class FitService extends Service implements LocationListener {
         }
     }
 
+    @SuppressLint("StringFormatMatches")
     private void showNotification(String time, int distance) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Fitness Channel");
         builder.setSmallIcon(getNotificationIcon(fitState.getTypeFit()));
         builder.setContentIntent(PendingIntent.getActivity(
                 this,
@@ -255,15 +260,12 @@ public class FitService extends Service implements LocationListener {
         public void run() {
             while (isThreadRun) {
                 long since = System.currentTimeMillis() - fitState.getStartTime();
-                showNotification(
-                        ConverterTime.ConvertTimeToString(since),
-                        (int) fitState.getNowDistance()
-                );
+                showNotification(TimeUtil.ConvertTimeToString(since), (int) fitState.getNowDistance());
 
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Timber.e(e, "run");
                 }
             }
         }

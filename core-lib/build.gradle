@@ -1,0 +1,47 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion compileSDK
+    buildToolsVersion buildTools
+
+    defaultConfig {
+        minSdkVersion minSDK
+        targetSdkVersion targetSDK
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    testImplementation "junit:junit:$jUnit"
+    androidTestImplementation "com.android.support.test:runner:$testRunner"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoCore"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    implementation "com.android.support:appcompat-v7:$supportLibrary", {
+        exclude group: "com.android.support:customtabs:$customTabs"
+    }
+
+    implementation "com.android.support:recyclerview-v7:$supportLibrary", {
+        exclude group: "com.android.support:customtabs:$customTabs"
+    }
+
+    implementation "com.android.support:design:$supportLibrary", {
+        exclude group: "com.android.support:customtabs:$customTabs"
+    }
+
+    implementation "com.jakewharton.timber:timber:$timber"
+
+    implementation "com.google.firebase:firebase-database:$gms"
+}

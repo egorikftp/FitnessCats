@@ -20,6 +20,7 @@
         android:layout_above="@+id/liked_fragment_image_no_liked"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/liked_fragment_text_margin"
+        android:fontFamily="@font/birusa"
         android:text="@string/liked_fragment_no_more_liked_tracks"
         android:textAppearance="?android:textAppearanceMedium" />
 
@@ -30,5 +31,5 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:visibility="gone"
-        app:srcCompat="@drawable/ic_vec_cats_weary" />
+        app:srcCompat="@drawable/ic_vec_cat_weary" />
 </RelativeLayout>

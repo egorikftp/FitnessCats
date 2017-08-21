@@ -1,6 +1,7 @@
 package com.egoriku.catsrunning.models;
 
-import com.egoriku.catsrunning.models.Firebase.Point;
+import com.egoriku.catsrunning.data.commons.LatLng;
+import com.egoriku.catsrunning.helpers.TypeFit;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class AllFitnessDataModel {
     @TypeFit
     private int typeFit;
     private String trackToken;
-    private List<Point> points;
+    private List<LatLng> latLngs;
     private double calories;
 
     public double getCalories() {
@@ -68,12 +69,12 @@ public class AllFitnessDataModel {
         this.liked = liked;
     }
 
-    public List<Point> getPoints() {
-        return points;
+    public List<LatLng> getLatLngs() {
+        return latLngs;
     }
 
-    public void setPoints(List<Point> points) {
-        this.points = points;
+    public void setLatLngs(List<LatLng> latLngs) {
+        this.latLngs = latLngs;
     }
 
     public String getTrackToken() {

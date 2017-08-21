@@ -2,36 +2,53 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+apply from: 'keys.gradle'
+
+def versionProp = loadProperties('version.properties')
+def version = versionProp['VERSION'] as int
+def sub_version = versionProp['SUB_VERSION'] as int
+def build_version = versionProp['BUILD_VERSION'] as int
+def verCode = version * 100000 + sub_version * 1000 + build_version
+def verName = "$version.$sub_version.$build_version"
+
 android {
-    buildToolsVersion "25.0.3"
-    compileSdkVersion 25
+    buildToolsVersion buildTools
+    compileSdkVersion compileSDK
 
     defaultConfig {
         applicationId "com.egoriku.catsrunning"
         vectorDrawables.useSupportLibrary = true
-        minSdkVersion 15
-        targetSdkVersion 25
-        versionCode 7
-        versionName "0.07"
+        minSdkVersion minSDK
+        targetSdkVersion targetSDK
+        versionCode verCode
+        versionName verName
         multiDexEnabled true
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
 
     signingConfigs {
-        release {
+        /* release {
             storeFile file(System.getenv("KEYSTORE"))
             storePassword System.getenv('KEY_STORE_PASSWORD')
             keyAlias System.getenv('KEY_ALIAS')
             keyPassword System.getenv('KEY_PASSWORD')
-        }
+        }*/
     }
 
     buildTypes {
+        debug {
+            resValue("string", "hockey_app_id", "\"$hockey_app_id_debug\"")
+            buildConfigField("String", "BUILD_VERSION", "\"$verName\"")
+        }
+
         release {
+            resValue("string", "hockey_app_id", "\"$hockey_app_id_release\"")
+            buildConfigField("String", "BUILD_VERSION", "\"$verName\"")
+
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             debuggable false
-            signingConfig signingConfigs.release
+            //  signingConfig signingConfigs.release
         }
     }
 
@@ -42,51 +59,111 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+    }
+
+    gradle.taskGraph.whenReady { taskGraph ->
+        if (taskGraph.hasTask(assembleDebug) || taskGraph.hasTask(assembleRelease)) {
+            autoIncrementBuildVersionNumber()
+        }
+    }
+
     applicationVariants.all { variant ->
-        variant.outputs.each { output ->
-            output.outputFile = new File(
-                    output.outputFile.parent,
-                    "${"FitnessCats"}.${variant.name}_${variant.versionName}.apk")
+        variant.outputs.all {
+            outputFileName = "${"FitnessCats"}.${variant.name}_${variant.versionName}.apk"
         }
     }
 }
-ext.ver = [
-        support : '25.3.1',
-        gms     : '11.0.0',
-        jUnit   : '4.12',
-        multiDex: '1.0.1'
-]
+
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile "junit:junit:$ver.jUnit"
-    androidTestCompile "junit:junit:$ver.jUnit"
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    testImplementation "junit:junit:$jUnit"
+    androidTestImplementation "junit:junit:$jUnit"
+    androidTestImplementation("com.android.support.test.espresso:espresso-core:$espressoCore", {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile "com.android.support:multidex:$ver.multiDex"
-    compile "com.android.support:appcompat-v7:$ver.appcompat"
-    compile "com.android.support:design:$ver.support"
-    compile "com.android.support:support-v4:$ver.support"
-    compile "com.android.support:recyclerview-v7:$ver.support"
-    compile "com.android.support:cardview-v7:$ver.support"
-    compile "com.google.firebase:firebase-database:$ver.gms"
-    compile "com.google.firebase:firebase-auth:$ver.gms"
-    compile "com.google.firebase:firebase-core:$ver.gms"
+    implementation "com.android.support:multidex:$multiDex", {
+        exclude group: "com.android.support:customtabs:$customTabs"
+    }
 
-    compile "com.google.android.gms:play-services-maps:$ver.gms"
-    compile "com.google.android.gms:play-services-auth:$ver.gms"
-    compile "com.google.android.gms:play-services-location:$ver.gms"
+    implementation "com.android.support:appcompat-v7:$supportLibrary", {
+        exclude group: "com.android.support:customtabs:$customTabs"
+    }
 
-    compile "com.android.support:support-annotations:$ver.support"
-    compile "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
+    implementation "com.android.support:design:$supportLibrary", {
+        exclude group: "com.android.support:customtabs:$customTabs"
+    }
 
-    compile('com.mikepenz:materialdrawer:5.9.2@aar') {
+    implementation "com.android.support:support-v4:$supportLibrary", {
+        exclude group: "com.android.support:customtabs:$customTabs"
+    }
+
+    implementation "com.android.support:recyclerview-v7:$supportLibrary", {
+        exclude group: "com.android.support:customtabs:$customTabs"
+    }
+
+    implementation "com.android.support:cardview-v7:$supportLibrary", {
+        exclude group: "com.android.support:customtabs:$customTabs"
+    }
+
+    implementation "com.google.firebase:firebase-database:$gms"
+    implementation "com.google.firebase:firebase-auth:$gms"
+    implementation "com.google.firebase:firebase-core:$gms"
+
+    implementation "com.google.android.gms:play-services-maps:$gms"
+    implementation "com.google.android.gms:play-services-auth:$gms"
+    implementation "com.google.android.gms:play-services-location:$gms"
+
+    implementation "com.android.support:support-annotations:$supportLibrary"
+
+    implementation "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
+    implementation "org.jetbrains.anko:anko-support-v4-commons:$anko_version"
+    implementation "org.jetbrains.anko:anko-sqlite:$anko_version"
+
+    implementation("com.mikepenz:materialdrawer:$materialDrawer") {
         transitive = true
     }
-    apply plugin: 'com.google.gms.google-services'
-    compile 'com.jakewharton.timber:timber:4.5.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.firebaseui:firebase-ui-database:1.2.0'
-    compile 'com.android.support:support-v4:25.3.1'
+
+    implementation "com.jakewharton.timber:timber:$timber"
+    implementation "com.android.support.constraint:constraint-layout:$constraintLayout"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxkotlin"
+
+    implementation "com.airbnb.android:lottie:$lottie"
+    implementation "com.firebaseui:firebase-ui-auth:$firebaseAuth"
+
+    //   Leak canary disabled now
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanary"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary"
+    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary"
+
+    implementation "net.hockeyapp.android:HockeySDK:$HockeySDK"
+
+    //Deprecated. Remove after redesign
+    implementation 'com.firebaseui:firebase-ui-database:1.2.0'
+    compile project(path: ':core-lib')
+}
+
+apply plugin: 'com.google.gms.google-services'
+
+Properties loadProperties(String path) {
+    def file = file(path)
+    if (file.canRead() && file.canWrite()) {
+        Properties properties = new Properties()
+        properties.load(new FileInputStream(file))
+        return properties
+    } else {
+        throw new GradleException("Could not read version.properties!")
+    }
+}
+
+def autoIncrementBuildVersionNumber() {
+    def prop = loadProperties('version.properties')
+    def newVersion = (prop['BUILD_VERSION'] as int) + 1
+    prop['BUILD_VERSION'] = newVersion as String
+    prop.store(file('version.properties').newWriter(), null)
 }

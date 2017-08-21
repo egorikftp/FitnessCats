@@ -17,8 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.models.Firebase.UserInfo;
+import com.egoriku.catsrunning.ui.activity.TracksActivity;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,6 +34,7 @@ import static com.egoriku.catsrunning.models.Constants.FirebaseFields.USER_INFO;
 public class SettingsFragment extends Fragment implements ValueEventListener {
 
     private static final String KEY_EDIT_MODE = "key_edit_mode";
+    private final FirebaseUtils firebaseUtils = FirebaseUtils.getInstance();
 
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private EditText growth;
@@ -63,7 +64,7 @@ public class SettingsFragment extends Fragment implements ValueEventListener {
     @Override
     public void onStart() {
         super.onStart();
-        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_setting, FragmentsTag.SETTINGS);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_setting);
     }
 
     @Override
@@ -78,12 +79,23 @@ public class SettingsFragment extends Fragment implements ValueEventListener {
         userName = (TextView) view.findViewById(R.id.settings_user_name);
         userEmail = (TextView) view.findViewById(R.id.settings_user_email);
 
+     /*   final DebugApplication.TogglableHeapDumper heapDumper = ((DebugApplication) getActivity().getApplicationContext()).getDumper();
+        final Button leakCanary = (Button) view.findViewById(R.id.leak_canary);
+        leakCanary.setBackgroundColor(heapDumper.isEnabled() ? ContextCompat.getColor(getContext(), R.color.primary_dark) : ContextCompat.getColor(getContext(), R.color.accent));
+        leakCanary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                leakCanary.setBackgroundColor(heapDumper.toggle() ? ContextCompat.getColor(getContext(), R.color.primary_dark) : ContextCompat.getColor(getContext(), R.color.accent));
+            }
+        });
+*/
         if (user != null) {
             userName.setText(user.getDisplayName());
             userEmail.setText(user.getEmail());
         }
 
-        FirebaseUtils.getDatabaseReference()
+        firebaseUtils
+                .getFirebaseDatabase()
                 .child(USER_INFO)
                 .child(user.getUid())
                 .addListenerForSingleValueEvent(this);
@@ -110,7 +122,7 @@ public class SettingsFragment extends Fragment implements ValueEventListener {
         switch (item.getItemId()) {
             case R.id.edit_user_info:
                 if (isEditMode) {
-                    FirebaseUtils.saveUserInfo(getUserInfo(), getContext());
+                    firebaseUtils.saveUserInfo(getUserInfo(), getContext());
                 }
                 isEditMode = !isEditMode;
                 invalidateOptionsMenu(getActivity());
