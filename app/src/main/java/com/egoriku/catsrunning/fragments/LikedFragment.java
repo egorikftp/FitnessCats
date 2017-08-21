@@ -20,11 +20,12 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
+import com.egoriku.catsrunning.activities.TrackOnMapsActivity;
+import com.egoriku.catsrunning.activities.TracksActivity;
 import com.egoriku.catsrunning.adapters.FitnessDataHolder;
-import com.egoriku.catsrunning.data.commons.TracksModel;
 import com.egoriku.catsrunning.models.Constants;
-import com.egoriku.catsrunning.ui.activity.TrackMapActivity;
-import com.egoriku.catsrunning.ui.activity.TracksActivity;
+import com.egoriku.catsrunning.models.Firebase.SaveModel;
+import com.egoriku.catsrunning.utils.CustomFont;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.egoriku.catsrunning.utils.IntentBuilder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -44,7 +45,6 @@ public class LikedFragment extends Fragment {
 
     private static final int UNICODE_SAD_CAT = 0x1F640;
     private static final int DURATION = 1000;
-    private final FirebaseUtils firebaseUtils = FirebaseUtils.getInstance();
 
     private RecyclerView recyclerView;
     private TextView noLikedTracksTextView;
@@ -67,7 +67,7 @@ public class LikedFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_liked);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_liked, FragmentsTag.LIKED);
     }
 
     @Override
@@ -82,18 +82,19 @@ public class LikedFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        noLikedTracksTextView.setTypeface(CustomFont.getTypeFace());
         setScrollingEnabled(true);
         hideNoTracks();
 
-        Query query = firebaseUtils.getFirebaseDatabase()
+        Query query = FirebaseUtils.getDatabaseReference()
                 .child(TRACKS)
                 .child(user.getUid())
                 .orderByChild(IS_FAVORIRE)
                 .equalTo(true);
 
-        adapter = new FirebaseRecyclerAdapter<TracksModel, FitnessDataHolder>(TracksModel.class, R.layout.item_tracks_adapter, FitnessDataHolder.class, query) {
+        adapter = new FirebaseRecyclerAdapter<SaveModel, FitnessDataHolder>(SaveModel.class, R.layout.adapter_fitness_data_fragment, FitnessDataHolder.class, query) {
             @Override
-            protected void populateViewHolder(final FitnessDataHolder viewHolder, TracksModel model, int position) {
+            protected void populateViewHolder(final FitnessDataHolder viewHolder, SaveModel model, int position) {
                 showLoading(false);
                 viewHolder.setData(model, getContext());
             }
@@ -106,24 +107,24 @@ public class LikedFragment extends Fragment {
                 holder.setOnClickListener(new FitnessDataHolder.ClickListener() {
                     @Override
                     public void onClickItem(int position) {
-                        TracksModel tracksModel = (TracksModel) adapter.getItem(position);
+                        SaveModel saveModel = (SaveModel) adapter.getItem(position);
 
-                        if (tracksModel.getTime() == 0) {
+                        if (saveModel.getTime() == 0) {
                             startActivity(new IntentBuilder()
                                     .context(getActivity())
                                     .activity(FitActivity.class)
-                                    .extra(Constants.Extras.KEY_TYPE_FIT, tracksModel.getTypeFit())
+                                    .extra(Constants.Extras.KEY_TYPE_FIT, saveModel.getTypeFit())
                                     .build());
                         } else {
-                            TrackMapActivity.Companion.start(getActivity(), tracksModel);
+                            TrackOnMapsActivity.start(getActivity(), saveModel);
                         }
                     }
 
                     @Override
                     public void onFavoriteClick(int position) {
-                        TracksModel adapterItem = (TracksModel) adapter.getItem(position);
+                        SaveModel adapterItem = (SaveModel) adapter.getItem(position);
                         adapterItem.setFavorite(!adapterItem.isFavorite());
-                        firebaseUtils.updateFavorite(adapterItem, getActivity());
+                        FirebaseUtils.updateTrackFavorire(adapterItem, getActivity());
                     }
 
                     @Override
@@ -135,7 +136,7 @@ public class LikedFragment extends Fragment {
                                 .setPositiveButton(R.string.fitness_data_fragment_alert_positive_btn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        firebaseUtils.removeTrack((TracksModel) adapter.getItem(position), getContext());
+                                        FirebaseUtils.removeTrack((SaveModel) adapter.getItem(position), getContext());
                                     }
                                 })
                                 .show();
@@ -145,8 +146,8 @@ public class LikedFragment extends Fragment {
             }
         };
 
-        firebaseUtils
-                .getFirebaseDatabase()
+        FirebaseUtils
+                .getDatabaseReference()
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -165,7 +166,7 @@ public class LikedFragment extends Fragment {
                 });
 
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-
+            @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 if (adapter.getItemCount() == 0) {
                     showNoTracks();

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +19,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.data.commons.SpinnerIntervalModel;
-import com.egoriku.catsrunning.data.commons.TracksModel;
-import com.egoriku.catsrunning.ui.activity.TracksActivity;
-import com.egoriku.catsrunning.ui.adapter.SpinnerAdapter;
-import com.egoriku.catsrunning.ui.customview.statisticChart.FitChart;
-import com.egoriku.catsrunning.ui.customview.statisticChart.FitChartValue;
+import com.egoriku.catsrunning.activities.TracksActivity;
+import com.egoriku.catsrunning.adapters.CustomSpinnerAdapter;
+import com.egoriku.catsrunning.models.Firebase.SaveModel;
+import com.egoriku.catsrunning.models.SpinnerIntervalModel;
+import com.egoriku.catsrunning.ui.statisticChart.FitChart;
+import com.egoriku.catsrunning.ui.statisticChart.FitChartValue;
+import com.egoriku.catsrunning.utils.CustomFont;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,7 +44,6 @@ import timber.log.Timber;
 
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.BEGINS_AT;
 import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TRACKS;
-import static com.egoriku.core_lib.extensions.ColorKt.colorCompat;
 
 public class StatisticFragment extends Fragment {
     private static final int ID_LOADER = 1;
@@ -68,7 +69,7 @@ public class StatisticFragment extends Fragment {
     private final Calendar calendar = Calendar.getInstance();
 
 
-    private Map<Integer, List<TracksModel>> statisticValues;
+    private Map<Integer, List<SaveModel>> statisticValues;
 
     int[] colorResId = {R.color.chart_value_first_color, R.color.chart_value_second_color, R.color.chart_value_third_color};
 
@@ -83,7 +84,7 @@ public class StatisticFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_statistic);
+        ((TracksActivity) getActivity()).onFragmentStart(R.string.navigation_drawer_statistic, FragmentsTag.STATISTIC);
     }
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -100,6 +101,7 @@ public class StatisticFragment extends Fragment {
         rootLayout = (RelativeLayout) view.findViewById(R.id.statistic_fragment_root_no_data);
         rootFrame = (FrameLayout) view.findViewById(R.id.statistic_fragment_root_chart);
 
+        noDataView.setTypeface(CustomFont.getTypeFace());
         addItemsToSpinner();
 
         icons = new View[]{imageWalkView, imageRunningView, imageCyclingView};
@@ -109,8 +111,7 @@ public class StatisticFragment extends Fragment {
     private void getTracksFromInterval(long valueInterval) {
         long startDate = (calendar.getTimeInMillis() - valueInterval) / 1000L;
 
-        FirebaseUtils.getInstance()
-                .getFirebaseDatabase()
+        FirebaseUtils.getDatabaseReference()
                 .child(TRACKS)
                 .child(user.getUid())
                 .orderByChild(BEGINS_AT)
@@ -121,15 +122,15 @@ public class StatisticFragment extends Fragment {
                         statisticValues = new HashMap<>();
 
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            TracksModel tracksModel = child.getValue(TracksModel.class);
+                            SaveModel saveModel = child.getValue(SaveModel.class);
 
-                            List<TracksModel> modelList = statisticValues.get(tracksModel.getTypeFit());
+                            List<SaveModel> modelList = statisticValues.get(saveModel.getTypeFit());
                             if (modelList == null) {
                                 modelList = new ArrayList<>();
                             }
 
-                            modelList.add(tracksModel);
-                            statisticValues.put(tracksModel.getTypeFit(), modelList);
+                            modelList.add(saveModel);
+                            statisticValues.put(saveModel.getTypeFit(), modelList);
                         }
                         onLoadFinished();
                     }
@@ -164,7 +165,7 @@ public class StatisticFragment extends Fragment {
         intervals.add(new SpinnerIntervalModel(getString(R.string.spinner_half_year), DateUtils.WEEK_IN_MILLIS * 24));
         intervals.add(new SpinnerIntervalModel(getString(R.string.spinner_year), DateUtils.YEAR_IN_MILLIS));
 
-        spinner.setAdapter(new SpinnerAdapter(getContext(), intervals));
+        spinner.setAdapter(new CustomSpinnerAdapter(getContext(), intervals));
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
@@ -214,18 +215,18 @@ public class StatisticFragment extends Fragment {
         Collection<FitChartValue> values = new ArrayList<>();
 
         int i = 0;
-        for (Map.Entry<Integer, List<TracksModel>> value : statisticValues.entrySet()) {
+        for (Map.Entry<Integer, List<SaveModel>> value : statisticValues.entrySet()) {
             int distance = 0;
-            List<TracksModel> tracksModels = value.getValue();
+            List<SaveModel> saveModels = value.getValue();
 
-            for (int j = 0; j < tracksModels.size(); j++) {
-                distance += tracksModels.get(j).getDistance();
+            for (int j = 0; j < saveModels.size(); j++) {
+                distance += saveModels.get(j).getDistance();
             }
             if (distance != 0) {
-                values.add(new FitChartValue(distance, colorCompat(getContext(), colorResId[value.getKey() - 1])));
+                values.add(new FitChartValue(distance, ContextCompat.getColor(getContext(), colorResId[value.getKey() - 1])));
                 icons[value.getKey() - 1].setVisibility(View.VISIBLE);
             } else {
-                values.add(new FitChartValue(distance, colorCompat(getContext(), R.color.chart_value_empty_color)));
+                values.add(new FitChartValue(distance, ContextCompat.getColor(getContext(), R.color.chart_value_empty_color)));
                 icons[value.getKey() - 1].setVisibility(View.INVISIBLE);
             }
             i++;
@@ -233,7 +234,6 @@ public class StatisticFragment extends Fragment {
         fitChart.setValues(values);
     }
 
-    @SuppressLint("StringFormatMatches")
     private void setUpTextView(int allDistance) {
         allDistanceView.setText(String.format(getString(R.string.statistic_fragment_result), allDistance));
 
@@ -246,7 +246,7 @@ public class StatisticFragment extends Fragment {
 
     private int getCountDistance() {
         int allDistance = 0;
-        for (Map.Entry<Integer, List<TracksModel>> value : statisticValues.entrySet()) {
+        for (Map.Entry<Integer, List<SaveModel>> value : statisticValues.entrySet()) {
             for (int i = 0; i < value.getValue().size(); i++) {
                 allDistance += value.getValue().get(i).getDistance();
             }
@@ -256,7 +256,7 @@ public class StatisticFragment extends Fragment {
 
     private int getMaxDistance() {
         int maxValue = 0;
-        for (Map.Entry<Integer, List<TracksModel>> value : statisticValues.entrySet()) {
+        for (Map.Entry<Integer, List<SaveModel>> value : statisticValues.entrySet()) {
             for (int i = 0; i < value.getValue().size(); i++) {
                 int distance = value.getValue().get(i).getDistance();
                 if (distance > maxValue) {

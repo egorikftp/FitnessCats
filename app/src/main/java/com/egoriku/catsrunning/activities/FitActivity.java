@@ -1,7 +1,6 @@
 package com.egoriku.catsrunning.activities;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,19 +25,25 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
-import com.egoriku.catsrunning.data.commons.TracksModel;
-import com.egoriku.catsrunning.helpers.TypeFit;
 import com.egoriku.catsrunning.models.Constants;
+import com.egoriku.catsrunning.models.Firebase.SaveModel;
 import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.models.ParcelableFitActivityModel;
+import com.egoriku.catsrunning.models.TypeFit;
 import com.egoriku.catsrunning.services.FitService;
+import com.egoriku.catsrunning.utils.ConverterTime;
 import com.egoriku.catsrunning.utils.CustomChronometer;
-import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.egoriku.catsrunning.utils.FlipAnimation;
 import com.egoriku.catsrunning.utils.IntentBuilder;
-import com.egoriku.catsrunning.utils.TimeUtil;
+import com.egoriku.catsrunning.utils.UserInfoPreferences;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
+import static com.egoriku.catsrunning.models.Constants.FirebaseFields.TRACKS;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.KEY_IS_CHRONOMETER_RUNNING;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.KEY_START_TIME;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.PARCELABLE_FIT_ACTIVITY_KEY;
@@ -54,6 +59,9 @@ public class FitActivity extends AppCompatActivity {
 
     @TypeFit
     private int typeFit;
+    private String alertMessage;
+    private String alertPositiveBtn;
+    private String alertNegativeBtn;
 
     private Toolbar toolbar;
     private Button btnStart;
@@ -68,25 +76,32 @@ public class FitActivity extends AppCompatActivity {
     private CustomChronometer chronometer;
     private LocationManager manager;
     private Thread chronometerThread;
+    private FirebaseUser user;
 
     private FitState fitState = FitState.getInstance();
-    private FirebaseUtils firebaseUtils = FirebaseUtils.getInstance();
+    private DatabaseReference databaseReference;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scamper);
 
-        toolbar = findViewById(R.id.toolbar_app);
-        btnStart = findViewById(R.id.fit_activity_btn_start);
-        btnFinish = findViewById(R.id.fit_activity_btn_finish);
-        textViewFinalTime = findViewById(R.id.fit_activity_final_time);
-        textViewFinalDistance = findViewById(R.id.fit_activity_final_distance);
-        textViewNowTime = findViewById(R.id.fit_activity_now_time);
-        textViewNowDistance = findViewById(R.id.fit_activity_now_distance);
-        imageViewFinish = findViewById(R.id.fit_activity_image_finish);
-        relativeRootLayout = findViewById(R.id.fit_activity_root_layout);
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        toolbar = (Toolbar) findViewById(R.id.toolbar_app);
+        btnStart = (Button) findViewById(R.id.fit_activity_btn_start);
+        btnFinish = (Button) findViewById(R.id.fit_activity_btn_finish);
+        textViewFinalTime = (TextView) findViewById(R.id.fit_activity_final_time);
+        textViewFinalDistance = (TextView) findViewById(R.id.fit_activity_final_distance);
+        textViewNowTime = (TextView) findViewById(R.id.fit_activity_now_time);
+        textViewNowDistance = (TextView) findViewById(R.id.fit_activity_now_distance);
+        imageViewFinish = (ImageView) findViewById(R.id.fit_activity_image_finish);
+        relativeRootLayout = (RelativeLayout) findViewById(R.id.fit_activity_root_layout);
         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        alertMessage = getString(R.string.fit_activity_alert_message_no_gps);
+        alertPositiveBtn = getString(R.string.fit_activity_alert_positive_btn);
+        alertNegativeBtn = getString(R.string.fit_activity_alert_negative_btn);
 
         btnFinish.setVisibility(View.GONE);
         textViewNowDistance.setVisibility(View.GONE);
@@ -152,7 +167,6 @@ public class FitActivity extends AppCompatActivity {
         });
 
         btnFinish.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("StringFormatMatches")
             @Override
             public void onClick(View view) {
                 stopService(new IntentBuilder()
@@ -160,7 +174,7 @@ public class FitActivity extends AppCompatActivity {
                         .service(FitService.class)
                         .build());
 
-                textViewFinalTime.setText(String.format(getString(R.string.fit_activity_now_time), TimeUtil.ConvertTimeToString(fitState.getSinceTime())));
+                textViewFinalTime.setText(String.format(getString(R.string.fit_activity_now_time), ConverterTime.ConvertTimeToString(fitState.getSinceTime())));
                 textViewFinalDistance.setText(String.format(getString(R.string.fit_activity_final_distance_meter), (int) fitState.getNowDistance()));
                 flipAnimation.setReverse();
                 relativeRootLayout.startAnimation(flipAnimation);
@@ -176,33 +190,44 @@ public class FitActivity extends AppCompatActivity {
                     getSupportActionBar().setTitle(String.format(getString(R.string.scamper_activity_toolbar_title), getTypeFit(typeFit, true, R.array.all_fitness_data_categories)));
                 }
 
+                fitState.setFitRun(true);
                 uploadTrackInFirebase();
             }
         });
     }
 
     private void uploadTrackInFirebase() {
-        if (fitState.getLatLngs().size() > 2) {
+        if (fitState.getPoints().size() > 2) {
+            databaseReference = FirebaseDatabase.getInstance().getReference();
+            String trackToken = databaseReference.child(TRACKS).child(user.getUid()).push().getKey();
 
-            TracksModel tracksModel = new TracksModel(
+            SaveModel saveModel = new SaveModel(
                     fitState.getStartTime() / 1000L,
                     fitState.getSinceTime(),
                     (int) fitState.getNowDistance(),
-                    firebaseUtils.getTrackToken(),
+                    trackToken,
                     typeFit,
-                    fitState.getLatLngs());
+                    fitState.getPoints()
+            );
 
-            firebaseUtils.saveFit(tracksModel, relativeRootLayout);
+            FirebaseDatabase.getInstance().getReference().child(TRACKS).child(user.getUid()).child(trackToken).setValue(saveModel, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if (databaseError != null) {
+                        Snackbar.make(relativeRootLayout, getString(R.string.scamper_activity_track_save_error) + databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
+                    } else {
+                        Snackbar.make(relativeRootLayout, R.string.scamper_activity_track_save_success, Snackbar.LENGTH_LONG).show();
+                    }
+                }
+            });
         } else {
             Snackbar.make(relativeRootLayout, R.string.fit_activity_snackbar_low_points, Snackbar.LENGTH_LONG).show();
         }
-
-        fitState.clearFitData();
     }
+
 
     public void updateTimer(final String timeFromChronometer) {
         runOnUiThread(new Runnable() {
-            @SuppressLint("StringFormatMatches")
             @Override
             public void run() {
                 textViewNowTime.setText(String.format(getString(R.string.fit_activity_now_time), timeFromChronometer));
@@ -211,21 +236,23 @@ public class FitActivity extends AppCompatActivity {
         });
     }
 
+
     private void buildAlertMessageNoGps() {
         new AlertDialog.Builder(this)
-                .setMessage(R.string.fit_activity_alert_message_no_gps)
+                .setMessage(alertMessage)
                 .setCancelable(false)
-                .setPositiveButton(R.string.fit_activity_alert_positive_btn, new DialogInterface.OnClickListener() {
+                .setPositiveButton(alertPositiveBtn, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         startActivity(new IntentBuilder()
                                 .action(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                                 .build());
                     }
                 })
-                .setNegativeButton(R.string.fit_activity_alert_negative_btn, null)
+                .setNegativeButton(alertNegativeBtn, null)
                 .create()
                 .show();
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -237,6 +264,7 @@ public class FitActivity extends AppCompatActivity {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -338,7 +366,7 @@ public class FitActivity extends AppCompatActivity {
         }
     }
 
-    public static void start(Context context, @TypeFit int typeFit) {
+    public static void start(Context context, @TypeFit int typeFit){
         Intent intent = new Intent(context, FitActivity.class);
         intent.putExtra(KEY_TYPE_FIT, typeFit);
         context.startActivity(intent);

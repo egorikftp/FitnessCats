@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 app:layout_collapseMode="parallax"
-                app:srcCompat="@drawable/ic_vec_cat_in_cap" />
+                app:srcCompat="@drawable/ic_vec_collapsing_toolbar_all_tracks_list_fragment" />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 

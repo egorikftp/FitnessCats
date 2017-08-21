@@ -25,7 +25,6 @@
             android:layout_above="@+id/fragment_fitness_data_image_cats_no_track"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"
-            android:fontFamily="@font/birusa"
             android:textAppearance="?android:textAppearanceMedium"
             android:visibility="gone" />
 

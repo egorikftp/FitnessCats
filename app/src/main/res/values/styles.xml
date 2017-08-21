@@ -7,20 +7,52 @@
         <item name="colorAccent">#B85967</item>
     </style>
 
-    <style name="AppThemeWithToolbar" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">#AEBFB2</item>
-        <item name="colorPrimaryDark">#75927C</item>
-        <item name="colorAccent">#B85967</item>
+
+    <!-- EditText Theme -->
+    <style name="EditTextEntrance">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:singleLine">true</item>
     </style>
 
-    <style name="AuthTheme" parent="FirebaseUI">
-        <item name="colorPrimary">#AEBFB2</item>
-        <item name="colorPrimaryDark">#75927C</item>
-        <item name="colorAccent">#B85967</item>
-        <item name="colorControlNormal">#B85967</item>
-        <item name="colorControlActivated">#86b3bc</item>
+
+    <!-- Theme TextInputLayout -->
+    <style name="TextInputLayoutStyleEntrance">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="errorEnabled">true</item>
+        <item name="errorTextAppearance">@style/ErrorText</item>
     </style>
 
+
+    <!-- Error in TextInputLayout -->
+    <style name="ErrorText" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textStyle">bold|italic</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+
+    <!-- Register Btn -->
+    <style name="EntranceButtonStyle" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/entrance_btn_padding</item>
+        <item name="android:layout_marginRight">@dimen/entrance_btn_padding</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+
+    <!-- Btn Login -->
+    <style name="BtnLoginStyle">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
+
+
+    <!-- Scamper Activity Btn-->
     <style name="BtnScamperActivityStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">120dp</item>
@@ -32,6 +64,7 @@
     </style>
 
 
+    <!-- Scamper Activity-->
     <style name="TextScamperActivityStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -40,6 +73,11 @@
         <item name="android:maxLines">2</item>
         <item name="android:textSize">26sp</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 
     <style name="chart_style">
         <item name="android:layout_width">@dimen/chart_size</item>

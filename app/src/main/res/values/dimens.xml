@@ -1,15 +1,41 @@
 <resources>
+
+    <dimen name="activity_login_horizontal_margin">16dp</dimen>
+    <dimen name="activity_login_vertical_margin">16dp</dimen>
+
+    <dimen name="entrance_btn_padding">16dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="adapter_fragment_liked_padding_word">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
     <dimen name="fragment_track_padding_word">6dp</dimen>
+    <dimen name="activity_entrance_horizontal_margin">16dp</dimen>
+    <dimen name="adapter_fragment_main_padding_word">6dp</dimen>
+    <dimen name="register_activity_facebook_margin">16dp</dimen>
     <dimen name="splash_activity_text_size">30sp</dimen>
+    <dimen name="appbar_padding_top">8dp</dimen>
 
 
     <!-- All Fitness Data -->
+    <dimen name="adapter_all_fitness_data_margin">6dp</dimen>
     <dimen name="adapter_all_fitness_data_padding_image_liked">10dp</dimen>
+
+
+    <dimen name="adapter_naw_drawer_margin_item">12dp</dimen>
+    <dimen name="adapter_naw_drawer_margin_image">16dp</dimen>
+    <dimen name="navigation_drawer_header_margin">16dp</dimen>
+
+
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
     <dimen name="track_on_map_activity_image_padding">5dp</dimen>
 
 
     <!-- Statistic Chart -->
+    <dimen name="default_stroke_size">18dp</dimen>
     <dimen name="chart_size">280dp</dimen>
+    <dimen name="stroke_size">18dp</dimen>
 
     <!-- Reminders Adapter -->
     <dimen name="reminders_fragment_padding_top">5sp</dimen>
@@ -18,9 +44,12 @@
     <dimen name="reminders_fragment_card_view_padding_bottom">8dp</dimen>
     <dimen name="reminders_fragment_card_view_corner_radius">6dp</dimen>
     <dimen name="reminders_fragment_padding_view">10dp</dimen>
+    <dimen name="reminders_fragment_padding_view_ic_delete">16dp</dimen>
 
 
     <!-- Adapter Liked Fragment -->
+    <dimen name="adapter_fragment_liked_margin">6dp</dimen>
+    <dimen name="adapter_fragment_liked_padding_image_liked">10dp</dimen>
     <dimen name="liked_fragment_text_margin">15dp</dimen>
 
     <dimen name="statistic_fragment_icon_width">20dp</dimen>
@@ -37,6 +66,5 @@
     <dimen name="activity_add_user_data_edit_text_width">70dp</dimen>
     <dimen name="activity_add_user_info_cats_talk_text_size">15sp</dimen>
     <dimen name="activity_add_user_info_layout_margin_bottom">20dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
 
 </resources>

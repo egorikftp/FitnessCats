@@ -2,10 +2,10 @@ package com.egoriku.catsrunning.adapters;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -15,35 +15,37 @@ import android.widget.TextView;
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.adapters.interfaces.IRemindersClickListener;
 import com.egoriku.catsrunning.models.ReminderModel;
-import com.egoriku.catsrunning.utils.TimeUtil;
-import com.egoriku.core_lib.adapter.AbstractAdapter;
-import com.egoriku.core_lib.adapter.AbstractViewHolder;
-
-import org.jetbrains.annotations.NotNull;
+import com.egoriku.catsrunning.utils.ConverterTime;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.egoriku.catsrunning.extensions.DrawableTypeFitKt.drawableTypeReminder;
-import static com.egoriku.core_lib.extensions.DrawableKt.drawableCompat;
+import static com.egoriku.catsrunning.utils.VectorToDrawable.setImageAdapter;
+import static com.egoriku.catsrunning.utils.VectorToDrawable.setImageButtonAdapter;
 
 public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
-
-    private static final float ANIMATE_ALPHA = 0.0f;
-    private static final int ANIMATE_DURATION = 300;
+    public static final float ANIMATE_ALPHA = 0.0f;
+    public static final int ANIMATE_DURATION = 300;
     private static final float ANIMATE_ALPHA_MORE = 1.0f;
     private List<ReminderModel> reminderModelList = new ArrayList<>();
     private IRemindersClickListener iRemindersClickListener;
-    private Context context;
 
-    public RemindersAdapter(Context context) {
-        this.context = context;
+    public RemindersAdapter() {
     }
+
 
     public void setOnItemClickListener(IRemindersClickListener iRemindersClickListener) {
         this.iRemindersClickListener = iRemindersClickListener;
     }
+
+
+    @Override
+    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View inflater = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_fragment_reminders, parent, false);
+        return new AbstractViewHolder(inflater);
+    }
+
 
     @Override
     public int getItemCount() {
@@ -52,23 +54,23 @@ public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
 
 
     @Override
-    public void onBindHolder(@NonNull final AbstractViewHolder holder, final RemindersAdapter remindersAdapter, final int position, int viewType) {
+    public void onBind(final AbstractViewHolder holder, final RemindersAdapter remindersAdapter, final int position, int viewType) {
         Calendar calendar = Calendar.getInstance();
-        final RelativeLayout relativeLayout = holder.get(R.id.reminders_fragment_relative_layout);
-        final TextView textViewDate = holder.get(R.id.reminders_fragment_date);
-        final TextView textViewTime = holder.get(R.id.reminders_fragment_time);
-        final ImageView imageViewDelete = holder.get(R.id.reminders_fragment_delete_reminder);
-        final ImageButton imageBtnExpand = holder.get(R.id.reminders_fragment_image_expand_info);
-        final ImageView imageViewLine = holder.get(R.id.reminders_fragment_static_line);
-        final ImageView imageViewLiked = holder.get(R.id.reminders_fragment_image_type_reminder);
-        final Switch aSwitch = holder.get(R.id.reminder_fragment_switch);
+        final RelativeLayout relativeLayout = holder.<RelativeLayout>get(R.id.reminders_fragment_relative_layout);
+        final TextView textViewDate = holder.<TextView>get(R.id.reminders_fragment_date);
+        final TextView textViewTime = holder.<TextView>get(R.id.reminders_fragment_time);
+        final ImageView imageViewDelete = holder.<ImageView>get(R.id.reminders_fragment_delete_reminder);
+        final ImageButton imageBtnExpand = holder.<ImageButton>get(R.id.reminders_fragment_image_expand_info);
+        final ImageView imageViewLine = holder.<ImageView>get(R.id.reminders_fragment_static_line);
+        final ImageView imageViewLiked = holder.<ImageView>get(R.id.reminders_fragment_image_type_reminder);
+        final Switch aSwitch = holder.<Switch>get(R.id.reminder_fragment_switch);
 
         if (calendar.getTimeInMillis() / 1000L > reminderModelList.get(position).getDateReminder()) {
             relativeLayout.setBackgroundColor(Color.LTGRAY);
         }
 
-        textViewDate.setText(TimeUtil.convertDateReminder(reminderModelList.get(position).getDateReminder()));
-        textViewTime.setText(TimeUtil.convertTimeReminder(reminderModelList.get(position).getDateReminder()));
+        textViewDate.setText(ConverterTime.convertDateReminder(reminderModelList.get(position).getDateReminder()));
+        textViewTime.setText(ConverterTime.convertTimeReminder(reminderModelList.get(position).getDateReminder()));
 
         imageViewDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,10 +122,10 @@ public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
             public void onClick(View view) {
                 if (imageViewLine.getVisibility() == View.GONE) {
                     animateItemExpandMore(imageViewLine, imageViewDelete);
-                    imageBtnExpand.setImageDrawable(drawableCompat(context, R.drawable.ic_vec_expand_less_black));
+                    setImageButtonAdapter(imageBtnExpand, R.drawable.ic_vec_expand_less_black);
                 } else {
                     animateItemExpandLess(imageViewLine, imageViewDelete);
-                    imageBtnExpand.setImageDrawable(drawableCompat(context, R.drawable.ic_vec_expand_more_black));
+                    setImageButtonAdapter(imageBtnExpand, R.drawable.ic_vec_expand_more_black);
                 }
             }
         });
@@ -143,9 +145,21 @@ public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
             }
         });
 
-        imageViewLiked.setImageDrawable(drawableTypeReminder(context, reminderModelList.get(position).getTypeReminder()));
+        switch (reminderModelList.get(position).getTypeReminder()) {
+            case 1:
+                setImageAdapter(imageViewLiked, R.drawable.ic_vec_directions_walk_reminders);
+                break;
 
-        switch (reminderModelList.get(position).getIsRing()) {
+            case 2:
+                setImageAdapter(imageViewLiked, R.drawable.ic_vec_directions_run_reminders);
+                break;
+
+            case 3:
+                setImageAdapter(imageViewLiked, R.drawable.ic_vec_directions_bike_reminders);
+                break;
+        }
+
+        switch (reminderModelList.get(position).getIsRing()){
             case 0:
                 aSwitch.setChecked(false);
                 break;
@@ -239,16 +253,5 @@ public class RemindersAdapter extends AbstractAdapter<RemindersAdapter> {
                         imageViewDelete.setVisibility(View.VISIBLE);
                     }
                 });
-    }
-
-    @Override
-    public int getLayout() {
-        return R.layout.adapter_fragment_reminders;
-    }
-
-    @NotNull
-    @Override
-    public AbstractViewHolder onCreateHolder(@NotNull View itemView, int viewType) {
-        return new AbstractViewHolder(itemView);
     }
 }

@@ -17,12 +17,12 @@
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activity.TracksActivity" />
+        <activity android:name=".activities.RegisterActivity" />
+        <activity android:name=".activities.TracksActivity" />
         <activity
-            android:name=".ui.activity.SplashActivity"
+            android:name=".activities.SplashActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -30,16 +30,20 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
         <activity android:name=".activities.FitActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.egoriku.catsrunning.ui.activity.TracksActivity" />
+                android:value="com.egoriku.catsrunning.activities.TracksActivity" />
         </activity>
         <activity android:name=".activities.AddReminderActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.egoriku.catsrunning.ui.activity.TracksActivity" />
+                android:value="com.egoriku.catsrunning.activities.TracksActivity" />
         </activity>
 
         <service
@@ -52,16 +56,12 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".ui.activity.TrackMapActivity">
+        <activity android:name=".activities.TrackOnMapsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.egoriku.catsrunning.ui.activity.TracksActivity" />
+                android:value="com.egoriku.catsrunning.activities.TracksActivity" />
         </activity>
         <activity android:name=".activities.AddUserInfoActivity" />
-
-        <meta-data
-            android:name="net.hockeyapp.android.appIdentifier"
-            android:value="@string/hockey_app_id" />
     </application>
 
 </manifest>
