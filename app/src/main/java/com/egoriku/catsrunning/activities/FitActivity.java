@@ -32,11 +32,11 @@ import com.egoriku.catsrunning.models.Constants;
 import com.egoriku.catsrunning.models.FitState;
 import com.egoriku.catsrunning.models.ParcelableFitActivityModel;
 import com.egoriku.catsrunning.services.FitService;
-import com.egoriku.catsrunning.utils.ConverterTime;
 import com.egoriku.catsrunning.utils.CustomChronometer;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.egoriku.catsrunning.utils.FlipAnimation;
 import com.egoriku.catsrunning.utils.IntentBuilder;
+import com.egoriku.catsrunning.utils.TimeUtil;
 
 import static com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT;
 import static com.egoriku.catsrunning.models.Constants.ModelScamperActivity.KEY_IS_CHRONOMETER_RUNNING;
@@ -160,7 +160,7 @@ public class FitActivity extends AppCompatActivity {
                         .service(FitService.class)
                         .build());
 
-                textViewFinalTime.setText(String.format(getString(R.string.fit_activity_now_time), ConverterTime.ConvertTimeToString(fitState.getSinceTime())));
+                textViewFinalTime.setText(String.format(getString(R.string.fit_activity_now_time), TimeUtil.ConvertTimeToString(fitState.getSinceTime())));
                 textViewFinalDistance.setText(String.format(getString(R.string.fit_activity_final_distance_meter), (int) fitState.getNowDistance()));
                 flipAnimation.setReverse();
                 relativeRootLayout.startAnimation(flipAnimation);

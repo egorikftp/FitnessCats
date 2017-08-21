@@ -100,13 +100,12 @@
             app:layout_constraintTop_toTopOf="@+id/ic_type_fit"
             tools:text="20 марта" />
 
-        <com.airbnb.lottie.LottieAnimationView
+        <ImageView
             android:id="@+id/liked_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:lottie_fileName="favorite_star.json"
+            android:padding="10dp"
+            tools:srcCompat="@drawable/ic_vec_star_border"
             card:layout_constraintRight_toRightOf="parent"
             card:layout_constraintTop_toTopOf="parent"
             tools:layout_conversion_absoluteHeight="43dp"

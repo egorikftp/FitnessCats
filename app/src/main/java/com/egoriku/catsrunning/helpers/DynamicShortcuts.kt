@@ -14,15 +14,16 @@ import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.activities.FitActivity
 import com.egoriku.catsrunning.models.Constants.Extras.KEY_TYPE_FIT
 
-class DynamicShortcuts
-constructor(private val context: Context) {
+class DynamicShortcuts(val context: Context) {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private val shortcutManager: ShortcutManager = context.getSystemService(ShortcutManager::class.java)
 
-    val WALKING = "walking_shortcut"
-    val RUNNING = "running_shortcut"
-    val CYCLING = "cycling_shortcut"
+    companion object {
+        private const val WALKING = "walking_shortcut"
+        private const val RUNNING = "running_shortcut"
+        private const val CYCLING = "cycling_shortcut"
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     fun buildShortcuts() {
@@ -41,8 +42,7 @@ constructor(private val context: Context) {
                 .setShortLabel(context.getString(label))
                 .setLongLabel(context.getString(label))
                 .setIcon(Icon.createWithResource(context, icon))
-                .setIntent(Intent(Intent.ACTION_VIEW, Uri.EMPTY, context, FitActivity::class.java)
-                        .putExtra(KEY_TYPE_FIT, typeFit))
+                .setIntent(Intent(Intent.ACTION_VIEW, Uri.EMPTY, context, FitActivity::class.java).putExtra(KEY_TYPE_FIT, typeFit))
                 .build()
     }
 

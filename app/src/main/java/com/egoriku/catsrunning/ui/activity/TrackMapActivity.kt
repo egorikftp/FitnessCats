@@ -12,14 +12,14 @@ import android.view.Menu
 import android.view.MenuItem
 import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.data.commons.TracksModel
-import com.egoriku.catsrunning.kt_util.drawableCompat
-import com.egoriku.catsrunning.kt_util.extensions.action
-import com.egoriku.catsrunning.kt_util.extensions.snack
 import com.egoriku.catsrunning.models.Constants.Extras.EXTRA_TRACK_ON_MAPS
-import com.egoriku.catsrunning.utils.ConverterTime
 import com.egoriku.catsrunning.utils.FirebaseUtils
+import com.egoriku.catsrunning.utils.TimeUtil
 import com.egoriku.catsrunning.utils.TypeFitBuilder.getTypeFit
 import com.egoriku.catsrunning.utils.VectorToDrawable.createBitmapFromVector
+import com.egoriku.core_lib.extensions.action
+import com.egoriku.core_lib.extensions.drawableCompat
+import com.egoriku.core_lib.extensions.snack
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -66,7 +66,7 @@ class TrackMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         track_on_map_distance.text = String.format(getString(R.string.track_fragment_distance_meter), tracksModel.distance)
         track_on_map_type_fit.text = String.format(getString(R.string.track_fragment_time_running), getTypeFit(tracksModel.typeFit, true, R.array.all_fitness_data_categories))
-        track_on_map_time.text = ConverterTime.getTime(tracksModel.time)
+        track_on_map_time.text = TimeUtil.getTime(tracksModel.time)
 
         (supportFragmentManager.findFragmentById(R.id.track_on_maps_activity_map_fragment) as SupportMapFragment).getMapAsync(this)
     }

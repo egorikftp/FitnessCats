@@ -1,6 +1,5 @@
 package com.egoriku.catsrunning.ui.fragment
 
-import android.animation.Animator
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.animation.LinearOutSlowInInterpolator
@@ -11,21 +10,17 @@ import android.view.ViewGroup
 import android.view.animation.TranslateAnimation
 import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.activities.FitActivity
-import com.egoriku.catsrunning.ui.activity.TrackMapActivity
 import com.egoriku.catsrunning.data.TracksDataManager
 import com.egoriku.catsrunning.data.UIListener
 import com.egoriku.catsrunning.data.commons.TracksModel
 import com.egoriku.catsrunning.helpers.Events
 import com.egoriku.catsrunning.helpers.TypeFit
 import com.egoriku.catsrunning.models.Constants
+import com.egoriku.catsrunning.ui.activity.TrackMapActivity
 import com.egoriku.catsrunning.ui.activity.TracksActivity
 import com.egoriku.catsrunning.ui.adapter.TracksAdapter
-import com.egoriku.catsrunning.kt_util.SimpleAnimatorListener
-import com.egoriku.catsrunning.kt_util.drawableCompat
-import com.egoriku.catsrunning.kt_util.extensions.hide
-import com.egoriku.catsrunning.kt_util.extensions.show
-import com.egoriku.catsrunning.kt_util.inflate
 import com.egoriku.catsrunning.utils.FirebaseUtils
+import com.egoriku.core_lib.extensions.*
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_tracks.*
 import org.jetbrains.anko.support.v4.alert
@@ -43,7 +38,7 @@ class TracksFragment : Fragment(), UIListener {
 
     init {
         anim.apply {
-            duration = 200
+            duration = 400
             interpolator = LinearOutSlowInInterpolator()
             fillAfter = true
         }
@@ -56,6 +51,7 @@ class TracksFragment : Fragment(), UIListener {
     }
 
     override fun handleSuccess(data: List<TracksModel>) {
+        d("handleSuccess")
         progressbar.hide()
         tracks_recyclerview.show()
         adapter.setItems(data)
@@ -71,6 +67,10 @@ class TracksFragment : Fragment(), UIListener {
     }
 
     override fun handleError() {
+        no_tracks.show()
+        no_tracks.setImageDrawable(drawableCompat(activity, R.drawable.ic_vec_cats_no_track))
+        no_tracks_text.show()
+        tracks_recyclerview.hide(gone = false)
     }
 
     override fun onStart() {
@@ -147,16 +147,18 @@ class TracksFragment : Fragment(), UIListener {
                                 tracksModel.isFavorite = !tracksModel.isFavorite
                                 firebaseUtils.updateFavorite(tracksModel, context)
 
-                                view.addAnimatorListener(object : SimpleAnimatorListener() {
+                                tracks_recyclerview.post({ adapter.notifyItemChanged(position) })
 
-                                    override fun onAnimationEnd(p0: Animator?) {
-                                        tracks_recyclerview.post({ adapter.notifyItemChanged(position) })
-                                    }
+                                /*   view.addAnimatorListener(object : SimpleAnimatorListener() {
 
-                                    override fun onAnimationCancel(p0: Animator?) = if (tracksModel.isFavorite) view.progress = 1.0f else view.progress = 0.0f
-                                })
+                                       override fun onAnimationEnd(p0: Animator?) {
+                                           tracks_recyclerview.post({ adapter.notifyItemChanged(position) })
+                                       }
 
-                                if (tracksModel.isFavorite) view.playAnimation() else view.progress = 0.0f
+                                       override fun onAnimationCancel(p0: Animator?) = if (tracksModel.isFavorite) view.progress = 1.0f else view.progress = 0.0f
+                                   })
+
+                                   if (tracksModel.isFavorite) view.playAnimation() else view.progress = 0.0f*/
                             }
                         }
                     })
@@ -165,11 +167,7 @@ class TracksFragment : Fragment(), UIListener {
 
     override fun onStop() {
         super.onStop()
-        tracksDataManager.removeUIListener()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
+        tracksDataManager.removeListeners()
         clickEventSubscriber.dispose()
         likedClickSubscriber.dispose()
     }

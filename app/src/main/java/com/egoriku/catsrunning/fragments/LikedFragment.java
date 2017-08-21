@@ -20,10 +20,10 @@ import android.widget.TextView;
 
 import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
-import com.egoriku.catsrunning.ui.activity.TrackMapActivity;
 import com.egoriku.catsrunning.adapters.FitnessDataHolder;
 import com.egoriku.catsrunning.data.commons.TracksModel;
 import com.egoriku.catsrunning.models.Constants;
+import com.egoriku.catsrunning.ui.activity.TrackMapActivity;
 import com.egoriku.catsrunning.ui.activity.TracksActivity;
 import com.egoriku.catsrunning.utils.FirebaseUtils;
 import com.egoriku.catsrunning.utils.IntentBuilder;

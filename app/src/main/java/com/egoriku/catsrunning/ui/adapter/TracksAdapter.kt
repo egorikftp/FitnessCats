@@ -1,65 +1,72 @@
 package com.egoriku.catsrunning.ui.adapter
 
-import android.support.v7.widget.RecyclerView
-import android.view.ViewGroup
-import com.airbnb.lottie.LottieAnimationView
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.data.commons.TracksModel
+import com.egoriku.catsrunning.extensions.typeFitIcon
 import com.egoriku.catsrunning.helpers.Events
-import com.egoriku.catsrunning.kt_util.drawableTypeFit
-import com.egoriku.catsrunning.kt_util.Quadruple
-import com.egoriku.catsrunning.kt_util.inflate
-import com.egoriku.catsrunning.utils.ConverterTime
+import com.egoriku.catsrunning.utils.TimeUtil
+import com.egoriku.core_lib.adapter.AbstractAdapter
+import com.egoriku.core_lib.adapter.AbstractViewHolder
+import com.egoriku.core_lib.extensions.Quadruple
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.item_tracks_adapter.view.*
 
-class TracksAdapter : RecyclerView.Adapter<TracksAdapter.TracksViewHolder>() {
+class TracksAdapter : AbstractAdapter<TracksModel>() {
 
     private var items: MutableList<TracksModel> = mutableListOf()
     val clickItem: PublishSubject<Pair<TracksModel, String>> = PublishSubject.create<Pair<TracksModel, @Events String>>()
-    val likedClick: PublishSubject<Quadruple<LottieAnimationView, String, TracksModel, Int>> = PublishSubject.create<Quadruple<LottieAnimationView, @Events String, TracksModel, Int>>()
+    val likedClick: PublishSubject<Quadruple<ImageView, String, TracksModel, Int>> = PublishSubject.create<Quadruple<ImageView, @Events String, TracksModel, Int>>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
-        return TracksViewHolder(parent)
-    }
+    override fun onBindHolder(holder: AbstractViewHolder, item: TracksModel, position: Int, viewType: Int) {
+        holder.apply {
+            val liked = holder.get<ImageView>(R.id.liked_item)
+            get<TextView>(R.id.distance).text = String.format(getString(R.string.distance_format), item.distance)
+            get<TextView>(R.id.calories).text = String.format(getString(R.string.calories_format), item.calories)
+            get<TextView>(R.id.time_fit).text = TimeUtil.getTime(item.time)
+            get<TextView>(R.id.date_fit).text = TimeUtil.convertUnixDateWithoutHours(item.beginsAt)
+            get<ImageView>(R.id.ic_type_fit).setImageDrawable(getDrawable(typeFitIcon(item.typeFit)))
 
-    override fun onBindViewHolder(holder: TracksViewHolder?, position: Int) {
-        holder?.bind(items[position])
-    }
-
-    override fun getItemCount() = items.size
-
-    inner class TracksViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.item_tracks_adapter)) {
-
-        fun bind(item: TracksModel) = with(itemView) {
             if (item.isFavorite) {
-                liked_item.progress = 1.0f
+                liked.setImageDrawable(getDrawable(R.drawable.ic_vec_star_black))
             } else {
-                liked_item.progress = 0.0f
+                liked.setImageDrawable(getDrawable(R.drawable.ic_vec_star_border))
             }
 
-            distance.text = String.format(context.getString(R.string.distance_format), item.distance)
-            ic_type_fit.setImageDrawable(drawableTypeFit(context, item.typeFit))
-            date_fit.text = ConverterTime.convertUnixDateWithoutHours(item.beginsAt)
-            calories.text = String.format(context.getString(R.string.calories_format), item.calories)
-            time_fit.text = ConverterTime.getTime(item.time)
-
-            itemView.setOnClickListener { clickItem.onNext(Pair(items[adapterPosition], Events.CLICK)) }
+            itemView.setOnClickListener { clickItem.onNext(Pair(item, Events.CLICK)) }
 
             itemView.setOnLongClickListener {
-                clickItem.onNext(Pair(items[adapterPosition], Events.LONG_CLICK))
+                clickItem.onNext(Pair(item, Events.LONG_CLICK))
                 true
             }
 
-            liked_item.setOnClickListener {
-                likedClick.onNext(Quadruple(liked_item, Events.LIKED_CLICK, items[adapterPosition], adapterPosition))
+            liked.setOnClickListener {
+                likedClick.onNext(Quadruple(liked, Events.LIKED_CLICK, item, position))
             }
         }
     }
 
+    override fun getItem(position: Int): TracksModel {
+        return items[position]
+    }
+
+    override fun onCreateHolder(itemView: View, viewType: Int): AbstractViewHolder {
+        return AbstractViewHolder(itemView)
+    }
+
+    override fun getLayout(): Int {
+        return R.layout.item_tracks_adapter
+    }
+
+    override fun getItemCount() = items.size
+
     fun setItems(item: List<TracksModel>) {
+        // val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(DiffCallback(item, items))
+
         items.clear()
         items.addAll(item)
         notifyDataSetChanged()
+        // diffResult.dispatchUpdatesTo(this)
     }
 }

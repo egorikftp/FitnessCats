@@ -6,9 +6,9 @@ import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.util.AttributeSet
 import android.widget.TextView
 import com.egoriku.catsrunning.R
-import com.egoriku.catsrunning.kt_util.drawableCompat
-import com.egoriku.catsrunning.kt_util.extensions.fromApi
-import com.egoriku.catsrunning.kt_util.extensions.toApi
+import com.egoriku.core_lib.extensions.drawableCompat
+import com.egoriku.core_lib.extensions.fromApi
+import com.egoriku.core_lib.extensions.toApi
 
 
 class CompatTextView : TextView {

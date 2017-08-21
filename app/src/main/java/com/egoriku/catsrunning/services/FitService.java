@@ -17,7 +17,7 @@ import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.FitActivity;
 import com.egoriku.catsrunning.data.commons.LatLng;
 import com.egoriku.catsrunning.models.FitState;
-import com.egoriku.catsrunning.utils.ConverterTime;
+import com.egoriku.catsrunning.utils.TimeUtil;
 
 import java.util.Calendar;
 
@@ -260,7 +260,7 @@ public class FitService extends Service implements LocationListener {
         public void run() {
             while (isThreadRun) {
                 long since = System.currentTimeMillis() - fitState.getStartTime();
-                showNotification(ConverterTime.ConvertTimeToString(since), (int) fitState.getNowDistance());
+                showNotification(TimeUtil.ConvertTimeToString(since), (int) fitState.getNowDistance());
 
                 try {
                     Thread.sleep(1000);

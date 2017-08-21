@@ -9,11 +9,11 @@ import android.support.annotation.ColorRes
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.ViewAnimationUtils
 import android.view.ViewTreeObserver
+import com.egoriku.catsrunning.BuildConfig
 import com.egoriku.catsrunning.R
 import com.egoriku.catsrunning.data.TracksDataManager
 import com.egoriku.catsrunning.fragments.*
@@ -22,10 +22,12 @@ import com.egoriku.catsrunning.helpers.FragmentsTag.MAIN
 import com.egoriku.catsrunning.helpers.FragmentsTag.NEW_MAIN
 import com.egoriku.catsrunning.models.FitState
 import com.egoriku.catsrunning.ui.fragment.TracksFragment
-import com.egoriku.catsrunning.kt_util.drawableCompat
-import com.egoriku.catsrunning.kt_util.extensions.fromApi
-import com.egoriku.catsrunning.kt_util.extensions.toApi
 import com.egoriku.catsrunning.utils.FirebaseUtils
+import com.egoriku.core_lib.Constants
+import com.egoriku.core_lib.extensions.colorCompat
+import com.egoriku.core_lib.extensions.drawableCompat
+import com.egoriku.core_lib.extensions.fromApi
+import com.egoriku.core_lib.extensions.toApi
 import com.firebase.ui.auth.AuthUI
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
@@ -42,7 +44,7 @@ import org.jetbrains.anko.toast
 class TracksActivity : AppCompatActivity() {
 
     companion object {
-       const val NAV_DRAWER_SELECTED_POSITION = "Nav_drawer_position"
+        const val NAV_DRAWER_SELECTED_POSITION = "Nav_drawer_position"
     }
 
     private lateinit var navigationDrawer: Drawer
@@ -115,23 +117,26 @@ class TracksActivity : AppCompatActivity() {
                                 .withTag(FragmentsTag.EXIT))
                 .addStickyDrawerItems(
                         PrimaryDrawerItem()
+                                .withName(getString(R.string.build_version) + Constants.SPACE + BuildConfig.BUILD_VERSION)
+                                .withTag(FragmentsTag.BUILD_VERSION),
+                        PrimaryDrawerItem()
                                 .withName(R.string.navigation_drawer_setting)
                                 .withIcon(drawableCompat(this, R.drawable.ic_vec_settings))
                                 .withTag(FragmentsTag.SETTINGS))
                 .withOnDrawerItemClickListener { _, _, drawerItem ->
                     setDefaultToolbarColor()
                     when (drawerItem.tag.toString()) {
-                        FragmentsTag.MAIN -> showFragment(AllFitnessDataFragment.newInstance(), FragmentsTag.MAIN, null, true)
-                        FragmentsTag.REMINDER -> showFragment(RemindersFragment.newInstance(), FragmentsTag.REMINDER)
-                        FragmentsTag.LIKED -> showFragment(LikedFragment.newInstance(), FragmentsTag.LIKED)
-                        FragmentsTag.STATISTIC -> showFragment(StatisticFragment.newInstance(), FragmentsTag.STATISTIC)
+                        FragmentsTag.MAIN -> showFragment(AllFitnessDataFragment.newInstance(), FragmentsTag.MAIN, FragmentsTag.NEW_MAIN)
+                        FragmentsTag.REMINDER -> showFragment(RemindersFragment.newInstance(), FragmentsTag.REMINDER, FragmentsTag.NEW_MAIN)
+                        FragmentsTag.LIKED -> showFragment(LikedFragment.newInstance(), FragmentsTag.LIKED, FragmentsTag.NEW_MAIN)
+                        FragmentsTag.STATISTIC -> showFragment(StatisticFragment.newInstance(), FragmentsTag.STATISTIC, FragmentsTag.NEW_MAIN)
                         FragmentsTag.EXIT -> when (FitState.getInstance().isFitRun) {
                             true -> toast(R.string.tracks_activity_error_exit_account)
                             false -> exitFromAccount()
                         }
 
-                        FragmentsTag.SETTINGS -> showFragment(SettingsFragment.newInstance(), FragmentsTag.SETTINGS)
-                        FragmentsTag.NEW_MAIN -> showFragment(TracksFragment.instance(), FragmentsTag.NEW_MAIN)
+                        FragmentsTag.SETTINGS -> showFragment(SettingsFragment.newInstance(), FragmentsTag.SETTINGS, FragmentsTag.NEW_MAIN)
+                        FragmentsTag.NEW_MAIN -> showFragment(TracksFragment.instance(), FragmentsTag.NEW_MAIN, null, true)
                     }
                     false
                 }
@@ -139,24 +144,22 @@ class TracksActivity : AppCompatActivity() {
                 .build()
     }
 
-    private val drawerHeader: AccountHeader get() = AccountHeaderBuilder()
-            .withActivity(this)
-            .withHeaderBackground(R.color.primary_dark)
-            .addProfiles(ProfileDrawerItem()
-                    .withName(userName)
-                    .withEmail(userEmail)
-                    .withIcon(drawableCompat(this, R.drawable.ic_vec_cat_weary)))
-            .build()
+    private val drawerHeader: AccountHeader
+        get() = AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.color.primary_dark)
+                .addProfiles(ProfileDrawerItem()
+                        .withName(userName)
+                        .withEmail(userEmail)
+                        .withIcon(drawableCompat(this, R.drawable.ic_vec_cat_weary)))
+                .build()
 
     @SuppressLint("CommitTransaction")
-    private fun showFragment(fragment: Fragment, @FragmentsTag tag: String, @FragmentsTag clearToTag: String? = FragmentsTag.MAIN, clearInclusive: Boolean = false) {
+    private fun showFragment(fragment: Fragment, @FragmentsTag tag: String, @FragmentsTag clearToTag: String?, clearInclusive: Boolean = false) {
         val fragmentManager = supportFragmentManager
 
         if (clearToTag != null || clearInclusive) {
-            fragmentManager.popBackStack(
-                    clearToTag,
-                    if (clearInclusive) FragmentManager.POP_BACK_STACK_INCLUSIVE else 0
-            )
+            fragmentManager.popBackStack(clearToTag, if (clearInclusive) FragmentManager.POP_BACK_STACK_INCLUSIVE else 0)
         }
 
         fragmentManager.beginTransaction().apply {
@@ -169,7 +172,6 @@ class TracksActivity : AppCompatActivity() {
 
     private fun exitFromAccount() {
         TracksDataManager.instance.apply {
-            removeUIListener()
             clearData()
             close()
         }
@@ -177,7 +179,7 @@ class TracksActivity : AppCompatActivity() {
     }
 
     private fun openLoginActivity() {
-        startActivity<SplashActivity>(SplashActivity.Constant.IS_ANIMATE to true).apply {
+        startActivity<SplashActivity>(SplashActivity.IS_ANIMATE to true).apply {
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_righ)
             finish()
         }
@@ -220,9 +222,9 @@ class TracksActivity : AppCompatActivity() {
     }
 
     fun animateToolbar(@ColorRes colorAccent: Int, @ColorRes colorPrimaryDark: Int) {
-        val cx = toolbar_app.width / 2
-        val cy = toolbar_app.height / 2
-        val finalRadius = Math.hypot(cx.toDouble(), cy.toDouble()).toFloat()
+        val centerX = toolbar_app.width / 2
+        val centerY = toolbar_app.height / 2
+        val finalRadius = Math.hypot(centerX.toDouble(), centerY.toDouble()).toFloat()
 
         toolbar_app.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
 
@@ -231,15 +233,15 @@ class TracksActivity : AppCompatActivity() {
                 toolbar_app.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
                 fromApi(VERSION_CODES.LOLLIPOP) {
-                    val circularReveal = ViewAnimationUtils.createCircularReveal(toolbar_app, cx, cy, 0f, finalRadius)
-                    toolbar_app.setBackgroundColor(ContextCompat.getColor(this@TracksActivity, colorPrimaryDark))
+                    val circularReveal = ViewAnimationUtils.createCircularReveal(toolbar_app, centerX, centerY, 0f, finalRadius)
+                    toolbar_app.setBackgroundColor(colorCompat(this@TracksActivity, colorPrimaryDark))
                     circularReveal.start()
-                    window.statusBarColor = ContextCompat.getColor(this@TracksActivity, colorPrimaryDark)
-                    toolbar_app.setBackgroundColor(ContextCompat.getColor(this@TracksActivity, colorAccent))
+                    window.statusBarColor = colorCompat(this@TracksActivity, colorPrimaryDark)
+                    toolbar_app.setBackgroundColor(colorCompat(this@TracksActivity, colorAccent))
                 }
 
                 toApi(VERSION_CODES.LOLLIPOP) {
-                    toolbar_app.setBackgroundColor(ContextCompat.getColor(this@TracksActivity, colorAccent))
+                    toolbar_app.setBackgroundColor(colorCompat(this@TracksActivity, colorAccent))
                 }
             }
         })
@@ -247,9 +249,9 @@ class TracksActivity : AppCompatActivity() {
 
     @SuppressLint("NewApi")
     private fun setDefaultToolbarColor() {
-        toolbar_app.setBackgroundColor(ContextCompat.getColor(this, R.color.settings_toolbar_color))
+        toolbar_app.setBackgroundColor(colorCompat(this, R.color.settings_toolbar_color))
         fromApi(VERSION_CODES.LOLLIPOP) {
-            window.statusBarColor = ContextCompat.getColor(this, R.color.settings_toolbar_color_dark)
+            window.statusBarColor = colorCompat(this, R.color.settings_toolbar_color_dark)
         }
     }
 

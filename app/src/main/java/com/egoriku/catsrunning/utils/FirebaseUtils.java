@@ -10,6 +10,7 @@ import com.egoriku.catsrunning.R;
 import com.egoriku.catsrunning.activities.AddUserInfoActivity;
 import com.egoriku.catsrunning.data.commons.TracksModel;
 import com.egoriku.catsrunning.models.Firebase.UserInfo;
+import com.egoriku.core_lib.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -106,7 +107,7 @@ public class FirebaseUtils {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null) {
-                                Snackbar.make(view, R.string.scamper_activity_track_save_error + " " + databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(view, R.string.scamper_activity_track_save_error + Constants.getSPACE() + databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
                             } else {
                                 Snackbar.make(view, R.string.scamper_activity_track_save_success, Snackbar.LENGTH_LONG).show();
                             }
