@@ -50,7 +50,7 @@ public class CustomChronometer implements Runnable {
             long since = System.currentTimeMillis() - startTime;
             FitState.getInstance().setSinceTime(since);
 
-            ((FitActivity) context).updateTimer(TimeUtil.ConvertTimeToString(since));
+            ((FitActivity) context).updateTimer(ConverterTime.ConvertTimeToString(since));
 
             try {
                 Thread.sleep(10);

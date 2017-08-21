@@ -20,7 +20,7 @@
             android:textStyle="bold"
             android:layout_height="wrap_content" />
 
-        <com.egoriku.catsrunning.ui.customview.CustomStringPicker
+        <com.egoriku.catsrunning.ui.CustomStringPicker
             android:id="@+id/add_reminder_part_one_string_picker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

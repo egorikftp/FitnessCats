@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Прогулка -->
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_vec_shortcuts_walk"
+        android:shortcutId="walking_shortcut"
+        android:shortcutLongLabel="@string/type_walking"
+        android:shortcutShortLabel="@string/type_walking"
+        tools:targetApi="n_mr1">
+
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.egoriku.catsrunning.activities.FitActivity"
+            android:targetPackage="com.egoriku.catsrunning">
+            <extra
+                android:name="KEY_TYPE_FIT"
+                android:value="1" />
+        </intent>
+
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+    <!-- Пробежка -->
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_vec_shortcuts_run"
+        android:shortcutId="running_shortcut"
+        android:shortcutLongLabel="@string/type_running"
+        android:shortcutShortLabel="@string/type_running"
+        tools:targetApi="n_mr1">
+
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.egoriku.catsrunning.activities.FitActivity"
+            android:targetPackage="com.egoriku.catsrunning">
+            <extra
+                android:name="KEY_TYPE_FIT"
+                android:value="2" />
+        </intent>
+
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+    <!-- Велопрогулка -->
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_vec_shortcuts_bike"
+        android:shortcutId="cycling_shortcut"
+        android:shortcutLongLabel="@string/type_cycling"
+        android:shortcutShortLabel="@string/type_cycling"
+        tools:targetApi="n_mr1">
+
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.egoriku.catsrunning.activities.FitActivity"
+            android:targetPackage="com.egoriku.catsrunning">
+            <extra
+                android:name="KEY_TYPE_FIT"
+                android:value="3" />
+        </intent>
+
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+</shortcuts>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/toolbar" />
+
+    <LinearLayout
+        android:id="@+id/track_on_maps_activity_linear_layout_distance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_app"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/track_on_map_activity_image_padding">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_vec_map_black" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/fragment_track_padding_word"
+            android:paddingRight="@dimen/fragment_track_padding_word"
+            android:text="@string/track_fragment_distance"
+            android:textAppearance="?android:textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/track_on_maps_activity_distance_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceMedium" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/track_on_maps_activity_static_image_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/track_on_maps_activity_linear_layout_distance"
+        app:srcCompat="@drawable/ic_vec_line" />
+
+    <LinearLayout
+        android:id="@+id/track_on_maps_activity_linear_layout_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/track_on_maps_activity_static_image_line"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/track_on_map_activity_image_padding">
+
+        <TextView
+            android:id="@+id/track_on_maps_activity_type_fit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/fragment_track_padding_word"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/track_on_maps_activity_time_running_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/track_on_maps_activity_map_fragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/track_on_maps_activity_linear_layout_time" />
+</RelativeLayout>

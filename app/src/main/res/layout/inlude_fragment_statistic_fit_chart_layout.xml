@@ -25,7 +25,7 @@
         android:layout_marginTop="@dimen/statistic_fragment_icon_margin_top_second"
         app:srcCompat="@drawable/ic_vec_directions_bike_reminders" />
 
-    <com.egoriku.catsrunning.ui.customview.statisticChart.FitChart
+    <com.egoriku.catsrunning.ui.statisticChart.FitChart
         android:id="@+id/fit_chart"
         style="@style/chart_style"
         app:strokeSize="@dimen/statistic_fragment_fitchart_stroke_size" />

@@ -8,8 +8,8 @@ machine:
 
 dependencies:
       pre:
-        - if [ ! -d "/usr/local/android-sdk-linux/platforms/android-26" ]; then echo y | android update sdk --no-ui --all --filter "android-26"; fi
-        - if [ ! -d "/usr/local/android-sdk-linux/build-tools/26.0.0 rc2" ]; then echo y | android update sdk --no-ui --all --filter "build-tools-26.0.0 rc2"; fi
+        - if [ ! -d "/usr/local/android-sdk-linux/platforms/android-25" ]; then echo y | android update sdk --no-ui --all --filter "android-25"; fi
+        - if [ ! -d "/usr/local/android-sdk-linux/build-tools/25.0.2" ]; then echo y | android update sdk --no-ui --all --filter "build-tools-25.0.2"; fi
         - if [ ! -d "/usr/local/android-sdk-linux/extras/android/m2repository/com/android/support/support-v4/25.0.2" ]; then echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"; fi
         - if [ ! -d "/usr/local/android-sdk-linux/extras/google/m2repository/com/google/firebase/firebase-core/10.2.4" ]; then echo y | android update sdk --no-ui --all --filter "extra-google-m2repository"; fi
         - if [ ! -d "/usr/local/android-sdk-linux/tools/bin/sdkmanager" ]; then echo y | android update sdk --no-ui --all --filter "tools"; fi
@@ -19,8 +19,8 @@ dependencies:
         - cp --force licenses/* $ANDROID_HOME/licenses; ls -l $ANDROID_HOME/licenses
 
       cache_directories:
-        - /usr/local/android-sdk-linux/platforms/android-26
-        - /usr/local/android-sdk-linux/build-tools/26.0.0 rc2
+        - /usr/local/android-sdk-linux/platforms/android-25
+        - /usr/local/android-sdk-linux/build-tools/25.0.2
         - /usr/local/android-sdk-linux/extras/android/m2repository
         - /usr/local/android-sdk-linux/extras/google/m2repository
 
