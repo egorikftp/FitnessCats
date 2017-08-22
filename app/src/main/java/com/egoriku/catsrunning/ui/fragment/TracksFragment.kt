@@ -20,7 +20,10 @@ import com.egoriku.catsrunning.ui.activity.TrackMapActivity
 import com.egoriku.catsrunning.ui.activity.TracksActivity
 import com.egoriku.catsrunning.ui.adapter.TracksAdapter
 import com.egoriku.catsrunning.utils.FirebaseUtils
-import com.egoriku.core_lib.extensions.*
+import com.egoriku.core_lib.extensions.d
+import com.egoriku.core_lib.extensions.hide
+import com.egoriku.core_lib.extensions.inflate
+import com.egoriku.core_lib.extensions.show
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_tracks.*
 import org.jetbrains.anko.support.v4.alert
@@ -51,25 +54,18 @@ class TracksFragment : Fragment(), UIListener {
     }
 
     override fun handleSuccess(data: List<TracksModel>) {
-        d("handleSuccess")
-        progressbar.hide()
+        loading_view.handleSuccessLoading()
         tracks_recyclerview.show()
         adapter.setItems(data)
-        no_tracks.hide()
-        no_tracks_text.hide()
 
         if (data.isEmpty()) {
-            no_tracks.show()
-            no_tracks.setImageDrawable(drawableCompat(activity, R.drawable.ic_vec_cats_no_track))
-            no_tracks_text.show()
+            loading_view.showErrorView()
             tracks_recyclerview.hide(gone = false)
         }
     }
 
     override fun handleError() {
-        no_tracks.show()
-        no_tracks.setImageDrawable(drawableCompat(activity, R.drawable.ic_vec_cats_no_track))
-        no_tracks_text.show()
+        loading_view.showErrorView()
         tracks_recyclerview.hide(gone = false)
     }
 
@@ -89,7 +85,13 @@ class TracksFragment : Fragment(), UIListener {
             layoutManager = LinearLayoutManager(context)
         }
 
-        progressbar.show()
+        loading_view.apply {
+            errorDrawable(R.drawable.ic_vec_cats_no_track)
+            errorText(R.string.no_tracks_text)
+            hideErrorView()
+            showProgress()
+        }
+
         initAdapter()
         tracksDataManager.apply {
             addListener(this@TracksFragment)

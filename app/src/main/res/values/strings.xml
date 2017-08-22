@@ -93,7 +93,7 @@
     <string name="track_on_map_activity_cancel_delete">Cancel</string>
     <string name="track_on_map_activity_track_cancel_delete_success">Remove canceled</string>
 
-    <string name="no_tracks_text">And why we don\'t do?</string>
+    <string name="no_tracks_text">There are no available data</string>
 
     <string name="statistic_fragment_bad_fit">We must more involved</string>
     <string name="statistic_fragment_result">%s m</string>

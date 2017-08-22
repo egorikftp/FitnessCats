@@ -20,6 +20,7 @@
     <color name="statistic_fragment_all_distance_color">#212121</color>
     <color name="statistic_fragment_cats_talk_color">#757575</color>
 
+    //used for navigation drawer
     <color name="material_drawer_selected_text">@color/accent</color>
 
     <color name="settings_toolbar_color">#AEBFB2</color>

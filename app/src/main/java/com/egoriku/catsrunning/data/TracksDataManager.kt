@@ -4,6 +4,7 @@ import com.egoriku.catsrunning.data.commons.TracksModel
 import com.egoriku.catsrunning.helpers.TypeFit
 import com.egoriku.catsrunning.models.Constants
 import com.egoriku.catsrunning.utils.FirebaseUtils
+import com.egoriku.core_lib.extensions.d
 import com.egoriku.core_lib.extensions.toModelOfType
 import com.google.firebase.database.*
 
@@ -83,7 +84,7 @@ class TracksDataManager private constructor() : ChildEventListener, ValueEventLi
             this.typeFit = typeFit
             databaseReference.addChildEventListener(this)
             databaseReference.addListenerForSingleValueEvent(this)
-        } else {
+        } else if (!tracks.isEmpty()) {
             this.typeFit = typeFit
             notifySuccess(this.typeFit)
         }

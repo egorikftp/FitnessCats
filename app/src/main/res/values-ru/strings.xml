@@ -59,7 +59,7 @@
     <string name="time_dialog_title">Установить новое время</string>
     <string name="track_fragment_distance">Дистанция:</string>
     <string name="fit_activity_final_distance_meter">Финальный результат: %s м</string>
-    <string name="no_tracks_text">И почему мы не занимаемся?</string>
+    <string name="no_tracks_text">Похоже, нет данных</string>
     <string name="statistic_fragment_bad_fit">Надо больше заниматься</string>
     <string name="statistic_fragment_good_fit">Котики довольны!</string>
     <string name="statistic_fragment_result">%s м</string>

@@ -78,6 +78,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(path: ':core-lib')
 
     testImplementation "junit:junit:$jUnit"
     androidTestImplementation "junit:junit:$jUnit"
@@ -141,11 +142,10 @@ dependencies {
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary"
     testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary"
 
-    implementation "net.hockeyapp.android:HockeySDK:$HockeySDK"
+    implementation "net.hockeyapp.android:HockeySDK:$hockeySDK"
 
     //Deprecated. Remove after redesign
     implementation 'com.firebaseui:firebase-ui-database:1.2.0'
-    compile project(path: ':core-lib')
 }
 
 apply plugin: 'com.google.gms.google-services'

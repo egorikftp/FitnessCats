@@ -27,7 +27,7 @@ buildscript {
         timber = '4.5.1'
         materialDrawer = '5.9.2@aar'
         leakCanary = '1.5.1'
-        HockeySDK = '4.1.4'
+        hockeySDK = '4.1.4'
     }
 
     repositories {
@@ -37,7 +37,7 @@ buildscript {
 
     dependencies {
         classpath "com.android.tools.build:gradle:$buildGradle"
-        classpath 'com.google.gms:google-services:3.0.0'
+        classpath 'com.google.gms:google-services:3.1.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
